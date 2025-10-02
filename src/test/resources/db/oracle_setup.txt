@@ -1,0 +1,7 @@
+create user SCHEMA1 identified by app;
+
+create user SCHEMA2 identified by app;
+
+grant all privileges to SCHEMA1;
+
+grant all privileges to SCHEMA2;

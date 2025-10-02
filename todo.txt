@@ -1,0 +1,42 @@
+*) url spring-jdbc-crud/simplejdbcmapper
+
+*) test for catalog/schema and fqn
+
+*) remove unused code. See if sonarqube helps
+*) Test organization: Unit and integration
+
+*) Mockito newer version
+*) flyway find out what you need to do.
+
+XX*) Code should be compiled for j17. Not needed going with jdk21
+
+*) flyway can we have a script which creates schemas.
+
+*) why did I have user_postgres1
+
+Future *) Cache with oldest ?
+
+
+X *) Mysql Seems to have UUID stored as binary so maybe we need to address that in inserts for autoincrement
+
+XX *) new @View annotation
+   makes no sense. User can create their own rowmapper since we 
+   wont allow any modifications to view
+X *) insert generated key test for UUID.
+XX *) sqlcolumn should take table and column prefix.
+     No point because we wont be able to map properties to beanRowMapper
+X *) More tests for merge hasOne hasMany
+X *) More tests for findByProperty
+X *) dont show error if catalog is used for oracle or schema is used for    
+     catalog.schema.table
+     schema.table
+     table
+     catalog without schema say invalid
+
+X *) SimpleInsert lets add type. Took it out since SimpleJdbcInsert already does it.
+X *) fix for merge hasMany so order is retained.
+X *) hook for customconverterservice
+X *) Need to know database type for insertWithSynonms
+X *) BeanPropertyRowMapper method to include conversionservice
+X *) findbyProperty cache key should include property name
+X *) UUID support (Done for postgres)

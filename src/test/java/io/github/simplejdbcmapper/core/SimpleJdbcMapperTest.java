@@ -14,6 +14,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import io.github.simplejdbcmapper.exception.AnnotationException;
@@ -21,6 +22,7 @@ import io.github.simplejdbcmapper.exception.MapperException;
 import io.github.simplejdbcmapper.exception.OptimisticLockingException;
 import io.github.simplejdbcmapper.model.Customer;
 import io.github.simplejdbcmapper.model.NoTableAnnotationModel;
+import io.github.simplejdbcmapper.model.NonDefaultNamingProduct;
 import io.github.simplejdbcmapper.model.Order;
 import io.github.simplejdbcmapper.model.OrderInheritedAudit;
 import io.github.simplejdbcmapper.model.Person;
@@ -503,6 +505,35 @@ class SimpleJdbcMapperTest {
 		assertEquals("tester", obj2.getCreatedBy());
 		assertEquals("tester", obj2.getUpdatedBy());
 
+	}
+
+	@Test
+	void getBeanFriendlySqlColumns_test() {
+
+		NonDefaultNamingProduct p = new NonDefaultNamingProduct();
+		p.setId(9812);
+		p.setProductName("test");
+		p.setCost(10.25);
+		sjm.insert(p);
+
+		String sql = "SELECT " + sjm.getBeanFriendlySqlColumns(NonDefaultNamingProduct.class)
+				+ " FROM product WHERE name = ?";
+
+		// Using JdbcClient api for the above sql
+		List<NonDefaultNamingProduct> products = sjm.getJdbcClient().sql(sql).param("test")
+				.query(NonDefaultNamingProduct.class).list();
+
+		assertEquals(1, products.size());
+		assertEquals(10.25, products.get(0).getCost());
+		assertEquals("test", products.get(0).getProductName());
+
+		// Using JdbcTemplate api for the above sql
+		List<NonDefaultNamingProduct> products2 = sjm.getJdbcTemplate().query(sql,
+				BeanPropertyRowMapper.newInstance(NonDefaultNamingProduct.class), "test");
+
+		assertEquals(1, products2.size());
+		assertEquals(10.25, products2.get(0).getCost());
+		assertEquals("test", products2.get(0).getProductName());
 	}
 
 }

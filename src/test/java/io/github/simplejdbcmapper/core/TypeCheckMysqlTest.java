@@ -13,6 +13,9 @@ import java.time.OffsetDateTime;
 import java.time.ZoneId;
 import java.util.Date;
 
+import javax.sql.DataSource;
+
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -22,6 +25,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import io.github.simplejdbcmapper.exception.MapperException;
+import io.github.simplejdbcmapper.model.Order;
 import io.github.simplejdbcmapper.model.StatusEnum;
 import io.github.simplejdbcmapper.model.TypeCheckMysql;
 
@@ -31,6 +36,9 @@ class TypeCheckMysqlTest {
 
 	@Value("${spring.datasource.driver-class-name}")
 	private String jdbcDriver;
+	
+	@Autowired
+	private DataSource ds;
 
 	@Autowired
 	private SimpleJdbcMapper sjm;
@@ -135,6 +143,18 @@ class TypeCheckMysqlTest {
 
 		assertTrue(tc2.getJavaUtilDateTsData().getTime() > tc.getJavaUtilDateTsData().getTime());
 		assertEquals(StatusEnum.CLOSED, tc2.getStatus());
+	}
+	
+	@Test
+	void mysqlConfig_failureOnUsingSchemaInsteadOfCatalog() {
+		SimpleJdbcMapper mapper = new SimpleJdbcMapper(ds, "schema1");
+		Integer id = Integer.valueOf(1);
+		
+		Exception exception = Assertions.assertThrows(MapperException.class, () -> {
+			mapper.findById(Order.class, id);
+		});
+		
+		assertTrue(exception.getMessage().contains("When creating SimpleJdbcMapper() if you are using 'schema' (argument 2) use 'catalog' (argument 3) instead"));
 	}
 
 }

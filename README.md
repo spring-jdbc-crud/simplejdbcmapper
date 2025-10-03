@@ -19,7 +19,6 @@ A simple wrapper around Spring JDBC libraries that makes database CRUD operation
 
 ## Example code
   ```java 
-  
  //@Table annotation is required
  @Table(name="product")
  public class Product {
@@ -111,6 +110,7 @@ JDK **21+**
 Spring framework **6.1.4+** or SpringBoot **3.2.3+**
  
 ## Maven coordinates
+
  ``` 
   <dependency>
     <groupId>io.github.spring-jdbc-crud</groupId>
@@ -129,7 +129,7 @@ Examples for different databases below. Depending on the versions of springboot/
 
 **PostgreSQL**
 
-```  
+``` 
 # application.properties
 spring.datasource.jdbc-url=jdbc:postgresql://HOST:PORT/THE_SCHEMA_NAME
 spring.datasource.username=username
@@ -153,7 +153,7 @@ spring.datasource.driver-class-name=org.postgresql.Driver
  
 **MySQL**
 
-```  
+``` 
 # application.properties
 spring.datasource.jdbc-url=jdbc:mysql://HOST:PORT/THE_DATABASE_NAME
 spring.datasource.username=username
@@ -177,7 +177,7 @@ spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 
 **Oracle**
 
-```
+``` 
 # application.properties
 spring.datasource.jdbc-url=jdbc:oracle:thin:@HOST:PORT/THE_SERVICE_NAME
 spring.datasource.username=username
@@ -201,7 +201,7 @@ spring.datasource.driver-class-name=oracle.jdbc.driver.OracleDriver
 
 **SQLServer**
 
-```
+``` 
 # application.properties
 spring.datasource.jdbc-url=jdbc:sqlserver://HOST:PORT;databaseName=THE_CATALOG_NAME;encrypt=true;trustServerCertificate=true;
 spring.datasource.username=username
@@ -229,7 +229,8 @@ spring.datasource.driver-class-name=com.microsoft.sqlserver.jdbc.SQLServerDriver
 
 Required class level annotation. The table or view should exist in database. Examples below:
 
-```java
+```java 
+
 @Table(name="product")
 class Product {
   ...
@@ -258,7 +259,8 @@ There are 2 forms of usage for this.
 
 * **auto generated id usage**
 
-```java
+```java 
+
 @Table(name="product")
 class Product {
  @Id(type=IdType.AUTO_GENERATED)
@@ -271,7 +273,8 @@ After a successful insert() operation the productId property will be populated w
 
 * **NON auto generated id usage**
 
-```java
+```java 
+
 @Table(name="customer")
 class Customer {
  @Id
@@ -319,7 +322,8 @@ If RecordOperatorResolver is implemented and configured with SimpleJdbcMapper th
 
  Annotation examples:
 
-```java
+```java 
+
 @Table(name="product")
 class Product {
 
@@ -357,7 +361,8 @@ class Product {
 
 ## Configuration for auto assigning @CreatedBy and @UpdateBy
  
-```java
+```java 
+
 @Bean
 public SimpleJdbcMapper simpleJdbcMapper(DataSource dataSource) {
     SimpleJdbcMapper simpleJdbcMapper = new SimpleJdbcMapper(dataSource);
@@ -368,7 +373,8 @@ public SimpleJdbcMapper simpleJdbcMapper(DataSource dataSource) {
  
 ## Accessing JdbcClient/JdbcTemplate
 
-```
+``` 
+
  JdbcClient jdbcClient = sjm.getJdbcClient();
  JdbcTemplate jdbcTemplate = sjm.getJdbcTemplate();
  NamedParameterJdbcTemplate namedParameterJdbcTemplate = sjm.getNamedParameterJdbcTemplate();
@@ -378,7 +384,8 @@ public SimpleJdbcMapper simpleJdbcMapper(DataSource dataSource) {
  
 Uses the same logging configurations as Spring. In application.properties:
  
- ```
+ ``` 
+ 
  # log the SQL
  logging.level.org.springframework.jdbc.core.JdbcTemplate=TRACE
  

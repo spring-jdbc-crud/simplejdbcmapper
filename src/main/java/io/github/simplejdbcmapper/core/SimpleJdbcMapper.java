@@ -410,11 +410,10 @@ public final class SimpleJdbcMapper {
 	}
 
 	/**
-	 * Updates the specified properties passed in as arguments. Use it when you want
-	 * to update a property or a few properties of the object and not the whole
-	 * object. Issues an update for only the specific properties and any auto assign
-	 * properties. Comes in handy for tables with large number of columns and need
-	 * to update only a few.
+	 * Updates the specified properties passed in as arguments. Use it to update a
+	 * property or a few properties of the object and not the whole object. Issues
+	 * an SQL update statement for only for the specific properties and any auto assign
+	 * properties.
 	 *
 	 * <pre>
 	 * Will handle the following annotations:
@@ -562,9 +561,10 @@ public final class SimpleJdbcMapper {
 	}
 
 	/**
-	 * returns a string which can be used in a sql select statement. The column
-	 * alias will be the underscore case name of property name, so it works well
-	 * with Spring's BeanPropertyRowMapper and SimplePropertyRowMapper
+	 * Gets the sql for the columns. Works well with Spring row mappers like
+	 * BeanPropertyRowMapper(), SimplePropertyRowMapper() etc. Will create the
+	 * needed column aliases when the column name does not match the corresponding
+	 * underscore case property name.
 	 *
 	 * <p>
 	 * Will return something like below if 'name' property is mapped to 'last_name'

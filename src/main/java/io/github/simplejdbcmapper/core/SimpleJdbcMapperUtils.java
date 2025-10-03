@@ -19,6 +19,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 import io.github.simplejdbcmapper.exception.MapperException;
+
 /**
  * 
  * Some utility methods.
@@ -29,7 +30,14 @@ public class SimpleJdbcMapperUtils {
 	}
 
 	/**
-	 * Merges the corresponding child object to the 'hasOne' property of the parent
+	 * Merges the corresponding child object to the 'hasOne' property of the parent.
+	 * 
+	 * <pre>
+	 * Example use case: 
+	 * 1) Query for a list of users
+	 * 2) Use an IN clause query to get the profiles for the users 
+	 * 3) Use method below to merge the 2 result sets to populate the user.profile property
+	 * </pre>
 	 * 
 	 * @param parentList                     The parent list whose 'hasOne' property
 	 *                                       that needs to be populated
@@ -71,7 +79,14 @@ public class SimpleJdbcMapperUtils {
 	 * Merges the corresponding list of child objects to the 'hasMany' property of
 	 * the parent
 	 * 
-	 * @param parentList                      The parent list whose 'hasOne'
+	 * <pre>
+	 * Example use case could be: 
+	 * 1) Query to get a list of employees
+	 * 2) Use an IN clause query to get all the skills for those employees 
+	 * 3) Use method below to merge the 2 result sets to populate the employee.skills property
+	 * </pre>
+	 * 
+	 * @param parentList                      The parent list whose 'hasMany'
 	 *                                        property that needs to be populated
 	 * @param childList                       the child list
 	 * @param parentJoinPropertyName          The property name on parent used to
@@ -119,8 +134,8 @@ public class SimpleJdbcMapperUtils {
 	 * sql IN clauses since some databases have a limitation on 'IN' clause entries
 	 * and size
 	 *
-	 * @param list the list to chunk
-	 * @param chunkSize  The size of each chunk
+	 * @param list      the list to chunk
+	 * @param chunkSize The size of each chunk
 	 * @return Collection of lists broken down by chunkSize
 	 */
 	@SuppressWarnings("rawtypes")

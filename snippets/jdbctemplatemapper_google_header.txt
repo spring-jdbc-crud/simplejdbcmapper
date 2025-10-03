@@ -1,0 +1,5 @@
+<meta name="google-site-verification" content="QjeiEv1L9u47joCGHUfh_p5LJ0kIqvimFLS4kxSVLFw" />
+
+<div>
+github project at <a style="color:blue; text-decoration: underline" href="https://github.com/jdbctemplatemapper/jdbctemplatemapper">JdbcTemplateMapper</a>
+</div>

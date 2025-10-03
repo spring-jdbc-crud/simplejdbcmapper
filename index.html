@@ -1,55 +1,115 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>SimpleJdbcMapper</title>
-    <link type="text/css" rel="stylesheet" href="assets/css/bootstrap.css"/>
-    <link type="text/css" rel="stylesheet" href="assets/css/bootstrap-responsive.css"/>
-    <link type="text/css" rel="stylesheet" href="assets/css/pilcrow.css"/>
-    <link type="text/css" rel="stylesheet" href="assets/css/hljs-github.min.css"/>
-    <link type="text/css" rel="stylesheet" href="assets/css/style.css"/>
-  </head>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Security-Policy"
+	content="upgrade-insecure-requests">
+	
+	<!-- Begin Jekyll SEO tag v2.8.0 -->
+
+<meta name="generator" content="Jekyll v3.9.3" />
+<meta property="og:title" content="Simple CRUD for Spring JDBC" />
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Simple CRUD for Spring JDBC" />
+<meta property="og:description" content="Simple CRUD for Spring JDBC" />
+<meta property="og:url"
+	content="https://spring-jdbc-crud.github.io/simplejdbcmapper" />
+<meta property="og:site_name" content="Simple CRUD for Spring JDBC" />
+<meta property="og:type" content="website" />
+<meta name="twitter:card" content="summary" />
+<meta property="twitter:title"
+	content="A simple wrapper around Spring JDBC libraries that makes database CRUD operations less verbose" />
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebSite","description":"Simple CRUD for Spring JDBC","headline":"Simple CRUD for Spring JDBC #","name":"Simple CRUD for Spring JDBC","url":"https://spring-jdbc-crud.github.io/simplejdbcmapper"}</script>
+
+<!-- End Jekyll SEO tag -->
+
+<title>SimpleJdbcMapper</title>
+<link type="text/css" rel="stylesheet" href="assets/css/bootstrap.css" />
+<link type="text/css" rel="stylesheet"
+	href="assets/css/bootstrap-responsive.css" />
+<link type="text/css" rel="stylesheet" href="assets/css/pilcrow.css" />
+<link type="text/css" rel="stylesheet"
+	href="assets/css/hljs-github.min.css" />
+<link type="text/css" rel="stylesheet" href="assets/css/style.css" />
+
 <body>
 
-  <div class="container-fluid">
-    <div class="row-fluid">
-      <div class="span3"><ul class="nav nav-list">
-    <li class="sidebar-header-1"><a href="#simplejdbcmapper">SimpleJdbcMapper</a></li>
-    <li class="sidebar-header-2"><a href="#features">Features</a></li>
-    <li class="sidebar-header-2"><a href="#example-code">Example code</a></li>
-    <li class="sidebar-header-2"><a href="#jdk-and-spring-version-requirements">JDK and Spring version requirements</a></li>
-    <li class="sidebar-header-2"><a href="#maven-coordinates">Maven coordinates</a></li>
-    <li class="sidebar-header-2"><a href="#spring-bean-configuration-for-simplejdbcmapper">Spring bean configuration for SimpleJdbcMapper</a></li>
-    <li class="sidebar-header-2"><a href="#annotations">Annotations</a></li>
-    <li class="sidebar-header-2"><a href="#configuration-for-auto-assigning-createdby-and-updateby">Configuration for auto assigning @CreatedBy and @UpdateBy</a></li>
-    <li class="sidebar-header-2"><a href="#accessing-jdbcclientjdbctemplate">Accessing JdbcClient/JdbcTemplate</a></li>
-    <li class="sidebar-header-2"><a href="#logging">Logging</a></li>
-    <li class="sidebar-header-2"><a href="#troubleshooting">TroubleShooting</a></li>
-</ul>
-      </div>
-      <div class="span9 main"><h1 id="simplejdbcmapper"><a class="header-link" href="#simplejdbcmapper"></a>SimpleJdbcMapper</h1>
-<p>A simple wrapper around Spring JDBC libraries that makes database CRUD operations less verbose. Use it along with Spring JdbcClient/JdbcTemplate. </p>
-<p><a href="https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/index.html">Javadoc</a> | <a href="https://github.com/spring-jdbc-crud/simplejdbcmapper">Githup project</a></p>
-<h2 id="features"><a class="header-link" href="#features"></a>Features</h2>
-<ol class="list">
-<li>One liners for CRUD.</li>
-<li>Auto assign properties for models:<ul class="list">
-<li>auto assign created on, updated on.</li>
-<li>auto assign created by, updated by using an implementation of interface RecordOperatorResolver.</li>
-<li>optimistic locking feature for updates.</li>
-</ul>
-</li>
-<li>Helper methods to get the SQL for the mapped objects that can be used with Spring row mappers like BeanPropertyRowMapper, SimplePropertyRowMapper etc.</li>
-<li>For transaction management use Spring transactions since its just a wrapper library.</li>
-<li>To log the SQL statements use the same SQL logging configurations as Spring. See the logging section further below.</li>
-<li>Tested against PostgreSQL, MySQL, Oracle, SQLServer.</li>
-<li>Only dependency is Spring JDBC libraries. No other external dependencies.</li>
-</ol>
-<h2 id="example-code"><a class="header-link" href="#example-code"></a>Example code</h2>
-<pre class="hljs"><code>
+	<div class="container-fluid">
+		<div class="row-fluid">
+			<div class="span3">
+				<ul class="nav nav-list">
+					<li class="sidebar-header-1"><a href="#simplejdbcmapper">SimpleJdbcMapper</a></li>
+					<li class="sidebar-header-2"><a href="#features">Features</a></li>
+					<li class="sidebar-header-2"><a href="#example-code">Example
+							code</a></li>
+					<li class="sidebar-header-2"><a
+						href="#jdk-and-spring-version-requirements">JDK and Spring
+							version requirements</a></li>
+					<li class="sidebar-header-2"><a href="#maven-coordinates">Maven
+							coordinates</a></li>
+					<li class="sidebar-header-2"><a
+						href="#spring-bean-configuration-for-simplejdbcmapper">Spring
+							bean configuration for SimpleJdbcMapper</a></li>
+					<li class="sidebar-header-2"><a href="#annotations">Annotations</a></li>
+					<li class="sidebar-header-2"><a
+						href="#configuration-for-auto-assigning-createdby-and-updateby">Configuration
+							for auto assigning @CreatedBy and @UpdateBy</a></li>
+					<li class="sidebar-header-2"><a
+						href="#accessing-jdbcclientjdbctemplate">Accessing
+							JdbcClient/JdbcTemplate</a></li>
+					<li class="sidebar-header-2"><a href="#logging">Logging</a></li>
+					<li class="sidebar-header-2"><a href="#troubleshooting">TroubleShooting</a></li>
+				</ul>
+			</div>
+			<div class="span9 main">
+				<h1 id="simplejdbcmapper">
+					<a class="header-link" href="#simplejdbcmapper"></a>SimpleJdbcMapper
+				</h1>
+				<p>A simple wrapper around Spring JDBC libraries that makes
+					database CRUD operations less verbose. Use it along with Spring
+					JdbcClient/JdbcTemplate.</p>
+				<p>
+					<a
+						href="https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/index.html">Javadoc</a>
+					| <a href="https://github.com/spring-jdbc-crud/simplejdbcmapper">Githup
+						project</a>
+				</p>
+				<h2 id="features">
+					<a class="header-link" href="#features"></a>Features
+				</h2>
+				<ol class="list">
+					<li>One liners for CRUD.</li>
+					<li>Auto assign properties for models:
+						<ul class="list">
+							<li>auto assign created on, updated on.</li>
+							<li>auto assign created by, updated by using an
+								implementation of interface RecordOperatorResolver.</li>
+							<li>optimistic locking feature for updates.</li>
+						</ul>
+					</li>
+					<li>Helper methods to get the SQL for the mapped objects that
+						can be used with Spring row mappers like BeanPropertyRowMapper,
+						SimplePropertyRowMapper etc.</li>
+					<li>For transaction management use Spring transactions since
+						its just a wrapper library.</li>
+					<li>To log the SQL statements use the same SQL logging
+						configurations as Spring. See the logging section further below.</li>
+					<li>Tested against PostgreSQL, MySQL, Oracle, SQLServer.</li>
+					<li>Only dependency is Spring JDBC libraries. No other
+						external dependencies.</li>
+				</ol>
+				<h2 id="example-code">
+					<a class="header-link" href="#example-code"></a>Example code
+				</h2>
+				<pre class="hljs">
+					<code>
  <span class="hljs-comment">//@Table annotation is required</span>
  <span class="hljs-meta">@Table(name=&quot;product&quot;)</span>
- <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Product</span> </span>{
+ <span class="hljs-keyword">public</span> <span class="hljs-class"><span
+							class="hljs-keyword">class</span> <span class="hljs-title">Product</span> </span>{
    <span class="hljs-comment">/*
     The @Id annotation is required. It can be of any type.
     @Id(type=IdType.AUTO_GENERATED) - Use for ids which are auto generated by the database. Id value will 
@@ -116,42 +176,86 @@ The following method gets the sql for the columns. Works well with Spring row ma
 BeanPropertyRowMapper(), SimplePropertyRowMapper() etc. Will create the needed column aliases 
 when the column name does not match the corresponding underscore case property name.
  */</span>
- String sql = <span class="hljs-string">&quot;SELECT &quot;</span> + sjm.getBeanFriendlySqlColumns(Product.class) +  <span class="hljs-string">&quot; FROM product WHERE product_name = ?&quot;</span>;
+ String sql = <span class="hljs-string">&quot;SELECT &quot;</span> + sjm.getBeanFriendlySqlColumns(Product.class) +  <span
+							class="hljs-string">&quot; FROM product WHERE product_name = ?&quot;</span>;
  
  <span class="hljs-comment">// Using JdbcClient api for the above sql</span>
- List&lt;Product&gt; products = sjm.getJdbcClient().sql(sql).param(<span class="hljs-string">&quot;someProductName&quot;</span>).query(Product.class).list();
+ List&lt;Product&gt; products = sjm.getJdbcClient().sql(sql).param(<span
+							class="hljs-string">&quot;someProductName&quot;</span>).query(Product.class).list();
  
  <span class="hljs-comment">// Using JdbcTemplate api for the above sql</span>
- List&lt;Product&gt; products sjm.getJdbcTemplate().query(sql,BeanPropertyRowMapper.newInstance(Product.class),<span class="hljs-string">&quot;someProductName&quot;</span>);
+ List&lt;Product&gt; products sjm.getJdbcTemplate().query(sql,BeanPropertyRowMapper.newInstance(Product.class),<span
+							class="hljs-string">&quot;someProductName&quot;</span>);
  
  <span class="hljs-comment">// Accessing the underlying JdbcClient, JdbcTemplate and NamedParameterJdbcTemplate.</span>
  JdbcClient jdbcClient = sjm.getJdbcClient();
  JdbcTemplate jdbcTemplate = sjm.getJdbcTemplate();
  NamedParameterJdbcTemplate namedParameterJdbcTemplate = sjm.getNamedParameterJdbcTemplate();
  
- <span class="hljs-comment">// See logging section for details to view the SQL</span></code></pre><h2 id="jdk-and-spring-version-requirements"><a class="header-link" href="#jdk-and-spring-version-requirements"></a>JDK and Spring version requirements</h2>
-<p>JDK <strong>21+</strong></p>
-<p>Spring framework <strong>6.1.4+</strong> or SpringBoot <strong>3.2.3+</strong></p>
-<h2 id="maven-coordinates"><a class="header-link" href="#maven-coordinates"></a>Maven coordinates</h2>
-<pre class="hljs"><code> <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
-   <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>io.github.spring-jdbc-crud<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
-   <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>simplejdbcmapper<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
-   <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>1.0.0<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
-<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre><h2 id="spring-bean-configuration-for-simplejdbcmapper"><a class="header-link" href="#spring-bean-configuration-for-simplejdbcmapper"></a>Spring bean configuration for SimpleJdbcMapper</h2>
-<p>SimpleJdbcMapper should be prepared in a Spring application context and given to services as a bean reference. It caches table meta-data etc.</p>
-<p><strong>Note: An instance of SimpleJdbcMapper is thread safe</strong></p>
-<p>Examples for different databases below. Depending on the versions of springboot/database/driver, there could be some differences to the properties. The properties are similar to datasource properties used to configure Spring JdbcClient/JdbcTemplate.</p>
-<p><strong>PostgreSQL</strong></p>
-<pre class="hljs"><code># application.properties
+ <span class="hljs-comment">// See logging section for details to view the SQL</span>
+					</code>
+				</pre>
+				<h2 id="jdk-and-spring-version-requirements">
+					<a class="header-link" href="#jdk-and-spring-version-requirements"></a>JDK
+					and Spring version requirements
+				</h2>
+				<p>
+					JDK <strong>21+</strong>
+				</p>
+				<p>
+					Spring framework <strong>6.1.4+</strong> or SpringBoot <strong>3.2.3+</strong>
+				</p>
+				<h2 id="maven-coordinates">
+					<a class="header-link" href="#maven-coordinates"></a>Maven
+					coordinates
+				</h2>
+				<pre class="hljs">
+					<code> <span class="hljs-tag">&lt;<span
+							class="hljs-name">dependency</span>&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>io.github.spring-jdbc-crud<span
+							class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>simplejdbcmapper<span
+							class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>1.0.0<span
+							class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span>
+					</code>
+				</pre>
+				<h2 id="spring-bean-configuration-for-simplejdbcmapper">
+					<a class="header-link"
+						href="#spring-bean-configuration-for-simplejdbcmapper"></a>Spring
+					bean configuration for SimpleJdbcMapper
+				</h2>
+				<p>SimpleJdbcMapper should be prepared in a Spring application
+					context and given to services as a bean reference. It caches table
+					meta-data etc.</p>
+				<p>
+					<strong>Note: An instance of SimpleJdbcMapper is thread
+						safe</strong>
+				</p>
+				<p>Examples for different databases below. Depending on the
+					versions of springboot/database/driver, there could be some
+					differences to the properties. The properties are similar to
+					datasource properties used to configure Spring
+					JdbcClient/JdbcTemplate.</p>
+				<p>
+					<strong>PostgreSQL</strong>
+				</p>
+				<pre class="hljs">
+					<code># application.properties
 spring.datasource.jdbc-url=jdbc:postgresql:<span class="hljs-comment">//HOST:PORT/THE_SCHEMA_NAME</span>
 spring.datasource.username=username
 spring.datasource.password=password
-spring.datasource.driver-<span class="hljs-class"><span class="hljs-keyword">class</span>-<span class="hljs-title">name</span>=<span class="hljs-title">org</span>.<span class="hljs-title">postgresql</span>.<span class="hljs-title">Driver</span></span>
+spring.datasource.driver-<span class="hljs-class"><span
+							class="hljs-keyword">class</span>-<span class="hljs-title">name</span>=<span
+							class="hljs-title">org</span>.<span class="hljs-title">postgresql</span>.<span
+							class="hljs-title">Driver</span></span>
 ...
 
   <span class="hljs-comment">// DataSource properties are read from application.properties.</span>
   <span class="hljs-meta">@Bean</span>
-  <span class="hljs-meta">@ConfigurationProperties(prefix = <span class="hljs-meta-string">&quot;spring.datasource&quot;</span>)</span>
+  <span class="hljs-meta">@ConfigurationProperties(prefix = <span
+							class="hljs-meta-string">&quot;spring.datasource&quot;</span>)</span>
   <span class="hljs-keyword">public</span> DataSource sqlDataSource() {
     <span class="hljs-keyword">return</span> DataSourceBuilder.create().build();
   }
@@ -160,36 +264,57 @@ spring.datasource.driver-<span class="hljs-class"><span class="hljs-keyword">cla
   <span class="hljs-keyword">public</span> SimpleJdbcMapper simpleJdbcMapper(DataSource dataSource) {
     <span class="hljs-keyword">return</span> new SimpleJdbcMapper(dataSource, THE_SCHEMA_NAME);
   }
-  </code></pre><p><strong>MySQL</strong></p>
-<pre class="hljs"><code># application.properties
+  </code>
+				</pre>
+				<p>
+					<strong>MySQL</strong>
+				</p>
+				<pre class="hljs">
+					<code># application.properties
 spring.datasource.jdbc-url=jdbc:mysql:<span class="hljs-comment">//HOST:PORT/THE_DATABASE_NAME</span>
 spring.datasource.username=username
 spring.datasource.password=password
-spring.datasource.driver-<span class="hljs-class"><span class="hljs-keyword">class</span>-<span class="hljs-title">name</span>=<span class="hljs-title">com</span>.<span class="hljs-title">mysql</span>.<span class="hljs-title">cj</span>.<span class="hljs-title">jdbc</span>.<span class="hljs-title">Driver</span></span>
+spring.datasource.driver-<span class="hljs-class"><span
+							class="hljs-keyword">class</span>-<span class="hljs-title">name</span>=<span
+							class="hljs-title">com</span>.<span class="hljs-title">mysql</span>.<span
+							class="hljs-title">cj</span>.<span class="hljs-title">jdbc</span>.<span
+							class="hljs-title">Driver</span></span>
 ...
 
   <span class="hljs-comment">// DataSource properties are read from application.properties.</span>
   <span class="hljs-meta">@Bean</span>
-  <span class="hljs-meta">@ConfigurationProperties(prefix = <span class="hljs-meta-string">&quot;spring.datasource&quot;</span>)</span>
+  <span class="hljs-meta">@ConfigurationProperties(prefix = <span
+							class="hljs-meta-string">&quot;spring.datasource&quot;</span>)</span>
   <span class="hljs-keyword">public</span> DataSource sqlDataSource() {
     <span class="hljs-keyword">return</span> DataSourceBuilder.create().build();
   }
 
  <span class="hljs-meta">@Bean</span>
   <span class="hljs-keyword">public</span> SimpleJdbcMapper simpleJdbcMapper(DataSource dataSource) {
-    <span class="hljs-keyword">return</span> new SimpleJdbcMapper(dataSource, <span class="hljs-literal">null</span>, THE_DATABASE_NAME); <span class="hljs-comment">// For mysql, database is synonymous with catalog</span>
+    <span class="hljs-keyword">return</span> new SimpleJdbcMapper(dataSource, <span
+							class="hljs-literal">null</span>, THE_DATABASE_NAME); <span
+							class="hljs-comment">// For mysql, database is synonymous with catalog</span>
   }
-</code></pre><p><strong>Oracle</strong></p>
-<pre class="hljs"><code># application.properties
+</code>
+				</pre>
+				<p>
+					<strong>Oracle</strong>
+				</p>
+				<pre class="hljs">
+					<code># application.properties
 spring.datasource.jdbc-url=jdbc:oracle:thin:<span class="hljs-meta">@HOST</span>:PORT/THE_SERVICE_NAME
 spring.datasource.username=username
 spring.datasource.password=password
-spring.datasource.driver-<span class="hljs-class"><span class="hljs-keyword">class</span>-<span class="hljs-title">name</span>=<span class="hljs-title">oracle</span>.<span class="hljs-title">jdbc</span>.<span class="hljs-title">driver</span>.<span class="hljs-title">OracleDriver</span></span>
+spring.datasource.driver-<span class="hljs-class"><span
+							class="hljs-keyword">class</span>-<span class="hljs-title">name</span>=<span
+							class="hljs-title">oracle</span>.<span class="hljs-title">jdbc</span>.<span
+							class="hljs-title">driver</span>.<span class="hljs-title">OracleDriver</span></span>
 ...
 
   <span class="hljs-comment">// DataSource properties are read from application.properties.</span>
   <span class="hljs-meta">@Bean</span>
-  <span class="hljs-meta">@ConfigurationProperties(prefix = <span class="hljs-meta-string">&quot;spring.datasource&quot;</span>)</span>
+  <span class="hljs-meta">@ConfigurationProperties(prefix = <span
+							class="hljs-meta-string">&quot;spring.datasource&quot;</span>)</span>
   <span class="hljs-keyword">public</span> DataSource sqlDataSource() {
     <span class="hljs-keyword">return</span> DataSourceBuilder.create().build();
   }
@@ -198,17 +323,27 @@ spring.datasource.driver-<span class="hljs-class"><span class="hljs-keyword">cla
   <span class="hljs-keyword">public</span> SimpleJdbcMapper simpleJdbcMapper(DataSource dataSource) {   
    <span class="hljs-keyword">return</span> new SimpleJdbcMapper(dataSource, THE_SCHEMA_NAME);
   }
-</code></pre><p><strong>SQLServer</strong></p>
-<pre class="hljs"><code># application.properties
+</code>
+				</pre>
+				<p>
+					<strong>SQLServer</strong>
+				</p>
+				<pre class="hljs">
+					<code># application.properties
 spring.datasource.jdbc-url=jdbc:sqlserver:<span class="hljs-comment">//HOST:PORT;databaseName=THE_CATALOG_NAME;encrypt=true;trustServerCertificate=true;</span>
 spring.datasource.username=username
 spring.datasource.password=password
-spring.datasource.driver-<span class="hljs-class"><span class="hljs-keyword">class</span>-<span class="hljs-title">name</span>=<span class="hljs-title">com</span>.<span class="hljs-title">microsoft</span>.<span class="hljs-title">sqlserver</span>.<span class="hljs-title">jdbc</span>.<span class="hljs-title">SQLServerDriver</span></span>
+spring.datasource.driver-<span class="hljs-class"><span
+							class="hljs-keyword">class</span>-<span class="hljs-title">name</span>=<span
+							class="hljs-title">com</span>.<span class="hljs-title">microsoft</span>.<span
+							class="hljs-title">sqlserver</span>.<span class="hljs-title">jdbc</span>.<span
+							class="hljs-title">SQLServerDriver</span></span>
 ...
 
   <span class="hljs-comment">// DataSource properties are read from application.properties.</span>
   <span class="hljs-meta">@Bean</span>
-  <span class="hljs-meta">@ConfigurationProperties(prefix = <span class="hljs-meta-string">&quot;spring.datasource&quot;</span>)</span>
+  <span class="hljs-meta">@ConfigurationProperties(prefix = <span
+							class="hljs-meta-string">&quot;spring.datasource&quot;</span>)</span>
   <span class="hljs-keyword">public</span> DataSource sqlDataSource() {
     <span class="hljs-keyword">return</span> DataSourceBuilder.create().build();
   }
@@ -217,110 +352,223 @@ spring.datasource.driver-<span class="hljs-class"><span class="hljs-keyword">cla
   <span class="hljs-keyword">public</span> SimpleJdbcMapper simpleJdbcMapper(DataSource dataSource) {
     <span class="hljs-keyword">return</span> new SimpleJdbcMapper(dataSource, THE_SCHEMA_NAME);
   }
-  </code></pre><h2 id="annotations"><a class="header-link" href="#annotations"></a>Annotations</h2>
-<p><strong>@Table</strong></p>
-<p>Required class level annotation. The table or view should exist in database. Examples below:</p>
-<pre class="hljs"><code><span class="hljs-meta">@Table(name=&quot;product&quot;)</span>
-<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Product</span> </span>{
+  </code>
+				</pre>
+				<h2 id="annotations">
+					<a class="header-link" href="#annotations"></a>Annotations
+				</h2>
+				<p>
+					<strong>@Table</strong>
+				</p>
+				<p>Required class level annotation. The table or view should
+					exist in database. Examples below:</p>
+				<pre class="hljs">
+					<code>
+						<span class="hljs-meta">@Table(name=&quot;product&quot;)</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span
+							class="hljs-title">Product</span> </span>{
   ...
 }
 
 <span class="hljs-meta">@Table(name=&quot;product&quot;, schema=&quot;someSchemaName&quot;)</span> 
-<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Product</span> </span>{
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span
+							class="hljs-title">Product</span> </span>{
   ...
 }
 
-<span class="hljs-meta">@Table(name=&quot;product&quot;, catalog=&quot;someCatalogName&quot;)</span>  <span class="hljs-comment">// for mysql, database name is synonymous with catalog name </span>
-<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Product</span> </span>{
+<span class="hljs-meta">@Table(name=&quot;product&quot;, catalog=&quot;someCatalogName&quot;)</span>  <span
+							class="hljs-comment">// for mysql, database name is synonymous with catalog name </span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span
+							class="hljs-title">Product</span> </span>{
   ...
 }
 
-<span class="hljs-meta">@Table(name=&quot;product&quot;, catalog=&quot;someCatalogName&quot;, schema=&quot;someSchemaName&quot;)</span>  <span class="hljs-comment">// this is usually for sqlserver databases</span>
-<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Product</span> </span>{
+<span class="hljs-meta">@Table(name=&quot;product&quot;, catalog=&quot;someCatalogName&quot;, schema=&quot;someSchemaName&quot;)</span>  <span
+							class="hljs-comment">// this is usually for sqlserver databases</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span
+							class="hljs-title">Product</span> </span>{
   ...
 }
-</code></pre><p><strong>@Id</strong></p>
-<p>There are 2 forms of usage for this.</p>
-<ul class="list">
-<li><strong>auto generated id usage</strong></li>
-</ul>
-<pre class="hljs"><code><span class="hljs-meta">@Table(name=&quot;product&quot;)</span>
-<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Product</span> </span>{
+</code>
+				</pre>
+				<p>
+					<strong>@Id</strong>
+				</p>
+				<p>There are 2 forms of usage for this.</p>
+				<ul class="list">
+					<li><strong>auto generated id usage</strong></li>
+				</ul>
+				<pre class="hljs">
+					<code>
+						<span class="hljs-meta">@Table(name=&quot;product&quot;)</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span
+							class="hljs-title">Product</span> </span>{
  <span class="hljs-meta">@Id(type=IdType.AUTO_GENERATED)</span>
  <span class="hljs-keyword">private</span> Integer productId;
   ...
 }
-</code></pre><p>After a successful insert() operation the productId property will be populated with the new id.</p>
-<ul class="list">
-<li><strong>NON auto generated id usage</strong></li>
-</ul>
-<pre class="hljs"><code><span class="hljs-meta">@Table(name=&quot;customer&quot;)</span>
-<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Customer</span> </span>{
+</code>
+				</pre>
+				<p>After a successful insert() operation the productId property
+					will be populated with the new id.</p>
+				<ul class="list">
+					<li><strong>NON auto generated id usage</strong></li>
+				</ul>
+				<pre class="hljs">
+					<code>
+						<span class="hljs-meta">@Table(name=&quot;customer&quot;)</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span
+							class="hljs-title">Customer</span> </span>{
  <span class="hljs-meta">@Id</span>
  <span class="hljs-keyword">private</span> Integer id;
   ...
-}</code></pre><p>In this case you will have to manually set the id value before invoking insert()  </p>
-<p><strong>@Column</strong></p>
-<p>Properties that need be persisted to the database will need @Column annotation unless the property is already annotated with one of the other annotations (@Id, @Version, @CreatedOn @CreatedBy @UpdatedOn @UpdatedBy). @Column can be used with the other annotations to map to a different column name.</p>
-<p>The two ways to use it:</p>
-<p>@Column<br>This will map property to a column using the default naming convention of camel case to underscore name.</p>
-<p>@Column(name=&quot;some_column_name&quot;)<br>This will map the property to the column specified by name attribute.<br>Note that this will impact using &quot;SELECT * &quot; with Spring BeanPropertyRowMapper in custom queries. The mismatch of column and property names will cause BeanPropertyRowMapper to ignore these properties. Use &quot;SELECT &quot; + simpleJdbcMapper.getBeanColumnsSql(someClass) which will create column aliases to match property names so will work with BeanPropertyRowMapper.</p>
-<p><strong>@Version</strong></p>
-<p>This annotation is used for optimistic locking. It has to be of type Integer.
-Will be set to 1 when record is created and will incremented on updates. On updates if the version is stale an OptimisticLockingException will be thrown.  @Column annotation can be used with this to map to a different column name.</p>
-<p><strong>@CreatedOn</strong></p>
-<p>When record is created the property will be set. It has to be of type LocalDateTime. @Column annotation can be used with this to map to a different column name.</p>
-<p><strong>@UpdatedOn</strong></p>
-<p>On updates  the property will be set. It has to be of type LocalDateTime. @Column annotation can be used with this to map to a different column name.</p>
-<p><strong>@CreatedBy</strong></p>
-<p>If RecordOperatorResolver is implemented and configured with SimpleJdbcMapper the value will be set to value returned by implementation when the record is created. Without configuration no values will be set. The type returned should match the type of the property. @Column annotation can be used with this to map to a different column name.</p>
-<p><strong>@UpdatedBy</strong></p>
-<p>If RecordOperatorResolver is implemented and configured with SimpleJdbcMapper the value will be set to value returned by implementation when the record is updated. Without configuration no values will be set. The type returned should match the type of the property. @Column annotation can be used with this to map to a different column name.</p>
-<p> Annotation examples:</p>
-<pre class="hljs"><code><span class="hljs-meta">@Table(name=&quot;product&quot;)</span>
-<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Product</span> </span>{
+}</code>
+				</pre>
+				<p>In this case you will have to manually set the id value
+					before invoking insert()</p>
+				<p>
+					<strong>@Column</strong>
+				</p>
+				<p>Properties that need be persisted to the database will need
+					@Column annotation unless the property is already annotated with
+					one of the other annotations (@Id, @Version, @CreatedOn @CreatedBy
+					@UpdatedOn @UpdatedBy). @Column can be used with the other
+					annotations to map to a different column name.</p>
+				<p>The two ways to use it:</p>
+				<p>
+					@Column<br>This will map property to a column using the
+					default naming convention of camel case to underscore name.
+				</p>
+				<p>
+					@Column(name=&quot;some_column_name&quot;)<br>This will map
+					the property to the column specified by name attribute.<br>Note
+					that this will impact using &quot;SELECT * &quot; with Spring
+					BeanPropertyRowMapper in custom queries. The mismatch of column and
+					property names will cause BeanPropertyRowMapper to ignore these
+					properties. Use &quot;SELECT &quot; +
+					simpleJdbcMapper.getBeanColumnsSql(someClass) which will create
+					column aliases to match property names so will work with
+					BeanPropertyRowMapper.
+				</p>
+				<p>
+					<strong>@Version</strong>
+				</p>
+				<p>This annotation is used for optimistic locking. It has to be
+					of type Integer. Will be set to 1 when record is created and will
+					incremented on updates. On updates if the version is stale an
+					OptimisticLockingException will be thrown. @Column annotation can
+					be used with this to map to a different column name.</p>
+				<p>
+					<strong>@CreatedOn</strong>
+				</p>
+				<p>When record is created the property will be set. It has to be
+					of type LocalDateTime. @Column annotation can be used with this to
+					map to a different column name.</p>
+				<p>
+					<strong>@UpdatedOn</strong>
+				</p>
+				<p>On updates the property will be set. It has to be of type
+					LocalDateTime. @Column annotation can be used with this to map to a
+					different column name.</p>
+				<p>
+					<strong>@CreatedBy</strong>
+				</p>
+				<p>If RecordOperatorResolver is implemented and configured with
+					SimpleJdbcMapper the value will be set to value returned by
+					implementation when the record is created. Without configuration no
+					values will be set. The type returned should match the type of the
+					property. @Column annotation can be used with this to map to a
+					different column name.</p>
+				<p>
+					<strong>@UpdatedBy</strong>
+				</p>
+				<p>If RecordOperatorResolver is implemented and configured with
+					SimpleJdbcMapper the value will be set to value returned by
+					implementation when the record is updated. Without configuration no
+					values will be set. The type returned should match the type of the
+					property. @Column annotation can be used with this to map to a
+					different column name.</p>
+				<p>Annotation examples:</p>
+				<pre class="hljs">
+					<code>
+						<span class="hljs-meta">@Table(name=&quot;product&quot;)</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span
+							class="hljs-title">Product</span> </span>{
 
  <span class="hljs-meta">@Id(type=IdType.AUTO_GENERATED)</span>
  <span class="hljs-keyword">private</span> Integer productId; 
  
  <span class="hljs-meta">@Column(name=&quot;product_name&quot;)</span>
- <span class="hljs-keyword">private</span> String name;              <span class="hljs-comment">// maps to product_name column</span>
+ <span class="hljs-keyword">private</span> String name;              <span
+							class="hljs-comment">// maps to product_name column</span>
  
  <span class="hljs-meta">@Column</span>
- <span class="hljs-keyword">private</span> String productDescription <span class="hljs-comment">// defaults to column product_description </span>
+ <span class="hljs-keyword">private</span> String productDescription <span
+							class="hljs-comment">// defaults to column product_description </span>
  
  <span class="hljs-meta">@CreatedOn</span> 
- <span class="hljs-keyword">private</span> LocalDateTime createdTimestamp;  <span class="hljs-comment">// defaults to column created_timestamp. Property type should be LocalDateTime </span>
+ <span class="hljs-keyword">private</span> LocalDateTime createdTimestamp;  <span
+							class="hljs-comment">// defaults to column created_timestamp. Property type should be LocalDateTime </span>
   
  <span class="hljs-meta">@CreatedBy</span>
- <span class="hljs-keyword">private</span> String createdByUser;     <span class="hljs-comment">// defaults to column created_by_user. </span>
+ <span class="hljs-keyword">private</span> String createdByUser;     <span
+							class="hljs-comment">// defaults to column created_by_user. </span>
                                    <span class="hljs-comment">// Property type should match return value of implementation of RecordOperatorResolver.  </span>
   
  <span class="hljs-meta">@UpdatedOn</span>
- <span class="hljs-keyword">private</span> LocalDateTime updatedAt;  <span class="hljs-comment">// defaults to column updated_at. Property type should be LocalDateTime  </span>
+ <span class="hljs-keyword">private</span> LocalDateTime updatedAt;  <span
+							class="hljs-comment">// defaults to column updated_at. Property type should be LocalDateTime  </span>
  
  <span class="hljs-meta">@Column(name=&quot;last_update_user&quot;)</span>
  <span class="hljs-meta">@UpdatedBy</span>
- <span class="hljs-keyword">private</span> String updatedBy;         <span class="hljs-comment">// maps to column last_update_user. </span>
+ <span class="hljs-keyword">private</span> String updatedBy;         <span
+							class="hljs-comment">// maps to column last_update_user. </span>
                                    <span class="hljs-comment">// Property type should match return value of implementation of RecordOperatorResolver.</span>
    
  <span class="hljs-meta">@Version</span>
- <span class="hljs-keyword">private</span> Integer version;          <span class="hljs-comment">// defaults to column version, </span>
+ <span class="hljs-keyword">private</span> Integer version;          <span
+							class="hljs-comment">// defaults to column version, </span>
                                    <span class="hljs-comment">// Property type should be Integer. Used for optimistic locking.</span>
                                    <span class="hljs-comment">// Gets incremented every successful update.</span>
   
-}</code></pre><h2 id="configuration-for-auto-assigning-createdby-and-updateby"><a class="header-link" href="#configuration-for-auto-assigning-createdby-and-updateby"></a>Configuration for auto assigning @CreatedBy and @UpdateBy</h2>
-<pre class="hljs"><code><span class="hljs-meta">@Bean</span>
-<span class="hljs-function"><span class="hljs-keyword">public</span> SimpleJdbcMapper <span class="hljs-title">simpleJdbcMapper</span><span class="hljs-params">(DataSource dataSource)</span> </span>{
+}</code>
+				</pre>
+				<h2 id="configuration-for-auto-assigning-createdby-and-updateby">
+					<a class="header-link"
+						href="#configuration-for-auto-assigning-createdby-and-updateby"></a>Configuration
+					for auto assigning @CreatedBy and @UpdateBy
+				</h2>
+				<pre class="hljs">
+					<code>
+						<span class="hljs-meta">@Bean</span>
+<span class="hljs-function"><span class="hljs-keyword">public</span> SimpleJdbcMapper <span
+							class="hljs-title">simpleJdbcMapper</span><span
+							class="hljs-params">(DataSource dataSource)</span> </span>{
     SimpleJdbcMapper simpleJdbcMapper = <span class="hljs-keyword">new</span> SimpleJdbcMapper(dataSource);
-    simpleJdbcMapper.setRecordOperatorResolver(<span class="hljs-keyword">new</span> YourImplementationOfInterface_RecordOperatorResolver());
+    simpleJdbcMapper.setRecordOperatorResolver(<span
+							class="hljs-keyword">new</span> YourImplementationOfInterface_RecordOperatorResolver());
     <span class="hljs-keyword">return</span> simpleJdbcMapper;
-}</code></pre><h2 id="accessing-jdbcclientjdbctemplate"><a class="header-link" href="#accessing-jdbcclientjdbctemplate"></a>Accessing JdbcClient/JdbcTemplate</h2>
-<pre class="hljs"><code> <span class="hljs-keyword">JdbcClient </span><span class="hljs-keyword">jdbcClient </span>= sjm.getJdbcClient();
- <span class="hljs-keyword">JdbcTemplate </span><span class="hljs-keyword">jdbcTemplate </span>= sjm.getJdbcTemplate();
- NamedParameterJdbcTemplate namedParameterJdbcTemplate = sjm.getNamedParameterJdbcTemplate();</code></pre><h2 id="logging"><a class="header-link" href="#logging"></a>Logging</h2>
-<p>Uses the same logging configurations as Spring. In application.properties:</p>
-<pre class="hljs"><code><span class="hljs-comment"># log the SQL</span>
+}</code>
+				</pre>
+				<h2 id="accessing-jdbcclientjdbctemplate">
+					<a class="header-link" href="#accessing-jdbcclientjdbctemplate"></a>Accessing
+					JdbcClient/JdbcTemplate
+				</h2>
+				<pre class="hljs">
+					<code> <span class="hljs-keyword">JdbcClient </span><span
+							class="hljs-keyword">jdbcClient </span>= sjm.getJdbcClient();
+ <span class="hljs-keyword">JdbcTemplate </span><span
+							class="hljs-keyword">jdbcTemplate </span>= sjm.getJdbcTemplate();
+ NamedParameterJdbcTemplate namedParameterJdbcTemplate = sjm.getNamedParameterJdbcTemplate();</code>
+				</pre>
+				<h2 id="logging">
+					<a class="header-link" href="#logging"></a>Logging
+				</h2>
+				<p>Uses the same logging configurations as Spring. In
+					application.properties:</p>
+				<pre class="hljs">
+					<code>
+						<span class="hljs-comment"># log the SQL</span>
 <span class="hljs-attr">logging.level.org.springframework.jdbc.core.JdbcTemplate</span>=TRACE
 
 <span class="hljs-comment"># need this to log the INSERT statements</span>
@@ -328,13 +576,20 @@ Will be set to 1 when record is created and will incremented on updates. On upda
 
 <span class="hljs-comment"># log the parameters of SQL statement</span>
 <span class="hljs-attr">logging.level.org.springframework.jdbc.core.StatementCreatorUtils</span>=TRACE
-</code></pre><h2 id="troubleshooting"><a class="header-link" href="#troubleshooting"></a>TroubleShooting</h2>
-<p>Make sure you can connect to your database and issue a simple query using Spring JdbcClient or JdbcTemplate without the SimpleJdbcMapper.</p>
-      </div>
-    </div>
-  </div>
+</code>
+				</pre>
+				<h2 id="troubleshooting">
+					<a class="header-link" href="#troubleshooting"></a>TroubleShooting
+				</h2>
+				<p>Make sure you can connect to your database and issue a simple
+					query using Spring JdbcClient or JdbcTemplate without the
+					SimpleJdbcMapper.</p>
+			</div>
+		</div>
+	</div>
 
-  <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
-  <script type="text/javascript" src="assets/js/bootstrap.min.js"></script>
+	<script type="text/javascript"
+		src="https://ajax.googleapis.com/ajax/libs/jquery/1.9.1/jquery.min.js"></script>
+	<script type="text/javascript" src="assets/js/bootstrap.min.js"></script>
 </body>
 </html>

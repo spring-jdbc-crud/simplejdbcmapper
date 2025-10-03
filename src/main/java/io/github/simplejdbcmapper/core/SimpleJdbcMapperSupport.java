@@ -352,10 +352,14 @@ class SimpleJdbcMapperSupport {
 	private void validateMetaDataConfig(String catalogName, String schemaName) {
 		String commonDatabaseName = JdbcUtils.commonDatabaseName(getDatabaseProductName());
 		if ("mysql".equalsIgnoreCase(commonDatabaseName) && SjmInternalUtils.isNotEmpty(schemaName)) {
-			throw new MapperException(commonDatabaseName + " does not support schema. Try using catalog.");
+			throw new MapperException(commonDatabaseName
+					+ ": When creating SimpleJdbcMapper() if you are using 'schema' (argument 2) use 'catalog' (argument 3) instead."
+					+ " If you are using the @Table annotation use the 'catalog' attribue instead of 'schema' attribute");
 		}
 		if ("oracle".equalsIgnoreCase(commonDatabaseName) && SjmInternalUtils.isNotEmpty(catalogName)) {
-			throw new MapperException(commonDatabaseName + " does not support catalog. Try using schema.");
+			throw new MapperException(commonDatabaseName
+					+ ": When creating SimpleJdbcMapper() if you are using the 'catalog' (argument 3) use 'schema' (argument 2) instead."
+					+ " If you are using the @Table annotation use the 'schema' attribue instead of 'catalog' attribute");
 		}
 	}
 

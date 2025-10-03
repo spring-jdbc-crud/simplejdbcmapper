@@ -44,7 +44,7 @@ A simple wrapper around Spring JDBC libraries that makes database CRUD operation
      @Column
      private Double price;                   
      
-     // No annotations so excluded from inserts/updates/queries etc
+     // No annotations for this property so excluded from inserts/updates/queries etc
      private String someNonDatabaseProperty; 
  
      ...
@@ -105,12 +105,12 @@ A simple wrapper around Spring JDBC libraries that makes database CRUD operation
  // See logging section for details to view the SQL
  ```
 ## JDK and Spring version requirements
+
 JDK **21+**
 
 Spring framework **6.1.4+** or SpringBoot **3.2.3+**
  
 ## Maven coordinates
-
  ``` 
   <dependency>
     <groupId>io.github.spring-jdbc-crud</groupId>

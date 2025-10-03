@@ -2,7 +2,7 @@
  
 A simple wrapper around Spring JDBC libraries that makes database CRUD operations less verbose. Use it along with Spring JdbcClient/JdbcTemplate. 
   
-[Javadoc](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/index.html) | [Website](https://spring-jdbc-crud.github.io/)
+[Javadoc](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/index.html) | [Website](https://spring-jdbc-crud.github.io/simplejdbcmapper)
  
 ## Features
 

@@ -42,7 +42,7 @@
 	<scm>
 		<connection>scm:git:git://github.com/spring-jdbc-crud/simplejdbcmapper.git</connection>
 		<developerConnection>scm:git:git@github.com:spring-jdbc-crud/simplejdbcmapper.git</developerConnection>
-		<url>https://jdbctemplatemapper.github.io/jdbctemplate-crud-spring/</url>
+		<url>https://spring-jdbc-crud.github.io/simplejdbcmapper/</url>
 	</scm>
 
 	<dependencies>

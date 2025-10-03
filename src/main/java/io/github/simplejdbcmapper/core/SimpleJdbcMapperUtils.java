@@ -36,7 +36,7 @@ public class SimpleJdbcMapperUtils {
 	 * Example use case: 
 	 * 1) Query for a list of users
 	 * 2) Use an IN clause query to get the profiles for the users 
-	 * 3) Use method below to merge the 2 result sets to populate the user.profile property
+	 * 3) Use method mergeResultsToPopulateHasOne() to merge the 2 result sets to populate the user.profile property
 	 * </pre>
 	 * 
 	 * @param parentList                     The parent list whose 'hasOne' property
@@ -83,7 +83,7 @@ public class SimpleJdbcMapperUtils {
 	 * Example use case could be: 
 	 * 1) Query to get a list of employees
 	 * 2) Use an IN clause query to get all the skills for those employees 
-	 * 3) Use method below to merge the 2 result sets to populate the employee.skills property
+	 * 3) Use mergeResultsToPopulateHasMany() to merge the 2 result sets to populate the employee.skills property
 	 * </pre>
 	 * 
 	 * @param parentList                      The parent list whose 'hasMany'

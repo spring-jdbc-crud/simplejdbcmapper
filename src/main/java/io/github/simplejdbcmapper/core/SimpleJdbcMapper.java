@@ -169,6 +169,9 @@ public final class SimpleJdbcMapper {
 		if (this.recordOperatorResolver == null) {
 			this.recordOperatorResolver = recordOperatorResolver;
 		}
+		else {
+			throw new IllegalStateException("recordOperatorResolver was already set and cannot be changed.");
+		}
 	}
 
 	/**
@@ -207,6 +210,9 @@ public final class SimpleJdbcMapper {
 	public void setConversionService(ConversionService conversionService) {
 		if (this.conversionService == null) {
 			this.conversionService = conversionService;
+		}
+		else {
+			throw new IllegalStateException("conversionService was already set and cannot be changed.");
 		}
 	}
 

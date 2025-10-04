@@ -1,0 +1,23 @@
+1) create javadoc
+   *)git checkout main
+     mvn javadoc:javadoc
+   *)copy javadoc to website branch
+     git checkout website
+     rm -rf javadoc
+     cp -r target/reports/apidocs ./javadoc
+     
+2) create the index.html file from README.md
+   *) README.md file should be in input directory
+      generate-md --layout mixu-gray --input ./input --output ./output
+     
+      
+   *) copy all files/directories (README.html and assets dir)
+   
+   *) rename README.html to index.html
+   
+   *) follow instructions on sjm_head_snippet.txt
+   *) Fix the links on index.html
+      1) remove @ on links for @CreatedBy @UpdatedBy
+      2) remove / on links for JdbcClient/JdbcTemplate
+
+

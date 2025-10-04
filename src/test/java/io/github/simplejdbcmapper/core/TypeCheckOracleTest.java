@@ -58,7 +58,9 @@ class TypeCheckOracleTest {
 		obj.setJavaUtilDateData(new Date());
 		obj.setLocalDateTimeData(LocalDateTime.now());
 		obj.setBigDecimalData(new BigDecimal("10.23"));
-		obj.setOffsetDateTimeData(OffsetDateTime.now());
+		
+		var offsetVal = OffsetDateTime.now();
+		obj.setOffsetDateTimeData(offsetVal);
 
 		obj.setJavaUtilDateTsData(new Date());
 		obj.setStatus(StatusEnum.OPEN);
@@ -76,7 +78,9 @@ class TypeCheckOracleTest {
 
 		assertEquals(0, tc.getBigDecimalData().compareTo(obj.getBigDecimalData()));
 
-		assertNotNull(tc.getOffsetDateTimeData());
+		assertEquals(offsetVal,tc.getOffsetDateTimeData());
+		
+		
 
 		assertNotNull(tc.getJavaUtilDateTsData());
 
@@ -112,7 +116,9 @@ class TypeCheckOracleTest {
 		obj.setJavaUtilDateData(new Date());
 		obj.setLocalDateTimeData(LocalDateTime.now());
 		obj.setBigDecimalData(new BigDecimal("10.23"));
-		obj.setOffsetDateTimeData(OffsetDateTime.now());
+		
+		var offsetDtTmVal = OffsetDateTime.now();
+		obj.setOffsetDateTimeData(offsetDtTmVal);
 		obj.setJavaUtilDateTsData(new Date());
 		sjm.insert(obj);
 
@@ -128,8 +134,10 @@ class TypeCheckOracleTest {
 		tc1.setLocalDateData(LocalDate.now().plusDays(1));
 		tc1.setJavaUtilDateData(nextDay);
 		tc1.setLocalDateTimeData(LocalDateTime.now().plusDays(1));
+		
+		var offsetDtTmValPlus1 = offsetDtTmVal.plusDays(1);
 
-		tc1.setOffsetDateTimeData(OffsetDateTime.now().plusDays(1));
+		tc1.setOffsetDateTimeData(offsetDtTmValPlus1);
 
 		tc1.setBigDecimalData(new BigDecimal("11.34"));
 
@@ -148,7 +156,10 @@ class TypeCheckOracleTest {
 		assertTrue(tc2.getJavaUtilDateData().getTime() > tc.getJavaUtilDateData().getTime());
 		assertTrue(tc2.getLocalDateTimeData().isAfter(tc.getLocalDateTimeData()));
 
+		assertEquals(offsetDtTmValPlus1,tc2.getOffsetDateTimeData());
+		
 		assertTrue(tc2.getOffsetDateTimeData().isAfter(tc.getOffsetDateTimeData()));
+		
 
 		assertEquals(0, tc2.getBigDecimalData().compareTo(new BigDecimal("11.34")));
 
@@ -168,7 +179,6 @@ class TypeCheckOracleTest {
 		obj.setJavaUtilDateData(new Date());
 		obj.setLocalDateTimeData(LocalDateTime.now());
 		obj.setBigDecimalData(new BigDecimal("10.23"));
-		obj.setOffsetDateTimeData(OffsetDateTime.now());
 		obj.setJavaUtilDateTsData(new Date());
 		sjm.insert(obj);
 

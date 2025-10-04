@@ -102,6 +102,10 @@ A simple wrapper around Spring JDBC libraries that makes database CRUD operation
  NamedParameterJdbcTemplate namedParameterJdbcTemplate = sjm.getNamedParameterJdbcTemplate();
  
  // See logging section for details to view the SQL
+ 
+ // See troubleshooting section if you have issues with the initial setup.
+ 
+ // Thats all folks. Happy coding!!!
  ```
 ## JDK and Spring version requirements
 

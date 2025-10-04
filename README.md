@@ -135,7 +135,7 @@ Examples for different databases below. Depending on the versions of springboot/
 
 ``` 
 # application.properties
-spring.datasource.jdbc-url=jdbc:postgresql://HOST:PORT/THE_SCHEMA_NAME
+spring.datasource.jdbc-url=jdbc:postgresql://HOST:PORT/SCHEMA_NAME
 spring.datasource.username=username
 spring.datasource.password=password
 spring.datasource.driver-class-name=org.postgresql.Driver
@@ -150,7 +150,7 @@ spring.datasource.driver-class-name=org.postgresql.Driver
 
  @Bean
   public SimpleJdbcMapper simpleJdbcMapper(DataSource dataSource) {
-    return new SimpleJdbcMapper(dataSource, THE_SCHEMA_NAME);
+    return new SimpleJdbcMapper(dataSource, SCHEMA_NAME);
   }
   
 ```
@@ -159,7 +159,7 @@ spring.datasource.driver-class-name=org.postgresql.Driver
 
 ``` 
 # application.properties
-spring.datasource.jdbc-url=jdbc:mysql://HOST:PORT/THE_DATABASE_NAME
+spring.datasource.jdbc-url=jdbc:mysql://HOST:PORT/DATABASE_NAME
 spring.datasource.username=username
 spring.datasource.password=password
 spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
@@ -174,7 +174,7 @@ spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 
  @Bean
   public SimpleJdbcMapper simpleJdbcMapper(DataSource dataSource) {
-    return new SimpleJdbcMapper(dataSource, null, THE_DATABASE_NAME); // For mysql, database is synonymous with catalog
+    return new SimpleJdbcMapper(dataSource, null, DATABASE_NAME); // For mysql, database is synonymous with catalog
   }
 
 ```
@@ -183,7 +183,7 @@ spring.datasource.driver-class-name=com.mysql.cj.jdbc.Driver
 
 ``` 
 # application.properties
-spring.datasource.jdbc-url=jdbc:oracle:thin:@HOST:PORT/THE_SERVICE_NAME
+spring.datasource.jdbc-url=jdbc:oracle:thin:@HOST:PORT/SERVICE_NAME
 spring.datasource.username=username
 spring.datasource.password=password
 spring.datasource.driver-class-name=oracle.jdbc.driver.OracleDriver
@@ -198,7 +198,7 @@ spring.datasource.driver-class-name=oracle.jdbc.driver.OracleDriver
   
  @Bean
   public SimpleJdbcMapper simpleJdbcMapper(DataSource dataSource) {   
-   return new SimpleJdbcMapper(dataSource, THE_SCHEMA_NAME);
+   return new SimpleJdbcMapper(dataSource, SCHEMA_NAME);
   }
 
 ```
@@ -207,7 +207,7 @@ spring.datasource.driver-class-name=oracle.jdbc.driver.OracleDriver
 
 ``` 
 # application.properties
-spring.datasource.jdbc-url=jdbc:sqlserver://HOST:PORT;databaseName=THE_CATALOG_NAME;encrypt=true;trustServerCertificate=true;
+spring.datasource.jdbc-url=jdbc:sqlserver://HOST:PORT;databaseName=CATALOG_NAME;encrypt=true;trustServerCertificate=true;
 spring.datasource.username=username
 spring.datasource.password=password
 spring.datasource.driver-class-name=com.microsoft.sqlserver.jdbc.SQLServerDriver
@@ -222,7 +222,7 @@ spring.datasource.driver-class-name=com.microsoft.sqlserver.jdbc.SQLServerDriver
   
  @Bean
   public SimpleJdbcMapper simpleJdbcMapper(DataSource dataSource) {
-    return new SimpleJdbcMapper(dataSource, THE_SCHEMA_NAME);
+    return new SimpleJdbcMapper(dataSource, SCHEMA_NAME);
   }
   
 ```
@@ -413,17 +413,17 @@ For **MySql** try setting the 'catalog' parameter on constructor of SimpleJdbcMa
 
 Example: 
 
-    new SimpleJdbcMapper(dataSource, null, "THE_DATABASE_NAME");
+    new SimpleJdbcMapper(dataSource, null, "DATABASE_NAME");
     Or
-    @Table(name="sometablename", catalog="THE_DATABASE_NAME");
+    @Table(name="sometablename", catalog="DATABASE_NAME");
     
 For **Postgres/Oracle/Sqlserver** try setting the 'schema' parameter on constructor of SimpleJdbcMapper() (2nd argument) or set the 'schema' attribute on the @Table annotation of the object.
 
 Example: 
 
-    new SimpleJdbcMapper(dataSource, "THE_SCHEMA_NAME");
+    new SimpleJdbcMapper(dataSource, "SCHEMA_NAME");
     Or
-    @Table(name="sometablename", schema="THE_SCHEMA_NAME");
+    @Table(name="sometablename", schema="SCHEMA_NAME");
 
 
 

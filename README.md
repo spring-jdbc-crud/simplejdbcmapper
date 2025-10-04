@@ -231,7 +231,8 @@ spring.datasource.driver-class-name=com.microsoft.sqlserver.jdbc.SQLServerDriver
 
 **@Table**
 
-Required class level annotation. The table or view should exist in database. Examples below:
+Required class level annotation. The table or view should exist in database. The schema/catalog attributes set with @Table will override corresponding values 
+on the SimpleJdbcMapper() constructor. 
 
 ```java 
 
@@ -250,7 +251,7 @@ class Product {
   ...
 }
 
-@Table(name="product", catalog="someCatalogName", schema="someSchemaName")  // this is usually for sqlserver databases
+@Table(name="product", catalog="someCatalogName", schema="someSchemaName")
 class Product {
   ...
 }

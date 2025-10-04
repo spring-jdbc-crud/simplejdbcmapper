@@ -398,6 +398,28 @@ Uses the same logging configurations as Spring. In application.properties:
  ```
  
 ## TroubleShooting
-Make sure you can connect to your database and issue a simple query using Spring JdbcClient or JdbcTemplate without the SimpleJdbcMapper.
+
+1.**Connection issues:**
+
+Try to connect to the database using Spring JdbcClient or JdbcTemplate without the SimpleJdbcMapper and issue a simple query. The datasource configuration parameters are exactly the same.
+
+2.**Table does not exist or a similar exception**
+
+For postgres/oracle/sqlserver try setting the 'schema' parameter on constructor of SimpleJdbcMapper() (2nd argument) or set the 'schema' attribute on the @Table annotation of the object.
+
+Example: 
+    new SimpleJdbcMapper(dataSource, "THE_SCHEMA_NAME");
+    Or
+    @Table(name="customer", schema="THE_SCHEMA_NAME");
+
+For MySql try setting the 'catalog' parameter on constructor of SimpleJdbcMapper() (3rd argument) or set the 'catalog' attribute on the @Table annotation of the object. Database name is considered the same as catalog name for mysql.
+Example: 
+    new SimpleJdbcMapper(dataSource, null, "THE_DATABASE_NAME");
+    Or
+    @Table(name="customer", catalog="THE_DATABASE_NAME");
+
+
+
+
 
 

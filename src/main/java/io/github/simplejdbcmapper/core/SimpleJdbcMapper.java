@@ -137,87 +137,7 @@ public final class SimpleJdbcMapper {
 	}
 
 	/**
-	 * Gets the JdbcClient of the SimpleJdbcMapper.
-	 *
-	 * @return the JdbcClient
-	 */
-	public JdbcClient getJdbcClient() {
-		return this.jdbcClient;
-	}
-
-	/**
-	 * Gets the JdbcTemplate of the SimpleJdbcMapper.
-	 *
-	 * @return the JdbcTemplate
-	 */
-	public JdbcTemplate getJdbcTemplate() {
-		return this.jdbcTemplate;
-	}
-
-	public NamedParameterJdbcTemplate getNamedParameterJdbcTemplate() {
-		return this.npJdbcTemplate;
-	}
-
-	/**
-	 * An implementation of RecordOperatorResolver is used to populate the
-	 * &#64;CreatedBy and &#64;UpdatedBy annotated properties.
-	 *
-	 * @param recordOperatorResolver The implement for interface
-	 *                               RecordOperatorResolver
-	 */
-	public void setRecordOperatorResolver(RecordOperatorResolver recordOperatorResolver) {
-		if (this.recordOperatorResolver == null) {
-			this.recordOperatorResolver = recordOperatorResolver;
-		}
-		else {
-			throw new IllegalStateException("recordOperatorResolver was already set and cannot be changed.");
-		}
-	}
-
-	/**
-	 * Get the schema name.
-	 *
-	 * @return the schema name.
-	 */
-	public String getSchemaName() {
-		return simpleJdbcMapperSupport.getSchemaName();
-	}
-
-	/**
-	 * Get the catalog name.
-	 *
-	 * @return the catalog name.
-	 */
-	public String getCatalogName() {
-		return simpleJdbcMapperSupport.getCatalogName();
-	}
-
-	/**
-	 * Exposing the conversion service used so if necessary new converters can be
-	 * added.
-	 *
-	 * @return the default conversion service.
-	 */
-	public ConversionService getConversionService() {
-		return conversionService;
-	}
-
-	/**
-	 * Set the conversion service
-	 * 
-	 * @param conversionService The conversion service to set
-	 */
-	public void setConversionService(ConversionService conversionService) {
-		if (this.conversionService == null) {
-			this.conversionService = conversionService;
-		}
-		else {
-			throw new IllegalStateException("conversionService was already set and cannot be changed.");
-		}
-	}
-
-	/**
-	 * finds the object by Id. Return null if not found
+	 * finds the object by Id. Returns null if not found
 	 *
 	 * @param <T>   the type
 	 * @param clazz Class of object
@@ -418,8 +338,8 @@ public final class SimpleJdbcMapper {
 	/**
 	 * Updates the specified properties passed in as arguments. Use it to update a
 	 * property or a few properties of the object and not the whole object. Issues
-	 * an SQL update statement for only for the specific properties and any auto assign
-	 * properties.
+	 * an SQL update statement for only for the specific properties and any auto
+	 * assign properties.
 	 *
 	 * <pre>
 	 * Will handle the following annotations:
@@ -614,6 +534,84 @@ public final class SimpleJdbcMapper {
 	 */
 	public void loadMapping(Class<?> clazz) {
 		simpleJdbcMapperSupport.getTableMapping(clazz);
+	}
+
+	/**
+	 * Gets the JdbcClient of the SimpleJdbcMapper.
+	 *
+	 * @return the JdbcClient
+	 */
+	public JdbcClient getJdbcClient() {
+		return this.jdbcClient;
+	}
+
+	/**
+	 * Gets the JdbcTemplate of the SimpleJdbcMapper.
+	 *
+	 * @return the JdbcTemplate
+	 */
+	public JdbcTemplate getJdbcTemplate() {
+		return this.jdbcTemplate;
+	}
+
+	public NamedParameterJdbcTemplate getNamedParameterJdbcTemplate() {
+		return this.npJdbcTemplate;
+	}
+
+	/**
+	 * An implementation of RecordOperatorResolver is used to populate the
+	 * &#64;CreatedBy and &#64;UpdatedBy annotated properties.
+	 *
+	 * @param recordOperatorResolver The implement for interface
+	 *                               RecordOperatorResolver
+	 */
+	public void setRecordOperatorResolver(RecordOperatorResolver recordOperatorResolver) {
+		if (this.recordOperatorResolver == null) {
+			this.recordOperatorResolver = recordOperatorResolver;
+		} else {
+			throw new IllegalStateException("recordOperatorResolver was already set and cannot be changed.");
+		}
+	}
+
+	/**
+	 * Get the schema name.
+	 *
+	 * @return the schema name.
+	 */
+	public String getSchemaName() {
+		return simpleJdbcMapperSupport.getSchemaName();
+	}
+
+	/**
+	 * Get the catalog name.
+	 *
+	 * @return the catalog name.
+	 */
+	public String getCatalogName() {
+		return simpleJdbcMapperSupport.getCatalogName();
+	}
+
+	/**
+	 * Exposing the conversion service used so if necessary new converters can be
+	 * added.
+	 *
+	 * @return the default conversion service.
+	 */
+	public ConversionService getConversionService() {
+		return conversionService;
+	}
+
+	/**
+	 * Set the conversion service
+	 * 
+	 * @param conversionService The conversion service to set
+	 */
+	public void setConversionService(ConversionService conversionService) {
+		if (this.conversionService == null) {
+			this.conversionService = conversionService;
+		} else {
+			throw new IllegalStateException("conversionService was already set and cannot be changed.");
+		}
 	}
 
 	TableMapping getTableMapping(Class<?> clazz) {

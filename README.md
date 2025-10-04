@@ -415,7 +415,7 @@ Example:
 
     new SimpleJdbcMapper(dataSource, null, "THE_DATABASE_NAME");
     Or
-    @Table(name="customer", catalog="THE_DATABASE_NAME");
+    @Table(name="sometablename", catalog="THE_DATABASE_NAME");
     
 For **Postgres/Oracle/Sqlserver** try setting the 'schema' parameter on constructor of SimpleJdbcMapper() (2nd argument) or set the 'schema' attribute on the @Table annotation of the object.
 
@@ -423,7 +423,7 @@ Example:
 
     new SimpleJdbcMapper(dataSource, "THE_SCHEMA_NAME");
     Or
-    @Table(name="customer", schema="THE_SCHEMA_NAME");
+    @Table(name="sometablename", schema="THE_SCHEMA_NAME");
 
 
 

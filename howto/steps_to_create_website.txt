@@ -1,3 +1,7 @@
+The simplejdbcmapper website is published from the 'website' branch.
+'Pages' on the repository is set to trigger on branch 'website' so when pushed the website gets created.
+
+
 1) create javadoc
    *)git checkout main
      mvn javadoc:javadoc

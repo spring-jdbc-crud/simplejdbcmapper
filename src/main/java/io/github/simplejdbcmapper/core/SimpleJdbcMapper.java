@@ -497,7 +497,7 @@ public final class SimpleJdbcMapper {
 	 * column in database:
 	 *
 	 * <pre>
-	 * "id as id, last_name AS name"
+	 * "somecolumn, someothercolumn, last_name AS name"
 	 * </pre>
 	 * 
 	 * @param clazz the class

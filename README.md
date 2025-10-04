@@ -297,11 +297,10 @@ Properties that need be persisted to the database will need @Column annotation u
 The two ways to use it:
 
 @Column  
-This will map property to a column using the default naming convention of camel case to underscore name.
+This will map the property to a column using the default naming convention of camel case to underscore case. For example property 'lastName' will map to column 'last_name' by default
 
-@Column(name="some_column_name")  
+@Column(name="somecolumnname")  
 This will map the property to the column specified by name attribute.   
-Note that this will impact using "SELECT * " with Spring BeanPropertyRowMapper in custom queries. The mismatch of column and property names will cause BeanPropertyRowMapper to ignore these properties. Use "SELECT " + simpleJdbcMapper.getBeanColumnsSql(someClass) which will create column aliases to match property names so will work with BeanPropertyRowMapper.
 
 **@Version**
 

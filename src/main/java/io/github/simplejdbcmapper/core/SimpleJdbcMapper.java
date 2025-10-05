@@ -54,9 +54,6 @@ import io.github.simplejdbcmapper.exception.OptimisticLockingException;
  * 
  * <b> Note: An instance of SimpleJdbcMapper is thread safe once
  * instantiated.</b>
- * 
- * <pre>
- * </pre>
  *
  * @author ajoseph
  */
@@ -813,6 +810,21 @@ public final class SimpleJdbcMapper {
 		return this.simpleJdbcMapperSupport;
 	}
 
+	/**
+	 * SimpleJdbcMapper depends on database meta data. Some drivers do not return
+	 * correct java.sql.Types. Use this method to override the database metadata.
+	 * 
+	 * Example usage for postgres OffsetDateTime issue: <br>
+	 * {@snippet :
+	 * SimpleJdbcMapper sjm = new SimpleJdbcMapper(dataSource, "SCHEMA_NAME");
+	 * Map<Class<?>, Integer> map = new HashMap<>();
+	 * // map OffsetDateTime to the correct sql Type 
+	 * map.put(OffsetDateTime.class, java.sql.Types.TIMESTAMP_WITH_TIMEZONE);
+	 * sjm.setDatabaseMetaDataOverride(map);
+	 * }
+	 * 
+	 * @param databaseMetaDataOverrideMap the databaseMetaDataOverrideMap to set.
+	 */
 	public void setDatabaseMetaDataOverride(Map<Class<?>, Integer> databaseMetaDataOverrideMap) {
 		simpleJdbcMapperSupport.setDatabaseMetaDataOverride(databaseMetaDataOverrideMap);
 	}

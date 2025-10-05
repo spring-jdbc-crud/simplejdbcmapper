@@ -425,10 +425,14 @@ Example:
     Or
     @Table(name="sometablename", schema="SCHEMA_NAME");
 
+3.**Postgres and OffsetDateTime**
 
-
-
-
-
-
+   Postgres database metadata for column definition 'TIMESTAMP WITH TIMEZONE' returns java.sql.Types.TIMESTAMP which is wrong, causing conversion failures. Do the following when configuring SimpleJdbcMapper():
+   
+			SimpleJdbcMapper sjm = new SimpleJdbcMapper(dataSource, "SCHEMA_NAME");	
+			Map<Class<?>, Integer> map = new HashMap<>();
+			// map OffsetDateTime to the correct sql Type
+			map.put(OffsetDateTime.class, java.sql.Types.TIMESTAMP_WITH_TIMEZONE);
+			sjm.setDatabaseMetaDataOverride(map);
+		
 

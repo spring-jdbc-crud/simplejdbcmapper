@@ -265,8 +265,14 @@ public final class SimpleJdbcMapper {
 							new SqlCharacterValue((char[]) bw.getPropertyValue(propMapping.getPropertyName())));
 				}
 			} else {
-				mapSqlParameterSource.addValue(propMapping.getColumnName(),
-						bw.getPropertyValue(propMapping.getPropertyName()));
+				if (simpleJdbcMapperSupport.getDatabaseMetaDataOverride(propMapping.getPropertyType()) != null) {
+					mapSqlParameterSource.addValue(propMapping.getColumnName(),
+							bw.getPropertyValue(propMapping.getPropertyName()),
+							simpleJdbcMapperSupport.getDatabaseMetaDataOverride(propMapping.getPropertyType()));
+				} else {
+					mapSqlParameterSource.addValue(propMapping.getColumnName(),
+							bw.getPropertyValue(propMapping.getPropertyName()));
+				}
 			}
 		}
 		boolean foundInCache = false;
@@ -428,8 +434,13 @@ public final class SimpleJdbcMapper {
 								tableMapping.getPropertySqlType(paramName));
 					}
 				} else {
-					mapSqlParameterSource.addValue(paramName, bw.getPropertyValue(paramName),
-							tableMapping.getPropertySqlType(paramName));
+					if (tableMapping.getOverriddenPropertySqlType(paramName) != null) {
+						mapSqlParameterSource.addValue(paramName, bw.getPropertyValue(paramName),
+								tableMapping.getOverriddenPropertySqlType(paramName));
+					} else {
+						mapSqlParameterSource.addValue(paramName, bw.getPropertyValue(paramName),
+								tableMapping.getPropertySqlType(paramName));
+					}
 				}
 			}
 		}
@@ -800,6 +811,10 @@ public final class SimpleJdbcMapper {
 
 	SimpleJdbcMapperSupport getSimpleJdbcMapperSupport() {
 		return this.simpleJdbcMapperSupport;
+	}
+
+	public void setDatabaseMetaDataOverride(Map<Class<?>, Integer> databaseMetaDataOverrideMap) {
+		simpleJdbcMapperSupport.setDatabaseMetaDataOverride(databaseMetaDataOverrideMap);
 	}
 
 }

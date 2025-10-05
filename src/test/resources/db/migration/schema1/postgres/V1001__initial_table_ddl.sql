@@ -73,7 +73,7 @@ CREATE TABLE schema1.type_check (
    image bytea,
    int_enum integer,
    string_enum varchar(100),
-   offset_date_time_data timestamptz,
+   offset_date_time_data TIMESTAMP WITH TIME ZONE,
    instant_data timestamptz,
    some_uuid UUID,
    non_model_column varchar(100),

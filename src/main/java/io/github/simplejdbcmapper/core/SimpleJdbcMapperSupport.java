@@ -21,6 +21,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -70,6 +71,8 @@ class SimpleJdbcMapperSupport {
 	private final String catalogName;
 
 	private String databaseProductName;
+
+	private Map<String, Integer> databaseMetaDataOverrideMap;
 
 	/**
 	 * Constructor.
@@ -131,8 +134,15 @@ class SimpleJdbcMapperSupport {
 						throw new AnnotationException(colName + " column not found in table " + tableName
 								+ " for model property " + clazz.getSimpleName() + "." + propertyName);
 					}
-					propNameToPropertyMapping.put(propertyName, new PropertyMapping(propertyName, field.getType(),
-							colName, columnNameToColumnInfo.get(colName).getColumnSqlDataType()));
+					if (getDatabaseMetaDataOverride(field.getType()) != null) {
+						propNameToPropertyMapping.put(propertyName,
+								new PropertyMapping(propertyName, field.getType(), colName,
+										columnNameToColumnInfo.get(colName).getColumnSqlDataType(),
+										getDatabaseMetaDataOverride(field.getType())));
+					} else {
+						propNameToPropertyMapping.put(propertyName, new PropertyMapping(propertyName, field.getType(),
+								colName, columnNameToColumnInfo.get(colName).getColumnSqlDataType()));
+					}
 				}
 				processAnnotation(Id.class, field, tableName, propNameToPropertyMapping, columnNameToColumnInfo);
 				processAnnotation(Version.class, field, tableName, propNameToPropertyMapping, columnNameToColumnInfo);
@@ -392,6 +402,23 @@ class SimpleJdbcMapperSupport {
 				return this.databaseProductName;
 			}
 		}
+	}
+
+	public void setDatabaseMetaDataOverride(Map<Class<?>, Integer> databaseMetaDataOverrideMap) {
+		if (this.databaseMetaDataOverrideMap == null) {
+			Map<String, Integer> map = new HashMap<>();
+			for (Map.Entry<Class<?>, Integer> entry : databaseMetaDataOverrideMap.entrySet()) {
+				map.put(entry.getKey().getName(), entry.getValue());
+			}
+			this.databaseMetaDataOverrideMap = map;
+		} else {
+			throw new IllegalStateException("databaseMetaDataOverrideMap was already set and cannot be changed.");
+
+		}
+	}
+
+	public Integer getDatabaseMetaDataOverride(Class<?> clazz) {
+		return databaseMetaDataOverrideMap == null ? null : databaseMetaDataOverrideMap.get(clazz.getName());
 	}
 
 }

@@ -3,6 +3,7 @@ package io.github.simplejdbcmapper.model;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.util.UUID;
 
 import io.github.simplejdbcmapper.annotation.Column;
@@ -38,6 +39,10 @@ public class TypeCheckPostgres {
 
 	@Column
 	private UUID someUuid;
+	
+	
+	@Column
+	private OffsetDateTime offsetDateTimeData;
 
 	@Column(name = "string_enum")
 	private StatusEnum status;
@@ -121,4 +126,13 @@ public class TypeCheckPostgres {
 	public void setSomeUuid(UUID someUuid) {
 		this.someUuid = someUuid;
 	}
+
+	public OffsetDateTime getOffsetDateTimeData() {
+		return offsetDateTimeData;
+	}
+
+	public void setOffsetDateTimeData(OffsetDateTime offsetDateTimeData) {
+		this.offsetDateTimeData = offsetDateTimeData;
+	}
+	
 }

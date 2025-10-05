@@ -1,5 +1,10 @@
 package io.github.simplejdbcmapper.config;
 
+import java.sql.Types;
+import java.time.OffsetDateTime;
+import java.util.HashMap;
+import java.util.Map;
+
 import javax.sql.DataSource;
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
@@ -35,6 +40,15 @@ public class SimpleJdbcMapperConfig {
 			simpleJdbcMapper = new SimpleJdbcMapper(dataSource, "schema1");
 		}
 		simpleJdbcMapper.setRecordOperatorResolver(new AppRecordOperatorResolver());
+
+		// postgres metadata for column definition TIMESTAMP WITH TIMEZONE
+		// Types.TIMESTAMP which is wrong which cause object convertion to fail.
+		// So need to override.
+		if (jdbcDriver.contains("postgres")) {
+			Map<Class<?>, Integer> map = new HashMap<>();
+			map.put(OffsetDateTime.class, Types.TIMESTAMP_WITH_TIMEZONE);
+			simpleJdbcMapper.setDatabaseMetaDataOverride(map);
+		}
 		return simpleJdbcMapper;
 	}
 

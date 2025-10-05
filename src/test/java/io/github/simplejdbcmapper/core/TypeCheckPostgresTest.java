@@ -6,10 +6,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.UUID;
 
@@ -55,30 +58,54 @@ class TypeCheckPostgresTest {
 		assertNotNull(model.getId());
 	}
 	
+	@Test
+	void temp() {
+		TypeCheckPostgres tc = sjm.findById(TypeCheckPostgres.class, Integer.valueOf(1));
+
+		assertTrue(true);
+	}
+	
 
 	@Test
 	void insert_TypeCheckPostgresTest() {
 		TypeCheckPostgres obj = new TypeCheckPostgres();
 
-		obj.setLocalDateData(LocalDate.now());
-		obj.setJavaUtilDateData(new Date());
-		obj.setLocalDateTimeData(LocalDateTime.now());
-		obj.setBigDecimalData(new BigDecimal("10.23"));
+		var localDateVal = LocalDate.now();
+		obj.setLocalDateData(localDateVal);
+		
+		var dateVal = new Date();
+		obj.setJavaUtilDateData(dateVal);
+		
+		var localDateTimeVal = LocalDateTime.now();
+		obj.setLocalDateTimeData(localDateTimeVal);
+		
+		var bigDecimalVal = new BigDecimal("10.23");
+		
+		obj.setBigDecimalData(bigDecimalVal);
 		obj.setBooleanVal(true);
 		obj.setImage(new byte[] { 10, 20, 30 });
 
-		obj.setJavaUtilDateTsData(new Date());
+		var timestampVal = new Date();
+		obj.setJavaUtilDateTsData(timestampVal);
+		
 		obj.setStatus(StatusEnum.OPEN);
 
-		UUID val = UUID.randomUUID();
-		obj.setSomeUuid(val);
+		UUID uuidVal = UUID.randomUUID();
+		obj.setSomeUuid(uuidVal);
+		
+		var offsetVal = OffsetDateTime.now();
+		obj.setOffsetDateTimeData(offsetVal);
 
 		sjm.insert(obj);
 
 		TypeCheckPostgres tc = sjm.findById(TypeCheckPostgres.class, obj.getId());
-		assertNotNull(tc.getLocalDateData());
-		assertNotNull(tc.getJavaUtilDateData());
-		assertNotNull(tc.getLocalDateTimeData());
+		
+		SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
+		assertEquals(localDateVal, tc.getLocalDateData());
+		
+		assertEquals(fmt.format(dateVal), fmt.format(tc.getJavaUtilDateData()));
+		
+		assertEquals(localDateTimeVal, tc.getLocalDateTimeData());
 
 		assertEquals(0, tc.getBigDecimalData().compareTo(obj.getBigDecimalData()));
 
@@ -86,11 +113,17 @@ class TypeCheckPostgresTest {
 
 		assertTrue(tc.getBooleanVal());
 
-		assertNotNull(tc.getJavaUtilDateTsData());
+		SimpleDateFormat fmtTs = new SimpleDateFormat("yyyyMMdd HHmmss");
+		
+		assertEquals(fmtTs.format(timestampVal), fmtTs.format(tc.getJavaUtilDateTsData()));
 
 		assertEquals(StatusEnum.OPEN, tc.getStatus());
 
-		assertEquals(val, tc.getSomeUuid());
+		assertEquals(uuidVal, tc.getSomeUuid());
+
+		// postgres stores TIMESTAMP WITH TIMEZONE as absolute timestamp value
+		// so we have to check for instant
+		assertEquals(offsetVal.toInstant(),tc.getOffsetDateTimeData().toInstant());
 	}
 
 	@Test

@@ -26,6 +26,8 @@ class PropertyMapping {
 	private String columnName;
 
 	private int columnSqlDataType; // see java.sql.Types
+	
+	private Integer overriddenColumnSqlDataType;
 
 	private boolean idAnnotation = false;
 
@@ -40,6 +42,10 @@ class PropertyMapping {
 	private boolean updatedByAnnotation = false;
 
 	public PropertyMapping(String propertyName, Class<?> propertyType, String columnName, int columnSqlDataType) {
+        this(propertyName, propertyType, columnName, columnSqlDataType, null);
+	}
+	
+	public PropertyMapping(String propertyName, Class<?> propertyType, String columnName, int columnSqlDataType, Integer overriddenColumnSqlDataType) {
 		if (propertyName == null || propertyType == null || columnName == null) {
 			throw new IllegalArgumentException("propertyName, propertyType, columnName must not be null");
 		}
@@ -50,7 +56,10 @@ class PropertyMapping {
 		// spaces in them
 		this.columnName = SjmInternalUtils.toLowerCase(columnName);
 		this.columnSqlDataType = columnSqlDataType;
+		this.overriddenColumnSqlDataType = overriddenColumnSqlDataType;
 	}
+	
+	
 
 	public String getPropertyName() {
 		return propertyName;
@@ -115,4 +124,13 @@ class PropertyMapping {
 	public void setUpdatedByAnnotation(boolean updatedByAnnotation) {
 		this.updatedByAnnotation = updatedByAnnotation;
 	}
+
+	public Integer getOverriddenColumnSqlDataType() {
+		return overriddenColumnSqlDataType;
+	}
+
+	public void setOverriddenColumnSqlDataType(Integer overriddenColumnSqlDataType) {
+		this.overriddenColumnSqlDataType = overriddenColumnSqlDataType;
+	}
+	
 }

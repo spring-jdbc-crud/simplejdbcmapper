@@ -122,6 +122,11 @@ class TableMapping {
 		PropertyMapping propMapping = propertyNameMap.get(propertyName);
 		return propMapping == null ? Types.NULL : propMapping.getColumnSqlDataType();
 	}
+	
+	public Integer getOverriddenPropertySqlType(String propertyName) {
+		PropertyMapping propMapping = propertyNameMap.get(propertyName);
+		return propMapping == null ? null : propMapping.getOverriddenColumnSqlDataType();
+	}
 
 	public String getTableClassName() {
 		return tableClassName;

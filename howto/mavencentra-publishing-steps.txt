@@ -1,0 +1,11 @@
+*) Make sure simplejdbcmapper version is updated
+
+*) Make sure <autoPublish>true</autoPublish>
+
+*) Make sure the tests pass
+mvn clean package
+
+*) To deploy
+mvn clean deploy -DskipTests
+
+

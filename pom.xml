@@ -12,7 +12,7 @@
 
 	<groupId>io.github.spring-jdbc-crud</groupId>
 	<artifactId>simplejdbcmapper</artifactId>
-	<version>1.0.0</version>
+	<version>1.1.0</version>
 	<name>simplejdbcmapper</name>
 	<description>
       A simple wrapper around Spring JDBC libraries that makes database CRUD operations less verbose
@@ -42,7 +42,7 @@
 	<scm>
 		<connection>scm:git:git://github.com/spring-jdbc-crud/simplejdbcmapper.git</connection>
 		<developerConnection>scm:git:git@github.com:spring-jdbc-crud/simplejdbcmapper.git</developerConnection>
-		<url>https://spring-jdbc-crud.github.io/simplejdbcmapper/</url>
+		<url>https://spring-jdbc-crud.github.io/simplejdbcmapper</url>
 	</scm>
 
 	<dependencies>

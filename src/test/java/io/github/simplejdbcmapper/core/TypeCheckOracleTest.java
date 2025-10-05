@@ -1,15 +1,16 @@
 package io.github.simplejdbcmapper.core;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
-import java.time.Instant;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
-import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 import javax.sql.DataSource;
@@ -52,55 +53,60 @@ class TypeCheckOracleTest {
 
 	@Test
 	void insert_TypeCheckTest() {
-		TypeCheckOracle obj = new TypeCheckOracle();
+		TypeCheckOracle iObj = new TypeCheckOracle();
+		var localDateVal = LocalDate.now();
+		iObj.setLocalDateData(localDateVal);
 
-		obj.setLocalDateData(LocalDate.now());
-		obj.setJavaUtilDateData(new Date());
-		obj.setLocalDateTimeData(LocalDateTime.now());
-		obj.setBigDecimalData(new BigDecimal("10.23"));
-		
+		var dateVal = new Date();
+		iObj.setJavaUtilDateData(dateVal);
+
+		var localDateTimeVal = LocalDateTime.now();
+		iObj.setLocalDateTimeData(localDateTimeVal);
+
+		var bigDecimalVal = new BigDecimal("10.23");
+		iObj.setBigDecimalData(bigDecimalVal);
+
+		iObj.setJavaUtilDateTsData(new Date());
+
+		iObj.setImage(new byte[] { 10, 20, 30 });
+
+		iObj.setStatus(StatusEnum.OPEN);
+
 		var offsetVal = OffsetDateTime.now();
-		obj.setOffsetDateTimeData(offsetVal);
+		iObj.setOffsetDateTimeData(offsetVal);
 
-		obj.setJavaUtilDateTsData(new Date());
-		obj.setStatus(StatusEnum.OPEN);
+		iObj.setClobData("123456789".toCharArray());
 
-		obj.setImage(new byte[] { 10, 20, 30 });
+		sjm.insert(iObj);
 
-		obj.setClobData("123456789".toCharArray());
-
-		sjm.insert(obj);
-
-		TypeCheckOracle tc = sjm.findById(TypeCheckOracle.class, obj.getId());
-		assertNotNull(tc.getLocalDateData());
-		assertNotNull(tc.getJavaUtilDateData());
-		assertNotNull(tc.getLocalDateTimeData());
-
-		assertEquals(0, tc.getBigDecimalData().compareTo(obj.getBigDecimalData()));
-
-		assertEquals(offsetVal,tc.getOffsetDateTimeData());
-		
-		
+		TypeCheckOracle tc = sjm.findById(TypeCheckOracle.class, iObj.getId());
 
 		assertNotNull(tc.getJavaUtilDateTsData());
 
+		SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
+		assertEquals(localDateVal, tc.getLocalDateData());
+
+		assertEquals(fmt.format(dateVal), fmt.format(tc.getJavaUtilDateData()));
+
+		DateTimeFormatter ldtFmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+		assertEquals(ldtFmt.format(localDateTimeVal), ldtFmt.format(tc.getLocalDateTimeData()));
+
+		assertEquals(0, tc.getBigDecimalData().compareTo(iObj.getBigDecimalData()));
+
+		assertArrayEquals(iObj.getImage(), tc.getImage());
+
 		assertEquals(StatusEnum.OPEN, tc.getStatus());
+
+		assertEquals(offsetVal, tc.getOffsetDateTimeData());
+
 		assertNotNull(tc.getImage());
-		assertEquals(9, tc.getClobData().length);
+		assertNotNull(tc.getClobData());
+
 	}
 
 	@Test
 	void insert_TypeCheckWithBlobAndClob_AsNull_Test() {
 		TypeCheckOracle obj = new TypeCheckOracle();
-
-		obj.setLocalDateData(LocalDate.now());
-		obj.setJavaUtilDateData(new Date());
-		obj.setLocalDateTimeData(LocalDateTime.now());
-		obj.setBigDecimalData(new BigDecimal("10.23"));
-		obj.setOffsetDateTimeData(OffsetDateTime.now());
-
-		obj.setJavaUtilDateTsData(new Date());
-		obj.setStatus(StatusEnum.OPEN);
 		obj.setImage(null);
 		obj.setClobData(null);
 		Assertions.assertDoesNotThrow(() -> {
@@ -110,76 +116,64 @@ class TypeCheckOracleTest {
 
 	@Test
 	void update_TypeCheckTest() {
-		TypeCheckOracle obj = new TypeCheckOracle();
+		TypeCheckOracle iObj = new TypeCheckOracle();
+		sjm.insert(iObj);
 
-		obj.setLocalDateData(LocalDate.now());
-		obj.setJavaUtilDateData(new Date());
-		obj.setLocalDateTimeData(LocalDateTime.now());
-		obj.setBigDecimalData(new BigDecimal("10.23"));
-		
-		var offsetDtTmVal = OffsetDateTime.now();
-		obj.setOffsetDateTimeData(offsetDtTmVal);
-		obj.setJavaUtilDateTsData(new Date());
-		sjm.insert(obj);
+		TypeCheckOracle uObj = sjm.findById(TypeCheckOracle.class, iObj.getId());
 
-		TypeCheckOracle tc = sjm.findById(TypeCheckOracle.class, obj.getId());
-		TypeCheckOracle tc1 = sjm.findById(TypeCheckOracle.class, obj.getId());
+		var localDateVal = LocalDate.now();
+		uObj.setLocalDateData(localDateVal);
 
-		Instant instant = LocalDate.now().plusDays(1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant();
-		java.util.Date nextDay = Date.from(instant);
+		var dateVal = new Date();
+		uObj.setJavaUtilDateData(dateVal);
 
-		Instant instant1 = LocalDateTime.now().plusDays(1).atZone(ZoneId.systemDefault()).toInstant();
-		java.util.Date nextDayDateTime = Date.from(instant1);
+		var localDateTimeVal = LocalDateTime.now();
+		uObj.setLocalDateTimeData(localDateTimeVal);
 
-		tc1.setLocalDateData(LocalDate.now().plusDays(1));
-		tc1.setJavaUtilDateData(nextDay);
-		tc1.setLocalDateTimeData(LocalDateTime.now().plusDays(1));
-		
-		var offsetDtTmValPlus1 = offsetDtTmVal.plusDays(1);
+		var bigDecimalVal = new BigDecimal("10.23");
+		uObj.setBigDecimalData(bigDecimalVal);
 
-		tc1.setOffsetDateTimeData(offsetDtTmValPlus1);
+		uObj.setJavaUtilDateTsData(new Date());
 
-		tc1.setBigDecimalData(new BigDecimal("11.34"));
+		uObj.setImage(new byte[] { 10, 20, 30 });
 
-		tc1.setJavaUtilDateTsData(nextDayDateTime);
+		uObj.setStatus(StatusEnum.OPEN);
 
-		tc1.setStatus(StatusEnum.CLOSED);
-		tc1.setImage(new byte[] { 10, 20, 30 });
+		var offsetVal = OffsetDateTime.now();
+		uObj.setOffsetDateTimeData(offsetVal);
 
-		tc1.setClobData("123456789".toCharArray());
+		uObj.setClobData("123456789".toCharArray());
 
-		sjm.update(tc1);
+		sjm.update(uObj);
 
-		TypeCheckOracle tc2 = sjm.findById(TypeCheckOracle.class, obj.getId());
+		TypeCheckOracle tc = sjm.findById(TypeCheckOracle.class, iObj.getId());
 
-		assertTrue(tc2.getLocalDateData().isAfter(tc.getLocalDateData()));
-		assertTrue(tc2.getJavaUtilDateData().getTime() > tc.getJavaUtilDateData().getTime());
-		assertTrue(tc2.getLocalDateTimeData().isAfter(tc.getLocalDateTimeData()));
+		assertNotNull(tc.getJavaUtilDateTsData());
 
-		assertEquals(offsetDtTmValPlus1,tc2.getOffsetDateTimeData());
-		
-		assertTrue(tc2.getOffsetDateTimeData().isAfter(tc.getOffsetDateTimeData()));
-		
+		SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
+		assertEquals(localDateVal, tc.getLocalDateData());
 
-		assertEquals(0, tc2.getBigDecimalData().compareTo(new BigDecimal("11.34")));
+		assertEquals(fmt.format(dateVal), fmt.format(tc.getJavaUtilDateData()));
 
-		assertTrue(tc2.getJavaUtilDateTsData().getTime() > tc.getJavaUtilDateTsData().getTime());
+		DateTimeFormatter ldtFmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+		assertEquals(ldtFmt.format(localDateTimeVal), ldtFmt.format(tc.getLocalDateTimeData()));
 
-		assertEquals(StatusEnum.CLOSED, tc2.getStatus());
+		assertEquals(0, tc.getBigDecimalData().compareTo(uObj.getBigDecimalData()));
 
-		assertNotNull(tc2.getImage());
-		assertEquals(9, tc2.getClobData().length);
+		assertArrayEquals(uObj.getImage(), tc.getImage());
+
+		assertEquals(StatusEnum.OPEN, tc.getStatus());
+
+		assertEquals(offsetVal, tc.getOffsetDateTimeData());
+
+		assertNotNull(tc.getImage());
+		assertNotNull(tc.getClobData());
+
 	}
 
 	@Test
 	void update_WithBlogClob_AsNull_test() {
 		TypeCheckOracle obj = new TypeCheckOracle();
-
-		obj.setLocalDateData(LocalDate.now());
-		obj.setJavaUtilDateData(new Date());
-		obj.setLocalDateTimeData(LocalDateTime.now());
-		obj.setBigDecimalData(new BigDecimal("10.23"));
-		obj.setJavaUtilDateTsData(new Date());
 		sjm.insert(obj);
 
 		TypeCheckOracle tc = sjm.findById(TypeCheckOracle.class, obj.getId());
@@ -195,7 +189,7 @@ class TypeCheckOracleTest {
 	}
 
 	@Test
-	void oracleConfig_failureOnUsingSchemaInsteadOfCatalog() {
+	void oracleConfig_failureOnUsingCatalogInsteadOfSchema() {
 		SimpleJdbcMapper mapper = new SimpleJdbcMapper(ds, null, "schema1");
 		Integer id = Integer.valueOf(1);
 

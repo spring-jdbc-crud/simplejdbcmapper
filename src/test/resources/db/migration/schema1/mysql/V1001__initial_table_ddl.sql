@@ -70,7 +70,6 @@ CREATE TABLE schema1.type_check (
    boolean_val BOOLEAN,
    image blob,
    offset_date_time_data timestamp,
-   int_enum integer,
    string_enum varchar(100),
    non_model_column varchar(100),
    CONSTRAINT type_check_pk PRIMARY KEY (id)

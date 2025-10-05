@@ -35,10 +35,10 @@ public class TypeCheckOracle {
 
 	@Column(name = "string_enum")
 	private StatusEnum status;
-	
+
 	@Column
 	private byte[] image;
-	
+
 	@Column
 	private char[] clobData;
 
@@ -121,6 +121,5 @@ public class TypeCheckOracle {
 	public void setClobData(char[] clobData) {
 		this.clobData = clobData;
 	}
-	
-	
+
 }

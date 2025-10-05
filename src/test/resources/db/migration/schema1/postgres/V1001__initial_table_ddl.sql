@@ -71,7 +71,6 @@ CREATE TABLE schema1.type_check (
    big_decimal_data numeric(10,2),
    boolean_val boolean,
    image bytea,
-   int_enum integer,
    string_enum varchar(100),
    offset_date_time_data TIMESTAMP WITH TIME ZONE,
    instant_data timestamptz,

@@ -8,6 +8,7 @@ import io.github.simplejdbcmapper.annotation.Column;
 import io.github.simplejdbcmapper.annotation.Id;
 import io.github.simplejdbcmapper.annotation.IdType;
 import io.github.simplejdbcmapper.annotation.Table;
+import microsoft.sql.DateTimeOffset;
 
 @Table(name = "type_check")
 public class TypeCheckSqlServer {
@@ -31,12 +32,18 @@ public class TypeCheckSqlServer {
 
 	@Column(name = "string_enum")
 	private StatusEnum status;
-	
+
+	@Column
+	private Boolean booleanVal;
+
 	@Column
 	private byte[] image;
-	
+
 	@Column
 	private char[] clobData;
+
+	@Column
+	DateTimeOffset offsetDateTimeData;
 
 	public Integer getId() {
 		return id;
@@ -93,7 +100,7 @@ public class TypeCheckSqlServer {
 	public void setStatus(StatusEnum status) {
 		this.status = status;
 	}
-	
+
 	public byte[] getImage() {
 		return image;
 	}
@@ -108,6 +115,22 @@ public class TypeCheckSqlServer {
 
 	public void setClobData(char[] clobData) {
 		this.clobData = clobData;
+	}
+
+	public Boolean getBooleanVal() {
+		return booleanVal;
+	}
+
+	public void setBooleanVal(Boolean booleanVal) {
+		this.booleanVal = booleanVal;
+	}
+
+	public DateTimeOffset getOffsetDateTimeData() {
+		return offsetDateTimeData;
+	}
+
+	public void setOffsetDateTimeData(DateTimeOffset offsetDateTimeData) {
+		this.offsetDateTimeData = offsetDateTimeData;
 	}
 
 }

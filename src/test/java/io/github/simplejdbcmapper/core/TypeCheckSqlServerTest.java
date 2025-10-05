@@ -1,15 +1,16 @@
 package io.github.simplejdbcmapper.core;
 
+import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
-import java.time.Instant;
+import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
+import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 import org.junit.jupiter.api.Assumptions;
@@ -23,6 +24,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import io.github.simplejdbcmapper.model.StatusEnum;
 import io.github.simplejdbcmapper.model.TypeCheckSqlServer;
+import microsoft.sql.DateTimeOffset;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -44,83 +46,109 @@ class TypeCheckSqlServerTest {
 
 	@Test
 	void insert_TypeCheckSqlServerTest() {
-		TypeCheckSqlServer obj = new TypeCheckSqlServer();
+		TypeCheckSqlServer iObj = new TypeCheckSqlServer();
 
-		obj.setLocalDateData(LocalDate.now());
-		obj.setJavaUtilDateData(new Date());
-		obj.setLocalDateTimeData(LocalDateTime.now());
-		obj.setBigDecimalData(new BigDecimal("10.23"));
+		var localDateVal = LocalDate.now();
+		iObj.setLocalDateData(localDateVal);
 
-		obj.setJavaUtilDateDtData(new Date());
-		obj.setStatus(StatusEnum.OPEN);
-		
-		obj.setImage(new byte[] { 10, 20, 30 });
-		
-		obj.setClobData("123456789".toCharArray());
+		var dateVal = new Date();
+		iObj.setJavaUtilDateData(dateVal);
 
-		sjm.insert(obj);
+		var localDateTimeVal = LocalDateTime.now();
+		iObj.setLocalDateTimeData(localDateTimeVal);
 
-		TypeCheckSqlServer tc = sjm.findById(TypeCheckSqlServer.class, obj.getId());
-		assertNotNull(tc.getLocalDateData());
-		assertNotNull(tc.getJavaUtilDateData());
-		assertNotNull(tc.getLocalDateTimeData());
+		var bigDecimalVal = new BigDecimal("10.23");
+		iObj.setBigDecimalData(bigDecimalVal);
 
-		assertEquals(0, tc.getBigDecimalData().compareTo(obj.getBigDecimalData()));
+		iObj.setBooleanVal(true);
 
-		assertNotNull(tc.getJavaUtilDateDtData());
+		iObj.setImage(new byte[] { 10, 20, 30 });
+
+		iObj.setStatus(StatusEnum.OPEN);
+
+		var offsetVal = DateTimeOffset.valueOf(OffsetDateTime.now());
+		iObj.setOffsetDateTimeData(offsetVal);
+
+		iObj.setClobData("123456789".toCharArray());
+
+		sjm.insert(iObj);
+
+		TypeCheckSqlServer tc = sjm.findById(TypeCheckSqlServer.class, iObj.getId());
+		SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
+		assertEquals(localDateVal, tc.getLocalDateData());
+
+		assertEquals(fmt.format(dateVal), fmt.format(tc.getJavaUtilDateData()));
+
+		DateTimeFormatter ldtFmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+		assertEquals(ldtFmt.format(localDateTimeVal), ldtFmt.format(tc.getLocalDateTimeData()));
+
+		assertEquals(0, tc.getBigDecimalData().compareTo(iObj.getBigDecimalData()));
+
+		assertArrayEquals(iObj.getImage(), tc.getImage());
+
+		assertTrue(tc.getBooleanVal());
+
 		assertEquals(StatusEnum.OPEN, tc.getStatus());
+
+		assertEquals(offsetVal, tc.getOffsetDateTimeData());
+
 		assertNotNull(tc.getImage());
 		assertNotNull(tc.getClobData());
+
 	}
 
 	@Test
 	void update_TypeCheckSqlServerTest() {
-		TypeCheckSqlServer obj = new TypeCheckSqlServer();
+		TypeCheckSqlServer iObj = new TypeCheckSqlServer();
+		sjm.insert(iObj);
 
-		obj.setLocalDateData(LocalDate.now());
-		obj.setJavaUtilDateData(new Date());
-		obj.setLocalDateTimeData(LocalDateTime.now());
-		obj.setBigDecimalData(new BigDecimal("10.23"));
+		TypeCheckSqlServer uObj = sjm.findById(TypeCheckSqlServer.class, iObj.getId());
+		var localDateVal = LocalDate.now();
+		uObj.setLocalDateData(localDateVal);
 
-		obj.setJavaUtilDateDtData(new Date());
+		var dateVal = new Date();
+		uObj.setJavaUtilDateData(dateVal);
 
-		sjm.insert(obj);
+		var localDateTimeVal = LocalDateTime.now();
+		uObj.setLocalDateTimeData(localDateTimeVal);
 
-		TypeCheckSqlServer tc = sjm.findById(TypeCheckSqlServer.class, obj.getId());
-		TypeCheckSqlServer tc1 = sjm.findById(TypeCheckSqlServer.class, obj.getId());
+		var bigDecimalVal = new BigDecimal("10.23");
+		uObj.setBigDecimalData(bigDecimalVal);
 
-		Instant instant = LocalDate.now().plusDays(1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant();
-		java.util.Date nextDay = Date.from(instant);
+		uObj.setBooleanVal(true);
 
-		Instant instant1 = LocalDateTime.now().plusDays(1).atZone(ZoneId.systemDefault()).toInstant();
-		java.util.Date nextDayDateTime = Date.from(instant1);
+		uObj.setImage(new byte[] { 10, 20, 30 });
 
-		tc1.setLocalDateData(LocalDate.now().plusDays(1));
-		tc1.setJavaUtilDateData(nextDay);
-		tc1.setLocalDateTimeData(LocalDateTime.now().plusDays(1));
+		uObj.setStatus(StatusEnum.OPEN);
 
-		tc1.setJavaUtilDateDtData(nextDayDateTime);
+		var offsetVal = DateTimeOffset.valueOf(OffsetDateTime.now());
+		uObj.setOffsetDateTimeData(offsetVal);
 
-		tc1.setBigDecimalData(new BigDecimal("11.34"));
-		tc1.setStatus(StatusEnum.CLOSED);
-		tc1.setImage(new byte[] { 10, 20, 30 });
-		
-		tc1.setClobData("123456789".toCharArray());
+		uObj.setClobData("123456789".toCharArray());
 
-		sjm.update(tc1);
+		sjm.update(uObj);
 
-		TypeCheckSqlServer tc2 = sjm.findById(TypeCheckSqlServer.class, obj.getId());
+		TypeCheckSqlServer tc = sjm.findById(TypeCheckSqlServer.class, uObj.getId());
+		SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
+		assertEquals(localDateVal, tc.getLocalDateData());
 
-		assertTrue(tc2.getLocalDateData().isAfter(tc.getLocalDateData()));
-		assertTrue(tc2.getJavaUtilDateData().getTime() > tc.getJavaUtilDateData().getTime());
-		assertTrue(tc2.getLocalDateTimeData().isAfter(tc.getLocalDateTimeData()));
+		assertEquals(fmt.format(dateVal), fmt.format(tc.getJavaUtilDateData()));
 
-		assertEquals(0, tc2.getBigDecimalData().compareTo(new BigDecimal("11.34")));
-		assertTrue(tc2.getJavaUtilDateDtData().getTime() > tc.getJavaUtilDateDtData().getTime());
-		assertSame(StatusEnum.CLOSED, tc2.getStatus());
-		
-		assertNotNull(tc2.getImage());
-		assertNotNull(tc2.getClobData());
+		DateTimeFormatter ldtFmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+		assertEquals(ldtFmt.format(localDateTimeVal), ldtFmt.format(tc.getLocalDateTimeData()));
+
+		assertEquals(0, tc.getBigDecimalData().compareTo(uObj.getBigDecimalData()));
+
+		assertArrayEquals(uObj.getImage(), tc.getImage());
+
+		assertTrue(tc.getBooleanVal());
+
+		assertEquals(StatusEnum.OPEN, tc.getStatus());
+
+		assertEquals(offsetVal, tc.getOffsetDateTimeData());
+
+		assertNotNull(tc.getImage());
+		assertNotNull(tc.getClobData());
 	}
 
 }

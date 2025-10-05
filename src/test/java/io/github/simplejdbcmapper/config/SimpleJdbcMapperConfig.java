@@ -41,9 +41,10 @@ public class SimpleJdbcMapperConfig {
 		}
 		simpleJdbcMapper.setRecordOperatorResolver(new AppRecordOperatorResolver());
 
-		// postgres metadata for column definition TIMESTAMP WITH TIMEZONE
-		// Types.TIMESTAMP which is wrong which cause object convertion to fail.
-		// So need to override.
+		// postgres data metadata for column definition 'TIMESTAMP WITH TIMEZONE'
+		// returns java.sql.Types.TIMESTAMP which is wrong causing conversion failures
+		// for OffsetDateTime.
+		// Override the database metadata for OffsetDateTime
 		if (jdbcDriver.contains("postgres")) {
 			Map<Class<?>, Integer> map = new HashMap<>();
 			map.put(OffsetDateTime.class, Types.TIMESTAMP_WITH_TIMEZONE);

@@ -2,15 +2,16 @@ package io.github.simplejdbcmapper.core;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
 import javax.sql.DataSource;
@@ -36,7 +37,7 @@ class TypeCheckMysqlTest {
 
 	@Value("${spring.datasource.driver-class-name}")
 	private String jdbcDriver;
-	
+
 	@Autowired
 	private DataSource ds;
 
@@ -53,36 +54,56 @@ class TypeCheckMysqlTest {
 
 	@Test
 	void insert_TypeCheckMysqlTest() {
-		TypeCheckMysql obj = new TypeCheckMysql();
+		TypeCheckMysql iObj = new TypeCheckMysql();
 
-		obj.setLocalDateData(LocalDate.now());
-		obj.setJavaUtilDateData(new Date());
-		obj.setLocalDateTimeData(LocalDateTime.now());
-		obj.setBigDecimalData(new BigDecimal("10.23"));
-		obj.setBooleanVal(true);
-		obj.setImage(new byte[] { 10, 20, 30 });
-		obj.setOffsetDateTimeData(OffsetDateTime.now());
-		obj.setStatus(StatusEnum.OPEN);
+		var localDateVal = LocalDate.now();
+		iObj.setLocalDateData(localDateVal);
 
-		obj.setJavaUtilDateTsData(new Date());
+		var dateVal = new Date();
+		iObj.setJavaUtilDateData(dateVal);
 
-		sjm.insert(obj);
+		var localDateTimeVal = LocalDateTime.now();
+		iObj.setLocalDateTimeData(localDateTimeVal);
 
-		TypeCheckMysql tc = sjm.findById(TypeCheckMysql.class, obj.getId());
-		assertNotNull(tc.getLocalDateData());
-		assertNotNull(tc.getJavaUtilDateData());
-		assertNotNull(tc.getLocalDateTimeData());
+		var bigDecimalVal = new BigDecimal("10.23");
+		iObj.setBigDecimalData(bigDecimalVal);
 
-		assertEquals(0, tc.getBigDecimalData().compareTo(obj.getBigDecimalData()));
+		iObj.setBooleanVal(true);
 
-		assertNotNull(tc.getOffsetDateTimeData());
+		iObj.setImage(new byte[] { 10, 20, 30 });
 
-		assertArrayEquals(obj.getImage(), tc.getImage());
+		var timestampVal = new Date();
+		iObj.setJavaUtilDateTsData(timestampVal);
+
+		iObj.setStatus(StatusEnum.OPEN);
+
+		var offsetVal = OffsetDateTime.now();
+		iObj.setOffsetDateTimeData(offsetVal);
+
+		sjm.insert(iObj);
+
+		TypeCheckMysql tc = sjm.findById(TypeCheckMysql.class, iObj.getId());
+		SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
+		assertEquals(localDateVal, tc.getLocalDateData());
+
+		assertEquals(fmt.format(dateVal), fmt.format(tc.getJavaUtilDateData()));
+
+		DateTimeFormatter ldtFmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+		assertEquals(ldtFmt.format(localDateTimeVal), ldtFmt.format(tc.getLocalDateTimeData()));
+
+		assertEquals(0, tc.getBigDecimalData().compareTo(iObj.getBigDecimalData()));
+
+		assertArrayEquals(iObj.getImage(), tc.getImage());
 
 		assertTrue(tc.getBooleanVal());
 
-		assertNotNull(tc.getJavaUtilDateTsData());
+		SimpleDateFormat fmtTs = new SimpleDateFormat("yyyyMMdd HHmmss");
+		assertEquals(fmtTs.format(timestampVal), fmtTs.format(tc.getJavaUtilDateTsData()));
+
 		assertEquals(StatusEnum.OPEN, tc.getStatus());
+		DateTimeFormatter oFmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		assertEquals(oFmt.format(offsetVal), oFmt.format(tc.getOffsetDateTimeData()));
+
 	}
 
 	@Test
@@ -144,17 +165,18 @@ class TypeCheckMysqlTest {
 		assertTrue(tc2.getJavaUtilDateTsData().getTime() > tc.getJavaUtilDateTsData().getTime());
 		assertEquals(StatusEnum.CLOSED, tc2.getStatus());
 	}
-	
+
 	@Test
 	void mysqlConfig_failureOnUsingSchemaInsteadOfCatalog() {
 		SimpleJdbcMapper mapper = new SimpleJdbcMapper(ds, "schema1");
 		Integer id = Integer.valueOf(1);
-		
+
 		Exception exception = Assertions.assertThrows(MapperException.class, () -> {
 			mapper.findById(Order.class, id);
 		});
-		
-		assertTrue(exception.getMessage().contains("When creating SimpleJdbcMapper() if you are using 'schema' (argument 2) use 'catalog' (argument 3) instead"));
+
+		assertTrue(exception.getMessage().contains(
+				"When creating SimpleJdbcMapper() if you are using 'schema' (argument 2) use 'catalog' (argument 3) instead"));
 	}
 
 }

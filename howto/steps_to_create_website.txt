@@ -19,7 +19,7 @@ The simplejdbcmapper website is published from the 'website' branch.
    
    *) rename README.html to index.html
    
-   *) follow instructions on sjm_head_snippet.txt. DO NOT format the index.html using eclipse. It creates problems where text shows unaligned
+   *) follow instructions on sjm_head_snippet.txt. DO NOT FORMAT the index.html using eclipse. It creates problems where text shows unaligned
    *) Fix the links on index.html
       1) remove @ on links for @CreatedBy @UpdatedBy
       2) remove / on links for JdbcClient/JdbcTemplate

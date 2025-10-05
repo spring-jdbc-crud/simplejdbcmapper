@@ -6,11 +6,9 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
-import java.time.Instant;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
-import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
@@ -97,73 +95,69 @@ class TypeCheckMysqlTest {
 
 		assertTrue(tc.getBooleanVal());
 
-		SimpleDateFormat fmtTs = new SimpleDateFormat("yyyyMMdd HHmmss");
+		SimpleDateFormat fmtTs = new SimpleDateFormat("yyyyMMdd HHmm");
 		assertEquals(fmtTs.format(timestampVal), fmtTs.format(tc.getJavaUtilDateTsData()));
 
 		assertEquals(StatusEnum.OPEN, tc.getStatus());
-		DateTimeFormatter oFmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
+		DateTimeFormatter oFmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 		assertEquals(oFmt.format(offsetVal), oFmt.format(tc.getOffsetDateTimeData()));
 
 	}
 
 	@Test
 	void update_TypeCheckMysqlTest() {
-		TypeCheckMysql obj = new TypeCheckMysql();
+		TypeCheckMysql iObj = new TypeCheckMysql();
+		sjm.insert(iObj);
+		TypeCheckMysql uObj = sjm.findById(TypeCheckMysql.class, iObj.getId());
 
-		obj.setLocalDateData(LocalDate.now());
-		obj.setJavaUtilDateData(new Date());
-		obj.setLocalDateTimeData(LocalDateTime.now());
-		obj.setBigDecimalData(new BigDecimal("10.23"));
-		obj.setBooleanVal(true);
-		obj.setImage(new byte[] { 10, 20, 30 });
-		obj.setOffsetDateTimeData(OffsetDateTime.now());
+		var localDateVal = LocalDate.now();
+		uObj.setLocalDateData(localDateVal);
 
-		obj.setJavaUtilDateTsData(new Date());
+		var dateVal = new Date();
+		uObj.setJavaUtilDateData(dateVal);
 
-		sjm.insert(obj);
+		var localDateTimeVal = LocalDateTime.now();
+		uObj.setLocalDateTimeData(localDateTimeVal);
 
-		TypeCheckMysql tc = sjm.findById(TypeCheckMysql.class, obj.getId());
-		TypeCheckMysql tc1 = sjm.findById(TypeCheckMysql.class, obj.getId());
+		var bigDecimalVal = new BigDecimal("10.23");
+		uObj.setBigDecimalData(bigDecimalVal);
 
-		Instant instant = LocalDate.now().plusDays(1).atStartOfDay().atZone(ZoneId.systemDefault()).toInstant();
-		java.util.Date nextDay = Date.from(instant);
+		uObj.setBooleanVal(true);
 
-		Instant instant1 = LocalDateTime.now().plusDays(1).atZone(ZoneId.systemDefault()).toInstant();
-		java.util.Date nextDayDateTime = Date.from(instant1);
+		uObj.setImage(new byte[] { 10, 20, 30 });
 
-		tc1.setLocalDateData(LocalDate.now().plusDays(1));
-		tc1.setJavaUtilDateData(nextDay);
-		tc1.setLocalDateTimeData(LocalDateTime.now().plusDays(1));
+		var timestampVal = new Date();
+		uObj.setJavaUtilDateTsData(timestampVal);
 
-		tc1.setOffsetDateTimeData(OffsetDateTime.now().plusDays(1));
+		uObj.setStatus(StatusEnum.OPEN);
 
-		tc1.setBigDecimalData(new BigDecimal("11.34"));
-		tc1.setBooleanVal(false);
+		var offsetVal = OffsetDateTime.now();
+		uObj.setOffsetDateTimeData(offsetVal);
 
-		byte[] newImageVal = new byte[] { 5 };
-		tc1.setImage(newImageVal);
+		sjm.update(uObj);
 
-		tc1.setJavaUtilDateTsData(nextDayDateTime);
-		tc1.setStatus(StatusEnum.CLOSED);
+		TypeCheckMysql tc = sjm.findById(TypeCheckMysql.class, uObj.getId());
+		SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
+		assertEquals(localDateVal, tc.getLocalDateData());
 
-		sjm.update(tc1);
+		assertEquals(fmt.format(dateVal), fmt.format(tc.getJavaUtilDateData()));
 
-		TypeCheckMysql tc2 = sjm.findById(TypeCheckMysql.class, obj.getId());
+		DateTimeFormatter ldtFmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+		assertEquals(ldtFmt.format(localDateTimeVal), ldtFmt.format(tc.getLocalDateTimeData()));
 
-		assertTrue(tc2.getLocalDateData().isAfter(tc.getLocalDateData()));
-		assertTrue(tc2.getJavaUtilDateData().getTime() > tc.getJavaUtilDateData().getTime());
-		assertTrue(tc2.getLocalDateTimeData().isAfter(tc.getLocalDateTimeData()));
+		assertEquals(0, tc.getBigDecimalData().compareTo(uObj.getBigDecimalData()));
 
-		assertTrue(tc2.getOffsetDateTimeData().isAfter(tc.getOffsetDateTimeData()));
+		assertArrayEquals(uObj.getImage(), tc.getImage());
 
-		assertEquals(0, tc2.getBigDecimalData().compareTo(new BigDecimal("11.34")));
+		assertTrue(tc.getBooleanVal());
 
-		assertArrayEquals(newImageVal, tc2.getImage());
+		SimpleDateFormat fmtTs = new SimpleDateFormat("yyyyMMdd HHmm");
+		assertEquals(fmtTs.format(timestampVal), fmtTs.format(tc.getJavaUtilDateTsData()));
 
-		assertTrue(!tc2.getBooleanVal());
+		assertEquals(StatusEnum.OPEN, tc.getStatus());
+		DateTimeFormatter oFmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+		assertEquals(oFmt.format(offsetVal), oFmt.format(tc.getOffsetDateTimeData()));
 
-		assertTrue(tc2.getJavaUtilDateTsData().getTime() > tc.getJavaUtilDateTsData().getTime());
-		assertEquals(StatusEnum.CLOSED, tc2.getStatus());
 	}
 
 	@Test

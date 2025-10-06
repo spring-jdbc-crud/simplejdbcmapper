@@ -262,13 +262,13 @@ public final class SimpleJdbcMapper {
 							new SqlCharacterValue((char[]) bw.getPropertyValue(propMapping.getPropertyName())));
 				}
 			} else {
-				if (propMapping.getOverriddenColumnSqlDataType() != null) {
+				if (propMapping.getOverriddenColumnSqlDataType() == null) {
+					mapSqlParameterSource.addValue(propMapping.getColumnName(),
+							bw.getPropertyValue(propMapping.getPropertyName()));
+				} else {
 					mapSqlParameterSource.addValue(propMapping.getColumnName(),
 							bw.getPropertyValue(propMapping.getPropertyName()),
 							propMapping.getOverriddenColumnSqlDataType());
-				} else {
-					mapSqlParameterSource.addValue(propMapping.getColumnName(),
-							bw.getPropertyValue(propMapping.getPropertyName()));
 				}
 			}
 		}
@@ -431,12 +431,12 @@ public final class SimpleJdbcMapper {
 								tableMapping.getPropertySqlType(paramName));
 					}
 				} else {
-					if (tableMapping.getPropertyOverriddenSqlType(paramName) != null) {
-						mapSqlParameterSource.addValue(paramName, bw.getPropertyValue(paramName),
-								tableMapping.getPropertyOverriddenSqlType(paramName));
-					} else {
+					if (tableMapping.getPropertyOverriddenSqlType(paramName) == null) {
 						mapSqlParameterSource.addValue(paramName, bw.getPropertyValue(paramName),
 								tableMapping.getPropertySqlType(paramName));
+					} else {
+						mapSqlParameterSource.addValue(paramName, bw.getPropertyValue(paramName),
+								tableMapping.getPropertyOverriddenSqlType(paramName));
 					}
 				}
 			}

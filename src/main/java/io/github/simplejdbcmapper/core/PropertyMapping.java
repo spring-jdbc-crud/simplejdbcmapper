@@ -21,7 +21,7 @@ package io.github.simplejdbcmapper.core;
 class PropertyMapping {
 	private String propertyName;
 
-	private Class<?> propertyType;
+	private String propertyClassName;
 
 	private String columnName;
 
@@ -41,17 +41,17 @@ class PropertyMapping {
 
 	private boolean updatedByAnnotation = false;
 
-	public PropertyMapping(String propertyName, Class<?> propertyType, String columnName, int columnSqlDataType) {
-		this(propertyName, propertyType, columnName, columnSqlDataType, null);
+	public PropertyMapping(String propertyName, String propertyClassName, String columnName, int columnSqlDataType) {
+		this(propertyName, propertyClassName, columnName, columnSqlDataType, null);
 	}
 
-	public PropertyMapping(String propertyName, Class<?> propertyType, String columnName, int columnSqlDataType,
+	public PropertyMapping(String propertyName, String propertyClassName, String columnName, int columnSqlDataType,
 			Integer overriddenColumnSqlDataType) {
-		if (propertyName == null || propertyType == null || columnName == null) {
-			throw new IllegalArgumentException("propertyName, propertyType, columnName must not be null");
+		if (propertyName == null || propertyClassName == null || columnName == null) {
+			throw new IllegalArgumentException("propertyName, propertyClassName, columnName must not be null");
 		}
 		this.propertyName = propertyName;
-		this.propertyType = propertyType;
+		this.propertyClassName = propertyClassName;
 		// column names stored in lower case always
 		// No plans to support case sensitive table column names or column names with
 		// spaces in them
@@ -64,8 +64,8 @@ class PropertyMapping {
 		return propertyName;
 	}
 
-	public Class<?> getPropertyType() {
-		return propertyType;
+	public String getPropertyClassName() {
+		return propertyClassName;
 	}
 
 	public String getColumnName() {

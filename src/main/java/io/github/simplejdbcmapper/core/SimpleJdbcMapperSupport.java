@@ -17,7 +17,6 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -136,12 +135,13 @@ class SimpleJdbcMapperSupport {
 					}
 					if (getDatabaseMetaDataOverrideSqlType(field.getType()) != null) {
 						propNameToPropertyMapping.put(propertyName,
-								new PropertyMapping(propertyName, field.getType(), colName,
+								new PropertyMapping(propertyName, field.getType().getName(), colName,
 										columnNameToColumnInfo.get(colName).getColumnSqlDataType(),
 										getDatabaseMetaDataOverrideSqlType(field.getType())));
 					} else {
-						propNameToPropertyMapping.put(propertyName, new PropertyMapping(propertyName, field.getType(),
-								colName, columnNameToColumnInfo.get(colName).getColumnSqlDataType()));
+						propNameToPropertyMapping.put(propertyName,
+								new PropertyMapping(propertyName, field.getType().getName(), colName,
+										columnNameToColumnInfo.get(colName).getColumnSqlDataType()));
 					}
 				}
 				processAnnotation(Id.class, field, tableName, propNameToPropertyMapping, columnNameToColumnInfo);
@@ -226,7 +226,7 @@ class SimpleJdbcMapperSupport {
 							colName + " column not found in table " + tableName + " for model property "
 									+ field.getDeclaringClass().getSimpleName() + "." + field.getName());
 				}
-				propMapping = new PropertyMapping(propertyName, field.getType(), colName,
+				propMapping = new PropertyMapping(propertyName, field.getType().getName(), colName,
 						columnNameToColumnInfo.get(colName).getColumnSqlDataType());
 				propNameToPropertyMapping.put(propertyName, propMapping);
 			}
@@ -278,15 +278,15 @@ class SimpleJdbcMapperSupport {
 				updatedByCnt++;
 				conflictCnt++;
 			}
-			if (propMapping.isVersionAnnotation() && Integer.class != propMapping.getPropertyType()) {
+			if (propMapping.isVersionAnnotation() && !isInteger(propMapping.getPropertyClassName())) {
 				throw new AnnotationException("@Version requires the type of property " + clazz.getSimpleName() + "."
 						+ propMapping.getPropertyName() + " to be Integer");
 			}
-			if (propMapping.isCreatedOnAnnotation() && LocalDateTime.class != propMapping.getPropertyType()) {
+			if (propMapping.isCreatedOnAnnotation() && !isLocalDateTime(propMapping.getPropertyClassName())) {
 				throw new AnnotationException("@CreatedOn requires the type of property " + clazz.getSimpleName() + "."
 						+ propMapping.getPropertyName() + " to be LocalDateTime");
 			}
-			if (propMapping.isUpdatedOnAnnotation() && LocalDateTime.class != propMapping.getPropertyType()) {
+			if (propMapping.isUpdatedOnAnnotation() && !isLocalDateTime(propMapping.getPropertyClassName())) {
 				throw new AnnotationException("@UpdatedOn requires the type of property " + clazz.getSimpleName() + "."
 						+ propMapping.getPropertyName() + " to be LocalDateTime");
 			}
@@ -419,6 +419,14 @@ class SimpleJdbcMapperSupport {
 
 	private Integer getDatabaseMetaDataOverrideSqlType(Class<?> clazz) {
 		return databaseMetaDataOverrideMap == null ? null : databaseMetaDataOverrideMap.get(clazz.getName());
+	}
+
+	private boolean isInteger(String className) {
+		return "java.lang.Integer".equals(className);
+	}
+
+	private boolean isLocalDateTime(String className) {
+		return "java.time.LocalDateTime".equals(className);
 	}
 
 }

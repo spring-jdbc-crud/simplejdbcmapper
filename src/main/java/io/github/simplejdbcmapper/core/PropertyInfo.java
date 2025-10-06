@@ -21,7 +21,7 @@ package io.github.simplejdbcmapper.core;
 class PropertyInfo {
 	private String propertyName;
 
-	private Class<?> propertyType;
+	private String propertyClassName;
 
 	private boolean idAnnotation = false;
 	private boolean createdOnAnnotation = false;
@@ -30,17 +30,17 @@ class PropertyInfo {
 	private boolean createdByAnnotation = false;
 	private boolean updatedByAnnotation = false;
 
-	public PropertyInfo(String propertyName, Class<?> propertyType) {
+	public PropertyInfo(String propertyName, String propertyClassName) {
 		this.propertyName = propertyName;
-		this.propertyType = propertyType;
+		this.propertyClassName = propertyClassName;
 	}
 
 	public String getPropertyName() {
 		return propertyName;
 	}
 
-	public Class<?> getPropertyType() {
-		return propertyType;
+	public String getPropertyClassName() {
+		return propertyClassName;
 	}
 
 	public boolean isIdAnnotation() {

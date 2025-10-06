@@ -113,16 +113,16 @@ class TableMapping {
 		return propMapping == null ? null : propMapping.getPropertyName();
 	}
 
-	public Class<?> getPropertyType(String propertyName) {
+	public String getPropertyClassName(String propertyName) {
 		PropertyMapping propMapping = propertyNameMap.get(propertyName);
-		return propMapping == null ? null : propMapping.getPropertyType();
+		return propMapping == null ? null : propMapping.getPropertyClassName();
 	}
 
 	public int getPropertySqlType(String propertyName) {
 		PropertyMapping propMapping = propertyNameMap.get(propertyName);
 		return propMapping == null ? Types.NULL : propMapping.getColumnSqlDataType();
 	}
-	
+
 	public Integer getPropertyOverriddenSqlType(String propertyName) {
 		PropertyMapping propMapping = propertyNameMap.get(propertyName);
 		return propMapping == null ? null : propMapping.getOverriddenColumnSqlDataType();
@@ -148,8 +148,8 @@ class TableMapping {
 		return getIdPropertyMapping().getPropertyName();
 	}
 
-	public Class<?> getIdPropertyType() {
-		return getIdPropertyMapping().getPropertyType();
+	public String getIdPropertyClassName() {
+		return getIdPropertyMapping().getPropertyClassName();
 	}
 
 	public int getIdColumnSqlType() {

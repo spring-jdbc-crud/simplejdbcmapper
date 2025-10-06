@@ -417,7 +417,7 @@ class SimpleJdbcMapperSupport {
 		}
 	}
 
-	public Integer getDatabaseMetaDataOverrideSqlType(Class<?> clazz) {
+	private Integer getDatabaseMetaDataOverrideSqlType(Class<?> clazz) {
 		return databaseMetaDataOverrideMap == null ? null : databaseMetaDataOverrideMap.get(clazz.getName());
 	}
 

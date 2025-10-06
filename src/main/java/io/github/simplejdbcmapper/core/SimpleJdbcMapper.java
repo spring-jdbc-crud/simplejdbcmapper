@@ -431,9 +431,9 @@ public final class SimpleJdbcMapper {
 								tableMapping.getPropertySqlType(paramName));
 					}
 				} else {
-					if (tableMapping.getOverriddenPropertySqlType(paramName) != null) {
+					if (tableMapping.getPropertyOverriddenSqlType(paramName) != null) {
 						mapSqlParameterSource.addValue(paramName, bw.getPropertyValue(paramName),
-								tableMapping.getOverriddenPropertySqlType(paramName));
+								tableMapping.getPropertyOverriddenSqlType(paramName));
 					} else {
 						mapSqlParameterSource.addValue(paramName, bw.getPropertyValue(paramName),
 								tableMapping.getPropertySqlType(paramName));

@@ -123,7 +123,7 @@ class TableMapping {
 		return propMapping == null ? Types.NULL : propMapping.getColumnSqlDataType();
 	}
 	
-	public Integer getOverriddenPropertySqlType(String propertyName) {
+	public Integer getPropertyOverriddenSqlType(String propertyName) {
 		PropertyMapping propMapping = propertyNameMap.get(propertyName);
 		return propMapping == null ? null : propMapping.getOverriddenColumnSqlDataType();
 	}

@@ -23,7 +23,7 @@
 		<java.version>21</java.version>
 	</properties>
 
-	<url>https://github.com/spring-jdbc-crud/simplejdbcmapper</url>
+	<url>https://spring-jdbc-crud.github.io/simplejdbcmapper</url>
 
 	<licenses>
 		<license>
@@ -42,7 +42,7 @@
 	<scm>
 		<connection>scm:git:git://github.com/spring-jdbc-crud/simplejdbcmapper.git</connection>
 		<developerConnection>scm:git:git@github.com:spring-jdbc-crud/simplejdbcmapper.git</developerConnection>
-		<url>https://spring-jdbc-crud.github.io/simplejdbcmapper</url>
+		<url>https://github.com/spring-jdbc-crud/simplejdbcmapper</url>
 	</scm>
 
 	<dependencies>

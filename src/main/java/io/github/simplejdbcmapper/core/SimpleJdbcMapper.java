@@ -262,10 +262,10 @@ public final class SimpleJdbcMapper {
 							new SqlCharacterValue((char[]) bw.getPropertyValue(propMapping.getPropertyName())));
 				}
 			} else {
-				if (simpleJdbcMapperSupport.getDatabaseMetaDataOverride(propMapping.getPropertyType()) != null) {
+				if (simpleJdbcMapperSupport.getDatabaseMetaDataOverrideSqlType(propMapping.getPropertyType()) != null) {
 					mapSqlParameterSource.addValue(propMapping.getColumnName(),
 							bw.getPropertyValue(propMapping.getPropertyName()),
-							simpleJdbcMapperSupport.getDatabaseMetaDataOverride(propMapping.getPropertyType()));
+							simpleJdbcMapperSupport.getDatabaseMetaDataOverrideSqlType(propMapping.getPropertyType()));
 				} else {
 					mapSqlParameterSource.addValue(propMapping.getColumnName(),
 							bw.getPropertyValue(propMapping.getPropertyName()));

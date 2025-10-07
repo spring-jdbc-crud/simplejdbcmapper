@@ -28,4 +28,5 @@
 *) ADD THIS after the Initial description of project for links
 
 	<a href="https://github.com/spring-jdbc-crud/simplejdbcmapper">github</a> |
-	<a href="https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/index.html">Javadoc</a>
+	<a href="https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/index.html">Javadoc</a> |
+	<a href="https://github.com/spring-jdbc-crud/using-simplejdbcmapper-with-spring">Example Application</a>

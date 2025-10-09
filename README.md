@@ -227,6 +227,14 @@ spring.datasource.driver-class-name=com.microsoft.sqlserver.jdbc.SQLServerDriver
   
 ```
 
+#Configuring a ConversionService
+
+By default SimpleJdbcMapper does not use a conversion service. If your java property types are mapped appropriately to the database column data type a ConverterService is not required. Having said that if you are getting data conversion errors you can configure Spring's DefaultConverterService (or your own custom ConversionService). Spring's DefaultConversionService should meet most use cases.
+
+    SimpleJdbcMapper sjm = new SimpleJdbcMapper(dataSource);
+    sjm.setConversionService(DefaultConversionService.getSharedInstance());
+    return sjm;
+
 ## Annotations
 
 **@Table**
@@ -425,7 +433,7 @@ For **Postgres/Oracle/Sqlserver** try setting the 'schema' parameter on construc
 
 3. **Data conversion errors**
 
-By default SimpleJdbcMapper does not use a conversion service. If your java property types are mapped correctly to the your database column data typse a ConverterService is not required. If you are getting errors you can configure Spring's DefaultConverterService which is what Spring uses for its conversions.
+By default SimpleJdbcMapper does not use a conversion service. If your java property types are mapped appropriately to the database column data type a ConverterService is not required. Having said that if you are getting conversion errors you can configure Spring's DefaultConverterService (or your own custom ConversionService). Spring's DefaultConversionService should meet most use cases.
 
     SimpleJdbcMapper sjm = new SimpleJdbcMapper(dataSource);
     sjm.setConversionService(DefaultConversionService.getSharedInstance());
@@ -433,13 +441,13 @@ By default SimpleJdbcMapper does not use a conversion service. If your java prop
 
 4.**Postgres and OffsetDateTime**
 
-   Postgres database metadata for column definition 'TIMESTAMP WITH TIMEZONE' returns java.sql.Types.TIMESTAMP which is wrong, causing conversion failures. Do the following when configuring SimpleJdbcMapper():
+  Postgres database metadata for column definition 'TIMESTAMP WITH TIMEZONE' returns java.sql.Types.TIMESTAMP which is wrong, causing conversion failures. Do the following when configuring SimpleJdbcMapper():
    
-			SimpleJdbcMapper sjm = new SimpleJdbcMapper(dataSource);	
-			Map<Class<?>, Integer> map = new HashMap<>();
-			// map OffsetDateTime to the correct sql Type
-			map.put(OffsetDateTime.class, java.sql.Types.TIMESTAMP_WITH_TIMEZONE);
-			sjm.setDatabaseMetaDataOverride(map);
-			return sjm;
+	SimpleJdbcMapper sjm = new SimpleJdbcMapper(dataSource);	
+	Map<Class<?>, Integer> map = new HashMap<>();
+	// map OffsetDateTime to the correct sql Type
+	map.put(OffsetDateTime.class, java.sql.Types.TIMESTAMP_WITH_TIMEZONE);
+	sjm.setDatabaseMetaDataOverride(map);
+	return sjm;
 		
 

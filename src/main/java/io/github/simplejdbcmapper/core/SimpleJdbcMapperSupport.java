@@ -278,15 +278,15 @@ class SimpleJdbcMapperSupport {
 				updatedByCnt++;
 				conflictCnt++;
 			}
-			if (propMapping.isVersionAnnotation() && !isInteger(propMapping.getPropertyClassName())) {
+			if (propMapping.isVersionAnnotation() && !isIntegerClass(propMapping.getPropertyClassName())) {
 				throw new AnnotationException("@Version requires the type of property " + clazz.getSimpleName() + "."
 						+ propMapping.getPropertyName() + " to be Integer");
 			}
-			if (propMapping.isCreatedOnAnnotation() && !isLocalDateTime(propMapping.getPropertyClassName())) {
+			if (propMapping.isCreatedOnAnnotation() && !isLocalDateTimeClass(propMapping.getPropertyClassName())) {
 				throw new AnnotationException("@CreatedOn requires the type of property " + clazz.getSimpleName() + "."
 						+ propMapping.getPropertyName() + " to be LocalDateTime");
 			}
-			if (propMapping.isUpdatedOnAnnotation() && !isLocalDateTime(propMapping.getPropertyClassName())) {
+			if (propMapping.isUpdatedOnAnnotation() && !isLocalDateTimeClass(propMapping.getPropertyClassName())) {
 				throw new AnnotationException("@UpdatedOn requires the type of property " + clazz.getSimpleName() + "."
 						+ propMapping.getPropertyName() + " to be LocalDateTime");
 			}
@@ -421,11 +421,11 @@ class SimpleJdbcMapperSupport {
 		return databaseMetaDataOverrideMap == null ? null : databaseMetaDataOverrideMap.get(clazz.getName());
 	}
 
-	private boolean isInteger(String className) {
+	private boolean isIntegerClass(String className) {
 		return "java.lang.Integer".equals(className);
 	}
 
-	private boolean isLocalDateTime(String className) {
+	private boolean isLocalDateTimeClass(String className) {
 		return "java.time.LocalDateTime".equals(className);
 	}
 

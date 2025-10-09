@@ -1,8 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>SimpleJdbcMapper</title>
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	
 	<!-- Begin Jekyll SEO tag v2.8.0 -->
@@ -23,7 +22,7 @@
 {"@context":"https://schema.org","@type":"WebSite","description":"Simple CRUD for Spring JDBC","headline":"Simple CRUD for Spring JDBC #","name":"Simple CRUD for Spring JDBC","url":"https://spring-jdbc-crud.github.io/simplejdbcmapper"}</script>
 
 <!-- End Jekyll SEO tag -->
-
+    <title>SimpleJdbcMapper</title>
     <link type="text/css" rel="stylesheet" href="assets/css/bootstrap.css"/>
     <link type="text/css" rel="stylesheet" href="assets/css/bootstrap-responsive.css"/>
     <link type="text/css" rel="stylesheet" href="assets/css/pilcrow.css"/>
@@ -47,6 +46,7 @@
     <li class="sidebar-header-2"><a href="#jdk-and-spring-version-requirements">JDK and Spring version requirements</a></li>
     <li class="sidebar-header-2"><a href="#maven-coordinates">Maven coordinates</a></li>
     <li class="sidebar-header-2"><a href="#spring-bean-configuration-for-simplejdbcmapper">Spring bean configuration for SimpleJdbcMapper</a></li>
+    <li class="sidebar-header-2"><a href="#configuring-a-conversionservice">Configuring a ConversionService</a></li>
     <li class="sidebar-header-2"><a href="#annotations">Annotations</a></li>
     <li class="sidebar-header-2"><a href="#configuration-for-auto-assigning-createdby-and-updateby">Configuration for auto assigning @CreatedBy and @UpdateBy</a></li>
     <li class="sidebar-header-2"><a href="#accessing-jdbcclientjdbctemplate">Accessing JdbcClient/JdbcTemplate</a></li>
@@ -59,7 +59,7 @@
 <p>
 	<a href="https://github.com/spring-jdbc-crud/simplejdbcmapper">github</a> |
 	<a href="https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/index.html">Javadoc</a> |
-	<a href="https://github.com/spring-jdbc-crud/using-simplejdbcmapper-with-spring">Example Application</a>
+	<a href="https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper">Example Application</a>
 </p>
 <h2 id="features"><a class="header-link" href="#features"></a>Features</h2>
 <ol class="list">
@@ -251,7 +251,11 @@ spring.datasource.driver-<span class="hljs-class"><span class="hljs-keyword">cla
   <span class="hljs-keyword">public</span> SimpleJdbcMapper simpleJdbcMapper(DataSource dataSource) {
     <span class="hljs-keyword">return</span> new SimpleJdbcMapper(dataSource, SCHEMA_NAME);
   }
-  </code></pre><h2 id="annotations"><a class="header-link" href="#annotations"></a>Annotations</h2>
+  </code></pre><h2 id="configuring-a-conversionservice"><a class="header-link" href="#configuring-a-conversionservice"></a>Configuring a ConversionService</h2>
+<p>By default SimpleJdbcMapper does not use a conversion service. If your java property types are mapped appropriately to the database column data type a ConverterService is not required. Having said that if you are getting data conversion errors you can configure Spring&#39;s DefaultConverterService (or your own custom ConversionService). Spring&#39;s DefaultConversionService should meet most use cases.</p>
+<pre class="hljs"><code>SimpleJdbcMapper sjm = <span class="hljs-keyword">new</span> <span class="hljs-constructor">SimpleJdbcMapper(<span class="hljs-params">dataSource</span>)</span>;
+sjm.set<span class="hljs-constructor">ConversionService(DefaultConversionService.<span class="hljs-params">getSharedInstance</span>()</span>);
+return sjm;</code></pre><h2 id="annotations"><a class="header-link" href="#annotations"></a>Annotations</h2>
 <p><strong>@Table</strong></p>
 <p>Required class level annotation. The table or view should exist in database. The schema/catalog attributes set with @Table will override corresponding values 
 on the SimpleJdbcMapper() constructor. </p>
@@ -379,16 +383,22 @@ Will be set to 1 when record is created and will incremented on updates. On upda
 <pre class="hljs"><code><span class="hljs-keyword">new</span> <span class="hljs-constructor">SimpleJdbcMapper(<span class="hljs-params">dataSource</span>, <span class="hljs-params">null</span>, <span class="hljs-string1">&quot;DATABASE_NAME&quot;</span>)</span>;
 Or
 @<span class="hljs-constructor">Table(<span class="hljs-params">name</span>=<span class="hljs-string1">&quot;sometablename&quot;</span>, <span class="hljs-params">catalog</span>=<span class="hljs-string1">&quot;DATABASE_NAME&quot;</span>)</span>;</code></pre><p>For <strong>Postgres/Oracle/Sqlserver</strong> try setting the &#39;schema&#39; parameter on constructor of SimpleJdbcMapper() (2nd argument) or set the &#39;schema&#39; attribute on the @Table annotation of the object.</p>
-<p>Example: </p>
 <pre class="hljs"><code><span class="hljs-keyword">new</span> <span class="hljs-constructor">SimpleJdbcMapper(<span class="hljs-params">dataSource</span>, <span class="hljs-string1">&quot;SCHEMA_NAME&quot;</span>)</span>;
 Or
-@<span class="hljs-constructor">Table(<span class="hljs-params">name</span>=<span class="hljs-string1">&quot;sometablename&quot;</span>, <span class="hljs-params">schema</span>=<span class="hljs-string1">&quot;SCHEMA_NAME&quot;</span>)</span>;</code></pre><p>3.<strong>Postgres and OffsetDateTime</strong></p>
-<p>   Postgres database metadata for column definition &#39;TIMESTAMP WITH TIMEZONE&#39; returns java.sql.Types.TIMESTAMP which is wrong, causing conversion failures. Do the following when configuring SimpleJdbcMapper():</p>
-<pre class="hljs"><code>        SimpleJdbcMapper sjm = <span class="hljs-keyword">new</span> <span class="hljs-constructor">SimpleJdbcMapper(<span class="hljs-params">dataSource</span>, <span class="hljs-string1">&quot;SCHEMA_NAME&quot;</span>)</span>;    
-        Map&lt;Class&lt;?&gt;, Integer&gt; map = <span class="hljs-keyword">new</span> HashMap&lt;&gt;<span class="hljs-literal">()</span>;
-        <span class="hljs-comment">// map OffsetDateTime to the correct sql Type</span>
-        map.put(<span class="hljs-module-access"><span class="hljs-module"><span class="hljs-identifier">OffsetDateTime</span>.</span></span><span class="hljs-keyword">class</span>, java.sql.Types.TIMESTAMP_WITH_TIMEZONE);
-        sjm.set<span class="hljs-constructor">DatabaseMetaDataOverride(<span class="hljs-params">map</span>)</span>;
+@<span class="hljs-constructor">Table(<span class="hljs-params">name</span>=<span class="hljs-string1">&quot;sometablename&quot;</span>, <span class="hljs-params">schema</span>=<span class="hljs-string1">&quot;SCHEMA_NAME&quot;</span>)</span>;</code></pre><ol start="3">
+<li><strong>Data conversion errors</strong></li>
+</ol>
+<p>By default SimpleJdbcMapper does not use a conversion service. If your java property types are mapped appropriately to the database column data type a ConverterService is not required. Having said that if you are getting conversion errors you can configure Spring&#39;s DefaultConverterService (or your own custom ConversionService). Spring&#39;s DefaultConversionService should meet most use cases.</p>
+<pre class="hljs"><code>SimpleJdbcMapper sjm = <span class="hljs-keyword">new</span> <span class="hljs-constructor">SimpleJdbcMapper(<span class="hljs-params">dataSource</span>)</span>;
+sjm.set<span class="hljs-constructor">ConversionService(DefaultConversionService.<span class="hljs-params">getSharedInstance</span>()</span>);
+return sjm;</code></pre><p>4.<strong>Postgres and OffsetDateTime</strong></p>
+<p>  Postgres database metadata for column definition &#39;TIMESTAMP WITH TIMEZONE&#39; returns java.sql.Types.TIMESTAMP which is wrong, causing conversion failures. Do the following when configuring SimpleJdbcMapper():</p>
+<pre class="hljs"><code>SimpleJdbcMapper sjm = <span class="hljs-built_in">new</span> SimpleJdbcMapper(dataSource);    
+Map&lt;<span class="hljs-keyword">Class</span>&lt;?&gt;, <span class="hljs-type">Integer</span>&gt; map = <span class="hljs-built_in">new</span> HashMap&lt;&gt;();
+// map OffsetDateTime <span class="hljs-keyword">to</span> the correct <span class="hljs-keyword">sql</span> <span class="hljs-keyword">Type</span>
+map.put(OffsetDateTime.<span class="hljs-keyword">class</span>, java.<span class="hljs-keyword">sql</span>.<span class="hljs-keyword">Types</span>.TIMESTAMP_WITH_TIMEZONE);
+sjm.setDatabaseMetaDataOverride(map);
+<span class="hljs-keyword">return</span> sjm;
     </code></pre>      </div>
     </div>
   </div>

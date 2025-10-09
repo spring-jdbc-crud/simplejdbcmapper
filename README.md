@@ -227,7 +227,7 @@ spring.datasource.driver-class-name=com.microsoft.sqlserver.jdbc.SQLServerDriver
   
 ```
 
-#Configuring a ConversionService
+##Configuring a ConversionService
 
 By default SimpleJdbcMapper does not use a conversion service. If your java property types are mapped appropriately to the database column data type a ConverterService is not required. Having said that if you are getting data conversion errors you can configure Spring's DefaultConverterService (or your own custom ConversionService). Spring's DefaultConversionService should meet most use cases.
 

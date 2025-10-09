@@ -266,32 +266,33 @@ public final class SimpleJdbcMapper {
 		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
 
 		for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {
-			int columnSqlType = propMapping.getOverriddenColumnSqlDataType() == null
-					? propMapping.getColumnSqlDataType()
-					: propMapping.getOverriddenColumnSqlDataType();
+			int columnSqlType = propMapping.getColumnOverriddenSqlType() == null ? propMapping.getColumnSqlType()
+					: propMapping.getColumnOverriddenSqlType();
 
 			if (columnSqlType == Types.BLOB) {
 				if (bw.getPropertyValue(propMapping.getPropertyName()) == null) {
 					mapSqlParameterSource.addValue(propMapping.getColumnName(), null);
 				} else {
 					mapSqlParameterSource.addValue(propMapping.getColumnName(),
-							new SqlBinaryValue((byte[]) bw.getPropertyValue(propMapping.getPropertyName())));
+							new SqlBinaryValue((byte[]) bw.getPropertyValue(propMapping.getPropertyName())),
+							Types.BLOB);
 				}
 			} else if (columnSqlType == Types.CLOB) {
 				if (bw.getPropertyValue(propMapping.getPropertyName()) == null) {
 					mapSqlParameterSource.addValue(propMapping.getColumnName(), null);
 				} else {
 					mapSqlParameterSource.addValue(propMapping.getColumnName(),
-							new SqlCharacterValue((char[]) bw.getPropertyValue(propMapping.getPropertyName())));
+							new SqlCharacterValue((char[]) bw.getPropertyValue(propMapping.getPropertyName())),
+							Types.CLOB);
 				}
 			} else {
-				if (propMapping.getOverriddenColumnSqlDataType() == null) {
+				if (propMapping.getColumnOverriddenSqlType() == null) {
 					mapSqlParameterSource.addValue(propMapping.getColumnName(),
 							bw.getPropertyValue(propMapping.getPropertyName()));
 				} else {
 					mapSqlParameterSource.addValue(propMapping.getColumnName(),
 							bw.getPropertyValue(propMapping.getPropertyName()),
-							propMapping.getOverriddenColumnSqlDataType());
+							propMapping.getColumnOverriddenSqlType());
 				}
 			}
 		}
@@ -464,26 +465,26 @@ public final class SimpleJdbcMapper {
 					mapSqlParameterSource.addValue("incrementedVersion", versionVal + 1, java.sql.Types.INTEGER);
 				}
 			} else {
-				int propertySqlType = tableMapping.getPropertyOverriddenSqlType(paramName) == null
-						? tableMapping.getPropertySqlType(paramName)
-						: tableMapping.getPropertyOverriddenSqlType(paramName);
+				int columnSqlType = tableMapping.getColumnOverriddenSqlType(paramName) == null
+						? tableMapping.getColumnSqlType(paramName)
+						: tableMapping.getColumnOverriddenSqlType(paramName);
 
-				if (propertySqlType == Types.BLOB) {
+				if (columnSqlType == Types.BLOB) {
 					if (bw.getPropertyValue(paramName) == null) {
-						mapSqlParameterSource.addValue(paramName, null, propertySqlType);
+						mapSqlParameterSource.addValue(paramName, null, columnSqlType);
 					} else {
 						mapSqlParameterSource.addValue(paramName,
-								new SqlBinaryValue((byte[]) bw.getPropertyValue(paramName)), propertySqlType);
+								new SqlBinaryValue((byte[]) bw.getPropertyValue(paramName)), columnSqlType);
 					}
-				} else if (propertySqlType == Types.CLOB) {
+				} else if (columnSqlType == Types.CLOB) {
 					if (bw.getPropertyValue(paramName) == null) {
-						mapSqlParameterSource.addValue(paramName, null, propertySqlType);
+						mapSqlParameterSource.addValue(paramName, null, columnSqlType);
 					} else {
 						mapSqlParameterSource.addValue(paramName,
-								new SqlCharacterValue((char[]) bw.getPropertyValue(paramName)), propertySqlType);
+								new SqlCharacterValue((char[]) bw.getPropertyValue(paramName)), columnSqlType);
 					}
 				} else {
-					mapSqlParameterSource.addValue(paramName, bw.getPropertyValue(paramName), propertySqlType);
+					mapSqlParameterSource.addValue(paramName, bw.getPropertyValue(paramName), columnSqlType);
 				}
 			}
 		}

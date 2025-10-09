@@ -704,7 +704,8 @@ public final class SimpleJdbcMapper {
 		return new SqlAndParams(updateSql, params);
 	}
 
-	private SqlAndParams buildSqlAndParamsForUpdateSpecificProperties(TableMapping tableMapping, String... propertyNames) {
+	private SqlAndParams buildSqlAndParamsForUpdateSpecificProperties(TableMapping tableMapping,
+			String... propertyNames) {
 		Assert.notNull(tableMapping, "tableMapping must not be null");
 		Assert.notNull(propertyNames, "propertyNames must not be null");
 		// do the validations
@@ -798,7 +799,9 @@ public final class SimpleJdbcMapper {
 	}
 
 	private BeanWrapper getBeanWrapper(Object obj) {
-		return PropertyAccessorFactory.forBeanPropertyAccess(obj);
+		BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(obj);
+		bw.setConversionService(conversionService);
+		return bw;
 	}
 
 	// will return null when updateSpecificProperties property count is more than

@@ -264,15 +264,20 @@ public final class SimpleJdbcMapper {
 
 	private MapSqlParameterSource createMapSqlParameterSourceForInsert(TableMapping tableMapping, BeanWrapper bw) {
 		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
+
 		for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {
-			if (propMapping.getColumnSqlDataType() == Types.BLOB) {
+			int columnSqlType = propMapping.getOverriddenColumnSqlDataType() == null
+					? propMapping.getColumnSqlDataType()
+					: propMapping.getOverriddenColumnSqlDataType();
+
+			if (columnSqlType == Types.BLOB) {
 				if (bw.getPropertyValue(propMapping.getPropertyName()) == null) {
 					mapSqlParameterSource.addValue(propMapping.getColumnName(), null);
 				} else {
 					mapSqlParameterSource.addValue(propMapping.getColumnName(),
 							new SqlBinaryValue((byte[]) bw.getPropertyValue(propMapping.getPropertyName())));
 				}
-			} else if (propMapping.getColumnSqlDataType() == Types.CLOB) {
+			} else if (columnSqlType == Types.CLOB) {
 				if (bw.getPropertyValue(propMapping.getPropertyName()) == null) {
 					mapSqlParameterSource.addValue(propMapping.getColumnName(), null);
 				} else {
@@ -459,30 +464,26 @@ public final class SimpleJdbcMapper {
 					mapSqlParameterSource.addValue("incrementedVersion", versionVal + 1, java.sql.Types.INTEGER);
 				}
 			} else {
-				if (tableMapping.getPropertySqlType(paramName) == Types.BLOB) {
+				int propertySqlType = tableMapping.getPropertyOverriddenSqlType(paramName) == null
+						? tableMapping.getPropertySqlType(paramName)
+						: tableMapping.getPropertyOverriddenSqlType(paramName);
+
+				if (propertySqlType == Types.BLOB) {
 					if (bw.getPropertyValue(paramName) == null) {
-						mapSqlParameterSource.addValue(paramName, null, tableMapping.getPropertySqlType(paramName));
+						mapSqlParameterSource.addValue(paramName, null, propertySqlType);
 					} else {
 						mapSqlParameterSource.addValue(paramName,
-								new SqlBinaryValue((byte[]) bw.getPropertyValue(paramName)),
-								tableMapping.getPropertySqlType(paramName));
+								new SqlBinaryValue((byte[]) bw.getPropertyValue(paramName)), propertySqlType);
 					}
-				} else if (tableMapping.getPropertySqlType(paramName) == Types.CLOB) {
+				} else if (propertySqlType == Types.CLOB) {
 					if (bw.getPropertyValue(paramName) == null) {
-						mapSqlParameterSource.addValue(paramName, null, tableMapping.getPropertySqlType(paramName));
+						mapSqlParameterSource.addValue(paramName, null, propertySqlType);
 					} else {
 						mapSqlParameterSource.addValue(paramName,
-								new SqlCharacterValue((char[]) bw.getPropertyValue(paramName)),
-								tableMapping.getPropertySqlType(paramName));
+								new SqlCharacterValue((char[]) bw.getPropertyValue(paramName)), propertySqlType);
 					}
 				} else {
-					if (tableMapping.getPropertyOverriddenSqlType(paramName) == null) {
-						mapSqlParameterSource.addValue(paramName, bw.getPropertyValue(paramName),
-								tableMapping.getPropertySqlType(paramName));
-					} else {
-						mapSqlParameterSource.addValue(paramName, bw.getPropertyValue(paramName),
-								tableMapping.getPropertyOverriddenSqlType(paramName));
-					}
+					mapSqlParameterSource.addValue(paramName, bw.getPropertyValue(paramName), propertySqlType);
 				}
 			}
 		}

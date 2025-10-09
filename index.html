@@ -252,7 +252,7 @@ spring.datasource.driver-<span class="hljs-class"><span class="hljs-keyword">cla
     <span class="hljs-keyword">return</span> new SimpleJdbcMapper(dataSource, SCHEMA_NAME);
   }
   </code></pre><h2 id="configuring-a-conversionservice"><a class="header-link" href="#configuring-a-conversionservice"></a>Configuring a ConversionService</h2>
-<p>By default SimpleJdbcMapper does not use a conversion service. If your java property types are mapped appropriately to the database column data type a ConverterService is not required. Having said that if you are getting data conversion errors you can configure Spring&#39;s DefaultConverterService (or your own custom ConversionService). Spring&#39;s DefaultConversionService should meet most use cases.</p>
+<p>By default SimpleJdbcMapper does not use a conversion service. If your java property types are mapped appropriately to the database column data type a ConversionService is not required. Having said that if you are getting data conversion errors you can configure Spring&#39;s DefaultConversionService (or your own custom ConversionService). Spring&#39;s DefaultConversionService should meet most use cases.</p>
 <pre class="hljs"><code>SimpleJdbcMapper sjm = <span class="hljs-keyword">new</span> <span class="hljs-constructor">SimpleJdbcMapper(<span class="hljs-params">dataSource</span>)</span>;
 sjm.set<span class="hljs-constructor">ConversionService(DefaultConversionService.<span class="hljs-params">getSharedInstance</span>()</span>);
 return sjm;</code></pre><h2 id="annotations"><a class="header-link" href="#annotations"></a>Annotations</h2>
@@ -388,7 +388,7 @@ Or
 @<span class="hljs-constructor">Table(<span class="hljs-params">name</span>=<span class="hljs-string1">&quot;sometablename&quot;</span>, <span class="hljs-params">schema</span>=<span class="hljs-string1">&quot;SCHEMA_NAME&quot;</span>)</span>;</code></pre><ol start="3">
 <li><strong>Data conversion errors</strong></li>
 </ol>
-<p>By default SimpleJdbcMapper does not use a conversion service. If your java property types are mapped appropriately to the database column data type a ConverterService is not required. Having said that if you are getting conversion errors you can configure Spring&#39;s DefaultConverterService (or your own custom ConversionService). Spring&#39;s DefaultConversionService should meet most use cases.</p>
+<p>By default SimpleJdbcMapper does not use a conversion service. If your java property types are mapped appropriately to the database column data type a ConversionService is not required. Having said that if you are getting conversion errors you can configure Spring&#39;s DefaultConversionService (or your own custom ConversionService). Spring&#39;s DefaultConversionService should meet most use cases.</p>
 <pre class="hljs"><code>SimpleJdbcMapper sjm = <span class="hljs-keyword">new</span> <span class="hljs-constructor">SimpleJdbcMapper(<span class="hljs-params">dataSource</span>)</span>;
 sjm.set<span class="hljs-constructor">ConversionService(DefaultConversionService.<span class="hljs-params">getSharedInstance</span>()</span>);
 return sjm;</code></pre><p>4.<strong>Postgres and OffsetDateTime</strong></p>

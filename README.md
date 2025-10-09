@@ -229,7 +229,7 @@ spring.datasource.driver-class-name=com.microsoft.sqlserver.jdbc.SQLServerDriver
 
 ## Configuring a ConversionService
 
-By default SimpleJdbcMapper does not use a conversion service. If your java property types are mapped appropriately to the database column data type a ConverterService is not required. Having said that if you are getting data conversion errors you can configure Spring's DefaultConverterService (or your own custom ConversionService). Spring's DefaultConversionService should meet most use cases.
+By default SimpleJdbcMapper does not use a ConversionService. If your java property types are mapped appropriately to the database column data type a ConversionService is not required. Having said that if you are getting data conversion errors you can configure Spring's DefaultConversionService (or your own custom ConversionService). Spring's DefaultConversionService should meet most use cases.
 
     SimpleJdbcMapper sjm = new SimpleJdbcMapper(dataSource);
     sjm.setConversionService(DefaultConversionService.getSharedInstance());
@@ -433,7 +433,7 @@ For **Postgres/Oracle/Sqlserver** try setting the 'schema' parameter on construc
 
 3. **Data conversion errors**
 
-By default SimpleJdbcMapper does not use a conversion service. If your java property types are mapped appropriately to the database column data type a ConverterService is not required. Having said that if you are getting conversion errors you can configure Spring's DefaultConverterService (or your own custom ConversionService). Spring's DefaultConversionService should meet most use cases.
+By default SimpleJdbcMapper does not use a conversion service. If your java property types are mapped appropriately to the database column data type a ConversionService is not required. Having said that if you are getting conversion errors you can configure Spring's DefaultConversionService (or your own custom ConversionService). Spring's DefaultConversionService should meet most use cases.
 
     SimpleJdbcMapper sjm = new SimpleJdbcMapper(dataSource);
     sjm.setConversionService(DefaultConversionService.getSharedInstance());

@@ -281,7 +281,7 @@ class SimpleJdbcMapperTest {
 	}
 
 	@Test
-	void updatePProperties_IdAndAutoAssign_failure() {
+	void updateSpecificProperties_IdAndAutoAssign_failure() {
 		Order order = sjm.findById(Order.class, 1);
 
 		Exception exception = Assertions.assertThrows(MapperException.class, () -> {
@@ -317,7 +317,7 @@ class SimpleJdbcMapperTest {
 	}
 
 	@Test
-	void updateProperties_invalidProperty_failure() {
+	void updateSpecificProperties_invalidProperty_failure() {
 		Order order = sjm.findById(Order.class, 1);
 		Exception exception = Assertions.assertThrows(MapperException.class, () -> {
 			sjm.updateSpecificProperties(order, "xyz");
@@ -332,7 +332,7 @@ class SimpleJdbcMapperTest {
 	}
 
 	@Test
-	void updateProperties_success() throws Exception {
+	void updateSpecificProperties_success() throws Exception {
 		Customer customer = sjm.findById(Customer.class, 5);
 
 		customer.setLastName("bbb");
@@ -365,7 +365,7 @@ class SimpleJdbcMapperTest {
 	}
 
 	@Test
-	void updateProperties_propertiesCountLargerThanCacheableSize_success() {
+	void updateSpecificProperties_propertiesCountLargerThanCacheableSize_success() {
 		ProductWithNoAuditFields product = new ProductWithNoAuditFields();
 		product.setProductId(801);
 		product.setName("p-801");

@@ -23,6 +23,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringJoiner;
+import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
 
@@ -654,7 +655,14 @@ public final class SimpleJdbcMapper {
 
 	private SqlAndParams buildSqlAndParamsForUpdate(TableMapping tableMapping) {
 		Assert.notNull(tableMapping, "tableMapping must not be null");
-		// ignore these attributes when generating the sql 'SET' command
+		List<String> propertyList = tableMapping.getPropertyMappings().stream().map(pm -> pm.getPropertyName())
+				.collect(Collectors.toList());
+		List<String> ignoreAttrs = getIgnoreAttributesForUpdate(tableMapping);
+		propertyList.removeAll(ignoreAttrs);
+		return buildSqlAndParams(tableMapping, propertyList);
+	}
+
+	private List<String> getIgnoreAttributesForUpdate(TableMapping tableMapping) {
 		List<String> ignoreAttrs = new ArrayList<>();
 		ignoreAttrs.add(tableMapping.getIdPropertyName());
 		PropertyMapping createdOnPropMapping = tableMapping.getCreatedOnPropertyMapping();
@@ -665,16 +673,30 @@ public final class SimpleJdbcMapper {
 		if (createdByPropMapping != null) {
 			ignoreAttrs.add(createdByPropMapping.getPropertyName());
 		}
+		return ignoreAttrs;
+	}
+
+	private SqlAndParams buildSqlAndParamsForUpdateSpecificProperties(TableMapping tableMapping,
+			String... propertyNames) {
+		Assert.notNull(tableMapping, "tableMapping must not be null");
+		Assert.notNull(propertyNames, "propertyNames must not be null");
+		validateUpdateSpecificProperties(tableMapping, propertyNames);
+		List<String> propertyList = new ArrayList<>(Arrays.asList(propertyNames));
+		propertyList.addAll(getAutoAssignPropertiesForUpdate(tableMapping));
+		return buildSqlAndParams(tableMapping, propertyList);
+	}
+
+	private SqlAndParams buildSqlAndParams(TableMapping tableMapping, List<String> propertyList) {
+		Assert.notNull(tableMapping, "tableMapping must not be null");
+		Assert.notNull(propertyList, "propertyList must not be null");
 		Set<String> params = new HashSet<>();
 		StringBuilder sqlBuilder = new StringBuilder("UPDATE ");
 		sqlBuilder.append(tableMapping.fullyQualifiedTableName());
 		sqlBuilder.append(" SET ");
-		PropertyMapping versionPropMapping = tableMapping.getVersionPropertyMapping();
 		boolean first = true;
-		for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {
-			if (ignoreAttrs.contains(propMapping.getPropertyName())) {
-				continue;
-			}
+		PropertyMapping versionPropMapping = null;
+		for (String propertyName : propertyList) {
+			PropertyMapping propMapping = tableMapping.getPropertyMappingByPropertyName(propertyName);
 			if (!first) {
 				sqlBuilder.append(", ");
 			} else {
@@ -682,16 +704,16 @@ public final class SimpleJdbcMapper {
 			}
 			sqlBuilder.append(propMapping.getColumnName());
 			sqlBuilder.append(" = :");
-			if (versionPropMapping != null
-					&& propMapping.getPropertyName().equals(versionPropMapping.getPropertyName())) {
+
+			if (propMapping.isVersionAnnotation()) {
 				sqlBuilder.append("incrementedVersion");
 				params.add("incrementedVersion");
+				versionPropMapping = propMapping;
 			} else {
 				sqlBuilder.append(propMapping.getPropertyName());
 				params.add(propMapping.getPropertyName());
 			}
 		}
-		// the where clause
 		sqlBuilder.append(" WHERE " + tableMapping.getIdColumnName() + " = :" + tableMapping.getIdPropertyName());
 		params.add(tableMapping.getIdPropertyName());
 		if (versionPropMapping != null) {
@@ -703,11 +725,24 @@ public final class SimpleJdbcMapper {
 		return new SqlAndParams(updateSql, params);
 	}
 
-	private SqlAndParams buildSqlAndParamsForUpdateSpecificProperties(TableMapping tableMapping,
-			String... propertyNames) {
-		Assert.notNull(tableMapping, "tableMapping must not be null");
-		Assert.notNull(propertyNames, "propertyNames must not be null");
-		// do the validations
+	private List<String> getAutoAssignPropertiesForUpdate(TableMapping tableMapping) {
+		List<String> list = new ArrayList<>();
+		PropertyMapping updatedOnPropMapping = tableMapping.getUpdatedOnPropertyMapping();
+		if (updatedOnPropMapping != null) {
+			list.add(updatedOnPropMapping.getPropertyName());
+		}
+		PropertyMapping updatedByPropMapping = tableMapping.getUpdatedByPropertyMapping();
+		if (updatedByPropMapping != null) {
+			list.add(updatedByPropMapping.getPropertyName());
+		}
+		PropertyMapping versionPropMapping = tableMapping.getVersionPropertyMapping();
+		if (versionPropMapping != null) {
+			list.add(versionPropMapping.getPropertyName());
+		}
+		return list;
+	}
+
+	private void validateUpdateSpecificProperties(TableMapping tableMapping, String... propertyNames) {
 		for (String propertyName : propertyNames) {
 			PropertyMapping propertyMapping = tableMapping.getPropertyMappingByPropertyName(propertyName);
 			if (propertyMapping == null) {
@@ -727,54 +762,6 @@ public final class SimpleJdbcMapper {
 						+ propertyName + " cannot be updated.");
 			}
 		}
-		Set<String> params = new HashSet<>();
-		StringBuilder sqlBuilder = new StringBuilder("UPDATE ");
-		sqlBuilder.append(tableMapping.fullyQualifiedTableName());
-		sqlBuilder.append(" SET ");
-		List<String> propertyList = new ArrayList<>(Arrays.asList(propertyNames));
-		// handle auto assign properties for update
-		PropertyMapping updatedOnPropMapping = tableMapping.getUpdatedOnPropertyMapping();
-		if (updatedOnPropMapping != null) {
-			propertyList.add(updatedOnPropMapping.getPropertyName());
-		}
-		PropertyMapping updatedByPropMapping = tableMapping.getUpdatedByPropertyMapping();
-		if (updatedByPropMapping != null) {
-			propertyList.add(updatedByPropMapping.getPropertyName());
-		}
-		PropertyMapping versionPropMapping = tableMapping.getVersionPropertyMapping();
-		if (versionPropMapping != null) {
-			propertyList.add(versionPropMapping.getPropertyName());
-		}
-		boolean first = true;
-		for (String propertyName : propertyList) {
-			PropertyMapping propMapping = tableMapping.getPropertyMappingByPropertyName(propertyName);
-			if (!first) {
-				sqlBuilder.append(", ");
-			} else {
-				first = false;
-			}
-			sqlBuilder.append(propMapping.getColumnName());
-			sqlBuilder.append(" = :");
-
-			if (versionPropMapping != null
-					&& propMapping.getPropertyName().equals(versionPropMapping.getPropertyName())) {
-				sqlBuilder.append("incrementedVersion");
-				params.add("incrementedVersion");
-			} else {
-				sqlBuilder.append(propMapping.getPropertyName());
-				params.add(propMapping.getPropertyName());
-			}
-		}
-		// the where clause
-		sqlBuilder.append(" WHERE " + tableMapping.getIdColumnName() + " = :" + tableMapping.getIdPropertyName());
-		params.add(tableMapping.getIdPropertyName());
-		if (versionPropMapping != null) {
-			sqlBuilder.append(" AND ").append(versionPropMapping.getColumnName()).append(" = :")
-					.append(versionPropMapping.getPropertyName());
-			params.add(versionPropMapping.getPropertyName());
-		}
-		String updateSql = sqlBuilder.toString();
-		return new SqlAndParams(updateSql, params);
 	}
 
 	private <T> String getBeanColumnsSql(TableMapping tableMapping, Class<T> clazz) {

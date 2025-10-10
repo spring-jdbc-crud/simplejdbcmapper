@@ -9,7 +9,7 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsertOperations;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import io.github.simplejdbcmapper.model.Customer;
@@ -44,7 +44,7 @@ class CachingTest {
 
 	@Test
 	void jtm_insertCache_test() {
-		SimpleCache<String, SimpleJdbcInsert> cache = sjm.getInsertSqlCache();
+		SimpleCache<String, SimpleJdbcInsertOperations> cache = sjm.getInsertSqlCache();
 		cache.clear();
 
 		Order order = new Order();

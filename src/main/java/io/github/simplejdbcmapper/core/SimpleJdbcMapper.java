@@ -386,9 +386,9 @@ public final class SimpleJdbcMapper {
 	}
 
 	/**
-	 * Loads the mapping for a class. Model mappings are laze loaded ie they are
-	 * loaded when used for the first time. This method is provided so that the
-	 * mappings can be loaded during Spring application startup if needed.
+	 * Loads the mapping for a class. Mappings are lazy loaded ie they are loaded
+	 * when used the first time. This method is provided so that the mappings can be
+	 * loaded during Spring application startup if needed.
 	 *
 	 * @param clazz the class
 	 */

@@ -72,8 +72,14 @@ public final class SimpleJdbcMapper {
 
 	private final SimpleJdbcMapperSupport simpleJdbcMapperSupport;
 
+	private ConversionService conversionService = DefaultConversionService.getSharedInstance();
+
 	private RecordOperatorResolver recordOperatorResolver;
 
+	// Map key - class name
+	// value - the sql
+	private SimpleCache<String, String> findByIdSqlCache = new SimpleCache<>();
+	
 	// insert cache. Note that Spring SimpleJdbcInsert is thread safe.
 	// Map key - class name
 	// value - SimpleJdbcInsert
@@ -94,10 +100,6 @@ public final class SimpleJdbcMapper {
 	// Map key - class name
 	// value - the column sql string
 	private SimpleCache<String, String> beanColumnsSqlCache = new SimpleCache<>();
-
-	private SimpleCache<String, String> findByIdSqlCache = new SimpleCache<>();
-
-	private ConversionService conversionService = DefaultConversionService.getSharedInstance();
 
 	/**
 	 * Constructor.
@@ -382,7 +384,7 @@ public final class SimpleJdbcMapper {
 	}
 
 	/**
-	 * Loads the mapping for a class. Model mappings are loaded when they are used
+	 * Loads the mapping for a class. Model mappings are laze loaded ie they are loaded when used
 	 * for the first time. This method is provided so that the mappings can be
 	 * loaded during Spring application startup if needed.
 	 *

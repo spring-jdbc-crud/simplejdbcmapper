@@ -80,18 +80,18 @@ class SimpleJdbcMapperSupport {
 	 * @param schemaName  database schema name.
 	 * @param catalogName database catalog name.
 	 */
-	SimpleJdbcMapperSupport(DataSource dataSource, String schemaName, String catalogName) {
+	public SimpleJdbcMapperSupport(DataSource dataSource, String schemaName, String catalogName) {
 		Assert.notNull(dataSource, "dataSource must not be null");
 		this.dataSource = dataSource;
 		this.schemaName = schemaName;
 		this.catalogName = catalogName;
 	}
 
-	String getSchemaName() {
+	public String getSchemaName() {
 		return schemaName;
 	}
 
-	String getCatalogName() {
+	public String getCatalogName() {
 		return catalogName;
 	}
 
@@ -106,7 +106,7 @@ class SimpleJdbcMapperSupport {
 	 * @param clazz The object class
 	 * @return The table mapping.
 	 */
-	TableMapping getTableMapping(Class<?> clazz) {
+	public TableMapping getTableMapping(Class<?> clazz) {
 		Assert.notNull(clazz, "clazz must not be null");
 		TableMapping tableMapping = modelToTableMappingCache.get(clazz.getName());
 		if (tableMapping == null) {
@@ -156,7 +156,7 @@ class SimpleJdbcMapperSupport {
 	}
 	
 	// gets all unique fields including from super classes.
-	List<Field> getAllFields(Class<?> clazz) {
+	public List<Field> getAllFields(Class<?> clazz) {
 		List<Field> fields = getAllFieldsInternal(clazz);
 		// there could be duplicate fields due to super classes. Get unique fields list
 		// by name
@@ -164,11 +164,11 @@ class SimpleJdbcMapperSupport {
 		return fields.stream().filter(p -> set.add(p.getName())).toList();
 	}
 	
-	String getCommonDatabaseName() {
+	public String getCommonDatabaseName() {
 		return JdbcUtils.commonDatabaseName(getDatabaseProductName());
 	}
 	
-	void setDatabaseMetaDataOverride(Map<Class<?>, Integer> databaseMetaDataOverrideMap) {
+	public void setDatabaseMetaDataOverride(Map<Class<?>, Integer> databaseMetaDataOverrideMap) {
 		if (this.databaseMetaDataOverrideMap == null) {
 			Map<String, Integer> map = new HashMap<>();
 			for (Map.Entry<Class<?>, Integer> entry : databaseMetaDataOverrideMap.entrySet()) {

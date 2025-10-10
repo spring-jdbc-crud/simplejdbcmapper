@@ -30,7 +30,7 @@ class TableColumnInfo {
 
 	private List<ColumnInfo> columnInfos;
 
-	TableColumnInfo(String tableName, String schemaName, String catalogName, List<ColumnInfo> columnInfos) {
+	public TableColumnInfo(String tableName, String schemaName, String catalogName, List<ColumnInfo> columnInfos) {
 		this.tableName = tableName;
 		this.schemaName = SjmInternalUtils.isEmpty(schemaName) ? null : schemaName;
 		this.catalogName = SjmInternalUtils.isEmpty(catalogName) ? null : catalogName;

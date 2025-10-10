@@ -14,7 +14,6 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -543,16 +542,6 @@ class SimpleJdbcMapperTest {
 		var obj = new AppRecordOperatorResolver();
 		Assertions.assertThrows(IllegalStateException.class, () -> {
 			sjm.setRecordOperatorResolver(obj);
-		});
-
-	}
-
-	@Test
-	void setConversionService_resetting_failure() {
-		var obj = DefaultConversionService.getSharedInstance();
-		sjm.setConversionService(DefaultConversionService.getSharedInstance());
-		Assertions.assertThrows(IllegalStateException.class, () -> {
-			sjm.setConversionService(obj);
 		});
 	}
 

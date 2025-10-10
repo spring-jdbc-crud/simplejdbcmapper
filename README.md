@@ -227,14 +227,6 @@ spring.datasource.driver-class-name=com.microsoft.sqlserver.jdbc.SQLServerDriver
   
 ```
 
-## Configuring a ConversionService
-
-By default SimpleJdbcMapper does not use a ConversionService. If your java property types are mapped appropriately to the database column data type a ConversionService is not required. Having said that if you are getting data conversion errors you can configure Spring's DefaultConversionService (or your own custom ConversionService). Spring's DefaultConversionService should meet most use cases.
-
-    SimpleJdbcMapper sjm = new SimpleJdbcMapper(dataSource);
-    sjm.setConversionService(DefaultConversionService.getSharedInstance());
-    return sjm;
-
 ## Annotations
 
 **@Table**
@@ -431,17 +423,9 @@ For **Postgres/Oracle/Sqlserver** try setting the 'schema' parameter on construc
     Or
     @Table(name="sometablename", schema="SCHEMA_NAME");
 
-3. **Data conversion errors**
+3.**Postgres and OffsetDateTime**
 
-By default SimpleJdbcMapper does not use a conversion service. If your java property types are mapped appropriately to the database column data type a ConversionService is not required. Having said that if you are getting conversion errors you can configure Spring's DefaultConversionService (or your own custom ConversionService). Spring's DefaultConversionService should meet most use cases.
-
-    SimpleJdbcMapper sjm = new SimpleJdbcMapper(dataSource);
-    sjm.setConversionService(DefaultConversionService.getSharedInstance());
-    return sjm;
-
-4.**Postgres and OffsetDateTime**
-
-  Postgres database metadata for column definition 'TIMESTAMP WITH TIMEZONE' returns java.sql.Types.TIMESTAMP which is wrong, causing conversion failures. Do the following when configuring SimpleJdbcMapper():
+Postgres database metadata for column definition 'TIMESTAMP WITH TIMEZONE' returns java.sql.Types.TIMESTAMP which is wrong, causing conversion failures. Do the following when configuring SimpleJdbcMapper():
    
 	SimpleJdbcMapper sjm = new SimpleJdbcMapper(dataSource);	
 	Map<Class<?>, Integer> map = new HashMap<>();

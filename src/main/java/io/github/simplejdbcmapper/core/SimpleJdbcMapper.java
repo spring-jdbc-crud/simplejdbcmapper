@@ -29,6 +29,7 @@ import javax.sql.DataSource;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.core.convert.ConversionService;
+import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -96,7 +97,7 @@ public final class SimpleJdbcMapper {
 
 	private SimpleCache<String, String> findByIdSqlCache = new SimpleCache<>();
 
-	private ConversionService conversionService = null;
+	private ConversionService conversionService = DefaultConversionService.getSharedInstance();
 
 	/**
 	 * Constructor.
@@ -644,11 +645,7 @@ public final class SimpleJdbcMapper {
 	 * @param conversionService The conversion service to set
 	 */
 	public void setConversionService(ConversionService conversionService) {
-		if (this.conversionService == null) {
-			this.conversionService = conversionService;
-		} else {
-			throw new IllegalStateException("conversionService was already set and cannot be changed.");
-		}
+		this.conversionService = conversionService;
 	}
 
 	TableMapping getTableMapping(Class<?> clazz) {

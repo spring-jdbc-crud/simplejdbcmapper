@@ -236,6 +236,279 @@ public final class SimpleJdbcMapper {
 			insertSqlCache.put(obj.getClass().getName(), jdbcInsert);
 		}
 	}
+	
+	/**
+	 * Update the object.
+	 *
+	 * <pre>
+	 * Will handle the following annotations:
+	 * &#64;UpdatedOn property will be assigned current date and time
+	 * &#64;UpdatedBy if RecordOperatorResolver is configured with SimpleJdbcMapper the property 
+	 *                will be assigned that value
+	 * &#64;Version property will be incremented on a successful update. An OptimisticLockingException
+	 *                will be thrown if object is stale.
+	 * </pre>
+	 *
+	 * @param obj object to be updated
+	 * @return number of records updated
+	 */
+	public Integer update(Object obj) {
+		Assert.notNull(obj, "Object must not be null");
+		TableMapping tableMapping = simpleJdbcMapperSupport.getTableMapping(obj.getClass());
+		boolean foundInCache = false;
+		SqlAndParams sqlAndParams = updateSqlCache.get(obj.getClass().getName());
+		if (sqlAndParams == null) {
+			sqlAndParams = buildSqlAndParamsForUpdate(tableMapping);
+		} else {
+			foundInCache = true;
+		}
+		Integer cnt = updateInternal(obj, sqlAndParams, tableMapping);
+		if (!foundInCache && cnt > 0) {
+			updateSqlCache.put(obj.getClass().getName(), sqlAndParams);
+		}
+		return cnt;
+	}
+	
+	/**
+	 * Updates the specified properties passed in as arguments. Use it to update a
+	 * property or a few properties of the object and not the whole object. Issues
+	 * an SQL update statement for only for the specific properties and any auto
+	 * assign properties.
+	 *
+	 * <pre>
+	 * Will handle the following annotations:
+	 * &#64;UpdatedOn property will be assigned current date and time
+	 * &#64;UpdatedBy if RecordOperatorResolver is configured with SimpleJdbcMapper the property 
+	 *                will be assigned that value
+	 * &#64;Version property will be incremented on a successful update. An OptimisticLockingException
+	 *                will be thrown if object is stale.
+	 * </pre>
+	 *
+	 * @param obj           object to be updated
+	 * @param propertyNames the specific property names that need to be updated.
+	 * @return number of records updated
+	 */
+	public Integer updateSpecificProperties(Object obj, String... propertyNames) {
+		Assert.notNull(obj, "Object must not be null");
+		Assert.notNull(propertyNames, "propertyNames must not be null");
+		TableMapping tableMapping = simpleJdbcMapperSupport.getTableMapping(obj.getClass());
+		boolean foundInCache = false;
+		SqlAndParams sqlAndParams = null;
+		String cacheKey = getUpdateSpecificPropertiesCacheKey(obj, propertyNames);
+		if (cacheKey != null) {
+			sqlAndParams = updateSpecificPropertiesSqlCache.get(cacheKey);
+		}
+		if (sqlAndParams == null) {
+			sqlAndParams = buildSqlAndParamsForUpdateSpecificProperties(tableMapping, propertyNames);
+		} else {
+			foundInCache = true;
+		}
+		Integer cnt = updateInternal(obj, sqlAndParams, tableMapping);
+		if (cacheKey != null && !foundInCache && cnt > 0) {
+			updateSpecificPropertiesSqlCache.put(cacheKey, sqlAndParams);
+		}
+		return cnt;
+	}
+	
+	/**
+	 * Deletes the object from the database.
+	 *
+	 * @param obj Object to be deleted
+	 * @return number of records were deleted (1 or 0)
+	 */
+	public Integer delete(Object obj) {
+		Assert.notNull(obj, "Object must not be null");
+		TableMapping tableMapping = simpleJdbcMapperSupport.getTableMapping(obj.getClass());
+		String sql = "DELETE FROM " + tableMapping.fullyQualifiedTableName() + " WHERE "
+				+ tableMapping.getIdColumnName() + "= ?";
+		BeanWrapper bw = getBeanWrapper(obj);
+		Object id = bw.getPropertyValue(tableMapping.getIdPropertyName());
+		return jdbcTemplate.update(sql, id);
+	}
+
+	/**
+	 * Deletes the object from the database by id.
+	 *
+	 * @param clazz Type of object to be deleted.
+	 * @param id    Id of object to be deleted
+	 * @return number records were deleted (1 or 0)
+	 */
+	public Integer deleteById(Class<?> clazz, Object id) {
+		Assert.notNull(clazz, "Class must not be null");
+		Assert.notNull(id, "id must not be null");
+		TableMapping tableMapping = simpleJdbcMapperSupport.getTableMapping(clazz);
+		String sql = "DELETE FROM " + tableMapping.fullyQualifiedTableName() + " WHERE "
+				+ tableMapping.getIdColumnName() + " = ?";
+		return jdbcTemplate.update(sql, id);
+	}
+
+	/**
+	 * Gets the sql for the columns. Works well with Spring row mappers like
+	 * BeanPropertyRowMapper(), SimplePropertyRowMapper() etc. Will create the
+	 * needed column aliases when the column name does not match the corresponding
+	 * underscore case property name.
+	 *
+	 * <p>
+	 * Will return something like below if 'name' property is mapped to 'last_name'
+	 * column in database:
+	 *
+	 * <pre>
+	 * "somecolumn, someothercolumn, last_name AS name"
+	 * </pre>
+	 * 
+	 * @param clazz the class
+	 * @return comma separated select column string
+	 * 
+	 */
+	public String getBeanFriendlySqlColumns(Class<?> clazz) {
+		return getBeanColumnsSql(simpleJdbcMapperSupport.getTableMapping(clazz), clazz);
+	}
+
+	/**
+	 * returns a map with all the properties of the class with their corresponding
+	 * column names
+	 * 
+	 * @param clazz the class
+	 * @return map of property and their corresponding columns
+	 * 
+	 */
+	public Map<String, String> getPropertyToColumnMappings(Class<?> clazz) {
+		TableMapping tableMapping = simpleJdbcMapperSupport.getTableMapping(clazz);
+		Map<String, String> map = new LinkedHashMap<>();
+		for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {
+			map.put(propMapping.getPropertyName(), propMapping.getColumnName());
+		}
+		return map;
+	}
+
+	/**
+	 * Loads the mapping for a class. Model mappings are loaded when they are used
+	 * for the first time. This method is provided so that the mappings can be
+	 * loaded during Spring application startup if needed.
+	 *
+	 * @param clazz the class
+	 */
+	public void loadMapping(Class<?> clazz) {
+		simpleJdbcMapperSupport.getTableMapping(clazz);
+	}
+	
+
+	/**
+	 * Gets the JdbcClient of the SimpleJdbcMapper.
+	 *
+	 * @return the JdbcClient
+	 */
+	public JdbcClient getJdbcClient() {
+		return this.jdbcClient;
+	}
+
+	/**
+	 * Gets the JdbcTemplate of the SimpleJdbcMapper.
+	 *
+	 * @return the JdbcTemplate
+	 */
+	public JdbcTemplate getJdbcTemplate() {
+		return this.jdbcTemplate;
+	}
+
+	public NamedParameterJdbcTemplate getNamedParameterJdbcTemplate() {
+		return this.npJdbcTemplate;
+	}
+
+	/**
+	 * An implementation of RecordOperatorResolver is used to populate the
+	 * &#64;CreatedBy and &#64;UpdatedBy annotated properties.
+	 *
+	 * @param recordOperatorResolver The implement for interface
+	 *                               RecordOperatorResolver
+	 */
+	public void setRecordOperatorResolver(RecordOperatorResolver recordOperatorResolver) {
+		if (this.recordOperatorResolver == null) {
+			this.recordOperatorResolver = recordOperatorResolver;
+		} else {
+			throw new IllegalStateException("recordOperatorResolver was already set and cannot be changed.");
+		}
+	}
+
+	/**
+	 * Exposing the conversion service used so if necessary new converters can be
+	 * added.
+	 *
+	 * @return the default conversion service.
+	 */
+	public ConversionService getConversionService() {
+		return conversionService;
+	}
+
+	/**
+	 * Set the conversion service
+	 * 
+	 * @param conversionService The conversion service to set
+	 */
+	public void setConversionService(ConversionService conversionService) {
+		this.conversionService = conversionService;
+	}
+	
+	/**
+	 * SimpleJdbcMapper depends on database meta data. Some drivers do not return
+	 * correct java.sql.Types. Use this method to override the database metadata.
+	 * 
+	 * Example usage for postgres OffsetDateTime issue: <br>
+	 * {@snippet :
+	 * SimpleJdbcMapper sjm = new SimpleJdbcMapper(dataSource, "SCHEMA_NAME");
+	 * Map<Class<?>, Integer> map = new HashMap<>();
+	 * // map OffsetDateTime to the correct sql Type 
+	 * map.put(OffsetDateTime.class, java.sql.Types.TIMESTAMP_WITH_TIMEZONE);
+	 * sjm.setDatabaseMetaDataOverride(map);
+	 * }
+	 * 
+	 * @param databaseMetaDataOverrideMap the databaseMetaDataOverrideMap to set.
+	 */
+	public void setDatabaseMetaDataOverride(Map<Class<?>, Integer> databaseMetaDataOverrideMap) {
+		simpleJdbcMapperSupport.setDatabaseMetaDataOverride(databaseMetaDataOverrideMap);
+	}
+	
+	/**
+	 * Get the schema name.
+	 *
+	 * @return the schema name.
+	 */
+	public String getSchemaName() {
+		return simpleJdbcMapperSupport.getSchemaName();
+	}
+
+	/**
+	 * Get the catalog name.
+	 *
+	 * @return the catalog name.
+	 */
+	public String getCatalogName() {
+		return simpleJdbcMapperSupport.getCatalogName();
+	}
+
+	TableMapping getTableMapping(Class<?> clazz) {
+		return simpleJdbcMapperSupport.getTableMapping(clazz);
+	}
+	
+	SimpleCache<String, SimpleJdbcInsert> getInsertSqlCache() {
+		return insertSqlCache;
+	}
+
+	SimpleCache<String, SqlAndParams> getUpdateSqlCache() {
+		return updateSqlCache;
+	}
+
+	SimpleCache<String, SqlAndParams> getUpdateSpecificPropertiesSqlCache() {
+		return updateSpecificPropertiesSqlCache;
+	}
+
+	SimpleCache<String, String> getBeanColumnsSqlCache() {
+		return beanColumnsSqlCache;
+	}
+	
+	SimpleJdbcMapperSupport getSimpleJdbcMapperSupport() {
+		return this.simpleJdbcMapperSupport;
+	}
 
 	private void validateIdForInsert(TableMapping tableMapping, BeanWrapper bw) {
 		Object idValue = bw.getPropertyValue(tableMapping.getIdPropertyName());		
@@ -329,79 +602,6 @@ public final class SimpleJdbcMapper {
 		}
 	}
 
-	/**
-	 * Update the object.
-	 *
-	 * <pre>
-	 * Will handle the following annotations:
-	 * &#64;UpdatedOn property will be assigned current date and time
-	 * &#64;UpdatedBy if RecordOperatorResolver is configured with SimpleJdbcMapper the property 
-	 *                will be assigned that value
-	 * &#64;Version property will be incremented on a successful update. An OptimisticLockingException
-	 *                will be thrown if object is stale.
-	 * </pre>
-	 *
-	 * @param obj object to be updated
-	 * @return number of records updated
-	 */
-	public Integer update(Object obj) {
-		Assert.notNull(obj, "Object must not be null");
-		TableMapping tableMapping = simpleJdbcMapperSupport.getTableMapping(obj.getClass());
-		boolean foundInCache = false;
-		SqlAndParams sqlAndParams = updateSqlCache.get(obj.getClass().getName());
-		if (sqlAndParams == null) {
-			sqlAndParams = buildSqlAndParamsForUpdate(tableMapping);
-		} else {
-			foundInCache = true;
-		}
-		Integer cnt = updateInternal(obj, sqlAndParams, tableMapping);
-		if (!foundInCache && cnt > 0) {
-			updateSqlCache.put(obj.getClass().getName(), sqlAndParams);
-		}
-		return cnt;
-	}
-
-	/**
-	 * Updates the specified properties passed in as arguments. Use it to update a
-	 * property or a few properties of the object and not the whole object. Issues
-	 * an SQL update statement for only for the specific properties and any auto
-	 * assign properties.
-	 *
-	 * <pre>
-	 * Will handle the following annotations:
-	 * &#64;UpdatedOn property will be assigned current date and time
-	 * &#64;UpdatedBy if RecordOperatorResolver is configured with SimpleJdbcMapper the property 
-	 *                will be assigned that value
-	 * &#64;Version property will be incremented on a successful update. An OptimisticLockingException
-	 *                will be thrown if object is stale.
-	 * </pre>
-	 *
-	 * @param obj           object to be updated
-	 * @param propertyNames the specific property names that need to be updated.
-	 * @return number of records updated
-	 */
-	public Integer updateSpecificProperties(Object obj, String... propertyNames) {
-		Assert.notNull(obj, "Object must not be null");
-		Assert.notNull(propertyNames, "propertyNames must not be null");
-		TableMapping tableMapping = simpleJdbcMapperSupport.getTableMapping(obj.getClass());
-		boolean foundInCache = false;
-		SqlAndParams sqlAndParams = null;
-		String cacheKey = getUpdateSpecificPropertiesCacheKey(obj, propertyNames);
-		if (cacheKey != null) {
-			sqlAndParams = updateSpecificPropertiesSqlCache.get(cacheKey);
-		}
-		if (sqlAndParams == null) {
-			sqlAndParams = buildSqlAndParamsForUpdateSpecificProperties(tableMapping, propertyNames);
-		} else {
-			foundInCache = true;
-		}
-		Integer cnt = updateInternal(obj, sqlAndParams, tableMapping);
-		if (cacheKey != null && !foundInCache && cnt > 0) {
-			updateSpecificPropertiesSqlCache.put(cacheKey, sqlAndParams);
-		}
-		return cnt;
-	}
-
 	private Integer updateInternal(Object obj, SqlAndParams sqlAndParams, TableMapping tableMapping) {
 		Assert.notNull(obj, "Object must not be null");
 		Assert.notNull(sqlAndParams, "sqlAndParams must not be null");
@@ -491,166 +691,6 @@ public final class SimpleJdbcMapper {
 			}
 		}
 		return mapSqlParameterSource;
-	}
-
-	/**
-	 * Deletes the object from the database.
-	 *
-	 * @param obj Object to be deleted
-	 * @return number of records were deleted (1 or 0)
-	 */
-	public Integer delete(Object obj) {
-		Assert.notNull(obj, "Object must not be null");
-		TableMapping tableMapping = simpleJdbcMapperSupport.getTableMapping(obj.getClass());
-		String sql = "DELETE FROM " + tableMapping.fullyQualifiedTableName() + " WHERE "
-				+ tableMapping.getIdColumnName() + "= ?";
-		BeanWrapper bw = getBeanWrapper(obj);
-		Object id = bw.getPropertyValue(tableMapping.getIdPropertyName());
-		return jdbcTemplate.update(sql, id);
-	}
-
-	/**
-	 * Deletes the object from the database by id.
-	 *
-	 * @param clazz Type of object to be deleted.
-	 * @param id    Id of object to be deleted
-	 * @return number records were deleted (1 or 0)
-	 */
-	public Integer deleteById(Class<?> clazz, Object id) {
-		Assert.notNull(clazz, "Class must not be null");
-		Assert.notNull(id, "id must not be null");
-		TableMapping tableMapping = simpleJdbcMapperSupport.getTableMapping(clazz);
-		String sql = "DELETE FROM " + tableMapping.fullyQualifiedTableName() + " WHERE "
-				+ tableMapping.getIdColumnName() + " = ?";
-		return jdbcTemplate.update(sql, id);
-	}
-
-	/**
-	 * Gets the sql for the columns. Works well with Spring row mappers like
-	 * BeanPropertyRowMapper(), SimplePropertyRowMapper() etc. Will create the
-	 * needed column aliases when the column name does not match the corresponding
-	 * underscore case property name.
-	 *
-	 * <p>
-	 * Will return something like below if 'name' property is mapped to 'last_name'
-	 * column in database:
-	 *
-	 * <pre>
-	 * "somecolumn, someothercolumn, last_name AS name"
-	 * </pre>
-	 * 
-	 * @param clazz the class
-	 * @return comma separated select column string
-	 * 
-	 */
-	public String getBeanFriendlySqlColumns(Class<?> clazz) {
-		return getBeanColumnsSql(simpleJdbcMapperSupport.getTableMapping(clazz), clazz);
-	}
-
-	/**
-	 * returns a map with all the properties of the class with their corresponding
-	 * column names
-	 * 
-	 * @param clazz the class
-	 * @return map of property and their corresponding columns
-	 * 
-	 */
-	public Map<String, String> getPropertyToColumnMappings(Class<?> clazz) {
-		TableMapping tableMapping = simpleJdbcMapperSupport.getTableMapping(clazz);
-		Map<String, String> map = new LinkedHashMap<>();
-		for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {
-			map.put(propMapping.getPropertyName(), propMapping.getColumnName());
-		}
-		return map;
-	}
-
-	/**
-	 * Loads the mapping for a class. Model mappings are loaded when they are used
-	 * for the first time. This method is provided so that the mappings can be
-	 * loaded during Spring application startup if needed.
-	 *
-	 * @param clazz the class
-	 */
-	public void loadMapping(Class<?> clazz) {
-		simpleJdbcMapperSupport.getTableMapping(clazz);
-	}
-
-	/**
-	 * Gets the JdbcClient of the SimpleJdbcMapper.
-	 *
-	 * @return the JdbcClient
-	 */
-	public JdbcClient getJdbcClient() {
-		return this.jdbcClient;
-	}
-
-	/**
-	 * Gets the JdbcTemplate of the SimpleJdbcMapper.
-	 *
-	 * @return the JdbcTemplate
-	 */
-	public JdbcTemplate getJdbcTemplate() {
-		return this.jdbcTemplate;
-	}
-
-	public NamedParameterJdbcTemplate getNamedParameterJdbcTemplate() {
-		return this.npJdbcTemplate;
-	}
-
-	/**
-	 * An implementation of RecordOperatorResolver is used to populate the
-	 * &#64;CreatedBy and &#64;UpdatedBy annotated properties.
-	 *
-	 * @param recordOperatorResolver The implement for interface
-	 *                               RecordOperatorResolver
-	 */
-	public void setRecordOperatorResolver(RecordOperatorResolver recordOperatorResolver) {
-		if (this.recordOperatorResolver == null) {
-			this.recordOperatorResolver = recordOperatorResolver;
-		} else {
-			throw new IllegalStateException("recordOperatorResolver was already set and cannot be changed.");
-		}
-	}
-
-	/**
-	 * Get the schema name.
-	 *
-	 * @return the schema name.
-	 */
-	public String getSchemaName() {
-		return simpleJdbcMapperSupport.getSchemaName();
-	}
-
-	/**
-	 * Get the catalog name.
-	 *
-	 * @return the catalog name.
-	 */
-	public String getCatalogName() {
-		return simpleJdbcMapperSupport.getCatalogName();
-	}
-
-	/**
-	 * Exposing the conversion service used so if necessary new converters can be
-	 * added.
-	 *
-	 * @return the default conversion service.
-	 */
-	public ConversionService getConversionService() {
-		return conversionService;
-	}
-
-	/**
-	 * Set the conversion service
-	 * 
-	 * @param conversionService The conversion service to set
-	 */
-	public void setConversionService(ConversionService conversionService) {
-		this.conversionService = conversionService;
-	}
-
-	TableMapping getTableMapping(Class<?> clazz) {
-		return simpleJdbcMapperSupport.getTableMapping(clazz);
 	}
 
 	private SqlAndParams buildSqlAndParamsForUpdate(TableMapping tableMapping) {
@@ -800,49 +840,10 @@ public final class SimpleJdbcMapper {
 		}
 	}
 
-	SimpleCache<String, SimpleJdbcInsert> getInsertSqlCache() {
-		return insertSqlCache;
-	}
-
-	SimpleCache<String, SqlAndParams> getUpdateSqlCache() {
-		return updateSqlCache;
-	}
-
-	SimpleCache<String, SqlAndParams> getUpdateSpecificPropertiesSqlCache() {
-		return updateSpecificPropertiesSqlCache;
-	}
-
-	SimpleCache<String, String> getBeanColumnsSqlCache() {
-		return beanColumnsSqlCache;
-	}
-
 	private <T> BeanPropertyRowMapper<T> getBeanPropertyRowMapper(Class<T> clazz) {
 		BeanPropertyRowMapper<T> rowMapper = BeanPropertyRowMapper.newInstance(clazz);
 		rowMapper.setConversionService(this.conversionService);
 		return rowMapper;
-	}
-
-	SimpleJdbcMapperSupport getSimpleJdbcMapperSupport() {
-		return this.simpleJdbcMapperSupport;
-	}
-
-	/**
-	 * SimpleJdbcMapper depends on database meta data. Some drivers do not return
-	 * correct java.sql.Types. Use this method to override the database metadata.
-	 * 
-	 * Example usage for postgres OffsetDateTime issue: <br>
-	 * {@snippet :
-	 * SimpleJdbcMapper sjm = new SimpleJdbcMapper(dataSource, "SCHEMA_NAME");
-	 * Map<Class<?>, Integer> map = new HashMap<>();
-	 * // map OffsetDateTime to the correct sql Type 
-	 * map.put(OffsetDateTime.class, java.sql.Types.TIMESTAMP_WITH_TIMEZONE);
-	 * sjm.setDatabaseMetaDataOverride(map);
-	 * }
-	 * 
-	 * @param databaseMetaDataOverrideMap the databaseMetaDataOverrideMap to set.
-	 */
-	public void setDatabaseMetaDataOverride(Map<Class<?>, Integer> databaseMetaDataOverrideMap) {
-		simpleJdbcMapperSupport.setDatabaseMetaDataOverride(databaseMetaDataOverrideMap);
 	}
 
 	private Class<?> getClassFor(String className) {

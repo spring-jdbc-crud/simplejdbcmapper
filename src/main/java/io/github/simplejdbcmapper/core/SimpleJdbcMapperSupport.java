@@ -80,18 +80,18 @@ class SimpleJdbcMapperSupport {
 	 * @param schemaName  database schema name.
 	 * @param catalogName database catalog name.
 	 */
-	public SimpleJdbcMapperSupport(DataSource dataSource, String schemaName, String catalogName) {
+	SimpleJdbcMapperSupport(DataSource dataSource, String schemaName, String catalogName) {
 		Assert.notNull(dataSource, "dataSource must not be null");
 		this.dataSource = dataSource;
 		this.schemaName = schemaName;
 		this.catalogName = catalogName;
 	}
 
-	public String getSchemaName() {
+	String getSchemaName() {
 		return schemaName;
 	}
 
-	public String getCatalogName() {
+	String getCatalogName() {
 		return catalogName;
 	}
 
@@ -106,7 +106,7 @@ class SimpleJdbcMapperSupport {
 	 * @param clazz The object class
 	 * @return The table mapping.
 	 */
-	public TableMapping getTableMapping(Class<?> clazz) {
+	TableMapping getTableMapping(Class<?> clazz) {
 		Assert.notNull(clazz, "clazz must not be null");
 		TableMapping tableMapping = modelToTableMappingCache.get(clazz.getName());
 		if (tableMapping == null) {
@@ -153,6 +153,31 @@ class SimpleJdbcMapperSupport {
 			modelToTableMappingCache.put(clazz.getName(), tableMapping);
 		}
 		return tableMapping;
+	}
+	
+	// gets all unique fields including from super classes.
+	List<Field> getAllFields(Class<?> clazz) {
+		List<Field> fields = getAllFieldsInternal(clazz);
+		// there could be duplicate fields due to super classes. Get unique fields list
+		// by name
+		Set<String> set = new HashSet<>();
+		return fields.stream().filter(p -> set.add(p.getName())).toList();
+	}
+	
+	String getCommonDatabaseName() {
+		return JdbcUtils.commonDatabaseName(getDatabaseProductName());
+	}
+	
+	void setDatabaseMetaDataOverride(Map<Class<?>, Integer> databaseMetaDataOverrideMap) {
+		if (this.databaseMetaDataOverrideMap == null) {
+			Map<String, Integer> map = new HashMap<>();
+			for (Map.Entry<Class<?>, Integer> entry : databaseMetaDataOverrideMap.entrySet()) {
+				map.put(entry.getKey().getName(), entry.getValue());
+			}
+			this.databaseMetaDataOverrideMap = map;
+		} else {
+			throw new IllegalStateException("databaseMetaDataOverrideMap was already set and cannot be changed.");
+		}
 	}
 
 	private IdPropertyInfo getIdPropertyInfo(Class<?> clazz, List<Field> fields) {
@@ -334,14 +359,7 @@ class SimpleJdbcMapperSupport {
 		return errMsg;
 	}
 
-	// gets all unique fields including from super classes.
-	public List<Field> getAllFields(Class<?> clazz) {
-		List<Field> fields = getAllFieldsInternal(clazz);
-		// there could be duplicate fields due to super classes. Get unique fields list
-		// by name
-		Set<String> set = new HashSet<>();
-		return fields.stream().filter(p -> set.add(p.getName())).toList();
-	}
+
 
 	// get all fields including fields in super classes.
 	private List<Field> getAllFieldsInternal(Class<?> clazz) {
@@ -368,10 +386,6 @@ class SimpleJdbcMapperSupport {
 		}
 	}
 
-	public String getCommonDatabaseName() {
-		return JdbcUtils.commonDatabaseName(getDatabaseProductName());
-	}
-
 	private String getDatabaseProductName() {
 		// databaseProductName is not a volatile variable. No side effects even if
 		// contention
@@ -396,18 +410,6 @@ class SimpleJdbcMapperSupport {
 				}
 				return this.databaseProductName;
 			}
-		}
-	}
-
-	public void setDatabaseMetaDataOverride(Map<Class<?>, Integer> databaseMetaDataOverrideMap) {
-		if (this.databaseMetaDataOverrideMap == null) {
-			Map<String, Integer> map = new HashMap<>();
-			for (Map.Entry<Class<?>, Integer> entry : databaseMetaDataOverrideMap.entrySet()) {
-				map.put(entry.getKey().getName(), entry.getValue());
-			}
-			this.databaseMetaDataOverrideMap = map;
-		} else {
-			throw new IllegalStateException("databaseMetaDataOverrideMap was already set and cannot be changed.");
 		}
 	}
 

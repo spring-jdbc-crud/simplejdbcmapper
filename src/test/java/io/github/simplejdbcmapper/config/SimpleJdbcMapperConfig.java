@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.sql.DataSource;
+
 import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -40,11 +41,12 @@ public class SimpleJdbcMapperConfig {
 			simpleJdbcMapper = new SimpleJdbcMapper(dataSource, "schema1");
 		}
 		simpleJdbcMapper.setRecordOperatorResolver(new AppRecordOperatorResolver());
+		// just for testing purposes running without a conversionSevice
+		// simpleJdbcMapper.setConversionService(null);
 
 		// postgres data metadata for column definition 'TIMESTAMP WITH TIMEZONE'
 		// returns java.sql.Types.TIMESTAMP which is wrong causing conversion failures
-		// for OffsetDateTime.
-		// Override the database metadata for OffsetDateTime
+		// for OffsetDateTime. Override the database metadata for OffsetDateTime
 		if (jdbcDriver.contains("postgres")) {
 			Map<Class<?>, Integer> map = new HashMap<>();
 			map.put(OffsetDateTime.class, Types.TIMESTAMP_WITH_TIMEZONE);

@@ -133,16 +133,11 @@ class SimpleJdbcMapperSupport {
 						throw new AnnotationException(colName + " column not found in table " + tableName
 								+ " for model property " + clazz.getSimpleName() + "." + propertyName);
 					}
-					if (getDatabaseMetaDataOverrideSqlType(field.getType()) != null) {
-						propNameToPropertyMapping.put(propertyName,
-								new PropertyMapping(propertyName, field.getType().getName(), colName,
-										columnNameToColumnInfo.get(colName).getColumnSqlDataType(),
-										getDatabaseMetaDataOverrideSqlType(field.getType())));
-					} else {
-						propNameToPropertyMapping.put(propertyName,
-								new PropertyMapping(propertyName, field.getType().getName(), colName,
-										columnNameToColumnInfo.get(colName).getColumnSqlDataType()));
-					}
+					propNameToPropertyMapping.put(propertyName,
+							new PropertyMapping(propertyName, field.getType().getName(), colName,
+									columnNameToColumnInfo.get(colName).getColumnSqlDataType(),
+									getDatabaseMetaDataOverrideSqlType(field.getType())));
+
 				}
 				processAnnotation(Id.class, field, tableName, propNameToPropertyMapping, columnNameToColumnInfo);
 				processAnnotation(Version.class, field, tableName, propNameToPropertyMapping, columnNameToColumnInfo);

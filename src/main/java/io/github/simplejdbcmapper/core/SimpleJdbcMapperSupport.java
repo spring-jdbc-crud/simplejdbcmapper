@@ -225,6 +225,7 @@ class SimpleJdbcMapperSupport {
 				propNameToPropertyMapping.put(propertyName, propMapping);
 			}
 			BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(propMapping);
+			// set idAnnotation, versionAnnotation, createdOnAnnotation etc on PropertyMapping object
 			bw.setPropertyValue(StringUtils.uncapitalize(annotationClazz.getSimpleName()) + "Annotation", true);
 		}
 	}

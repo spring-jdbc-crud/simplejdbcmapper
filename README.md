@@ -119,7 +119,7 @@ Spring framework **6.1.4+** or SpringBoot **3.2.3+**
   <dependency>
     <groupId>io.github.spring-jdbc-crud</groupId>
     <artifactId>simplejdbcmapper</artifactId>
-    <version>1.3.1</version>
+    <version>1.3.2</version>
  </dependency>
  ```
  

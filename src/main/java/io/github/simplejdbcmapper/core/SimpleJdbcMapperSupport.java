@@ -135,7 +135,7 @@ class SimpleJdbcMapperSupport {
 					}
 					propNameToPropertyMapping.put(propertyName,
 							new PropertyMapping(propertyName, field.getType().getName(), colName,
-									columnNameToColumnInfo.get(colName).getColumnSqlDataType(),
+									columnNameToColumnInfo.get(colName).getColumnSqlType(),
 									getDatabaseMetaDataOverrideSqlType(field.getType())));
 
 				}
@@ -246,7 +246,7 @@ class SimpleJdbcMapperSupport {
 									+ field.getDeclaringClass().getSimpleName() + "." + field.getName());
 				}
 				propMapping = new PropertyMapping(propertyName, field.getType().getName(), colName,
-						columnNameToColumnInfo.get(colName).getColumnSqlDataType());
+						columnNameToColumnInfo.get(colName).getColumnSqlType());
 				propNameToPropertyMapping.put(propertyName, propMapping);
 			}
 			BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(propMapping);

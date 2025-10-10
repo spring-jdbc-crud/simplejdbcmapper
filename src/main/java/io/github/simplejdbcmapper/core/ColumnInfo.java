@@ -21,18 +21,18 @@ package io.github.simplejdbcmapper.core;
 class ColumnInfo {
 	private String columnName;
 
-	private int columnSqlDataType; // see java.sql.Types
+	private int columnSqlType; // see java.sql.Types
 
-	public ColumnInfo(String columnName, int columnSqlDataType) {
+	public ColumnInfo(String columnName, int columnSqlType) {
 		this.columnName = SjmInternalUtils.toLowerCase(columnName);
-		this.columnSqlDataType = columnSqlDataType;
+		this.columnSqlType = columnSqlType;
 	}
 
 	public String getColumnName() {
 		return columnName;
 	}
 
-	public int getColumnSqlDataType() {
-		return columnSqlDataType;
+	public int getColumnSqlType() {
+		return columnSqlType;
 	}
 }

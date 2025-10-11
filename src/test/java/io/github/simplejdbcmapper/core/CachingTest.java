@@ -29,7 +29,7 @@ class CachingTest {
 
 	@Test
 	void jtm_findByIdCache_test() {
-		SimpleCache<String, String> cache = sjm.getBeanColumnsSqlCache();
+		SimpleCache<String, String> cache = sjm.getFindByIdSqlCache();
 		cache.clear();
 
 		sjm.findById(Order.class, 1);
@@ -38,6 +38,7 @@ class CachingTest {
 		sjm.findById(Order.class, 2);
 		assertEquals(1, cache.getSize());
 
+		sjm.findById(Customer.class, 1);
 		sjm.findById(Customer.class, 1);
 		assertEquals(2, cache.getSize());
 	}

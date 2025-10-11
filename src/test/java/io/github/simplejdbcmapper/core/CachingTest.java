@@ -13,6 +13,7 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import io.github.simplejdbcmapper.model.Customer;
+import io.github.simplejdbcmapper.model.Employee;
 import io.github.simplejdbcmapper.model.Order;
 import io.github.simplejdbcmapper.model.Product;
 import io.github.simplejdbcmapper.model.ProductWithNoAuditFields;
@@ -164,6 +165,28 @@ class CachingTest {
 
 		sjm.getBeanFriendlySqlColumns(Product.class);
 		assertEquals(2, cache.getSize());
+
+	}
+
+	@Test
+	void tableMappingCache_test() {
+		SimpleCache<String, TableMapping> cache = sjm.getTableMappingCache();
+		cache.clear();
+
+		sjm.loadMapping(Customer.class);
+		assertEquals(1, cache.getSize());
+
+		sjm.loadMapping(Employee.class);
+		assertEquals(2, cache.getSize());
+
+		sjm.loadMapping(Customer.class);
+		assertEquals(2, cache.getSize());
+
+		sjm.loadMapping(Product.class);
+		assertEquals(3, cache.getSize());
+
+		sjm.loadMapping(Employee.class);
+		assertEquals(3, cache.getSize());
 
 	}
 

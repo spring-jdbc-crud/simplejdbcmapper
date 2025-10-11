@@ -74,6 +74,8 @@ public final class SimpleJdbcMapper {
 
 	private final SimpleJdbcMapperSupport simpleJdbcMapperSupport;
 
+	// Using Spring's DefaultConversionService as default conversionService for
+	// SimpleJdbcMapper
 	private ConversionService conversionService = DefaultConversionService.getSharedInstance();
 
 	private RecordOperatorResolver recordOperatorResolver;

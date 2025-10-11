@@ -110,7 +110,7 @@ class CachingTest {
 	}
 
 	@Test
-	void jtm_updatePropertiesCache_test() {
+	void jtm_updateSpecificPropertiesCache_test() {
 		SimpleCache<String, SqlAndParams> cache = sjm.getUpdateSpecificPropertiesSqlCache();
 		cache.clear();
 

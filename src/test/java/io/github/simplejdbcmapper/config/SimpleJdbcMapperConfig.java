@@ -23,6 +23,9 @@ public class SimpleJdbcMapperConfig {
 	@Value("${spring.datasource.driver-class-name}")
 	private String jdbcDriver;
 
+	@Value("${sjm.runWithConversionServiceNull:false}")
+	private boolean runWithConversionServiceNull;
+
 	@Primary
 	@Bean(name = "ds1")
 	@ConfigurationProperties(prefix = "spring.datasource")
@@ -42,8 +45,9 @@ public class SimpleJdbcMapperConfig {
 		}
 		simpleJdbcMapper.setRecordOperatorResolver(new AppRecordOperatorResolver());
 		// just for testing purposes running without a conversionSevice
-		// simpleJdbcMapper.setConversionService(null);
-
+		if (runWithConversionServiceNull) {
+			simpleJdbcMapper.setConversionService(null);
+		}
 		// postgres data metadata for column definition 'TIMESTAMP WITH TIMEZONE'
 		// returns java.sql.Types.TIMESTAMP which is wrong causing conversion failures
 		// for OffsetDateTime. Override the database metadata for OffsetDateTime

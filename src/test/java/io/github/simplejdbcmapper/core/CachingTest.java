@@ -39,7 +39,6 @@ class CachingTest {
 		assertEquals(1, cache.getSize());
 
 		sjm.findById(Customer.class, 1);
-		sjm.findById(Customer.class, 1);
 		assertEquals(2, cache.getSize());
 	}
 

@@ -28,7 +28,7 @@ class CachingTest {
 	private SimpleJdbcMapper sjm;
 
 	@Test
-	void jtm_findByIdCache_test() {
+	void findByIdCache_test() {
 		SimpleCache<String, String> cache = sjm.getFindByIdSqlCache();
 		cache.clear();
 
@@ -43,7 +43,7 @@ class CachingTest {
 	}
 
 	@Test
-	void jtm_insertCache_test() {
+	void insertCache_test() {
 		SimpleCache<String, SimpleJdbcInsert> cache = sjm.getInsertSqlCache();
 		cache.clear();
 
@@ -73,7 +73,7 @@ class CachingTest {
 	}
 
 	@Test
-	void jtm_updateCache_test() {
+	void updateCache_test() {
 		SimpleCache<String, SqlAndParams> cache = sjm.getUpdateSqlCache();
 		cache.clear();
 
@@ -110,7 +110,7 @@ class CachingTest {
 	}
 
 	@Test
-	void jtm_updateSpecificPropertiesCache_test() {
+	void updateSpecificPropertiesCache_test() {
 		SimpleCache<String, SqlAndParams> cache = sjm.getUpdateSpecificPropertiesSqlCache();
 		cache.clear();
 
@@ -149,7 +149,7 @@ class CachingTest {
 	}
 
 	@Test
-	void jtm_beanColumnsSqlCache_test() {
+	void beanColumnsSqlCache_test() {
 		SimpleCache<String, String> cache = sjm.getBeanColumnsSqlCache();
 		cache.clear();
 

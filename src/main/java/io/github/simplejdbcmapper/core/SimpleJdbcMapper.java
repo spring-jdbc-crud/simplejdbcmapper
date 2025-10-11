@@ -493,6 +493,10 @@ public final class SimpleJdbcMapper {
 		return simpleJdbcMapperSupport.getTableMapping(clazz);
 	}
 
+	SimpleCache<String, TableMapping> getTableMappingCache() {
+		return simpleJdbcMapperSupport.getTableMappingCache();
+	}
+
 	SimpleCache<String, String> getFindByIdSqlCache() {
 		return findByIdSqlCache;
 	}

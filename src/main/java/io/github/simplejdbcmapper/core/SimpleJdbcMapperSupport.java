@@ -61,7 +61,7 @@ import io.github.simplejdbcmapper.exception.MapperException;
 class SimpleJdbcMapperSupport {
 	// Map key - class name
 	// value - the table mapping
-	private SimpleCache<String, TableMapping> modelToTableMappingCache = new SimpleCache<>();
+	private SimpleCache<String, TableMapping> tableMappingCache = new SimpleCache<>();
 
 	private final DataSource dataSource;
 
@@ -108,7 +108,7 @@ class SimpleJdbcMapperSupport {
 	 */
 	public TableMapping getTableMapping(Class<?> clazz) {
 		Assert.notNull(clazz, "clazz must not be null");
-		TableMapping tableMapping = modelToTableMappingCache.get(clazz.getName());
+		TableMapping tableMapping = tableMappingCache.get(clazz.getName());
 		if (tableMapping == null) {
 			TableColumnInfo tableColumnInfo = getTableColumnInfo(clazz);
 			String tableName = tableColumnInfo.getTableName();
@@ -150,11 +150,11 @@ class SimpleJdbcMapperSupport {
 			validateAnnotations(propertyMappings, clazz);
 			tableMapping = new TableMapping(clazz, tableName, tableColumnInfo.getSchemaName(),
 					tableColumnInfo.getCatalogName(), idPropertyInfo, propertyMappings);
-			modelToTableMappingCache.put(clazz.getName(), tableMapping);
+			tableMappingCache.put(clazz.getName(), tableMapping);
 		}
 		return tableMapping;
 	}
-	
+
 	// gets all unique fields including from super classes.
 	public List<Field> getAllFields(Class<?> clazz) {
 		List<Field> fields = getAllFieldsInternal(clazz);
@@ -163,11 +163,11 @@ class SimpleJdbcMapperSupport {
 		Set<String> set = new HashSet<>();
 		return fields.stream().filter(p -> set.add(p.getName())).toList();
 	}
-	
+
 	public String getCommonDatabaseName() {
 		return JdbcUtils.commonDatabaseName(getDatabaseProductName());
 	}
-	
+
 	public void setDatabaseMetaDataOverride(Map<Class<?>, Integer> databaseMetaDataOverrideMap) {
 		if (this.databaseMetaDataOverrideMap == null) {
 			Map<String, Integer> map = new HashMap<>();
@@ -178,6 +178,10 @@ class SimpleJdbcMapperSupport {
 		} else {
 			throw new IllegalStateException("databaseMetaDataOverrideMap was already set and cannot be changed.");
 		}
+	}
+
+	SimpleCache<String, TableMapping> getTableMappingCache() {
+		return tableMappingCache;
 	}
 
 	private IdPropertyInfo getIdPropertyInfo(Class<?> clazz, List<Field> fields) {
@@ -250,7 +254,8 @@ class SimpleJdbcMapperSupport {
 				propNameToPropertyMapping.put(propertyName, propMapping);
 			}
 			BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(propMapping);
-			// set idAnnotation, versionAnnotation, createdOnAnnotation etc on PropertyMapping object
+			// set idAnnotation, versionAnnotation, createdOnAnnotation etc on
+			// PropertyMapping object
 			bw.setPropertyValue(StringUtils.uncapitalize(annotationClazz.getSimpleName()) + "Annotation", true);
 		}
 	}
@@ -358,8 +363,6 @@ class SimpleJdbcMapperSupport {
 		errMsg += " for class " + clazz.getSimpleName();
 		return errMsg;
 	}
-
-
 
 	// get all fields including fields in super classes.
 	private List<Field> getAllFieldsInternal(Class<?> clazz) {

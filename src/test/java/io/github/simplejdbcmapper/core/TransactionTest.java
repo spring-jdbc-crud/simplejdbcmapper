@@ -23,6 +23,7 @@ class TransactionTest {
 	@BeforeEach
 	void beforeMethod() {
 		// clear caches to force a table meta data lookup from database.
+		sjm.getTableMappingCache().clear();
 		sjm.getInsertSqlCache().clear();
 		sjm.getFindByIdSqlCache().clear();
 		sjm.getUpdateSqlCache().clear();

@@ -148,4 +148,23 @@ class CachingTest {
 
 	}
 
+	@Test
+	void jtm_beanColumnsSqlCache_test() {
+		SimpleCache<String, String> cache = sjm.getBeanColumnsSqlCache();
+		cache.clear();
+
+		sjm.getBeanFriendlySqlColumns(Customer.class);
+		assertEquals(1, cache.getSize());
+
+		sjm.getBeanFriendlySqlColumns(Customer.class);
+		assertEquals(1, cache.getSize());
+
+		sjm.getBeanFriendlySqlColumns(Product.class);
+		assertEquals(2, cache.getSize());
+
+		sjm.getBeanFriendlySqlColumns(Product.class);
+		assertEquals(2, cache.getSize());
+
+	}
+
 }

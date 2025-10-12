@@ -1,6 +1,7 @@
 package io.github.simplejdbcmapper.config;
 
 import java.sql.Types;
+import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.HashMap;
 import java.util.Map;
@@ -26,6 +27,9 @@ public class SimpleJdbcMapperConfig {
 	@Value("${sjm.runWithConversionServiceNull:false}")
 	private boolean runWithConversionServiceNull;
 
+	@Value("${sjm.runWithRecordAuditing:false}")
+	private boolean runWithRecordAuditing;
+
 	@Primary
 	@Bean(name = "ds1")
 	@ConfigurationProperties(prefix = "spring.datasource")
@@ -43,7 +47,13 @@ public class SimpleJdbcMapperConfig {
 		} else {
 			simpleJdbcMapper = new SimpleJdbcMapper(dataSource, "schema1");
 		}
-		simpleJdbcMapper.setRecordOperatorResolver(new AppRecordOperatorResolver());
+
+		// for testing with record auditing
+		if (runWithRecordAuditing) {
+			simpleJdbcMapper.setRecordAuditedBySupplier(() -> "tester");
+			simpleJdbcMapper.setRecordAuditedOnSupplier(() -> LocalDateTime.now());
+		}
+
 		// just for testing purposes running without a conversionSevice
 		if (runWithConversionServiceNull) {
 			simpleJdbcMapper.setConversionService(null);
@@ -69,7 +79,7 @@ public class SimpleJdbcMapperConfig {
 	@Qualifier("allSimpleJdbcMapper")
 	public SimpleJdbcMapper allSimpleJdbcMapper(@Qualifier("dsAll") DataSource dataSource) {
 		SimpleJdbcMapper simpleJdbcMapper = new SimpleJdbcMapper(dataSource);
-		simpleJdbcMapper.setRecordOperatorResolver(new AppRecordOperatorResolver());
+		simpleJdbcMapper.setRecordAuditedBySupplier(() -> "tester");
 		return simpleJdbcMapper;
 	}
 }

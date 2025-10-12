@@ -9,7 +9,7 @@ A simple wrapper around Spring JDBC libraries that makes database CRUD operation
   1. One liners for CRUD.
   2. Auto assign properties for models:
       * auto assign created on, updated on.
-      * auto assign created by, updated by using an implementation of interface RecordOperatorResolver.
+      * auto assign created by, updated by.
       * optimistic locking feature for updates.
   3. Helper methods to get the SQL for the mapped objects that can be used with Spring row mappers like BeanPropertyRowMapper, SimplePropertyRowMapper etc.
   4. For transaction management use Spring transactions since its just a wrapper library.
@@ -309,20 +309,19 @@ Will be set to 1 when record is created and will incremented on updates. On upda
 
 **@CreatedOn**
 
-When record is created the property will be set. It has to be of type LocalDateTime. @Column annotation can be used with this to map to a different column name.
+If a Supplier is configured using simpleJdbcMapper.setRecordAuditedOnSupplier(), it will be used to to set the value for the @CreatedOn property. The type of the Supplier should match the type of the property. @Column annotation can also be used with the property to map to a different column name.
 
 **@UpdatedOn**
 
-On updates  the property will be set. It has to be of type LocalDateTime. @Column annotation can be used with this to map to a different column name.
+If a Supplier is configured using simpleJdbcMapper.setRecordAuditedOnSupplier(), it will be used to to set the value for the @UpdatedOn property. The type of the Supplier should match the type of the property. @Column annotation can also be used with the property to map to a different column name.
 
 **@CreatedBy**
 
-If RecordOperatorResolver is implemented and configured with SimpleJdbcMapper the value will be set to value returned by implementation when the record is created. Without configuration no values will be set. The type returned should match the type of the property. @Column annotation can be used with this to map to a different column name.
+If a Supplier is configured using simpleJdbcMapper.setRecordAuditedBySupplier(), it will be used to to set the value for the @CreatedBy property. The type of the Supplier should match the type of the property. @Column annotation can also be used with the to map to a different column name.
 
 **@UpdatedBy**
+If a Supplier is configured using simpleJdbcMapper.setRecordAuditedBySupplier(), it will be used to to set the value for the @UpdatedBy property. The type of the Supplier should match the type of the property. @Column annotation can also be used with the property to map to a different column name.
 
-If RecordOperatorResolver is implemented and configured with SimpleJdbcMapper the value will be set to value returned by implementation when the record is updated. Without configuration no values will be set. The type returned should match the type of the property. @Column annotation can be used with this to map to a different column name.
-  
 
  Annotation examples:
 
@@ -341,19 +340,26 @@ class Product {
  private String productDescription // defaults to column product_description 
  
  @CreatedOn 
- private LocalDateTime createdTimestamp;  // defaults to column created_timestamp. Property type should be LocalDateTime 
+ private LocalDateTime createdTimestamp;  // defaults to column name created_timestamp. 
+                                          // If a Supplier is configured it will use the value from Supplier to populate this property. 
+                                          // Make sure Supplier type and property type match
   
  @CreatedBy
  private String createdByUser;     // defaults to column created_by_user. 
-                                   // Property type should match return value of implementation of RecordOperatorResolver.  
+                                   // If a Supplier is configured it will use the value from Supplier to populate this property. 
+                                   // Make sure Supplier type and property type match
   
  @UpdatedOn
- private LocalDateTime updatedAt;  // defaults to column updated_at. Property type should be LocalDateTime  
+ private LocalDateTime updatedAt;  // defaults to column name updated_at.
+                                   // If a Supplier is configured it will use the value from Supplier to populate this property. 
+                                   // Make sure Supplier type and property type match
  
  @Column(name="last_update_user")
  @UpdatedBy
  private String updatedBy;         // maps to column last_update_user. 
-                                   // Property type should match return value of implementation of RecordOperatorResolver.
+                                   // If a Supplier is configured it will use the value from Supplier to populate this property. 
+                                   // Make sure Supplier type and property type match
+                                  
    
  @Version
  private Integer version;          // defaults to column version, 
@@ -363,22 +369,20 @@ class Product {
 }
 ```
 
-## Configuration for auto assigning @CreatedBy and @UpdateBy
- 
+## Configuration for auto assigning @CreatedBy, @UpdateBy, @CreatedOn, @UpdatedOn
 ```java 
-
 @Bean
 public SimpleJdbcMapper simpleJdbcMapper(DataSource dataSource) {
     SimpleJdbcMapper simpleJdbcMapper = new SimpleJdbcMapper(dataSource);
-    simpleJdbcMapper.setRecordOperatorResolver(new YourImplementationOfInterface_RecordOperatorResolver());
+    // Below are just examples. Provide your own custom Supplier. Make Sure the type returned by Supplier matches the type of the Property you are annotating.
+    simpleJdbcMapper.setRecordAuditedBySupplier(() -> "tester");
+    simpleJdbcMapper.setRecordAuditedOnSupplier(() -> LocalDateTime.now());
     return simpleJdbcMapper;
 }
 ```
  
 ## Accessing JdbcClient/JdbcTemplate
-
 ``` 
-
  JdbcClient jdbcClient = sjm.getJdbcClient();
  JdbcTemplate jdbcTemplate = sjm.getJdbcTemplate();
  NamedParameterJdbcTemplate namedParameterJdbcTemplate = sjm.getNamedParameterJdbcTemplate();

@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.function.Supplier;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -17,7 +18,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import io.github.simplejdbcmapper.config.AppRecordOperatorResolver;
 import io.github.simplejdbcmapper.exception.AnnotationException;
 import io.github.simplejdbcmapper.exception.MapperException;
 import io.github.simplejdbcmapper.exception.OptimisticLockingException;
@@ -50,22 +50,30 @@ class SimpleJdbcMapperTest {
 
 		sjm.insert(order);
 
-		// check if auto assigned properties have been assigned.
-		assertNotNull(order.getCreatedOn());
-		assertNotNull(order.getUpdatedOn());
+		// check if auto assigned properties have been assigned
+		if (sjm.getRecordAuditedOnSupplier() != null) {
+			assertNotNull(order.getCreatedOn());
+			assertNotNull(order.getUpdatedOn());
+		}
+		if (sjm.getRecordAuditedBySupplier() != null) {
+			assertEquals("tester", order.getCreatedBy());
+			assertEquals("tester", order.getUpdatedBy());
+		}
 		assertEquals(1, order.getVersion());
-		assertEquals("tester", order.getCreatedBy());
-		assertEquals("tester", order.getUpdatedBy());
 
 		// requery and test.
 		order = sjm.findById(Order.class, order.getOrderId());
 		assertNotNull(order.getOrderId());
 		assertNotNull(order.getOrderDate());
-		assertNotNull(order.getCreatedOn());
-		assertNotNull(order.getUpdatedOn());
+		if (sjm.getRecordAuditedOnSupplier() != null) {
+			assertNotNull(order.getCreatedOn());
+			assertNotNull(order.getUpdatedOn());
+		}
+		if (sjm.getRecordAuditedBySupplier() != null) {
+			assertEquals("tester", order.getCreatedBy());
+			assertEquals("tester", order.getUpdatedBy());
+		}
 		assertEquals(1, order.getVersion());
-		assertEquals("tester", order.getCreatedBy());
-		assertEquals("tester", order.getUpdatedBy());
 	}
 
 	@Test
@@ -108,22 +116,31 @@ class SimpleJdbcMapperTest {
 		sjm.insert(product);
 
 		// check if auto assigned properties are assigned.
-		assertNotNull(product.getCreatedOn());
-		assertNotNull(product.getUpdatedOn());
+		if (sjm.getRecordAuditedBySupplier() != null) {
+			assertEquals("tester", product.getCreatedBy());
+			assertEquals("tester", product.getUpdatedBy());
+		}
+		if (sjm.getRecordAuditedOnSupplier() != null) {
+			assertNotNull(product.getCreatedOn());
+			assertNotNull(product.getUpdatedOn());
+		}
 		assertEquals(1, product.getVersion());
-		assertEquals("tester", product.getCreatedBy());
-		assertEquals("tester", product.getUpdatedBy());
 
 		// requery and check
 		product = sjm.findById(Product.class, 1001);
 		assertNotNull(product.getProductId());
 		assertEquals("hat", product.getName());
 		assertEquals(12.25, product.getCost());
-		assertNotNull(product.getCreatedOn());
-		assertNotNull(product.getUpdatedOn());
+		if (sjm.getRecordAuditedBySupplier() != null) {
+			assertEquals("tester", product.getCreatedBy());
+			assertEquals("tester", product.getUpdatedBy());
+		}
+		if (sjm.getRecordAuditedOnSupplier() != null) {
+			assertNotNull(product.getCreatedOn());
+			assertNotNull(product.getUpdatedOn());
+		}
 		assertEquals(1, product.getVersion());
-		assertEquals("tester", product.getCreatedBy());
-		assertEquals("tester", product.getUpdatedBy());
+
 	}
 
 	@Test
@@ -175,15 +192,25 @@ class SimpleJdbcMapperTest {
 
 		// check if auto assigned properties have changed.
 		assertEquals(2, order.getVersion());
-		assertTrue(order.getUpdatedOn().isAfter(prevUpdatedOn));
-		assertEquals("tester", order.getUpdatedBy());
+		if (sjm.getRecordAuditedBySupplier() != null) {
+			assertEquals("tester", order.getUpdatedBy());
+		}
+		if (sjm.getRecordAuditedOnSupplier() != null) {
+			assertNotNull(order.getUpdatedOn());
+			assertTrue(order.getUpdatedOn().isAfter(prevUpdatedOn));
+		}
 
 		// requery and check
 		order = sjm.findById(Order.class, 1);
 		assertEquals("COMPLETE", order.getStatus());
 		assertEquals(2, order.getVersion()); // version incremented
-		assertTrue(order.getUpdatedOn().isAfter(prevUpdatedOn));
-		assertEquals("tester", order.getUpdatedBy());
+		if (sjm.getRecordAuditedBySupplier() != null) {
+			assertEquals("tester", order.getUpdatedBy());
+		}
+		if (sjm.getRecordAuditedOnSupplier() != null) {
+			assertNotNull(order.getUpdatedOn());
+			assertTrue(order.getUpdatedOn().isAfter(prevUpdatedOn));
+		}
 
 		// reset status for later tests to work. Refactor
 		order.setStatus("IN PROCESS");
@@ -357,8 +384,15 @@ class SimpleJdbcMapperTest {
 		assertEquals("DONE", order.getStatus());
 		// check if auto assigned properties have changed.
 		assertEquals(2, order.getVersion());
-		assertTrue(order.getUpdatedOn().isAfter(prevUpdatedOn));
-		assertEquals("tester", order.getUpdatedBy());
+		if (sjm.getRecordAuditedOnSupplier() != null) {
+			assertTrue(order.getUpdatedOn().isAfter(prevUpdatedOn));
+		}
+		if (sjm.getRecordAuditedBySupplier() != null) {
+			assertEquals("tester", order.getUpdatedBy());
+		}
+		if (sjm.getRecordAuditedOnSupplier() != null) {
+			assertNotNull(order.getUpdatedOn());
+		}
 
 		sjm.delete(order);
 
@@ -424,11 +458,6 @@ class SimpleJdbcMapperTest {
 		for (int idx = 0; idx < orders.size(); idx++) {
 			assertNotNull(orders.get(idx).getOrderId());
 			assertNotNull(orders.get(idx).getOrderDate());
-			assertNotNull(orders.get(idx).getCreatedBy());
-			assertNotNull(orders.get(idx).getCreatedOn());
-			assertNotNull(orders.get(idx).getUpdatedBy());
-			assertNotNull(orders.get(idx).getUpdatedOn());
-			assertNotNull(orders.get(idx).getVersion());
 		}
 	}
 
@@ -491,21 +520,28 @@ class SimpleJdbcMapperTest {
 		sjm.insert(obj);
 
 		// check if auto assigned properties have been assigned.
-		assertNotNull(obj.getCreatedOn());
-		assertNotNull(obj.getUpdatedOn());
+		if (sjm.getRecordAuditedBySupplier() != null) {
+			assertEquals("tester", obj.getCreatedBy());
+			assertEquals("tester", obj.getUpdatedBy());
+		}
+		if (sjm.getRecordAuditedOnSupplier() != null) {
+			assertNotNull(obj.getCreatedOn());
+			assertNotNull(obj.getUpdatedOn());
+		}
 		assertEquals(1, obj.getVersion());
-		assertEquals("tester", obj.getCreatedBy());
-		assertEquals("tester", obj.getUpdatedBy());
 
 		OrderInheritedAudit obj2 = sjm.findById(OrderInheritedAudit.class, obj.getOrderId());
 		assertNotNull(obj2.getOrderId());
 		assertNotNull(obj2.getOrderDate());
-		assertNotNull(obj2.getCreatedOn());
-		assertNotNull(obj2.getUpdatedOn());
+		if (sjm.getRecordAuditedBySupplier() != null) {
+			assertEquals("tester", obj.getCreatedBy());
+			assertEquals("tester", obj.getUpdatedBy());
+		}
+		if (sjm.getRecordAuditedOnSupplier() != null) {
+			assertNotNull(obj.getCreatedOn());
+			assertNotNull(obj.getUpdatedOn());
+		}
 		assertEquals(1, obj2.getVersion());
-		assertEquals("tester", obj2.getCreatedBy());
-		assertEquals("tester", obj2.getUpdatedBy());
-
 	}
 
 	@Test
@@ -538,10 +574,20 @@ class SimpleJdbcMapperTest {
 	}
 
 	@Test
-	void setRecordOperatorResolver_resetting_failure() {
-		var obj = new AppRecordOperatorResolver();
+	void setRecordAuditedBySupplier_resetting_failure() {
+		Supplier<String> supplier = () -> "tester";
 		Assertions.assertThrows(IllegalStateException.class, () -> {
-			sjm.setRecordOperatorResolver(obj);
+			sjm.setRecordAuditedBySupplier(supplier);
+			sjm.setRecordAuditedBySupplier(supplier);
+		});
+	}
+
+	@Test
+	void setRecordAuditedOnSupplier_resetting_failure() {
+		Supplier<LocalDateTime> supplier = () -> LocalDateTime.now();
+		Assertions.assertThrows(IllegalStateException.class, () -> {
+			sjm.setRecordAuditedOnSupplier(supplier);
+			sjm.setRecordAuditedOnSupplier(supplier);
 		});
 	}
 

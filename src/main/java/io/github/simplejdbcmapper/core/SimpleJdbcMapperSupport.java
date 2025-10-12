@@ -307,14 +307,17 @@ class SimpleJdbcMapperSupport {
 				throw new AnnotationException("@Version requires the type of property " + clazz.getSimpleName() + "."
 						+ propMapping.getPropertyName() + " to be Integer");
 			}
-			if (propMapping.isCreatedOnAnnotation() && !isLocalDateTimeClass(propMapping.getPropertyClassName())) {
-				throw new AnnotationException("@CreatedOn requires the type of property " + clazz.getSimpleName() + "."
-						+ propMapping.getPropertyName() + " to be LocalDateTime");
-			}
-			if (propMapping.isUpdatedOnAnnotation() && !isLocalDateTimeClass(propMapping.getPropertyClassName())) {
-				throw new AnnotationException("@UpdatedOn requires the type of property " + clazz.getSimpleName() + "."
-						+ propMapping.getPropertyName() + " to be LocalDateTime");
-			}
+			/*
+			 * if (propMapping.isCreatedOnAnnotation() &&
+			 * !isLocalDateTimeClass(propMapping.getPropertyClassName())) { throw new
+			 * AnnotationException("@CreatedOn requires the type of property " +
+			 * clazz.getSimpleName() + "." + propMapping.getPropertyName() +
+			 * " to be LocalDateTime"); } if (propMapping.isUpdatedOnAnnotation() &&
+			 * !isLocalDateTimeClass(propMapping.getPropertyClassName())) { throw new
+			 * AnnotationException("@UpdatedOn requires the type of property " +
+			 * clazz.getSimpleName() + "." + propMapping.getPropertyName() +
+			 * " to be LocalDateTime"); }
+			 */
 			if (conflictCnt > 1) {
 				throw new AnnotationException(clazz.getSimpleName() + "." + propMapping.getPropertyName()
 						+ " has multiple annotations that conflict");
@@ -422,10 +425,6 @@ class SimpleJdbcMapperSupport {
 
 	private boolean isIntegerClass(String className) {
 		return "java.lang.Integer".equals(className);
-	}
-
-	private boolean isLocalDateTimeClass(String className) {
-		return "java.time.LocalDateTime".equals(className);
 	}
 
 }

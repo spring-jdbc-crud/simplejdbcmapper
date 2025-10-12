@@ -167,7 +167,6 @@ public final class SimpleJdbcMapper {
 		} catch (EmptyResultDataAccessException e) {
 			// do nothing
 		}
-
 		if (!foundInCache && obj != null) {
 			findByIdSqlCache.put(clazz.getName(), sql);
 		}
@@ -184,7 +183,6 @@ public final class SimpleJdbcMapper {
 	public <T> List<T> findAll(Class<T> clazz) {
 		Assert.notNull(clazz, "Class must not be null");
 		TableMapping tableMapping = simpleJdbcMapperSupport.getTableMapping(clazz);
-
 		String sql = "SELECT " + getBeanColumnsSql(tableMapping, clazz) + " FROM "
 				+ tableMapping.fullyQualifiedTableName();
 

@@ -25,7 +25,7 @@ import io.github.simplejdbcmapper.exception.MapperException;
 /**
  * The database table mapping details on an object
  *
- * @author ajoseph
+ * @author Antony Joseph
  */
 class TableMapping {
 	private String tableClassName;

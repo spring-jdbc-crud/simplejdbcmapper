@@ -14,6 +14,7 @@
 package io.github.simplejdbcmapper.core;
 
 import javax.sql.DataSource;
+
 import org.springframework.dao.DataAccessResourceFailureException;
 import org.springframework.jdbc.core.metadata.DerbyTableMetaDataProvider;
 import org.springframework.jdbc.core.metadata.HsqlTableMetaDataProvider;

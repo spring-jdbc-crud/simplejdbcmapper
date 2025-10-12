@@ -14,12 +14,13 @@
 package io.github.simplejdbcmapper.core;
 
 import java.util.Set;
+
 import org.springframework.util.ObjectUtils;
 
 /**
  * This holds the sql and the sql params needed to issue an update.
  *
- * @author ajoseph
+ * @author Antony Joseph
  */
 class SqlAndParams {
 	private String sql; // the sql string

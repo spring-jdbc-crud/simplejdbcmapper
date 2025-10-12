@@ -10,16 +10,16 @@
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
+ * 
  */
 package io.github.simplejdbcmapper.core;
 
 /**
  * A generic table meta data provider.
- *
- * @author ajoseph
  */
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
+
 import org.springframework.jdbc.core.metadata.GenericTableMetaDataProvider;
 
 // Spring GenericTableMetaDataProvider constructor is protected so needed to extend

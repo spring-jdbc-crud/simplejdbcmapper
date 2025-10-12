@@ -16,7 +16,7 @@ package io.github.simplejdbcmapper.core;
 /**
  * Property info.
  *
- * @author ajoseph
+ * @author Antony Joseph
  */
 class PropertyInfo {
 	private String propertyName;

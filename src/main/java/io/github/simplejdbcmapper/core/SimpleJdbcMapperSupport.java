@@ -10,6 +10,8 @@
  * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
+ * 
+ * @author Antony Joseph
  */
 package io.github.simplejdbcmapper.core;
 
@@ -54,9 +56,9 @@ import io.github.simplejdbcmapper.exception.AnnotationException;
 import io.github.simplejdbcmapper.exception.MapperException;
 
 /**
- * Mapping helper.
+ * Support class for SimpleJdbcMapper
  *
- * @author ajoseph
+ * @author Antony Joseph
  */
 class SimpleJdbcMapperSupport {
 	// Map key - class name

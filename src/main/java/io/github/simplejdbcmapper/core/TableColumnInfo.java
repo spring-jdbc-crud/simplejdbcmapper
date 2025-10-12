@@ -19,7 +19,7 @@ import java.util.List;
 /**
  * Table column info.
  *
- * @author ajoseph
+ * @author Antony Joseph
  */
 class TableColumnInfo {
 	private final String tableName;

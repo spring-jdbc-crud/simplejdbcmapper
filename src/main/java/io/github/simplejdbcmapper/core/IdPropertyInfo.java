@@ -16,7 +16,7 @@ package io.github.simplejdbcmapper.core;
 /**
  * Id property info.
  *
- * @author ajoseph
+ * @author Antony Joseph
  */
 class IdPropertyInfo {
 	private Class<?> parentClass;

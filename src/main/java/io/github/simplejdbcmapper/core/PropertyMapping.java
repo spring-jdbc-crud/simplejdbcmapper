@@ -16,7 +16,7 @@ package io.github.simplejdbcmapper.core;
 /**
  * Object property to database column mapping.
  *
- * @author ajoseph
+ * @author Antony Joseph
  */
 class PropertyMapping {
 	private String propertyName;

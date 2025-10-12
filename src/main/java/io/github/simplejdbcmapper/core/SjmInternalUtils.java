@@ -21,7 +21,7 @@ import org.springframework.jdbc.support.JdbcUtils;
 /**
  * Utility methods used by mapper.
  *
- * @author ajoseph
+ * @author Antony Joseph
  */
 class SjmInternalUtils {
 

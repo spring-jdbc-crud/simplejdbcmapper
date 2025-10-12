@@ -56,7 +56,7 @@ import io.github.simplejdbcmapper.exception.OptimisticLockingException;
  * <b> Note: An instance of SimpleJdbcMapper is thread safe once
  * instantiated.</b>
  *
- * @author ajoseph
+ * @author Antony Joseph
  */
 public final class SimpleJdbcMapper {
 

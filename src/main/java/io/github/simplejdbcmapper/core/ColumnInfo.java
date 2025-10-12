@@ -16,7 +16,7 @@ package io.github.simplejdbcmapper.core;
 /**
  * Column info.
  *
- * @author ajoseph
+ * @author Antony Joseph
  */
 class ColumnInfo {
 	private String columnName;

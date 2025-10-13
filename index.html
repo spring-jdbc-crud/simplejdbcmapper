@@ -56,7 +56,7 @@
       <div class="span9 main"><h1 id="simplejdbcmapper"><a class="header-link" href="#simplejdbcmapper"></a>SimpleJdbcMapper</h1>
 <p>A simple wrapper around Spring JDBC libraries that makes database CRUD operations less verbose. Use it along with Spring JdbcClient/JdbcTemplate. </p>
 <p>
-    <a href="https://github.com/spring-jdbc-crud/simplejdbcmapper">github</a> |
+	<a href="https://github.com/spring-jdbc-crud/simplejdbcmapper">github</a> |
 	<a href="https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/index.html">Javadoc</a> |
 	<a href="https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper">Demo Application</a>
 </p>
@@ -169,9 +169,9 @@ when the column name does not match the corresponding underscore case property n
 <pre class="hljs"><code> <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>io.github.spring-jdbc-crud<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>simplejdbcmapper<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
-   <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>1.4.0<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>1.4.1<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre><h2 id="spring-bean-configuration-for-simplejdbcmapper"><a class="header-link" href="#spring-bean-configuration-for-simplejdbcmapper"></a>Spring bean configuration for SimpleJdbcMapper</h2>
-<p>SimpleJdbcMapper should always be prepared in a Spring application context and given to services as a bean reference. It maintains state for example caches table meta-data, insert/update sql etc.</p>
+<p>SimpleJdbcMapper should always be prepared in a Spring application context and given to services as a bean reference. It maintains state, for example caches insert/update sql etc.</p>
 <p><strong>Note: An instance of SimpleJdbcMapper is thread safe</strong></p>
 <p>Examples for different databases below. Depending on the versions of springboot/database/driver, there could be some differences to the properties. The properties are same as datasource properties used to configure Spring JdbcClient/JdbcTemplate.</p>
 <p><strong>PostgreSQL</strong></p>
@@ -388,14 +388,10 @@ Or
 <pre class="hljs"><code><span class="hljs-keyword">new</span> <span class="hljs-constructor">SimpleJdbcMapper(<span class="hljs-params">dataSource</span>, <span class="hljs-string1">&quot;SCHEMA_NAME&quot;</span>)</span>;
 Or
 @<span class="hljs-constructor">Table(<span class="hljs-params">name</span>=<span class="hljs-string1">&quot;sometablename&quot;</span>, <span class="hljs-params">schema</span>=<span class="hljs-string1">&quot;SCHEMA_NAME&quot;</span>)</span>;</code></pre><p>3.<strong>Postgres and OffsetDateTime</strong></p>
-<p>Postgres database metadata for column definition &#39;TIMESTAMP WITH TIMEZONE&#39; returns java.sql.Types.TIMESTAMP which is wrong, causing conversion failures. Do the following when configuring SimpleJdbcMapper():</p>
-<pre class="hljs"><code>SimpleJdbcMapper sjm = <span class="hljs-built_in">new</span> SimpleJdbcMapper(dataSource);    
-Map&lt;<span class="hljs-keyword">Class</span>&lt;?&gt;, <span class="hljs-type">Integer</span>&gt; map = <span class="hljs-built_in">new</span> HashMap&lt;&gt;();
-// map OffsetDateTime <span class="hljs-keyword">to</span> the correct <span class="hljs-keyword">sql</span> <span class="hljs-keyword">Type</span>
-map.put(OffsetDateTime.<span class="hljs-keyword">class</span>, java.<span class="hljs-keyword">sql</span>.<span class="hljs-keyword">Types</span>.TIMESTAMP_WITH_TIMEZONE);
-sjm.setDatabaseMetaDataOverride(map);
-<span class="hljs-keyword">return</span> sjm;
-    </code></pre>      </div>
+<p>Some postgres drivers for column definition &#39;TIMESTAMP WITH TIMEZONE&#39; return java.sql.Types.TIMESTAMP which causes conversion failures when used with OffsetDateTime. Do the following to override it to be java.sql.Types.TIMESTAMP_WITH_TIMEZONE.</p>
+<pre class="hljs"><code>SimpleJdbcMapper sjm = <span class="hljs-keyword">new</span> <span class="hljs-constructor">SimpleJdbcMapper(<span class="hljs-params">dataSource</span>)</span>;    
+sjm.enable<span class="hljs-constructor">OffsetDateTimeSqlTypeAsTimestampWithTimeZone()</span>;
+return sjm;</code></pre>      </div>
     </div>
   </div>
 

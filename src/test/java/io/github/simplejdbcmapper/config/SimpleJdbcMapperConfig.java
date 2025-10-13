@@ -1,10 +1,6 @@
 package io.github.simplejdbcmapper.config;
 
-import java.sql.Types;
 import java.time.LocalDateTime;
-import java.time.OffsetDateTime;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.sql.DataSource;
 
@@ -62,9 +58,7 @@ public class SimpleJdbcMapperConfig {
 		// returns java.sql.Types.TIMESTAMP which is wrong causing conversion failures
 		// for OffsetDateTime. Override the database metadata for OffsetDateTime
 		if (jdbcDriver.contains("postgres")) {
-			Map<Class<?>, Integer> map = new HashMap<>();
-			map.put(OffsetDateTime.class, Types.TIMESTAMP_WITH_TIMEZONE);
-			simpleJdbcMapper.setDatabaseMetaDataOverride(map);
+			simpleJdbcMapper.enableOffsetDateTimeSqlTypeAsTimestampWithTimeZone();
 		}
 		return simpleJdbcMapper;
 	}

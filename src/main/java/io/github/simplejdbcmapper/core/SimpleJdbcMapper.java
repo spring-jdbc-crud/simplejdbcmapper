@@ -475,16 +475,14 @@ public final class SimpleJdbcMapper {
 	 * Example usage for postgres OffsetDateTime issue: <br>
 	 * {@snippet :
 	 * SimpleJdbcMapper sjm = new SimpleJdbcMapper(dataSource, "SCHEMA_NAME");
-	 * Map<Class<?>, Integer> map = new HashMap<>();
-	 * // map OffsetDateTime to the correct sql Type 
-	 * map.put(OffsetDateTime.class, java.sql.Types.TIMESTAMP_WITH_TIMEZONE);
-	 * sjm.setDatabaseMetaDataOverride(map);
+	 * sjm.enableOffsetDateTimeSqlTypeAsTimestampWithTimeZone();
+	 * return sjm;
 	 * }
 	 * 
 	 * @param databaseMetaDataOverrideMap the databaseMetaDataOverrideMap to set.
 	 */
-	public void setDatabaseMetaDataOverride(Map<Class<?>, Integer> databaseMetaDataOverrideMap) {
-		simpleJdbcMapperSupport.setDatabaseMetaDataOverride(databaseMetaDataOverrideMap);
+	public void enableOffsetDateTimeSqlTypeAsTimestampWithTimeZone() {
+		simpleJdbcMapperSupport.enableOffsetDateTimeSqlTypeAsTimestampWithTimeZone();
 	}
 
 	/**

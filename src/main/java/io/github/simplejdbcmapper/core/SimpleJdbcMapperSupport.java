@@ -17,10 +17,10 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -71,7 +71,7 @@ class SimpleJdbcMapperSupport {
 
 	private String databaseProductName;
 
-	private Map<String, Integer> databaseMetaDataOverrideMap;
+	private boolean enableOffsetDateTimeSqlTypeAsTimestampWithTimeZone = false;
 
 	/**
 	 * Constructor.
@@ -168,16 +168,8 @@ class SimpleJdbcMapperSupport {
 		return JdbcUtils.commonDatabaseName(getDatabaseProductName());
 	}
 
-	public void setDatabaseMetaDataOverride(Map<Class<?>, Integer> databaseMetaDataOverrideMap) {
-		if (this.databaseMetaDataOverrideMap == null) {
-			Map<String, Integer> map = new HashMap<>();
-			for (Map.Entry<Class<?>, Integer> entry : databaseMetaDataOverrideMap.entrySet()) {
-				map.put(entry.getKey().getName(), entry.getValue());
-			}
-			this.databaseMetaDataOverrideMap = map;
-		} else {
-			throw new IllegalStateException("databaseMetaDataOverrideMap was already set and cannot be changed.");
-		}
+	public void enableOffsetDateTimeSqlTypeAsTimestampWithTimeZone() {
+		enableOffsetDateTimeSqlTypeAsTimestampWithTimeZone = true;
 	}
 
 	SimpleCache<String, TableMapping> getTableMappingCache() {
@@ -420,7 +412,10 @@ class SimpleJdbcMapperSupport {
 	}
 
 	private Integer getDatabaseMetaDataOverrideSqlType(Class<?> clazz) {
-		return databaseMetaDataOverrideMap == null ? null : databaseMetaDataOverrideMap.get(clazz.getName());
+		if (enableOffsetDateTimeSqlTypeAsTimestampWithTimeZone && "java.time.OffsetDateTime".equals(clazz.getName())) {
+			return Types.TIMESTAMP_WITH_TIMEZONE;
+		}
+		return null;
 	}
 
 	private boolean isIntegerClass(String className) {

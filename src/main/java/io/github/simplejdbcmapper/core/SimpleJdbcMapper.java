@@ -596,8 +596,8 @@ public final class SimpleJdbcMapper {
 							Types.CLOB);
 				}
 			} else {
-				// logic below only to prevent SimpleJdbcInsert from logging extra stuff when we
-				// override its internal parameters
+				// SimpleJdbcInsert logs extra stuff when we override its internal sqltype so
+				// keep it to a minimum
 				if (propMapping.getColumnOverriddenSqlType() == null) {
 					mapSqlParameterSource.addValue(propMapping.getColumnName(),
 							bw.getPropertyValue(propMapping.getPropertyName()));

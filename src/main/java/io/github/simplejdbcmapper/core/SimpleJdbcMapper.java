@@ -135,9 +135,9 @@ public final class SimpleJdbcMapper {
 	public SimpleJdbcMapper(DataSource dataSource, String schemaName, String catalogName) {
 		Assert.notNull(dataSource, "dataSource must not be null");
 		this.dataSource = dataSource;
-		this.jdbcClient = JdbcClient.create(dataSource);
-		this.jdbcTemplate = new JdbcTemplate(dataSource);
 		this.npJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+		this.jdbcTemplate = npJdbcTemplate.getJdbcTemplate();
+		this.jdbcClient = JdbcClient.create(jdbcTemplate);
 		this.simpleJdbcMapperSupport = new SimpleJdbcMapperSupport(dataSource, schemaName, catalogName);
 	}
 

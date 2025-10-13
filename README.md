@@ -125,7 +125,7 @@ Spring framework **6.1.4+** or SpringBoot **3.2.3+**
  
 ## Spring bean configuration for SimpleJdbcMapper
 
-SimpleJdbcMapper should always be prepared in a Spring application context and given to services as a bean reference. It maintains state for example caches table meta-data, insert/update sql etc.
+SimpleJdbcMapper should always be prepared in a Spring application context and given to services as a bean reference. It maintains state, for example caches insert/update sql etc.
 
 **Note: An instance of SimpleJdbcMapper is thread safe**
 

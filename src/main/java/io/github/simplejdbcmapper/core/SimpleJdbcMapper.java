@@ -78,8 +78,6 @@ public final class SimpleJdbcMapper {
 	// SimpleJdbcMapper
 	private ConversionService conversionService = DefaultConversionService.getSharedInstance();
 
-	// private RecordOperatorResolver recordOperatorResolver;
-
 	private Supplier<?> recordAuditedOnSupplier;
 	private Supplier<?> recordAuditedBySupplier;
 
@@ -439,7 +437,7 @@ public final class SimpleJdbcMapper {
 	 * Set the Supplier that is used to populate the &#64;CreatedOn and
 	 * &#64;UpdatedOn annotated properties.
 	 *
-	 * @param supplier the Supplier to get the record audited by info.
+	 * @param supplier the Supplier to get the record audited on info.
 	 */
 	public <T> void setRecordAuditedOnSupplier(Supplier<T> supplier) {
 		if (recordAuditedOnSupplier == null) {

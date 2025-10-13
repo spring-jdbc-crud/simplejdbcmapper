@@ -429,7 +429,7 @@ For **Postgres/Oracle/Sqlserver** try setting the 'schema' parameter on construc
 
 3.**Postgres and OffsetDateTime**
 
-Postgres database metadata for column definition 'TIMESTAMP WITH TIMEZONE' returns java.sql.Types.TIMESTAMP which causes conversion failures when used with OffsetDateTime. Do the following to override it to be java.sql.Types.TIMESTAMP_WITH_TIMEZONE.
+Some postgres drivers for column definition 'TIMESTAMP WITH TIMEZONE' return java.sql.Types.TIMESTAMP which causes conversion failures when used with OffsetDateTime. Do the following to override it to be java.sql.Types.TIMESTAMP_WITH_TIMEZONE.
   
     SimpleJdbcMapper sjm = new SimpleJdbcMapper(dataSource);	
     sjm.enableOffsetDateTimeSqlTypeAsTimestampWithTimeZone();

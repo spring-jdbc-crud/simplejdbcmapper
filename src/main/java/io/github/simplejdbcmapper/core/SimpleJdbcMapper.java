@@ -470,16 +470,10 @@ public final class SimpleJdbcMapper {
 
 	/**
 	 * SimpleJdbcMapper depends on database meta data. Some drivers do not return
-	 * correct java.sql.Types. For example postgres database metadata for column
-	 * definition 'TIMESTAMP WITH TIMEZONE' returns java.sql.Types.TIMESTAMP which
-	 * causes conversion failures when used with OffsetDateTime. Do the following to
-	 * override it to be java.sql.Types.TIMESTAMP_WITH_TIMEZONE.
-	 * 
-	 * {@snippet :
-	 * SimpleJdbcMapper sjm = new SimpleJdbcMapper(dataSource);
-	 * sjm.enableOffsetDateTimeSqlTypeAsTimestampWithTimeZone();
-	 * return sjm;
-	 * }
+	 * correct java.sql.Types. For example some postgres drivers for column
+	 * definition 'TIMESTAMP WITH TIMEZONE' return Types.TIMESTAMP which causes
+	 * conversion failures when used with OffsetDateTime. This method overrides it
+	 * to be Types.TIMESTAMP_WITH_TIMEZONE.
 	 */
 	public void enableOffsetDateTimeSqlTypeAsTimestampWithTimeZone() {
 		simpleJdbcMapperSupport.enableOffsetDateTimeSqlTypeAsTimestampWithTimeZone();

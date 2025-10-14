@@ -19,9 +19,9 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * If RecordOperatorResolver is implemented and configured with SimpleJdbcMapper the value will
- * be set to value returned by implementation when the record is created. Without configuration no
- * values will be set. The type returned should match the type of the property.
+ * If Supplier is configured with SimpleJdbcMapper the value will be set to
+ * value supplied when the record is created. The type returned by Supplier
+ * should match the type of the property.
  * 
  * @author ajoseph
  */

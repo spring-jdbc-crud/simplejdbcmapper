@@ -186,24 +186,25 @@ public final class SimpleJdbcMapper {
 		TableMapping tableMapping = simpleJdbcMapperSupport.getTableMapping(clazz);
 		String sql = "SELECT " + getBeanColumnsSql(tableMapping, clazz) + " FROM "
 				+ tableMapping.fullyQualifiedTableName();
-
 		BeanPropertyRowMapper<T> rowMapper = getBeanPropertyRowMapper(clazz);
 		return jdbcTemplate.query(sql, rowMapper);
 	}
 
 	/**
-	 * Inserts an object. Objects with auto increment id will have the id set to the
-	 * new id from database. For non auto increment id the id has to be manually set
+	 * Inserts an object. Objects with auto generated id will have the id set to the
+	 * new id from database. For non auto generated id the id has to be manually set
 	 * before invoking insert().
 	 *
 	 * <pre>
 	 * Will handle the following annotations:
-	 * &#64;CreatedOn property will be assigned current date and time
-	 * &#64;CreatedBy if RecordOperatorResolver is configured with SimpleJdbcMapper the property 
-	 *      will be assigned that value
-	 * &#64;UpdatedOn property will be assigned current date and time
-	 * &#64;UpdatedBy if RecordOperatorResolver is configured with SimpleJdbcMapper the property
-	 *                will be assigned that value
+	 * &#64;CreatedOn if Supplier is configured with SimpleJdbcMapper the property 
+	 *                will be assigned the supplied value
+	 * &#64;CreatedBy if Supplier is configured with SimpleJdbcMapper the property 
+	 *      will be assigned the supplied value
+	 * &#64;UpdatedOn if Supplier is configured with SimpleJdbcMapper the property 
+	 *                will be assigned the supplied value
+	 * &#64;UpdatedBy if Supplier is configured with SimpleJdbcMapper the property
+	 *                will be assigned the supplied value
 	 * &#64;Version property will be set to 1. Used for optimistic locking.
 	 * </pre>
 	 *
@@ -247,9 +248,10 @@ public final class SimpleJdbcMapper {
 	 *
 	 * <pre>
 	 * Will handle the following annotations:
-	 * &#64;UpdatedOn property will be assigned current date and time
-	 * &#64;UpdatedBy if RecordOperatorResolver is configured with SimpleJdbcMapper the property 
-	 *                will be assigned that value
+	 * &#64;UpdatedOn if Supplier is configured with SimpleJdbcMapper the property 
+	 *                will be assigned the supplied value
+	 * &#64;UpdatedBy if Supplier is configured with SimpleJdbcMapper the property 
+	 *                will be assigned the supplied value
 	 * &#64;Version property will be incremented on a successful update. An OptimisticLockingException
 	 *                will be thrown if object is stale.
 	 * </pre>
@@ -282,9 +284,10 @@ public final class SimpleJdbcMapper {
 	 *
 	 * <pre>
 	 * Will handle the following annotations:
-	 * &#64;UpdatedOn property will be assigned current date and time
-	 * &#64;UpdatedBy if RecordOperatorResolver is configured with SimpleJdbcMapper the property 
-	 *                will be assigned that value
+	 * &#64;UpdatedOn if Supplier is configured with SimpleJdbcMapper the property 
+	 *                will be assigned the supplied value
+	 * &#64;UpdatedBy if Supplier is configured with SimpleJdbcMapper the property 
+	 *                will be assigned the supplied value
 	 * &#64;Version property will be incremented on a successful update. An OptimisticLockingException
 	 *                will be thrown if object is stale.
 	 * </pre>
@@ -415,6 +418,11 @@ public final class SimpleJdbcMapper {
 		return this.jdbcTemplate;
 	}
 
+	/**
+	 * Gets the NamedParameterJdbcTemplate of the SimpleJdbcMapper.
+	 *
+	 * @return the NamedParameterJdbcTemplate
+	 */
 	public NamedParameterJdbcTemplate getNamedParameterJdbcTemplate() {
 		return this.npJdbcTemplate;
 	}
@@ -451,9 +459,9 @@ public final class SimpleJdbcMapper {
 
 	/**
 	 * Exposing the conversion service used so if necessary new converters can be
-	 * added.
+	 * added etc.
 	 *
-	 * @return the default conversion service.
+	 * @return the conversion service.
 	 */
 	public ConversionService getConversionService() {
 		return conversionService;
@@ -526,7 +534,7 @@ public final class SimpleJdbcMapper {
 	}
 
 	SimpleJdbcMapperSupport getSimpleJdbcMapperSupport() {
-		return this.simpleJdbcMapperSupport;
+		return simpleJdbcMapperSupport;
 	}
 
 	Supplier<?> getRecordAuditedBySupplier() {

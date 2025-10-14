@@ -385,16 +385,15 @@ class SimpleJdbcMapperSupport {
 	}
 
 	private String getDatabaseProductName() {
-		// databaseProductName is not a volatile variable. No side effects even if
-		// contention
-		if (this.databaseProductName != null) {
-			return this.databaseProductName;
+		// databaseProductName is not a 'volatile' variable. No side effects even if
+		// there is thread contention and it gets set more than once
+		if (databaseProductName != null) {
+			return databaseProductName;
 		} else {
-			// this synchronized block only runs once
 			synchronized (this) {
-				if (this.databaseProductName == null) {
+				if (databaseProductName == null) {
 					try {
-						this.databaseProductName = JdbcUtils.extractDatabaseMetaData(dataSource,
+						databaseProductName = JdbcUtils.extractDatabaseMetaData(dataSource,
 								new DatabaseMetaDataCallback<String>() {
 									public String processMetaData(DatabaseMetaData dbMetaData)
 											throws SQLException, MetaDataAccessException {
@@ -406,7 +405,7 @@ class SimpleJdbcMapperSupport {
 						throw new MapperException(e);
 					}
 				}
-				return this.databaseProductName;
+				return databaseProductName;
 			}
 		}
 	}

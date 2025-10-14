@@ -390,17 +390,6 @@ public final class SimpleJdbcMapper {
 	}
 
 	/**
-	 * Loads the mapping for a class. Mappings are lazy loaded ie they are loaded
-	 * when used the first time. This method is provided so that the mappings can be
-	 * loaded during Spring application startup if needed.
-	 *
-	 * @param clazz the class
-	 */
-	public void loadMapping(Class<?> clazz) {
-		simpleJdbcMapperSupport.getTableMapping(clazz);
-	}
-
-	/**
 	 * Gets the JdbcClient of the SimpleJdbcMapper.
 	 *
 	 * @return the JdbcClient
@@ -485,6 +474,17 @@ public final class SimpleJdbcMapper {
 	 */
 	public void enableOffsetDateTimeSqlTypeAsTimestampWithTimeZone() {
 		simpleJdbcMapperSupport.enableOffsetDateTimeSqlTypeAsTimestampWithTimeZone();
+	}
+
+	/**
+	 * Loads the mapping for a class. Mappings are lazy loaded ie they are loaded
+	 * when used the first time. This method is provided so that the mappings can be
+	 * loaded during Spring application startup if needed.
+	 *
+	 * @param clazz the class
+	 */
+	public void loadMapping(Class<?> clazz) {
+		simpleJdbcMapperSupport.getTableMapping(clazz);
 	}
 
 	/**

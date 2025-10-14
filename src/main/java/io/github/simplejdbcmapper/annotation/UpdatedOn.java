@@ -19,9 +19,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * On updates the property will be set to LocalDateTime.now(). It has to be of type LocalDateTime.
+ * If a Supplier is configured with SimpleJdbcMapper, the annotated property
+ * value will be set to the value supplied when the record is updated. The type
+ * returned should match the type of the property.
  * 
- * @author ajoseph
+ * @author Antony Joseph
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)

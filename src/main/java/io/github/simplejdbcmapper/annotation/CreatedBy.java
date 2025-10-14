@@ -19,11 +19,11 @@ import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
 /**
- * If Supplier is configured with SimpleJdbcMapper the value will be set to
- * value supplied when the record is created. The type returned by Supplier
- * should match the type of the property.
+ * If a Supplier is configured with SimpleJdbcMapper, the property annotated
+ * will be set to the value supplied when the record is created. The type
+ * returned by Supplier should match the type of the property.
  * 
- * @author ajoseph
+ * @author Antony Joseph
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)

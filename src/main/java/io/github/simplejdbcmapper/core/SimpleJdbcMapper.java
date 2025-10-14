@@ -647,7 +647,7 @@ public final class SimpleJdbcMapper {
 		}
 		Set<String> parameters = sqlAndParams.getParams();
 		populateAutoAssignPropertiesForUpdate(tableMapping, bw, parameters);
-		MapSqlParameterSource mapSqlParameterSource = createMapSqlParameterSourceForUpdate(obj, tableMapping, bw,
+		MapSqlParameterSource mapSqlParameterSource = createMapSqlParameterSourceForUpdate(tableMapping, bw,
 				parameters);
 		int cnt = -1;
 		// if object has property version the version gets incremented on update.
@@ -686,15 +686,15 @@ public final class SimpleJdbcMapper {
 		}
 	}
 
-	private MapSqlParameterSource createMapSqlParameterSourceForUpdate(Object obj, TableMapping tableMapping,
-			BeanWrapper bw, Set<String> parameters) {
+	private MapSqlParameterSource createMapSqlParameterSourceForUpdate(TableMapping tableMapping, BeanWrapper bw,
+			Set<String> parameters) {
 		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
 		for (String paramName : parameters) {
 			if (paramName.equals(INCREMENTED_VERSION)) {
 				Integer versionVal = (Integer) bw
 						.getPropertyValue(tableMapping.getVersionPropertyMapping().getPropertyName());
 				if (versionVal == null) {
-					throw new MapperException(obj.getClass().getSimpleName() + "."
+					throw new MapperException(bw.getWrappedClass().getSimpleName() + "."
 							+ tableMapping.getVersionPropertyMapping().getPropertyName()
 							+ " is configured with annotation @Version. Property "
 							+ tableMapping.getVersionPropertyMapping().getPropertyName()

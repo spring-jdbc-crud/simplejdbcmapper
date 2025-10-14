@@ -53,8 +53,7 @@ import io.github.simplejdbcmapper.exception.OptimisticLockingException;
  * Should be prepared in a Spring application context and given to services as
  * bean reference. SimpleJdbcMapper caches Table meta-data and SQL.
  * 
- * <b> Note: An instance of SimpleJdbcMapper is thread safe once
- * instantiated.</b>
+ * <b> Note: An instance of SimpleJdbcMapper is thread safe.</b>
  *
  * @author Antony Joseph
  */

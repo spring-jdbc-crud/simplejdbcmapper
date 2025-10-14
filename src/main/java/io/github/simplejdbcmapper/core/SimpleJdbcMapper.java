@@ -276,10 +276,10 @@ public final class SimpleJdbcMapper {
 	}
 
 	/**
-	 * Updates the specified properties passed in as arguments. Use it to update a
-	 * property or a few properties of the object and not the whole object. Issues
-	 * an SQL update statement for only for the specific properties and any auto
-	 * assign properties.
+	 * Updates only the specified properties passed in as arguments. Use it to
+	 * update a property or a few properties of the object and not the whole object.
+	 * Issues an SQL update statement for only for the specific properties and any
+	 * auto assign properties.
 	 *
 	 * <pre>
 	 * Will handle the following annotations:
@@ -372,8 +372,8 @@ public final class SimpleJdbcMapper {
 	}
 
 	/**
-	 * returns a map with all the properties of the class with their corresponding
-	 * column names
+	 * returns a map with all the properties of the mapped class with their
+	 * corresponding column names
 	 * 
 	 * @param clazz the class
 	 * @return map of property and their corresponding columns
@@ -446,7 +446,7 @@ public final class SimpleJdbcMapper {
 	}
 
 	/**
-	 * Exposing the conversion service used so if necessary new converters can be
+	 * Exposing the conversion service used, so if necessary new converters can be
 	 * added etc.
 	 *
 	 * @return the conversion service.

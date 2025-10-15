@@ -18,6 +18,7 @@ import java.lang.reflect.Field;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
 import java.sql.Types;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -95,17 +96,6 @@ class SimpleJdbcMapperSupport {
 		return catalogName;
 	}
 
-	/**
-	 * Gets the table mapping for the Object. The table mapping has the table name
-	 * and and object property to database column mapping.
-	 *
-	 * <p>
-	 * Table name is either from the @Tabel annotation or the underscore case
-	 * conversion of the Object name.
-	 *
-	 * @param clazz The object class
-	 * @return The table mapping.
-	 */
 	public TableMapping getTableMapping(Class<?> clazz) {
 		Assert.notNull(clazz, "clazz must not be null");
 		TableMapping tableMapping = tableMappingCache.get(clazz.getName());
@@ -299,17 +289,6 @@ class SimpleJdbcMapperSupport {
 				throw new AnnotationException("@Version requires the type of property " + clazz.getSimpleName() + "."
 						+ propMapping.getPropertyName() + " to be Integer");
 			}
-			/*
-			 * if (propMapping.isCreatedOnAnnotation() &&
-			 * !isLocalDateTimeClass(propMapping.getPropertyClassName())) { throw new
-			 * AnnotationException("@CreatedOn requires the type of property " +
-			 * clazz.getSimpleName() + "." + propMapping.getPropertyName() +
-			 * " to be LocalDateTime"); } if (propMapping.isUpdatedOnAnnotation() &&
-			 * !isLocalDateTimeClass(propMapping.getPropertyClassName())) { throw new
-			 * AnnotationException("@UpdatedOn requires the type of property " +
-			 * clazz.getSimpleName() + "." + propMapping.getPropertyName() +
-			 * " to be LocalDateTime"); }
-			 */
 			if (conflictCnt > 1) {
 				throw new AnnotationException(clazz.getSimpleName() + "." + propMapping.getPropertyName()
 						+ " has multiple annotations that conflict");
@@ -411,7 +390,8 @@ class SimpleJdbcMapperSupport {
 	}
 
 	private Integer getDatabaseMetaDataOverrideSqlType(Class<?> clazz) {
-		if (enableOffsetDateTimeSqlTypeAsTimestampWithTimeZone && "java.time.OffsetDateTime".equals(clazz.getName())) {
+		if (clazz != null && enableOffsetDateTimeSqlTypeAsTimestampWithTimeZone
+				&& OffsetDateTime.class.isAssignableFrom(clazz)) {
 			return Types.TIMESTAMP_WITH_TIMEZONE;
 		}
 		return null;

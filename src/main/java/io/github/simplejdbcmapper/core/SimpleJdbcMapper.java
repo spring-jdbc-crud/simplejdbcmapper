@@ -539,11 +539,13 @@ public final class SimpleJdbcMapper {
 		return simpleJdbcMapperSupport;
 	}
 
-	Supplier<?> getRecordAuditedBySupplier() {
+	@SuppressWarnings("rawtypes")
+	Supplier getRecordAuditedBySupplier() {
 		return recordAuditedBySupplier;
 	}
 
-	Supplier<?> getRecordAuditedOnSupplier() {
+	@SuppressWarnings("rawtypes")
+	Supplier getRecordAuditedOnSupplier() {
 		return recordAuditedOnSupplier;
 	}
 

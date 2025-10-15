@@ -848,10 +848,8 @@ public final class SimpleJdbcMapper {
 			StringJoiner sj = new StringJoiner(", ", " ", " ");
 			for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {
 				String underscorePropertyName = SjmInternalUtils.toUnderscoreName(propMapping.getPropertyName());
-				if (underscorePropertyName != null
-						&& !underscorePropertyName.equalsIgnoreCase(propMapping.getColumnName())) {
-					sj.add(propMapping.getColumnName() + " AS "
-							+ SjmInternalUtils.toUnderscoreName(propMapping.getPropertyName()));
+				if (!underscorePropertyName.equalsIgnoreCase(propMapping.getColumnName())) {
+					sj.add(propMapping.getColumnName() + " AS " + underscorePropertyName);
 				} else {
 					sj.add(propMapping.getColumnName());
 				}

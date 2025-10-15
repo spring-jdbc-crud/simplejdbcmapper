@@ -43,17 +43,22 @@ import java.lang.annotation.Target;
  *  public class Product{
  *    .....
  *  }
+ *  
+ *  {@literal @}Table(name="products", schema="someSchemaName", catalog="someCatalogName")
+ *  public class Product{
+ *    .....
+ *  }
  *
  * </pre>
  *
- * @author ajoseph
+ * @author Antony Joseph
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface Table {
-  String name();
+	String name();
 
-  String catalog() default "";
+	String catalog() default "";
 
-  String schema() default "";
+	String schema() default "";
 }

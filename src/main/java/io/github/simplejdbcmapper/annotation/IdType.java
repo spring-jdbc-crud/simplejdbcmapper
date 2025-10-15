@@ -16,9 +16,8 @@ package io.github.simplejdbcmapper.annotation;
 /**
  * The type of the @id annotation.
  * 
- * @author ajoseph
+ * @author Antony Joseph
  */
 public enum IdType {
-  AUTO_GENERATED,
-  MANUAL; // Default
+	AUTO_GENERATED, MANUAL; // Default
 }

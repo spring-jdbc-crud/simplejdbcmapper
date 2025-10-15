@@ -23,7 +23,7 @@ import java.lang.annotation.Target;
  * value will be set to the value supplied when the record is updated. The type
  * returned should match the type of the property.
  * 
- * @author ajoseph
+ * @author Antony Joseph
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)

@@ -41,10 +41,10 @@ import java.lang.annotation.Target;
  * In this case you will have to manually set the id value before calling insert()
  * </pre>
  *
- * @author ajoseph
+ * @author Antony Joseph
  */
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface Id {
-  IdType type() default IdType.MANUAL;
+	IdType type() default IdType.MANUAL;
 }

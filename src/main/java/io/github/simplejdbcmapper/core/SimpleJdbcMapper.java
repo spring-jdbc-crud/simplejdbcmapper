@@ -49,12 +49,15 @@ import io.github.simplejdbcmapper.exception.OptimisticLockingException;
 
 /**
  * CRUD methods and configuration for SimpleJdbcMapper.
- *
- * Should be prepared in a Spring application context and given to services as
- * bean reference. SimpleJdbcMapper caches Table meta-data and SQL.
+ * 
+ * <pre>
+ * SimpleJdbcMapper should always be prepared in a Spring application context
+ * and given to services as a bean reference. It maintains state, for example
+ * caches table meta-data, insert/update SQL etc.
  * 
  * <b> Note: An instance of SimpleJdbcMapper is thread safe.</b>
- *
+ * </pre>
+ * 
  * @author Antony Joseph
  */
 public final class SimpleJdbcMapper {
@@ -118,7 +121,7 @@ public final class SimpleJdbcMapper {
 	 * Constructor.
 	 *
 	 * @param dataSource the dataSource.
-	 * @param schemaName database schema name.
+	 * @param schemaName the schema name.
 	 */
 	public SimpleJdbcMapper(DataSource dataSource, String schemaName) {
 		this(dataSource, schemaName, null);
@@ -127,9 +130,9 @@ public final class SimpleJdbcMapper {
 	/**
 	 * Constructor.
 	 *
-	 * @param dataSource  the dataSource
-	 * @param schemaName  database schema name.
-	 * @param catalogName database catalog name.
+	 * @param dataSource  the dataSource.
+	 * @param schemaName  the schema name.
+	 * @param catalogName the catalog name.
 	 */
 	public SimpleJdbcMapper(DataSource dataSource, String schemaName, String catalogName) {
 		Assert.notNull(dataSource, "dataSource must not be null");
@@ -350,7 +353,7 @@ public final class SimpleJdbcMapper {
 	}
 
 	/**
-	 * Gets the sql for the columns. Works well with Spring row mappers like
+	 * Gets the columns SQL. Works well with Spring row mappers like
 	 * BeanPropertyRowMapper(), SimplePropertyRowMapper() etc. Will create the
 	 * needed column aliases when the column name does not match the corresponding
 	 * underscore case property name.
@@ -372,7 +375,7 @@ public final class SimpleJdbcMapper {
 	}
 
 	/**
-	 * returns a map with all the properties of the mapped class with their
+	 * returns a map with all the properties of the mapped class and their
 	 * corresponding column names
 	 * 
 	 * @param clazz the class
@@ -477,8 +480,8 @@ public final class SimpleJdbcMapper {
 
 	/**
 	 * Loads the mapping for a class. Mappings are lazy loaded ie they are loaded
-	 * when used the first time. This method is provided so that the mappings can be
-	 * loaded during Spring application startup if needed.
+	 * when the mapped object is used for the first time. This method is provided so
+	 * that the mappings can be loaded during Spring application startup if needed.
 	 *
 	 * @param clazz the class
 	 */

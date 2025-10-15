@@ -603,16 +603,6 @@ public final class SimpleJdbcMapper {
 		return mapSqlParameterSource;
 	}
 
-	private void assignClobMapSqlParameterSourceForInsert(BeanWrapper bw, MapSqlParameterSource mapSqlParameterSource,
-			PropertyMapping propMapping) {
-		if (bw.getPropertyValue(propMapping.getPropertyName()) == null) {
-			mapSqlParameterSource.addValue(propMapping.getColumnName(), null);
-		} else {
-			mapSqlParameterSource.addValue(propMapping.getColumnName(),
-					new SqlCharacterValue((char[]) bw.getPropertyValue(propMapping.getPropertyName())), Types.CLOB);
-		}
-	}
-
 	private void assignBlobMapSqlParameterSourceForInsert(BeanWrapper bw, MapSqlParameterSource mapSqlParameterSource,
 			PropertyMapping propMapping) {
 		if (bw.getPropertyValue(propMapping.getPropertyName()) == null) {
@@ -620,6 +610,16 @@ public final class SimpleJdbcMapper {
 		} else {
 			mapSqlParameterSource.addValue(propMapping.getColumnName(),
 					new SqlBinaryValue((byte[]) bw.getPropertyValue(propMapping.getPropertyName())), Types.BLOB);
+		}
+	}
+
+	private void assignClobMapSqlParameterSourceForInsert(BeanWrapper bw, MapSqlParameterSource mapSqlParameterSource,
+			PropertyMapping propMapping) {
+		if (bw.getPropertyValue(propMapping.getPropertyName()) == null) {
+			mapSqlParameterSource.addValue(propMapping.getColumnName(), null);
+		} else {
+			mapSqlParameterSource.addValue(propMapping.getColumnName(),
+					new SqlCharacterValue((char[]) bw.getPropertyValue(propMapping.getPropertyName())), Types.CLOB);
 		}
 	}
 
@@ -721,16 +721,6 @@ public final class SimpleJdbcMapper {
 		return mapSqlParameterSource;
 	}
 
-	private void assignClobMapSqlParameterSourceForUpdate(BeanWrapper bw, MapSqlParameterSource mapSqlParameterSource,
-			String paramName) {
-		if (bw.getPropertyValue(paramName) == null) {
-			mapSqlParameterSource.addValue(paramName, null, Types.CLOB);
-		} else {
-			mapSqlParameterSource.addValue(paramName, new SqlCharacterValue((char[]) bw.getPropertyValue(paramName)),
-					Types.CLOB);
-		}
-	}
-
 	private void assignBlobMapSqlParameterSourceForUpdate(BeanWrapper bw, MapSqlParameterSource mapSqlParameterSource,
 			String paramName) {
 		if (bw.getPropertyValue(paramName) == null) {
@@ -738,6 +728,16 @@ public final class SimpleJdbcMapper {
 		} else {
 			mapSqlParameterSource.addValue(paramName, new SqlBinaryValue((byte[]) bw.getPropertyValue(paramName)),
 					Types.BLOB);
+		}
+	}
+
+	private void assignClobMapSqlParameterSourceForUpdate(BeanWrapper bw, MapSqlParameterSource mapSqlParameterSource,
+			String paramName) {
+		if (bw.getPropertyValue(paramName) == null) {
+			mapSqlParameterSource.addValue(paramName, null, Types.CLOB);
+		} else {
+			mapSqlParameterSource.addValue(paramName, new SqlCharacterValue((char[]) bw.getPropertyValue(paramName)),
+					Types.CLOB);
 		}
 	}
 

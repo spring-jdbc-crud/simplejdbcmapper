@@ -19,7 +19,7 @@ import io.github.simplejdbcmapper.model.Order;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-public class TableMappingTest {
+class TableMappingTest {
 	@Autowired
 	private DataSource dataSource;
 

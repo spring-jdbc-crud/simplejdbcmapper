@@ -71,7 +71,7 @@ class TableMappingTest {
 	}
 
 	@Test
-	void catlog_name_from_table_annotation_test() {
+	void catalog_name_from_table_annotation_test() {
 		if (jdbcDriver.contains("mysql")) {
 			SimpleJdbcMapper sjm = new SimpleJdbcMapper(dataSource);
 			sjm.loadMapping(CustomerCatalogSchema1.class);

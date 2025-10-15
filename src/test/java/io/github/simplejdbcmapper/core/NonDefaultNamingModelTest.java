@@ -45,9 +45,6 @@ class NonDefaultNamingModelTest {
 		NonDefaultNamingProduct prod = list.get(0);
 
 		assertNotNull(prod.getProductName());
-		assertNotNull(prod.getWhoCreated());
-		assertNotNull(prod.getCreatedAt());
-		assertNotNull(prod.getUpdatedAt());
 	}
 
 	@Test

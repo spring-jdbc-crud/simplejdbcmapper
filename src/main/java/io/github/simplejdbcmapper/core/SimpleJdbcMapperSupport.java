@@ -371,8 +371,8 @@ class SimpleJdbcMapperSupport {
 	}
 
 	private String getDatabaseProductName() {
-		// databaseProductName is not a 'volatile' variable. No side effects even if
-		// there is thread contention and it gets set more than once
+		// No side effects even if there is thread contention and it gets set more than
+		// once
 		if (databaseProductName != null) {
 			return databaseProductName;
 		} else {

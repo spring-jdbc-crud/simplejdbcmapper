@@ -34,7 +34,9 @@ import javax.sql.DataSource;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.jdbc.core.metadata.TableMetaDataContext;
 import org.springframework.jdbc.core.metadata.TableMetaDataProvider;
+import org.springframework.jdbc.core.metadata.TableMetaDataProviderFactory;
 import org.springframework.jdbc.core.metadata.TableParameterMetaData;
 import org.springframework.jdbc.support.DatabaseMetaDataCallback;
 import org.springframework.jdbc.support.JdbcUtils;
@@ -191,8 +193,9 @@ class SimpleJdbcMapperSupport {
 
 	private List<ColumnInfo> getColumnInfoFromTableMetadata(String tableName, String schema, String catalog) {
 		Assert.hasLength(tableName, "tableName must not be empty");
-		TableMetaDataProvider provider = SjmTableMetaDataProviderFactory.createMetaDataProvider(dataSource, catalog,
-				schema, tableName);
+		TableMetaDataContext tableMetaDataContext = createNewTableMetaDataContext(tableName, schema, catalog);
+		TableMetaDataProvider provider = TableMetaDataProviderFactory.createMetaDataProvider(dataSource,
+				tableMetaDataContext);
 		List<ColumnInfo> columnInfoList = new ArrayList<>();
 		List<TableParameterMetaData> list = provider.getTableParameterMetaData();
 		for (TableParameterMetaData metaData : list) {
@@ -356,14 +359,14 @@ class SimpleJdbcMapperSupport {
 		return result;
 	}
 
-	private void validateMetaDataConfig(String catalogName, String schemaName) {
+	private void validateMetaDataConfig(String catalog, String schema) {
 		String commonDatabaseName = JdbcUtils.commonDatabaseName(getDatabaseProductName());
-		if ("mysql".equalsIgnoreCase(commonDatabaseName) && SjmInternalUtils.isNotEmpty(schemaName)) {
+		if ("mysql".equalsIgnoreCase(commonDatabaseName) && SjmInternalUtils.isNotEmpty(schema)) {
 			throw new MapperException(commonDatabaseName
 					+ ": When creating SimpleJdbcMapper() if you are using 'schema' (argument 2) use 'catalog' (argument 3) instead."
 					+ " If you are using the @Table annotation use the 'catalog' attribue instead of 'schema' attribute");
 		}
-		if ("oracle".equalsIgnoreCase(commonDatabaseName) && SjmInternalUtils.isNotEmpty(catalogName)) {
+		if ("oracle".equalsIgnoreCase(commonDatabaseName) && SjmInternalUtils.isNotEmpty(catalog)) {
 			throw new MapperException(commonDatabaseName
 					+ ": When creating SimpleJdbcMapper() if you are using the 'catalog' (argument 3) use 'schema' (argument 2) instead."
 					+ " If you are using the @Table annotation use the 'schema' attribue instead of 'catalog' attribute");
@@ -406,6 +409,16 @@ class SimpleJdbcMapperSupport {
 
 	private boolean isIntegerClass(String className) {
 		return "java.lang.Integer".equals(className);
+	}
+
+	private TableMetaDataContext createNewTableMetaDataContext(String table, String schema, String catalog) {
+		TableMetaDataContext tableMetaDataContext = new TableMetaDataContext();
+		tableMetaDataContext.setTableName(table);
+		tableMetaDataContext.setSchemaName(schema);
+		tableMetaDataContext.setCatalogName(catalog);
+		tableMetaDataContext.setAccessTableColumnMetaData(true);
+		tableMetaDataContext.setOverrideIncludeSynonymsDefault(true);
+		return tableMetaDataContext;
 	}
 
 }

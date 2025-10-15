@@ -187,10 +187,10 @@ class TableMapping {
 
 	public String fullyQualifiedTableName() {
 		String prefix = "";
-		if (InternalUtils.isNotEmpty(catalogName)) {
+		if (InternalUtils.isNotBlank(catalogName)) {
 			prefix = prefix + catalogName + ".";
 		}
-		if (InternalUtils.isNotEmpty(schemaName)) {
+		if (InternalUtils.isNotBlank(schemaName)) {
 			prefix = prefix + schemaName + ".";
 		}
 		return prefix + tableName;

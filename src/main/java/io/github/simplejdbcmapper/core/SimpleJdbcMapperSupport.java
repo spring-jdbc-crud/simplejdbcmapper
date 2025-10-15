@@ -257,7 +257,7 @@ class SimpleJdbcMapperSupport {
 			throw new AnnotationException(
 					clazz.getSimpleName() + " does not have the @Table annotation. It is required");
 		}
-		if (InternalUtils.isEmpty(tableAnnotation.name().trim())) {
+		if (InternalUtils.isBlank(tableAnnotation.name())) {
 			throw new AnnotationException("For " + clazz.getSimpleName() + " the @Table annotation has a blank name");
 		}
 	}
@@ -325,11 +325,11 @@ class SimpleJdbcMapperSupport {
 	}
 
 	private String getCatalogForTable(Table tableAnnotation) {
-		return InternalUtils.isEmpty(tableAnnotation.catalog()) ? this.catalogName : tableAnnotation.catalog();
+		return InternalUtils.isBlank(tableAnnotation.catalog()) ? this.catalogName : tableAnnotation.catalog();
 	}
 
 	private String getSchemaForTable(Table tableAnnotation) {
-		return InternalUtils.isEmpty(tableAnnotation.schema()) ? this.schemaName : tableAnnotation.schema();
+		return InternalUtils.isBlank(tableAnnotation.schema()) ? this.schemaName : tableAnnotation.schema();
 	}
 
 	private String getTableMetaDataNotFoundErrMsg(Class<?> clazz, String tableName, String schema, String catalog) {

@@ -32,8 +32,8 @@ class TableColumnInfo {
 
 	public TableColumnInfo(String tableName, String schemaName, String catalogName, List<ColumnInfo> columnInfos) {
 		this.tableName = tableName;
-		this.schemaName = InternalUtils.isEmpty(schemaName) ? null : schemaName;
-		this.catalogName = InternalUtils.isEmpty(catalogName) ? null : catalogName;
+		this.schemaName = InternalUtils.isBlank(schemaName) ? null : schemaName;
+		this.catalogName = InternalUtils.isBlank(catalogName) ? null : catalogName;
 		if (columnInfos == null) {
 			this.columnInfos = new ArrayList<>();
 		} else {

@@ -47,7 +47,7 @@ class InternalUtils {
 	 * @return the underscore case string
 	 */
 	public static String toUnderscoreName(String str) {
-		if (isEmpty(str)) {
+		if (isBlank(str)) {
 			return "";
 		}
 		StringBuilder result = new StringBuilder();

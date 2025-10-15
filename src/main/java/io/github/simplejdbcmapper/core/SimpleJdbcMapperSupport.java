@@ -262,6 +262,7 @@ class SimpleJdbcMapperSupport {
 	private void validateAnnotations(List<PropertyMapping> propertyMappings, Class<?> clazz) {
 		annotationDuplicateCheck(propertyMappings, clazz);
 		annotationConflictCheck(propertyMappings, clazz);
+		annotationVersionTypeCheck(propertyMappings, clazz);
 	}
 
 	private void annotationDuplicateCheck(List<PropertyMapping> propertyMappings, Class<?> clazz) {
@@ -335,6 +336,15 @@ class SimpleJdbcMapperSupport {
 			if (conflictCnt > 1) {
 				throw new AnnotationException(clazz.getSimpleName() + "." + propMapping.getPropertyName()
 						+ " has multiple annotations that conflict");
+			}
+		}
+	}
+
+	private void annotationVersionTypeCheck(List<PropertyMapping> propertyMappings, Class<?> clazz) {
+		for (PropertyMapping propMapping : propertyMappings) {
+			if (propMapping.isVersionAnnotation() && !isIntegerClass(propMapping.getPropertyClassName())) {
+				throw new AnnotationException("@Version requires the type of property " + clazz.getSimpleName() + "."
+						+ propMapping.getPropertyName() + " to be Integer");
 			}
 		}
 	}
@@ -432,4 +442,7 @@ class SimpleJdbcMapperSupport {
 		return tableMetaDataContext;
 	}
 
+	private boolean isIntegerClass(String className) {
+		return "java.lang.Integer".equals(className);
+	}
 }

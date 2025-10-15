@@ -21,6 +21,7 @@ import io.github.simplejdbcmapper.model.DuplicateIdAnnotion;
 import io.github.simplejdbcmapper.model.DuplicateUpdatedByAnnotation;
 import io.github.simplejdbcmapper.model.DuplicateUpdatedOnAnnotation;
 import io.github.simplejdbcmapper.model.DuplicateVersionAnnotation;
+import io.github.simplejdbcmapper.model.ModelWithVersionNotInteger;
 import io.github.simplejdbcmapper.model.InvalidTableObject;
 import io.github.simplejdbcmapper.model.NoIdObject;
 import io.github.simplejdbcmapper.model.NoMatchingColumn;
@@ -155,6 +156,14 @@ class AnnotationTest {
 			sjm.findById(ConflictAnnotation3.class, 1);
 		});
 		assertTrue(exception.getMessage().contains("has multiple annotations that conflict"));
+	}
+
+	@Test
+	void annotationVersionTypeNotInteger_Test() {
+		Exception exception = Assertions.assertThrows(AnnotationException.class, () -> {
+			sjm.findById(ModelWithVersionNotInteger.class, 1);
+		});
+		assertTrue(exception.getMessage().contains("to be Integer"));
 	}
 
 }

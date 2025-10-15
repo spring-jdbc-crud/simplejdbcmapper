@@ -584,21 +584,9 @@ public final class SimpleJdbcMapper {
 			int columnSqlType = propMapping.getColumnOverriddenSqlType() == null ? propMapping.getColumnSqlType()
 					: propMapping.getColumnOverriddenSqlType();
 			if (columnSqlType == Types.BLOB) {
-				if (bw.getPropertyValue(propMapping.getPropertyName()) == null) {
-					mapSqlParameterSource.addValue(propMapping.getColumnName(), null);
-				} else {
-					mapSqlParameterSource.addValue(propMapping.getColumnName(),
-							new SqlBinaryValue((byte[]) bw.getPropertyValue(propMapping.getPropertyName())),
-							Types.BLOB);
-				}
+				assignBlobMapSqlParameterSourceForInsert(bw, mapSqlParameterSource, propMapping);
 			} else if (columnSqlType == Types.CLOB) {
-				if (bw.getPropertyValue(propMapping.getPropertyName()) == null) {
-					mapSqlParameterSource.addValue(propMapping.getColumnName(), null);
-				} else {
-					mapSqlParameterSource.addValue(propMapping.getColumnName(),
-							new SqlCharacterValue((char[]) bw.getPropertyValue(propMapping.getPropertyName())),
-							Types.CLOB);
-				}
+				assignClobMapSqlParameterSourceForInsert(bw, mapSqlParameterSource, propMapping);
 			} else {
 				// SimpleJdbcInsert logs extra stuff when we override its internal sqltype so
 				// keep it to a minimum
@@ -613,6 +601,26 @@ public final class SimpleJdbcMapper {
 			}
 		}
 		return mapSqlParameterSource;
+	}
+
+	private void assignClobMapSqlParameterSourceForInsert(BeanWrapper bw, MapSqlParameterSource mapSqlParameterSource,
+			PropertyMapping propMapping) {
+		if (bw.getPropertyValue(propMapping.getPropertyName()) == null) {
+			mapSqlParameterSource.addValue(propMapping.getColumnName(), null);
+		} else {
+			mapSqlParameterSource.addValue(propMapping.getColumnName(),
+					new SqlCharacterValue((char[]) bw.getPropertyValue(propMapping.getPropertyName())), Types.CLOB);
+		}
+	}
+
+	private void assignBlobMapSqlParameterSourceForInsert(BeanWrapper bw, MapSqlParameterSource mapSqlParameterSource,
+			PropertyMapping propMapping) {
+		if (bw.getPropertyValue(propMapping.getPropertyName()) == null) {
+			mapSqlParameterSource.addValue(propMapping.getColumnName(), null);
+		} else {
+			mapSqlParameterSource.addValue(propMapping.getColumnName(),
+					new SqlBinaryValue((byte[]) bw.getPropertyValue(propMapping.getPropertyName())), Types.BLOB);
+		}
 	}
 
 	private void populateAutoAssignPropertiesForInsert(TableMapping tableMapping, BeanWrapper bw) {
@@ -695,42 +703,53 @@ public final class SimpleJdbcMapper {
 		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
 		for (String paramName : parameters) {
 			if (paramName.equals(INCREMENTED_VERSION)) {
-				Integer versionVal = (Integer) bw
-						.getPropertyValue(tableMapping.getVersionPropertyMapping().getPropertyName());
-				if (versionVal == null) {
-					throw new MapperException(bw.getWrappedClass().getSimpleName() + "."
-							+ tableMapping.getVersionPropertyMapping().getPropertyName()
-							+ " is configured with annotation @Version. Property "
-							+ tableMapping.getVersionPropertyMapping().getPropertyName()
-							+ " must not be null when updating.");
-				} else {
-					mapSqlParameterSource.addValue(INCREMENTED_VERSION, versionVal + 1, java.sql.Types.INTEGER);
-				}
+				Integer incrementedVersionVal = getIncrementedVersionValue(tableMapping, bw);
+				mapSqlParameterSource.addValue(INCREMENTED_VERSION, incrementedVersionVal, java.sql.Types.INTEGER);
 			} else {
 				int columnSqlType = tableMapping.getColumnOverriddenSqlType(paramName) == null
 						? tableMapping.getColumnSqlType(paramName)
 						: tableMapping.getColumnOverriddenSqlType(paramName);
-
 				if (columnSqlType == Types.BLOB) {
-					if (bw.getPropertyValue(paramName) == null) {
-						mapSqlParameterSource.addValue(paramName, null, columnSqlType);
-					} else {
-						mapSqlParameterSource.addValue(paramName,
-								new SqlBinaryValue((byte[]) bw.getPropertyValue(paramName)), columnSqlType);
-					}
+					assignBlobMapSqlParameterSourceForUpdate(bw, mapSqlParameterSource, paramName);
 				} else if (columnSqlType == Types.CLOB) {
-					if (bw.getPropertyValue(paramName) == null) {
-						mapSqlParameterSource.addValue(paramName, null, columnSqlType);
-					} else {
-						mapSqlParameterSource.addValue(paramName,
-								new SqlCharacterValue((char[]) bw.getPropertyValue(paramName)), columnSqlType);
-					}
+					assignClobMapSqlParameterSourceForUpdate(bw, mapSqlParameterSource, paramName);
 				} else {
 					mapSqlParameterSource.addValue(paramName, bw.getPropertyValue(paramName), columnSqlType);
 				}
 			}
 		}
 		return mapSqlParameterSource;
+	}
+
+	private void assignClobMapSqlParameterSourceForUpdate(BeanWrapper bw, MapSqlParameterSource mapSqlParameterSource,
+			String paramName) {
+		if (bw.getPropertyValue(paramName) == null) {
+			mapSqlParameterSource.addValue(paramName, null, Types.CLOB);
+		} else {
+			mapSqlParameterSource.addValue(paramName, new SqlCharacterValue((char[]) bw.getPropertyValue(paramName)),
+					Types.CLOB);
+		}
+	}
+
+	private void assignBlobMapSqlParameterSourceForUpdate(BeanWrapper bw, MapSqlParameterSource mapSqlParameterSource,
+			String paramName) {
+		if (bw.getPropertyValue(paramName) == null) {
+			mapSqlParameterSource.addValue(paramName, null, Types.BLOB);
+		} else {
+			mapSqlParameterSource.addValue(paramName, new SqlBinaryValue((byte[]) bw.getPropertyValue(paramName)),
+					Types.BLOB);
+		}
+	}
+
+	private Integer getIncrementedVersionValue(TableMapping tableMapping, BeanWrapper bw) {
+		Integer versionVal = (Integer) bw.getPropertyValue(tableMapping.getVersionPropertyMapping().getPropertyName());
+		if (versionVal == null) {
+			throw new MapperException(bw.getWrappedClass().getSimpleName() + "."
+					+ tableMapping.getVersionPropertyMapping().getPropertyName()
+					+ " is configured with annotation @Version. Property "
+					+ tableMapping.getVersionPropertyMapping().getPropertyName() + " must not be null when updating.");
+		}
+		return versionVal + 1;
 	}
 
 	private SqlAndParams buildSqlAndParamsForUpdate(TableMapping tableMapping) {

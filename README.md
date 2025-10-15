@@ -86,7 +86,8 @@ A simple wrapper around Spring JDBC libraries that makes database CRUD operation
  /*
   The following method gets the sql for the columns. Works well with Spring row mappers like 
   BeanPropertyRowMapper(), SimplePropertyRowMapper() etc. Will create the needed column aliases 
-  when the column name does not match the corresponding underscore case property name.
+  when the column name does not match the corresponding underscore case property name. 
+  Note that in this case the 'name' property is mapped to the 'product_name' column.
  */
  String sql = "SELECT " + sjm.getBeanFriendlySqlColumns(Product.class) +  " FROM product WHERE product_name = ?";
  

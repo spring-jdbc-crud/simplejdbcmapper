@@ -111,24 +111,8 @@ class SimpleJdbcMapperSupport {
 			// properties
 			Map<String, PropertyMapping> propNameToPropertyMapping = new LinkedHashMap<>();
 			for (Field field : fields) {
-				String propertyName = field.getName();
-				Column colAnnotation = AnnotationUtils.findAnnotation(field, Column.class);
-				if (colAnnotation != null) {
-					String colName = colAnnotation.name();
-					if ("[DEFAULT]".equals(colName)) {
-						colName = SjmInternalUtils.toUnderscoreName(propertyName);
-					}
-					colName = SjmInternalUtils.toLowerCase(colName);
-					if (!columnNameToColumnInfo.containsKey(colName)) {
-						throw new AnnotationException(colName + " column not found in table " + tableName
-								+ " for model property " + clazz.getSimpleName() + "." + propertyName);
-					}
-					propNameToPropertyMapping.put(propertyName,
-							new PropertyMapping(propertyName, field.getType().getName(), colName,
-									columnNameToColumnInfo.get(colName).getColumnSqlType(),
-									getDatabaseMetaDataOverrideSqlType(field.getType())));
-
-				}
+				// process column annotation always first
+				processColumnAnnotation(field, tableName, propNameToPropertyMapping, columnNameToColumnInfo);
 				processAnnotation(Id.class, field, tableName, propNameToPropertyMapping, columnNameToColumnInfo);
 				processAnnotation(Version.class, field, tableName, propNameToPropertyMapping, columnNameToColumnInfo);
 				processAnnotation(CreatedOn.class, field, tableName, propNameToPropertyMapping, columnNameToColumnInfo);
@@ -162,7 +146,7 @@ class SimpleJdbcMapperSupport {
 		enableOffsetDateTimeSqlTypeAsTimestampWithTimeZone = true;
 	}
 
-	SimpleCache<String, TableMapping> getTableMappingCache() {
+	public SimpleCache<String, TableMapping> getTableMappingCache() {
 		return tableMappingCache;
 	}
 
@@ -218,6 +202,29 @@ class SimpleJdbcMapperSupport {
 		return columnInfoList;
 	}
 
+	private void processColumnAnnotation(Field field, String tableName,
+			Map<String, PropertyMapping> propNameToPropertyMapping, Map<String, ColumnInfo> columnNameToColumnInfo) {
+		Column colAnnotation = AnnotationUtils.findAnnotation(field, Column.class);
+		if (colAnnotation != null) {
+			String propertyName = field.getName();
+			String colName = colAnnotation.name();
+			if ("[DEFAULT]".equals(colName)) {
+				colName = SjmInternalUtils.toUnderscoreName(propertyName);
+			}
+			colName = SjmInternalUtils.toLowerCase(colName);
+			if (!columnNameToColumnInfo.containsKey(colName)) {
+				throw new AnnotationException(colName + " column not found in table " + tableName
+						+ " for model property " + field.getDeclaringClass().getSimpleName() + "." + propertyName);
+			}
+			propNameToPropertyMapping.put(propertyName,
+					new PropertyMapping(propertyName, field.getType().getName(), colName,
+							columnNameToColumnInfo.get(colName).getColumnSqlType(),
+							getDatabaseMetaDataOverrideSqlType(field.getType())));
+
+		}
+	}
+
+	// invoked for all annotations other than @Column
 	private <T extends Annotation> void processAnnotation(Class<T> annotationClazz, Field field, String tableName,
 			Map<String, PropertyMapping> propNameToPropertyMapping, Map<String, ColumnInfo> columnNameToColumnInfo) {
 		Annotation annotation = AnnotationUtils.findAnnotation(field, annotationClazz);
@@ -390,7 +397,7 @@ class SimpleJdbcMapperSupport {
 	}
 
 	private Integer getDatabaseMetaDataOverrideSqlType(Class<?> clazz) {
-		if (clazz != null && enableOffsetDateTimeSqlTypeAsTimestampWithTimeZone
+		if (enableOffsetDateTimeSqlTypeAsTimestampWithTimeZone && clazz != null
 				&& OffsetDateTime.class.isAssignableFrom(clazz)) {
 			return Types.TIMESTAMP_WITH_TIMEZONE;
 		}

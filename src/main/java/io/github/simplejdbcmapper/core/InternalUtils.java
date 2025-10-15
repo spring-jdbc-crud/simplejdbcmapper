@@ -23,9 +23,9 @@ import org.springframework.jdbc.support.JdbcUtils;
  *
  * @author Antony Joseph
  */
-class SjmInternalUtils {
+class InternalUtils {
 
-	private SjmInternalUtils() {
+	private InternalUtils() {
 	}
 
 	/**

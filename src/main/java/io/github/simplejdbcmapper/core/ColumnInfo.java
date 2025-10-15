@@ -24,7 +24,7 @@ class ColumnInfo {
 	private int columnSqlType; // see java.sql.Types
 
 	public ColumnInfo(String columnName, int columnSqlType) {
-		this.columnName = SjmInternalUtils.toLowerCase(columnName);
+		this.columnName = InternalUtils.toLowerCase(columnName);
 		this.columnSqlType = columnSqlType;
 	}
 

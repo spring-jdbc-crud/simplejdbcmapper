@@ -185,7 +185,7 @@ class SimpleJdbcMapperSupport {
 		validateMetaDataConfig(catalog, schema);
 		String tableName = tableAnnotation.name();
 		List<ColumnInfo> columnInfoList = getColumnInfoFromTableMetadata(tableName, schema, catalog);
-		if (SjmInternalUtils.isEmpty(columnInfoList)) {
+		if (InternalUtils.isEmpty(columnInfoList)) {
 			throw new AnnotationException(getTableMetaDataNotFoundErrMsg(clazz, tableName, schema, catalog));
 		}
 		return new TableColumnInfo(tableName, schema, catalog, columnInfoList);
@@ -212,9 +212,9 @@ class SimpleJdbcMapperSupport {
 			String propertyName = field.getName();
 			String colName = colAnnotation.name();
 			if ("[DEFAULT]".equals(colName)) {
-				colName = SjmInternalUtils.toUnderscoreName(propertyName);
+				colName = InternalUtils.toUnderscoreName(propertyName);
 			}
-			colName = SjmInternalUtils.toLowerCase(colName);
+			colName = InternalUtils.toLowerCase(colName);
 			if (!columnNameToColumnInfo.containsKey(colName)) {
 				throw new AnnotationException(colName + " column not found in table " + tableName
 						+ " for model property " + field.getDeclaringClass().getSimpleName() + "." + propertyName);
@@ -235,7 +235,7 @@ class SimpleJdbcMapperSupport {
 			String propertyName = field.getName();
 			PropertyMapping propMapping = propNameToPropertyMapping.get(propertyName);
 			if (propMapping == null) { // it means there is no @Column annotation for the property
-				String colName = SjmInternalUtils.toUnderscoreName(propertyName); // the default column name
+				String colName = InternalUtils.toUnderscoreName(propertyName); // the default column name
 				if (!columnNameToColumnInfo.containsKey(colName)) {
 					throw new AnnotationException(
 							colName + " column not found in table " + tableName + " for model property "
@@ -257,7 +257,7 @@ class SimpleJdbcMapperSupport {
 			throw new AnnotationException(
 					clazz.getSimpleName() + " does not have the @Table annotation. It is required");
 		}
-		if (SjmInternalUtils.isEmpty(tableAnnotation.name().trim())) {
+		if (InternalUtils.isEmpty(tableAnnotation.name().trim())) {
 			throw new AnnotationException("For " + clazz.getSimpleName() + " the @Table annotation has a blank name");
 		}
 	}
@@ -325,11 +325,11 @@ class SimpleJdbcMapperSupport {
 	}
 
 	private String getCatalogForTable(Table tableAnnotation) {
-		return SjmInternalUtils.isEmpty(tableAnnotation.catalog()) ? this.catalogName : tableAnnotation.catalog();
+		return InternalUtils.isEmpty(tableAnnotation.catalog()) ? this.catalogName : tableAnnotation.catalog();
 	}
 
 	private String getSchemaForTable(Table tableAnnotation) {
-		return SjmInternalUtils.isEmpty(tableAnnotation.schema()) ? this.schemaName : tableAnnotation.schema();
+		return InternalUtils.isEmpty(tableAnnotation.schema()) ? this.schemaName : tableAnnotation.schema();
 	}
 
 	private String getTableMetaDataNotFoundErrMsg(Class<?> clazz, String tableName, String schema, String catalog) {
@@ -361,12 +361,12 @@ class SimpleJdbcMapperSupport {
 
 	private void validateMetaDataConfig(String catalog, String schema) {
 		String commonDatabaseName = JdbcUtils.commonDatabaseName(getDatabaseProductName());
-		if ("mysql".equalsIgnoreCase(commonDatabaseName) && SjmInternalUtils.isNotEmpty(schema)) {
+		if ("mysql".equalsIgnoreCase(commonDatabaseName) && InternalUtils.isNotEmpty(schema)) {
 			throw new MapperException(commonDatabaseName
 					+ ": When creating SimpleJdbcMapper() if you are using 'schema' (argument 2) use 'catalog' (argument 3) instead."
 					+ " If you are using the @Table annotation use the 'catalog' attribue instead of 'schema' attribute");
 		}
-		if ("oracle".equalsIgnoreCase(commonDatabaseName) && SjmInternalUtils.isNotEmpty(catalog)) {
+		if ("oracle".equalsIgnoreCase(commonDatabaseName) && InternalUtils.isNotEmpty(catalog)) {
 			throw new MapperException(commonDatabaseName
 					+ ": When creating SimpleJdbcMapper() if you are using the 'catalog' (argument 3) use 'schema' (argument 2) instead."
 					+ " If you are using the @Table annotation use the 'schema' attribue instead of 'catalog' attribute");

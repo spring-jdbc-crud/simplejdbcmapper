@@ -16,6 +16,8 @@ package io.github.simplejdbcmapper.core;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.jdbc.core.metadata.TableParameterMetaData;
+
 /**
  * Table column info.
  *
@@ -28,16 +30,15 @@ class TableColumnInfo {
 
 	private final String catalogName;
 
-	private List<ColumnInfo> columnInfos;
+	private List<TableParameterMetaData> tpmdList = new ArrayList<>();
 
-	public TableColumnInfo(String tableName, String schemaName, String catalogName, List<ColumnInfo> columnInfos) {
+	public TableColumnInfo(String tableName, String schemaName, String catalogName,
+			List<TableParameterMetaData> tpmdList) {
 		this.tableName = tableName;
 		this.schemaName = InternalUtils.isBlank(schemaName) ? null : schemaName;
 		this.catalogName = InternalUtils.isBlank(catalogName) ? null : catalogName;
-		if (columnInfos == null) {
-			this.columnInfos = new ArrayList<>();
-		} else {
-			this.columnInfos = columnInfos;
+		if (tpmdList != null) {
+			this.tpmdList = tpmdList;
 		}
 	}
 
@@ -53,7 +54,7 @@ class TableColumnInfo {
 		return catalogName;
 	}
 
-	public List<ColumnInfo> getColumnInfos() {
-		return columnInfos;
+	public List<TableParameterMetaData> getTableParameterMetaDataList() {
+		return tpmdList;
 	}
 }

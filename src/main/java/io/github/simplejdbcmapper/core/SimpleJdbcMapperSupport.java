@@ -107,20 +107,20 @@ class SimpleJdbcMapperSupport {
 			List<Field> fields = getAllFields(clazz);
 			IdPropertyInfo idPropertyInfo = getIdPropertyInfo(clazz, fields);
 			// key:column name, value: ColumnInfo
-			Map<String, ColumnInfo> columnNameToColumnInfo = tableColumnInfo.getColumnInfos().stream()
-					.collect(Collectors.toMap(o -> o.getColumnName(), o -> o));
+			Map<String, TableParameterMetaData> columnNameToTpmd = tableColumnInfo.getTableParameterMetaDataList()
+					.stream().collect(Collectors.toMap(o -> o.getParameterName(), o -> o));
 			// key:propertyName, value:PropertyMapping. LinkedHashMap to maintain order of
 			// properties
 			Map<String, PropertyMapping> propNameToPropertyMapping = new LinkedHashMap<>();
 			for (Field field : fields) {
 				// process column annotation always first
-				processColumnAnnotation(field, tableName, propNameToPropertyMapping, columnNameToColumnInfo);
-				processAnnotation(Id.class, field, tableName, propNameToPropertyMapping, columnNameToColumnInfo);
-				processAnnotation(Version.class, field, tableName, propNameToPropertyMapping, columnNameToColumnInfo);
-				processAnnotation(CreatedOn.class, field, tableName, propNameToPropertyMapping, columnNameToColumnInfo);
-				processAnnotation(UpdatedOn.class, field, tableName, propNameToPropertyMapping, columnNameToColumnInfo);
-				processAnnotation(CreatedBy.class, field, tableName, propNameToPropertyMapping, columnNameToColumnInfo);
-				processAnnotation(UpdatedBy.class, field, tableName, propNameToPropertyMapping, columnNameToColumnInfo);
+				processColumnAnnotation(field, tableName, propNameToPropertyMapping, columnNameToTpmd);
+				processAnnotation(Id.class, field, tableName, propNameToPropertyMapping, columnNameToTpmd);
+				processAnnotation(Version.class, field, tableName, propNameToPropertyMapping, columnNameToTpmd);
+				processAnnotation(CreatedOn.class, field, tableName, propNameToPropertyMapping, columnNameToTpmd);
+				processAnnotation(UpdatedOn.class, field, tableName, propNameToPropertyMapping, columnNameToTpmd);
+				processAnnotation(CreatedBy.class, field, tableName, propNameToPropertyMapping, columnNameToTpmd);
+				processAnnotation(UpdatedBy.class, field, tableName, propNameToPropertyMapping, columnNameToTpmd);
 			}
 			List<PropertyMapping> propertyMappings = new ArrayList<>(propNameToPropertyMapping.values());
 			validateAnnotations(propertyMappings, clazz);
@@ -184,29 +184,25 @@ class SimpleJdbcMapperSupport {
 		String schema = getSchemaForTable(tableAnnotation);
 		validateMetaDataConfig(catalog, schema);
 		String tableName = tableAnnotation.name();
-		List<ColumnInfo> columnInfoList = getColumnInfoFromTableMetadata(tableName, schema, catalog);
-		if (InternalUtils.isEmpty(columnInfoList)) {
+		List<TableParameterMetaData> tpmdList = getTableParameterMetadataList(tableName, schema, catalog);
+		if (InternalUtils.isEmpty(tpmdList)) {
 			throw new AnnotationException(getTableMetaDataNotFoundErrMsg(clazz, tableName, schema, catalog));
 		}
-		return new TableColumnInfo(tableName, schema, catalog, columnInfoList);
+		return new TableColumnInfo(tableName, schema, catalog, tpmdList);
 	}
 
-	private List<ColumnInfo> getColumnInfoFromTableMetadata(String tableName, String schema, String catalog) {
+	private List<TableParameterMetaData> getTableParameterMetadataList(String tableName, String schema,
+			String catalog) {
 		Assert.hasLength(tableName, "tableName must not be empty");
 		TableMetaDataContext tableMetaDataContext = createNewTableMetaDataContext(tableName, schema, catalog);
 		TableMetaDataProvider provider = TableMetaDataProviderFactory.createMetaDataProvider(dataSource,
 				tableMetaDataContext);
-		List<ColumnInfo> columnInfoList = new ArrayList<>();
-		List<TableParameterMetaData> list = provider.getTableParameterMetaData();
-		for (TableParameterMetaData metaData : list) {
-			ColumnInfo columnInfo = new ColumnInfo(metaData.getParameterName(), metaData.getSqlType());
-			columnInfoList.add(columnInfo);
-		}
-		return columnInfoList;
+		return provider.getTableParameterMetaData();
 	}
 
 	private void processColumnAnnotation(Field field, String tableName,
-			Map<String, PropertyMapping> propNameToPropertyMapping, Map<String, ColumnInfo> columnNameToColumnInfo) {
+			Map<String, PropertyMapping> propNameToPropertyMapping,
+			Map<String, TableParameterMetaData> columnNameToTpmd) {
 		Column colAnnotation = AnnotationUtils.findAnnotation(field, Column.class);
 		if (colAnnotation != null) {
 			String propertyName = field.getName();
@@ -215,13 +211,13 @@ class SimpleJdbcMapperSupport {
 				colName = InternalUtils.toUnderscoreName(propertyName);
 			}
 			colName = InternalUtils.toLowerCase(colName);
-			if (!columnNameToColumnInfo.containsKey(colName)) {
+			if (!columnNameToTpmd.containsKey(colName)) {
 				throw new AnnotationException(colName + " column not found in table " + tableName
 						+ " for model property " + field.getDeclaringClass().getSimpleName() + "." + propertyName);
 			}
 			propNameToPropertyMapping.put(propertyName,
 					new PropertyMapping(propertyName, field.getType().getName(), colName,
-							columnNameToColumnInfo.get(colName).getColumnSqlType(),
+							columnNameToTpmd.get(colName).getSqlType(),
 							getDatabaseMetaDataOverrideSqlType(field.getType())));
 
 		}
@@ -229,20 +225,21 @@ class SimpleJdbcMapperSupport {
 
 	// invoked for all annotations other than @Column
 	private <T extends Annotation> void processAnnotation(Class<T> annotationClazz, Field field, String tableName,
-			Map<String, PropertyMapping> propNameToPropertyMapping, Map<String, ColumnInfo> columnNameToColumnInfo) {
+			Map<String, PropertyMapping> propNameToPropertyMapping,
+			Map<String, TableParameterMetaData> columnNameToTpmd) {
 		Annotation annotation = AnnotationUtils.findAnnotation(field, annotationClazz);
 		if (annotation != null) {
 			String propertyName = field.getName();
 			PropertyMapping propMapping = propNameToPropertyMapping.get(propertyName);
 			if (propMapping == null) { // it means there is no @Column annotation for the property
 				String colName = InternalUtils.toUnderscoreName(propertyName); // the default column name
-				if (!columnNameToColumnInfo.containsKey(colName)) {
+				if (!columnNameToTpmd.containsKey(colName)) {
 					throw new AnnotationException(
 							colName + " column not found in table " + tableName + " for model property "
 									+ field.getDeclaringClass().getSimpleName() + "." + field.getName());
 				}
 				propMapping = new PropertyMapping(propertyName, field.getType().getName(), colName,
-						columnNameToColumnInfo.get(colName).getColumnSqlType());
+						columnNameToTpmd.get(colName).getSqlType());
 				propNameToPropertyMapping.put(propertyName, propMapping);
 			}
 			BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(propMapping);

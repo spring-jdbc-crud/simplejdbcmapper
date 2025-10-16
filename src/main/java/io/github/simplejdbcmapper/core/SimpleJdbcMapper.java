@@ -423,7 +423,7 @@ public final class SimpleJdbcMapper {
 	 * &#64;UpdatedBy annotated properties.
 	 * 
 	 * @param <T>      the type
-	 * @param supplier the Supplier to get the record audited by info.
+	 * @param supplier the Supplier for audited by.
 	 */
 	public <T> void setRecordAuditedBySupplier(Supplier<T> supplier) {
 		if (recordAuditedBySupplier == null) {
@@ -438,7 +438,7 @@ public final class SimpleJdbcMapper {
 	 * &#64;UpdatedOn annotated properties.
 	 *
 	 * @param <T>      the type
-	 * @param supplier the Supplier to get the record audited on info.
+	 * @param supplier the Supplier for audited on.
 	 */
 	public <T> void setRecordAuditedOnSupplier(Supplier<T> supplier) {
 		if (recordAuditedOnSupplier == null) {

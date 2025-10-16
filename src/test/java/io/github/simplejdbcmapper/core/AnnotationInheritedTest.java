@@ -1,8 +1,11 @@
 package io.github.simplejdbcmapper.core;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.lang.reflect.Field;
+import java.time.LocalDateTime;
 import java.util.Arrays;
 import java.util.List;
 
@@ -28,13 +31,54 @@ class AnnotationInheritedTest {
 	private SimpleJdbcMapper sjm;
 
 	@Test
-	void annotationOrderInheritedAudit_Test() {
+	void inheritedClass_fieldCount_test() {
+		List<Field> fields = sjm.getSimpleJdbcMapperSupport().getAllFields(OrderInheritedAudit.class);
+
+		assertEquals(9, fields.size());
+	}
+
+	@Test
+	void annotationOrderInheritedAuditProperty_Test() {
 		TableMapping tableMapping = sjm.getTableMapping(OrderInheritedAudit.class);
 		List<String> mappedProperties = Arrays.asList("orderId", "orderDate", "customerId", "status", "createdOn",
 				"createdBy", "updatedOn", "updatedBy", "version");
 		for (String propertyName : mappedProperties) {
 			assertNotNull(tableMapping.getPropertyMappingByPropertyName(propertyName));
 		}
+	}
+
+	@Test
+	void annotationOrderInheritedAudit_Test() {
+
+		OrderInheritedAudit obj = new OrderInheritedAudit();
+		obj.setOrderDate(LocalDateTime.now());
+		obj.setCustomerId(2);
+
+		sjm.insert(obj);
+
+		// check if auto assigned properties have been assigned.
+		if (sjm.getRecordAuditedBySupplier() != null) {
+			assertEquals("tester", obj.getCreatedBy());
+			assertEquals("tester", obj.getUpdatedBy());
+		}
+		if (sjm.getRecordAuditedOnSupplier() != null) {
+			assertNotNull(obj.getCreatedOn());
+			assertNotNull(obj.getUpdatedOn());
+		}
+		assertEquals(1, obj.getVersion());
+
+		OrderInheritedAudit obj2 = sjm.findById(OrderInheritedAudit.class, obj.getOrderId());
+		assertNotNull(obj2.getOrderId());
+		assertNotNull(obj2.getOrderDate());
+		if (sjm.getRecordAuditedBySupplier() != null) {
+			assertEquals("tester", obj.getCreatedBy());
+			assertEquals("tester", obj.getUpdatedBy());
+		}
+		if (sjm.getRecordAuditedOnSupplier() != null) {
+			assertNotNull(obj.getCreatedOn());
+			assertNotNull(obj.getUpdatedOn());
+		}
+		assertEquals(1, obj2.getVersion());
 	}
 
 	@Test

@@ -89,10 +89,13 @@ class SimpleJdbcMapperUtilsTest {
 
 	@Test
 	void mergeResultsToPopulateHasMany_success() {
-		List<Order> orders = sjm.findAll(Order.class);
+		String sql0 = "SELECT " + sjm.getBeanFriendlySqlColumns(Order.class) + " FROM orders order by order_id";
+		List<Order> orders = sjm.getJdbcClient().sql(sql0).query(Order.class).list();
+
 		List<Long> orderIdList = orders.stream().map(Order::getOrderId).toList();
 		String sql = "SELECT " + sjm.getBeanFriendlySqlColumns(OrderLine.class)
 				+ " from order_line WHERE order_id in (:ids)";
+
 		List<OrderLine> orderLines = sjm.getJdbcClient().sql(sql).param("ids", orderIdList).query(OrderLine.class)
 				.list();
 

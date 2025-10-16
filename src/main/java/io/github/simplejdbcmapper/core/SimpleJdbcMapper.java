@@ -271,7 +271,7 @@ public final class SimpleJdbcMapper {
 	 * @param supplier the Supplier for audited by.
 	 */
 	public <T> void setRecordAuditedBySupplier(Supplier<T> supplier) {
-		sjmSupport.setRecordAuditedOnSupplier(supplier);
+		sjmSupport.setRecordAuditedBySupplier(supplier);
 	}
 
 	/**

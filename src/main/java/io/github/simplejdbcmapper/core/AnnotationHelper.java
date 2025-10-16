@@ -21,7 +21,7 @@ import io.github.simplejdbcmapper.annotation.UpdatedOn;
 import io.github.simplejdbcmapper.annotation.Version;
 import io.github.simplejdbcmapper.exception.AnnotationException;
 
-public class AnnotationHelper {
+class AnnotationHelper {
 
 	public Table getTableAnnotation(Class<?> clazz) {
 		Table tableAnnotation = AnnotationUtils.findAnnotation(clazz, Table.class);

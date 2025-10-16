@@ -13,7 +13,6 @@
  */
 package io.github.simplejdbcmapper.core;
 
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -228,12 +227,7 @@ public final class SimpleJdbcMapper {
 	 * 
 	 */
 	public Map<String, String> getPropertyToColumnMappings(Class<?> clazz) {
-		TableMapping tableMapping = sjms.getTableMapping(clazz);
-		Map<String, String> map = new LinkedHashMap<>();
-		for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {
-			map.put(propMapping.getPropertyName(), propMapping.getColumnName());
-		}
-		return map;
+		return findHelper.getPropertyToColumnMappings(clazz);
 	}
 
 	/**

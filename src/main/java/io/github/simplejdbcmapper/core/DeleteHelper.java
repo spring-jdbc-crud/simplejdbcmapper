@@ -4,12 +4,13 @@ import org.springframework.beans.BeanWrapper;
 import org.springframework.util.Assert;
 
 class DeleteHelper {
-	private SimpleJdbcMapperSupport sjms;
+	private final SimpleJdbcMapperSupport sjms;
+
 	private final TableMappingHelper tmh;
 
-	public DeleteHelper(TableMappingHelper tmh) {
-		this.tmh = tmh;
-		this.sjms = tmh.getSimpleJdbcMapperSupport();
+	public DeleteHelper(SimpleJdbcMapperSupport sjms) {
+		this.sjms = sjms;
+		this.tmh = new TableMappingHelper(sjms);
 	}
 
 	public Integer delete(Object obj) {

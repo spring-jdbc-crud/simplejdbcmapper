@@ -35,9 +35,9 @@ class UpdateHelper {
 	// value - the update sql and params
 	private final SimpleCache<String, SqlAndParams> updateSpecificPropertiesSqlCache = new SimpleCache<>(2000);
 
-	public UpdateHelper(TableMappingHelper tmh) {
-		this.tmh = tmh;
-		this.sjms = tmh.getSimpleJdbcMapperSupport();
+	public UpdateHelper(SimpleJdbcMapperSupport sjms) {
+		this.sjms = sjms;
+		this.tmh = new TableMappingHelper(sjms);
 	}
 
 	public Integer update(Object obj) {

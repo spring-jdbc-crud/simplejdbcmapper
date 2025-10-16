@@ -131,7 +131,7 @@ class SimpleJdbcMapperSupport {
 		enableOffsetDateTimeSqlTypeAsTimestampWithTimeZone = true;
 	}
 
-	public boolean getEnableOffsetDateTimeSqlTypeAsTimestampWithTimeZone() {
+	public boolean isEnableOffsetDateTimeSqlTypeAsTimestampWithTimeZone() {
 		return enableOffsetDateTimeSqlTypeAsTimestampWithTimeZone;
 	}
 

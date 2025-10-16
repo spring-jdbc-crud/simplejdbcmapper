@@ -42,13 +42,9 @@ class TableMappingHelper {
 
 	private String databaseProductName;
 
-	TableMappingHelper(SimpleJdbcMapperSupport sjms) {
+	public TableMappingHelper(SimpleJdbcMapperSupport sjms) {
 		this.sjms = sjms;
 		this.annoHelper = new AnnotationHelper();
-	}
-
-	public SimpleJdbcMapperSupport getSimpleJdbcMapperSupport() {
-		return sjms;
 	}
 
 	public TableMapping getTableMapping(Class<?> clazz) {
@@ -87,12 +83,16 @@ class TableMappingHelper {
 		return tableMapping;
 	}
 
+	public String getCommonDatabaseName() {
+		return JdbcUtils.commonDatabaseName(getDatabaseProductName());
+	}
+
 	public SimpleCache<String, TableMapping> getTableMappingCache() {
 		return tableMappingCache;
 	}
 
 	// gets all unique fields including from super classes.
-	public List<Field> getAllFields(Class<?> clazz) {
+	private List<Field> getAllFields(Class<?> clazz) {
 		List<Field> fields = getAllFieldsInternal(clazz);
 		// there could be duplicate fields due to super classes. Get unique fields list
 		// by name
@@ -244,9 +244,4 @@ class TableMappingHelper {
 			return null;
 		}
 	}
-
-	public String getCommonDatabaseName() {
-		return JdbcUtils.commonDatabaseName(getDatabaseProductName());
-	}
-
 }

@@ -46,7 +46,6 @@ class AnnotationHelper {
 			}
 			propNameToPropertyMapping.put(propertyName, new PropertyMapping(propertyName, field.getType().getName(),
 					colName, columnNameToTpmd.get(colName).getSqlType()));
-
 		}
 	}
 

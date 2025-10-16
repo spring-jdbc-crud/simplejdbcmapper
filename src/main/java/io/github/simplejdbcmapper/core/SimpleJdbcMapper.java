@@ -51,8 +51,6 @@ public final class SimpleJdbcMapper {
 
 	private final DeleteHelper deleteHelper;
 
-	private final TableMappingHelper tableMappingHelper;
-
 	/**
 	 * Constructor.
 	 *
@@ -82,11 +80,10 @@ public final class SimpleJdbcMapper {
 	public SimpleJdbcMapper(DataSource dataSource, String schemaName, String catalogName) {
 		Assert.notNull(dataSource, "dataSource must not be null");
 		this.sjms = new SimpleJdbcMapperSupport(dataSource, schemaName, catalogName);
-		this.tableMappingHelper = new TableMappingHelper(this.sjms);
-		this.insertHelper = new InsertHelper(this.tableMappingHelper);
-		this.findHelper = new FindHelper(this.tableMappingHelper);
-		this.updateHelper = new UpdateHelper(this.tableMappingHelper);
-		this.deleteHelper = new DeleteHelper(this.tableMappingHelper);
+		this.insertHelper = new InsertHelper(this.sjms);
+		this.findHelper = new FindHelper(this.sjms);
+		this.updateHelper = new UpdateHelper(this.sjms);
+		this.deleteHelper = new DeleteHelper(this.sjms);
 
 	}
 
@@ -324,7 +321,7 @@ public final class SimpleJdbcMapper {
 	 * @param clazz the class
 	 */
 	public void loadMapping(Class<?> clazz) {
-		tableMappingHelper.getTableMapping(clazz);
+		findHelper.getTableMapping(clazz);
 	}
 
 	/**
@@ -346,11 +343,11 @@ public final class SimpleJdbcMapper {
 	}
 
 	TableMapping getTableMapping(Class<?> clazz) {
-		return tableMappingHelper.getTableMapping(clazz);
+		return findHelper.getTableMapping(clazz);
 	}
 
 	SimpleCache<String, TableMapping> getTableMappingCache() {
-		return tableMappingHelper.getTableMappingCache();
+		return findHelper.getTableMappingCache();
 	}
 
 	SimpleCache<String, String> getFindByIdSqlCache() {
@@ -371,10 +368,6 @@ public final class SimpleJdbcMapper {
 
 	SimpleCache<String, String> getBeanColumnsSqlCache() {
 		return findHelper.getBeanColumnsSqlCache();
-	}
-
-	SimpleJdbcMapperSupport getSimpleJdbcMapperSupport() {
-		return sjms;
 	}
 
 	@SuppressWarnings("rawtypes")

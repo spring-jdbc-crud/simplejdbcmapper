@@ -14,6 +14,7 @@ import io.github.simplejdbcmapper.exception.MapperException;
 
 class InsertHelper {
 	private final SimpleJdbcMapperSupport sjms;
+
 	private final TableMappingHelper tmh;
 
 	// insert cache. Note that Spring SimpleJdbcInsert is thread safe.
@@ -21,9 +22,9 @@ class InsertHelper {
 	// value - SimpleJdbcInsert
 	private final SimpleCache<String, SimpleJdbcInsert> insertSqlCache = new SimpleCache<>();
 
-	public InsertHelper(TableMappingHelper tmh) {
-		this.tmh = tmh;
-		this.sjms = tmh.getSimpleJdbcMapperSupport();
+	public InsertHelper(SimpleJdbcMapperSupport sjms) {
+		this.sjms = sjms;
+		this.tmh = new TableMappingHelper(sjms);
 	}
 
 	public void insert(Object obj) {

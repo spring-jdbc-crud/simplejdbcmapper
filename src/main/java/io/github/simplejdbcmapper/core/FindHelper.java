@@ -12,6 +12,7 @@ import org.springframework.util.Assert;
 
 class FindHelper {
 	private final SimpleJdbcMapperSupport sjms;
+
 	private final TableMappingHelper tmh;
 
 	// Map key - class name
@@ -24,9 +25,9 @@ class FindHelper {
 	// value - the column sql string
 	private final SimpleCache<String, String> beanColumnsSqlCache = new SimpleCache<>();
 
-	public FindHelper(TableMappingHelper tmh) {
-		this.tmh = tmh;
-		this.sjms = tmh.getSimpleJdbcMapperSupport();
+	public FindHelper(SimpleJdbcMapperSupport sjms) {
+		this.sjms = sjms;
+		this.tmh = new TableMappingHelper(sjms);
 	}
 
 	public <T> T findById(Class<T> clazz, Object id) {
@@ -82,6 +83,14 @@ class FindHelper {
 
 	public SimpleCache<String, String> getBeanColumnsSqlCache() {
 		return beanColumnsSqlCache;
+	}
+
+	public TableMapping getTableMapping(Class<?> clazz) {
+		return tmh.getTableMapping(clazz);
+	}
+
+	public SimpleCache<String, TableMapping> getTableMappingCache() {
+		return tmh.getTableMappingCache();
 	}
 
 	private <T> String getBeanColumnsSql(TableMapping tableMapping, Class<T> clazz) {

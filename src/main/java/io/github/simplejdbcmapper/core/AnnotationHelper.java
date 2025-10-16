@@ -87,32 +87,13 @@ class AnnotationHelper {
 		processAnnotation(UpdatedBy.class, field, tableName, propNameToPropertyMapping, columnNameToTpmd);
 	}
 
-	private <T extends Annotation> void processAnnotation(Class<T> annotationClazz, Field field, String tableName,
-			Map<String, PropertyMapping> propNameToPropertyMapping,
-			Map<String, TableParameterMetaData> columnNameToTpmd) {
-		Annotation annotation = AnnotationUtils.findAnnotation(field, annotationClazz);
-		if (annotation != null) {
-			String propertyName = field.getName();
-			PropertyMapping propMapping = propNameToPropertyMapping.get(propertyName);
-			if (propMapping == null) { // it means there is no @Column annotation for the property
-				String colName = InternalUtils.toUnderscoreName(propertyName); // the default column name
-				if (!columnNameToTpmd.containsKey(colName)) {
-					throw new AnnotationException(
-							colName + " column not found in table " + tableName + " for model property "
-									+ field.getDeclaringClass().getSimpleName() + "." + field.getName());
-				}
-				propMapping = new PropertyMapping(propertyName, field.getType().getName(), colName,
-						columnNameToTpmd.get(colName).getSqlType());
-				propNameToPropertyMapping.put(propertyName, propMapping);
-			}
-			BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(propMapping);
-			// set idAnnotation, versionAnnotation, createdOnAnnotation etc on
-			// PropertyMapping object
-			bw.setPropertyValue(StringUtils.uncapitalize(annotationClazz.getSimpleName()) + "Annotation", true);
-		}
+	public void validateAnnotations(List<PropertyMapping> propertyMappings, Class<?> clazz) {
+		annotationDuplicateCheck(propertyMappings, clazz);
+		annotationConflictCheck(propertyMappings, clazz);
+		annotationVersionTypeCheck(propertyMappings, clazz);
 	}
 
-	public void validateTableAnnotation(Table tableAnnotation, Class<?> clazz) {
+	private void validateTableAnnotation(Table tableAnnotation, Class<?> clazz) {
 		if (tableAnnotation == null) {
 			throw new AnnotationException(
 					clazz.getSimpleName() + " does not have the @Table annotation. It is required");
@@ -122,13 +103,7 @@ class AnnotationHelper {
 		}
 	}
 
-	public void validateAnnotations(List<PropertyMapping> propertyMappings, Class<?> clazz) {
-		annotationDuplicateCheck(propertyMappings, clazz);
-		annotationConflictCheck(propertyMappings, clazz);
-		annotationVersionTypeCheck(propertyMappings, clazz);
-	}
-
-	public void annotationDuplicateCheck(List<PropertyMapping> propertyMappings, Class<?> clazz) {
+	private void annotationDuplicateCheck(List<PropertyMapping> propertyMappings, Class<?> clazz) {
 		int idCnt = 0;
 		int versionCnt = 0;
 		int createdByCnt = 0;
@@ -175,7 +150,7 @@ class AnnotationHelper {
 		}
 	}
 
-	public void annotationConflictCheck(List<PropertyMapping> propertyMappings, Class<?> clazz) {
+	private void annotationConflictCheck(List<PropertyMapping> propertyMappings, Class<?> clazz) {
 		for (PropertyMapping propMapping : propertyMappings) {
 			int conflictCnt = 0;
 			if (propMapping.isIdAnnotation()) {
@@ -203,12 +178,37 @@ class AnnotationHelper {
 		}
 	}
 
-	public void annotationVersionTypeCheck(List<PropertyMapping> propertyMappings, Class<?> clazz) {
+	private void annotationVersionTypeCheck(List<PropertyMapping> propertyMappings, Class<?> clazz) {
 		for (PropertyMapping propMapping : propertyMappings) {
 			if (propMapping.isVersionAnnotation() && !isIntegerClass(propMapping.getPropertyClassName())) {
 				throw new AnnotationException("@Version requires the type of property " + clazz.getSimpleName() + "."
 						+ propMapping.getPropertyName() + " to be Integer");
 			}
+		}
+	}
+
+	private <T extends Annotation> void processAnnotation(Class<T> annotationClazz, Field field, String tableName,
+			Map<String, PropertyMapping> propNameToPropertyMapping,
+			Map<String, TableParameterMetaData> columnNameToTpmd) {
+		Annotation annotation = AnnotationUtils.findAnnotation(field, annotationClazz);
+		if (annotation != null) {
+			String propertyName = field.getName();
+			PropertyMapping propMapping = propNameToPropertyMapping.get(propertyName);
+			if (propMapping == null) { // it means there is no @Column annotation for the property
+				String colName = InternalUtils.toUnderscoreName(propertyName); // the default column name
+				if (!columnNameToTpmd.containsKey(colName)) {
+					throw new AnnotationException(
+							colName + " column not found in table " + tableName + " for model property "
+									+ field.getDeclaringClass().getSimpleName() + "." + field.getName());
+				}
+				propMapping = new PropertyMapping(propertyName, field.getType().getName(), colName,
+						columnNameToTpmd.get(colName).getSqlType());
+				propNameToPropertyMapping.put(propertyName, propMapping);
+			}
+			BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(propMapping);
+			// set idAnnotation, versionAnnotation, createdOnAnnotation etc on
+			// PropertyMapping object
+			bw.setPropertyValue(StringUtils.uncapitalize(annotationClazz.getSimpleName()) + "Annotation", true);
 		}
 	}
 

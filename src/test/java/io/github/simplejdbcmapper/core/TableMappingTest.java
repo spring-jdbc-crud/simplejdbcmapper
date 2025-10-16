@@ -39,7 +39,7 @@ class TableMappingTest {
 
 	@Test
 	void schema_name_from_table_annotation_test() {
-		if (!jdbcDriver.contains("mysql")) {
+		if (!jdbcDriver.contains("mysql") && !jdbcDriver.contains("oracle")) {
 			SimpleJdbcMapper sjm = new SimpleJdbcMapper(dataSource);
 			sjm.loadMapping(CustomerSchema1.class);
 

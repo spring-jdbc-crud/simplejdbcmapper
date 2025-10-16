@@ -13,7 +13,6 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.stream.Collectors;
 
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.jdbc.core.metadata.TableMetaDataContext;
@@ -62,9 +61,14 @@ class TableMappingHelper {
 			validateMetaDataConfig(catalog, schema);
 			List<Field> fields = getAllFields(clazz);
 			IdPropertyInfo idPropertyInfo = getIdPropertyInfo(clazz, fields);
+
+			List<TableParameterMetaData> tpmdList = getTableParameterMetaDataList(tableName, schema, catalog, clazz);
+
 			// key:column name, value: TableParameterMetaData
-			Map<String, TableParameterMetaData> columnNameToTpmd = getTableParameterMetadataList(tableName, schema,
-					catalog, clazz).stream().collect(Collectors.toMap(o -> o.getParameterName(), o -> o));
+			Map<String, TableParameterMetaData> columnNameToTpmd = new LinkedHashMap<>();
+			for (TableParameterMetaData tpmd : tpmdList) {
+				columnNameToTpmd.put(InternalUtils.toLowerCase(tpmd.getParameterName()), tpmd);
+			}
 			// key:propertyName, value:PropertyMapping. LinkedHashMap to maintain order of
 			// properties
 			Map<String, PropertyMapping> propNameToPropertyMapping = new LinkedHashMap<>();
@@ -150,7 +154,7 @@ class TableMappingHelper {
 		return result;
 	}
 
-	private List<TableParameterMetaData> getTableParameterMetadataList(String tableName, String schema, String catalog,
+	private List<TableParameterMetaData> getTableParameterMetaDataList(String tableName, String schema, String catalog,
 			Class<?> clazz) {
 		if (InternalUtils.isBlank(tableName)) {
 			throw new IllegalArgumentException("tableName must not be blank");

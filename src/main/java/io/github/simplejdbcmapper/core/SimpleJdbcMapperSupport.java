@@ -101,11 +101,9 @@ class SimpleJdbcMapperSupport {
 		this.dataSource = dataSource;
 		this.schemaName = schemaName;
 		this.catalogName = catalogName;
-
 		this.npJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
 		this.jdbcTemplate = npJdbcTemplate.getJdbcTemplate();
 		this.jdbcClient = JdbcClient.create(jdbcTemplate);
-
 		this.annoHelper = new AnnotationHelper();
 	}
 
@@ -202,7 +200,6 @@ class SimpleJdbcMapperSupport {
 			}
 			List<PropertyMapping> propertyMappings = new ArrayList<>(propNameToPropertyMapping.values());
 			annoHelper.validateAnnotations(propertyMappings, clazz);
-
 			processOverridesForSqlType(propertyMappings);
 			tableMapping = new TableMapping(clazz, tableName, schema, catalog, idPropertyInfo, propertyMappings);
 			tableMappingCache.put(clazz.getName(), tableMapping);
@@ -359,8 +356,8 @@ class SimpleJdbcMapperSupport {
 	private void processOverridesForSqlType(List<PropertyMapping> propertyMappings) {
 		if (enableOffsetDateTimeSqlTypeAsTimestampWithTimeZone) {
 			for (PropertyMapping pm : propertyMappings) {
-				Class<?> clazz = getClassFor(pm.getPropertyClassName());
-				if (clazz != null && OffsetDateTime.class.isAssignableFrom(getClassFor(pm.getPropertyClassName()))) {
+				if (getClassFor(pm.getPropertyClassName()) != null
+						&& OffsetDateTime.class.isAssignableFrom(getClassFor(pm.getPropertyClassName()))) {
 					pm.setColumnOverriddenSqlType(Types.TIMESTAMP_WITH_TIMEZONE);
 				}
 			}

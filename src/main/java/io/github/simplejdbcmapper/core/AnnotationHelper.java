@@ -2,8 +2,6 @@ package io.github.simplejdbcmapper.core;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
-import java.sql.Types;
-import java.time.OffsetDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -47,10 +45,8 @@ public class AnnotationHelper {
 				throw new AnnotationException(colName + " column not found in table " + tableName
 						+ " for model property " + field.getDeclaringClass().getSimpleName() + "." + propertyName);
 			}
-			propNameToPropertyMapping.put(propertyName,
-					new PropertyMapping(propertyName, field.getType().getName(), colName,
-							columnNameToTpmd.get(colName).getSqlType(), getDatabaseMetaDataOverrideSqlType(
-									field.getType(), enableOffsetDateTimeSqlTypeAsTimestampWithTimeZone)));
+			propNameToPropertyMapping.put(propertyName, new PropertyMapping(propertyName, field.getType().getName(),
+					colName, columnNameToTpmd.get(colName).getSqlType()));
 
 		}
 	}
@@ -214,15 +210,6 @@ public class AnnotationHelper {
 						+ propMapping.getPropertyName() + " to be Integer");
 			}
 		}
-	}
-
-	private Integer getDatabaseMetaDataOverrideSqlType(Class<?> clazz,
-			boolean enableOffsetDateTimeSqlTypeAsTimestampWithTimeZone) {
-		if (enableOffsetDateTimeSqlTypeAsTimestampWithTimeZone && clazz != null
-				&& OffsetDateTime.class.isAssignableFrom(clazz)) {
-			return Types.TIMESTAMP_WITH_TIMEZONE;
-		}
-		return null;
 	}
 
 	private boolean isIntegerClass(String className) {

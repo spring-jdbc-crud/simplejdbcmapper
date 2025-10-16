@@ -16,6 +16,8 @@ package io.github.simplejdbcmapper.core;
 import java.lang.reflect.Field;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
+import java.sql.Types;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -200,6 +202,8 @@ class SimpleJdbcMapperSupport {
 			}
 			List<PropertyMapping> propertyMappings = new ArrayList<>(propNameToPropertyMapping.values());
 			annoHelper.validateAnnotations(propertyMappings, clazz);
+
+			processOverridesForSqlType(propertyMappings);
 			tableMapping = new TableMapping(clazz, tableName, schema, catalog, idPropertyInfo, propertyMappings);
 			tableMappingCache.put(clazz.getName(), tableMapping);
 		}
@@ -350,6 +354,25 @@ class SimpleJdbcMapperSupport {
 		tableMetaDataContext.setAccessTableColumnMetaData(true);
 		tableMetaDataContext.setOverrideIncludeSynonymsDefault(true);
 		return tableMetaDataContext;
+	}
+
+	private void processOverridesForSqlType(List<PropertyMapping> propertyMappings) {
+		if (enableOffsetDateTimeSqlTypeAsTimestampWithTimeZone) {
+			for (PropertyMapping pm : propertyMappings) {
+				Class<?> clazz = getClassFor(pm.getPropertyClassName());
+				if (clazz != null && OffsetDateTime.class.isAssignableFrom(getClassFor(pm.getPropertyClassName()))) {
+					pm.setColumnOverriddenSqlType(Types.TIMESTAMP_WITH_TIMEZONE);
+				}
+			}
+		}
+	}
+
+	private Class<?> getClassFor(String className) {
+		try {
+			return Class.forName(className);
+		} catch (Exception e) {
+			return null;
+		}
 	}
 
 }

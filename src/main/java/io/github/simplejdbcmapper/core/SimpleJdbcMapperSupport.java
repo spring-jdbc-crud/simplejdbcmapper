@@ -145,30 +145,6 @@ class SimpleJdbcMapperSupport {
 		processAnnotation(Version.class, field, tableName, propNameToPropertyMapping, columnNameToTpmd);
 	}
 
-	private void processCreatedOnAnnotation(Field field, String tableName,
-			Map<String, PropertyMapping> propNameToPropertyMapping,
-			Map<String, TableParameterMetaData> columnNameToTpmd) {
-		processAnnotation(CreatedOn.class, field, tableName, propNameToPropertyMapping, columnNameToTpmd);
-	}
-
-	private void processUpdatedOnAnnotation(Field field, String tableName,
-			Map<String, PropertyMapping> propNameToPropertyMapping,
-			Map<String, TableParameterMetaData> columnNameToTpmd) {
-		processAnnotation(UpdatedOn.class, field, tableName, propNameToPropertyMapping, columnNameToTpmd);
-	}
-
-	private void processCreatedByAnnotation(Field field, String tableName,
-			Map<String, PropertyMapping> propNameToPropertyMapping,
-			Map<String, TableParameterMetaData> columnNameToTpmd) {
-		processAnnotation(CreatedBy.class, field, tableName, propNameToPropertyMapping, columnNameToTpmd);
-	}
-
-	private void processUpdatedByAnnotation(Field field, String tableName,
-			Map<String, PropertyMapping> propNameToPropertyMapping,
-			Map<String, TableParameterMetaData> columnNameToTpmd) {
-		processAnnotation(UpdatedBy.class, field, tableName, propNameToPropertyMapping, columnNameToTpmd);
-	}
-
 	// gets all unique fields including from super classes.
 	public List<Field> getAllFields(Class<?> clazz) {
 		List<Field> fields = getAllFieldsInternal(clazz);
@@ -221,21 +197,6 @@ class SimpleJdbcMapperSupport {
 		return tableAnnotation;
 	}
 
-	private List<TableParameterMetaData> getTableParameterMetadataList(String tableName, String schema, String catalog,
-			Class<?> clazz) {
-		if (InternalUtils.isBlank(tableName)) {
-			throw new IllegalArgumentException("tableName must not be blank");
-		}
-		TableMetaDataContext tableMetaDataContext = createNewTableMetaDataContext(tableName, schema, catalog);
-		TableMetaDataProvider provider = TableMetaDataProviderFactory.createMetaDataProvider(dataSource,
-				tableMetaDataContext);
-		List<TableParameterMetaData> tpmdList = provider.getTableParameterMetaData();
-		if (InternalUtils.isEmpty(tpmdList)) {
-			throw new AnnotationException(getTableMetaDataNotFoundErrMsg(clazz, tableName, schema, catalog));
-		}
-		return tpmdList;
-	}
-
 	private void processColumnAnnotation(Field field, String tableName,
 			Map<String, PropertyMapping> propNameToPropertyMapping,
 			Map<String, TableParameterMetaData> columnNameToTpmd) {
@@ -257,6 +218,30 @@ class SimpleJdbcMapperSupport {
 							getDatabaseMetaDataOverrideSqlType(field.getType())));
 
 		}
+	}
+
+	private void processCreatedOnAnnotation(Field field, String tableName,
+			Map<String, PropertyMapping> propNameToPropertyMapping,
+			Map<String, TableParameterMetaData> columnNameToTpmd) {
+		processAnnotation(CreatedOn.class, field, tableName, propNameToPropertyMapping, columnNameToTpmd);
+	}
+
+	private void processUpdatedOnAnnotation(Field field, String tableName,
+			Map<String, PropertyMapping> propNameToPropertyMapping,
+			Map<String, TableParameterMetaData> columnNameToTpmd) {
+		processAnnotation(UpdatedOn.class, field, tableName, propNameToPropertyMapping, columnNameToTpmd);
+	}
+
+	private void processCreatedByAnnotation(Field field, String tableName,
+			Map<String, PropertyMapping> propNameToPropertyMapping,
+			Map<String, TableParameterMetaData> columnNameToTpmd) {
+		processAnnotation(CreatedBy.class, field, tableName, propNameToPropertyMapping, columnNameToTpmd);
+	}
+
+	private void processUpdatedByAnnotation(Field field, String tableName,
+			Map<String, PropertyMapping> propNameToPropertyMapping,
+			Map<String, TableParameterMetaData> columnNameToTpmd) {
+		processAnnotation(UpdatedBy.class, field, tableName, propNameToPropertyMapping, columnNameToTpmd);
 	}
 
 	private <T extends Annotation> void processAnnotation(Class<T> annotationClazz, Field field, String tableName,
@@ -384,6 +369,37 @@ class SimpleJdbcMapperSupport {
 		}
 	}
 
+	private List<TableParameterMetaData> getTableParameterMetadataList(String tableName, String schema, String catalog,
+			Class<?> clazz) {
+		if (InternalUtils.isBlank(tableName)) {
+			throw new IllegalArgumentException("tableName must not be blank");
+		}
+		TableMetaDataContext tableMetaDataContext = createNewTableMetaDataContext(tableName, schema, catalog);
+		TableMetaDataProvider provider = TableMetaDataProviderFactory.createMetaDataProvider(dataSource,
+				tableMetaDataContext);
+		List<TableParameterMetaData> tpmdList = provider.getTableParameterMetaData();
+		if (InternalUtils.isEmpty(tpmdList)) {
+			throw new AnnotationException(getTableMetaDataNotFoundErrMsg(clazz, tableName, schema, catalog));
+		}
+		return tpmdList;
+	}
+
+	private String getTableMetaDataNotFoundErrMsg(Class<?> clazz, String tableName, String schema, String catalog) {
+		String errMsg = "Unable to locate meta-data for table '" + tableName + "'";
+		if (schema != null && catalog != null) {
+			errMsg += " in schema " + schema + " and catalog " + catalog;
+		} else {
+			if (schema != null) {
+				errMsg += " in schema " + schema;
+			}
+			if (catalog != null) {
+				errMsg += " in catalog/database " + catalog;
+			}
+		}
+		errMsg += " for class " + clazz.getSimpleName();
+		return errMsg;
+	}
+
 	private void validateMetaDataConfig(String catalog, String schema) {
 		String commonDatabaseName = JdbcUtils.commonDatabaseName(getDatabaseProductName());
 		if ("mysql".equalsIgnoreCase(commonDatabaseName) && InternalUtils.isNotEmpty(schema)) {
@@ -406,28 +422,12 @@ class SimpleJdbcMapperSupport {
 		return InternalUtils.isBlank(tableAnnotation.schema()) ? this.schemaName : tableAnnotation.schema();
 	}
 
-	private String getTableMetaDataNotFoundErrMsg(Class<?> clazz, String tableName, String schema, String catalog) {
-		String errMsg = "Unable to locate meta-data for table '" + tableName + "'";
-		if (schema != null && catalog != null) {
-			errMsg += " in schema " + schema + " and catalog " + catalog;
-		} else {
-			if (schema != null) {
-				errMsg += " in schema " + schema;
-			}
-			if (catalog != null) {
-				errMsg += " in catalog/database " + catalog;
-			}
-		}
-		errMsg += " for class " + clazz.getSimpleName();
-		return errMsg;
-	}
-
 	// get all fields including fields in super classes.
 	private List<Field> getAllFieldsInternal(Class<?> clazz) {
 		if (clazz == null) {
 			return Collections.emptyList();
 		}
-		List<Field> result = new ArrayList<>(getAllFields(clazz.getSuperclass()));
+		List<Field> result = new ArrayList<>(getAllFieldsInternal(clazz.getSuperclass()));
 		List<Field> fields = Arrays.stream(clazz.getDeclaredFields()).toList();
 		result.addAll(0, fields);
 		return result;

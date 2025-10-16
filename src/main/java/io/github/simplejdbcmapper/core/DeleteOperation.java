@@ -3,12 +3,12 @@ package io.github.simplejdbcmapper.core;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.util.Assert;
 
-class DeleteHelper {
+class DeleteOperation {
 	private final SimpleJdbcMapperSupport sjms;
 
 	private final TableMappingHelper tmh;
 
-	public DeleteHelper(SimpleJdbcMapperSupport sjms) {
+	public DeleteOperation(SimpleJdbcMapperSupport sjms) {
 		this.sjms = sjms;
 		this.tmh = new TableMappingHelper(sjms);
 	}

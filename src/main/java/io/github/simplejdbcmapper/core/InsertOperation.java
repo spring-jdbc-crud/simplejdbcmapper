@@ -12,7 +12,7 @@ import org.springframework.util.Assert;
 
 import io.github.simplejdbcmapper.exception.MapperException;
 
-class InsertHelper {
+class InsertOperation {
 	private final SimpleJdbcMapperSupport sjms;
 
 	private final TableMappingHelper tmh;
@@ -22,7 +22,7 @@ class InsertHelper {
 	// value - SimpleJdbcInsert
 	private final SimpleCache<String, SimpleJdbcInsert> insertSqlCache = new SimpleCache<>();
 
-	public InsertHelper(SimpleJdbcMapperSupport sjms) {
+	public InsertOperation(SimpleJdbcMapperSupport sjms) {
 		this.sjms = sjms;
 		this.tmh = new TableMappingHelper(sjms);
 	}

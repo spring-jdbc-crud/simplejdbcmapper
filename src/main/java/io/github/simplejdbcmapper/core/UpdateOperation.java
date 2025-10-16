@@ -17,7 +17,7 @@ import org.springframework.util.Assert;
 import io.github.simplejdbcmapper.exception.MapperException;
 import io.github.simplejdbcmapper.exception.OptimisticLockingException;
 
-class UpdateHelper {
+class UpdateOperation {
 	private static final int CACHEABLE_UPDATE_PROPERTIES_COUNT = 3;
 
 	private static final String INCREMENTED_VERSION = "incrementedVersion";
@@ -36,7 +36,7 @@ class UpdateHelper {
 	// value - the update sql and params
 	private final SimpleCache<String, SqlAndParams> updateSpecificPropertiesSqlCache = new SimpleCache<>(2000);
 
-	public UpdateHelper(SimpleJdbcMapperSupport sjms) {
+	public UpdateOperation(SimpleJdbcMapperSupport sjms) {
 		this.sjms = sjms;
 		this.tmh = new TableMappingHelper(sjms);
 	}

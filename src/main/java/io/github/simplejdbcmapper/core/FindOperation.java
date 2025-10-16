@@ -10,7 +10,7 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.SqlParameterValue;
 import org.springframework.util.Assert;
 
-class FindHelper {
+class FindOperation {
 	private final SimpleJdbcMapperSupport sjms;
 
 	private final TableMappingHelper tmh;
@@ -25,7 +25,7 @@ class FindHelper {
 	// value - the column sql string
 	private final SimpleCache<String, String> beanColumnsSqlCache = new SimpleCache<>();
 
-	public FindHelper(SimpleJdbcMapperSupport sjms) {
+	public FindOperation(SimpleJdbcMapperSupport sjms) {
 		this.sjms = sjms;
 		this.tmh = new TableMappingHelper(sjms);
 	}

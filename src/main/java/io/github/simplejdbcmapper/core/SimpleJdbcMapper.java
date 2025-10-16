@@ -43,13 +43,13 @@ public final class SimpleJdbcMapper {
 
 	private final SimpleJdbcMapperSupport sjms;
 
-	private final InsertHelper insertHelper;
+	private final InsertOperation insertOperation;
 
-	private final FindHelper findHelper;
+	private final FindOperation findOperation;
 
-	private final UpdateHelper updateHelper;
+	private final UpdateOperation updateOperation;
 
-	private final DeleteHelper deleteHelper;
+	private final DeleteOperation deleteOperation;
 
 	/**
 	 * Constructor.
@@ -80,10 +80,10 @@ public final class SimpleJdbcMapper {
 	public SimpleJdbcMapper(DataSource dataSource, String schemaName, String catalogName) {
 		Assert.notNull(dataSource, "dataSource must not be null");
 		this.sjms = new SimpleJdbcMapperSupport(dataSource, schemaName, catalogName);
-		this.insertHelper = new InsertHelper(this.sjms);
-		this.findHelper = new FindHelper(this.sjms);
-		this.updateHelper = new UpdateHelper(this.sjms);
-		this.deleteHelper = new DeleteHelper(this.sjms);
+		this.insertOperation = new InsertOperation(this.sjms);
+		this.findOperation = new FindOperation(this.sjms);
+		this.updateOperation = new UpdateOperation(this.sjms);
+		this.deleteOperation = new DeleteOperation(this.sjms);
 
 	}
 
@@ -96,7 +96,7 @@ public final class SimpleJdbcMapper {
 	 * @return the object of type T
 	 */
 	public <T> T findById(Class<T> clazz, Object id) {
-		return findHelper.findById(clazz, id);
+		return findOperation.findById(clazz, id);
 	}
 
 	/**
@@ -107,7 +107,7 @@ public final class SimpleJdbcMapper {
 	 * @return List of objects of type T
 	 */
 	public <T> List<T> findAll(Class<T> clazz) {
-		return findHelper.findAll(clazz);
+		return findOperation.findAll(clazz);
 	}
 
 	/**
@@ -132,7 +132,7 @@ public final class SimpleJdbcMapper {
 	 */
 
 	public void insert(Object obj) {
-		insertHelper.insert(obj);
+		insertOperation.insert(obj);
 	}
 
 	/**
@@ -152,7 +152,7 @@ public final class SimpleJdbcMapper {
 	 * @return number of records updated
 	 */
 	public Integer update(Object obj) {
-		return updateHelper.update(obj);
+		return updateOperation.update(obj);
 	}
 
 	/**
@@ -176,7 +176,7 @@ public final class SimpleJdbcMapper {
 	 * @return number of records updated
 	 */
 	public Integer updateSpecificProperties(Object obj, String... propertyNames) {
-		return updateHelper.updateSpecificProperties(obj, propertyNames);
+		return updateOperation.updateSpecificProperties(obj, propertyNames);
 	}
 
 	/**
@@ -186,7 +186,7 @@ public final class SimpleJdbcMapper {
 	 * @return number of records were deleted (1 or 0)
 	 */
 	public Integer delete(Object obj) {
-		return deleteHelper.delete(obj);
+		return deleteOperation.delete(obj);
 	}
 
 	/**
@@ -197,7 +197,7 @@ public final class SimpleJdbcMapper {
 	 * @return number records were deleted (1 or 0)
 	 */
 	public Integer deleteById(Class<?> clazz, Object id) {
-		return deleteHelper.deleteById(clazz, id);
+		return deleteOperation.deleteById(clazz, id);
 	}
 
 	/**
@@ -219,7 +219,7 @@ public final class SimpleJdbcMapper {
 	 * 
 	 */
 	public String getBeanFriendlySqlColumns(Class<?> clazz) {
-		return findHelper.getBeanFriendlySqlColumns(clazz);
+		return findOperation.getBeanFriendlySqlColumns(clazz);
 	}
 
 	/**
@@ -231,7 +231,7 @@ public final class SimpleJdbcMapper {
 	 * 
 	 */
 	public Map<String, String> getPropertyToColumnMappings(Class<?> clazz) {
-		return findHelper.getPropertyToColumnMappings(clazz);
+		return findOperation.getPropertyToColumnMappings(clazz);
 	}
 
 	/**
@@ -321,7 +321,7 @@ public final class SimpleJdbcMapper {
 	 * @param clazz the class
 	 */
 	public void loadMapping(Class<?> clazz) {
-		findHelper.getTableMapping(clazz);
+		findOperation.getTableMapping(clazz);
 	}
 
 	/**
@@ -343,31 +343,31 @@ public final class SimpleJdbcMapper {
 	}
 
 	TableMapping getTableMapping(Class<?> clazz) {
-		return findHelper.getTableMapping(clazz);
+		return findOperation.getTableMapping(clazz);
 	}
 
 	SimpleCache<String, TableMapping> getTableMappingCache() {
-		return findHelper.getTableMappingCache();
+		return findOperation.getTableMappingCache();
 	}
 
 	SimpleCache<String, String> getFindByIdSqlCache() {
-		return findHelper.getFindByIdSqlCache();
+		return findOperation.getFindByIdSqlCache();
 	}
 
 	SimpleCache<String, SimpleJdbcInsert> getInsertSqlCache() {
-		return insertHelper.getInsertSqlCache();
+		return insertOperation.getInsertSqlCache();
 	}
 
 	SimpleCache<String, SqlAndParams> getUpdateSqlCache() {
-		return updateHelper.getUpdateSqlCache();
+		return updateOperation.getUpdateSqlCache();
 	}
 
 	SimpleCache<String, SqlAndParams> getUpdateSpecificPropertiesSqlCache() {
-		return updateHelper.getUpdateSpecificPropertiesSqlCache();
+		return updateOperation.getUpdateSpecificPropertiesSqlCache();
 	}
 
 	SimpleCache<String, String> getBeanColumnsSqlCache() {
-		return findHelper.getBeanColumnsSqlCache();
+		return findOperation.getBeanColumnsSqlCache();
 	}
 
 	@SuppressWarnings("rawtypes")

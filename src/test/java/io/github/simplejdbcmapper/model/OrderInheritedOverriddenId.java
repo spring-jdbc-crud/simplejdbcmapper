@@ -6,11 +6,10 @@ import io.github.simplejdbcmapper.annotation.Column;
 import io.github.simplejdbcmapper.annotation.Table;
 
 @Table(name = "orders")
-public class OrderInheritedOverridenId extends OrderIdBaseClass {
+public class OrderInheritedOverriddenId extends OrderIdBaseClass {
 
-	// The annotation in on super class and since this hides it annotation validtion
-	// should throw
-	// exception
+	// The annotation in on super class and since this hides it annotation
+	// validation should throw exception
 	private Long orderId;
 
 	@Column

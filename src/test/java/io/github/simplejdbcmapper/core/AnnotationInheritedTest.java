@@ -18,7 +18,7 @@ import io.github.simplejdbcmapper.model.ModelWithInheritedTableAnnotation;
 import io.github.simplejdbcmapper.model.OrderInheritedAudit;
 import io.github.simplejdbcmapper.model.OrderInheritedColumn;
 import io.github.simplejdbcmapper.model.OrderInheritedId;
-import io.github.simplejdbcmapper.model.OrderInheritedOverridenId;
+import io.github.simplejdbcmapper.model.OrderInheritedOverriddenId;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -58,7 +58,7 @@ class AnnotationInheritedTest {
 	@Test
 	void annotationOrderIdOverriden_failure_Test() {
 		Exception exception = Assertions.assertThrows(AnnotationException.class, () -> {
-			sjm.getTableMapping(OrderInheritedOverridenId.class);
+			sjm.getTableMapping(OrderInheritedOverriddenId.class);
 		});
 		assertTrue(exception.getMessage().contains("@Id annotation not found in class"));
 

@@ -94,8 +94,8 @@ class UpdateHelper {
 					+ tableMapping.getIdPropertyName() + " is the id and must not be null.");
 		}
 		Set<String> parameters = sqlAndParams.getParams();
-		populateAutoAssignPropertiesForUpdate(tableMapping, bw, parameters);
-		MapSqlParameterSource mapSqlParameterSource = createMapSqlParameterSourceForUpdate(tableMapping, bw,
+		populateAutoAssignProperties(tableMapping, bw, parameters);
+		MapSqlParameterSource mapSqlParameterSource = createMapSqlParameterSource(tableMapping, bw,
 				parameters);
 		int cnt = -1;
 		// if object has property version the version gets incremented on update.
@@ -118,7 +118,7 @@ class UpdateHelper {
 		return cnt;
 	}
 
-	private void populateAutoAssignPropertiesForUpdate(TableMapping tableMapping, BeanWrapper bw,
+	private void populateAutoAssignProperties(TableMapping tableMapping, BeanWrapper bw,
 			Set<String> parameters) {
 		if (tableMapping.hasAutoAssignProperties()) {
 			PropertyMapping updatedByPropMapping = tableMapping.getUpdatedByPropertyMapping();
@@ -134,7 +134,7 @@ class UpdateHelper {
 		}
 	}
 
-	private MapSqlParameterSource createMapSqlParameterSourceForUpdate(TableMapping tableMapping, BeanWrapper bw,
+	private MapSqlParameterSource createMapSqlParameterSource(TableMapping tableMapping, BeanWrapper bw,
 			Set<String> parameters) {
 		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
 		for (String paramName : parameters) {
@@ -146,9 +146,9 @@ class UpdateHelper {
 						? tableMapping.getColumnSqlType(paramName)
 						: tableMapping.getColumnOverriddenSqlType(paramName);
 				if (columnSqlType == Types.BLOB) {
-					assignBlobMapSqlParameterSourceForUpdate(bw, mapSqlParameterSource, paramName);
+					assignBlobMapSqlParameterSource(bw, mapSqlParameterSource, paramName);
 				} else if (columnSqlType == Types.CLOB) {
-					assignClobMapSqlParameterSourceForUpdate(bw, mapSqlParameterSource, paramName);
+					assignClobMapSqlParameterSource(bw, mapSqlParameterSource, paramName);
 				} else {
 					mapSqlParameterSource.addValue(paramName, bw.getPropertyValue(paramName), columnSqlType);
 				}
@@ -157,7 +157,7 @@ class UpdateHelper {
 		return mapSqlParameterSource;
 	}
 
-	private void assignBlobMapSqlParameterSourceForUpdate(BeanWrapper bw, MapSqlParameterSource mapSqlParameterSource,
+	private void assignBlobMapSqlParameterSource(BeanWrapper bw, MapSqlParameterSource mapSqlParameterSource,
 			String paramName) {
 		if (bw.getPropertyValue(paramName) == null) {
 			mapSqlParameterSource.addValue(paramName, null, Types.BLOB);
@@ -167,7 +167,7 @@ class UpdateHelper {
 		}
 	}
 
-	private void assignClobMapSqlParameterSourceForUpdate(BeanWrapper bw, MapSqlParameterSource mapSqlParameterSource,
+	private void assignClobMapSqlParameterSource(BeanWrapper bw, MapSqlParameterSource mapSqlParameterSource,
 			String paramName) {
 		if (bw.getPropertyValue(paramName) == null) {
 			mapSqlParameterSource.addValue(paramName, null, Types.CLOB);
@@ -188,7 +188,7 @@ class UpdateHelper {
 		return versionVal + 1;
 	}
 
-	private List<String> getIgnoreAttributesForUpdate(TableMapping tableMapping) {
+	private List<String> getIgnoreAttributes(TableMapping tableMapping) {
 		List<String> ignoreAttrs = new ArrayList<>();
 		ignoreAttrs.add(tableMapping.getIdPropertyName());
 		PropertyMapping createdOnPropMapping = tableMapping.getCreatedOnPropertyMapping();
@@ -202,7 +202,7 @@ class UpdateHelper {
 		return ignoreAttrs;
 	}
 
-	private List<String> getAutoAssignPropertiesForUpdate(TableMapping tableMapping) {
+	private List<String> getAutoAssignProperties(TableMapping tableMapping) {
 		List<String> list = new ArrayList<>();
 		PropertyMapping updatedOnPropMapping = tableMapping.getUpdatedOnPropertyMapping();
 		if (updatedOnPropMapping != null) {
@@ -223,7 +223,7 @@ class UpdateHelper {
 		Assert.notNull(tableMapping, "tableMapping must not be null");
 		List<String> propertyList = tableMapping.getPropertyMappings().stream().map(pm -> pm.getPropertyName())
 				.collect(Collectors.toList());
-		List<String> ignoreAttrs = getIgnoreAttributesForUpdate(tableMapping);
+		List<String> ignoreAttrs = getIgnoreAttributes(tableMapping);
 		propertyList.removeAll(ignoreAttrs);
 		return buildSqlAndParams(tableMapping, propertyList);
 	}
@@ -234,7 +234,7 @@ class UpdateHelper {
 		Assert.notNull(propertyNames, "propertyNames must not be null");
 		validateUpdateSpecificProperties(tableMapping, propertyNames);
 		List<String> propertyList = new ArrayList<>(Arrays.asList(propertyNames));
-		propertyList.addAll(getAutoAssignPropertiesForUpdate(tableMapping));
+		propertyList.addAll(getAutoAssignProperties(tableMapping));
 		return buildSqlAndParams(tableMapping, propertyList);
 	}
 

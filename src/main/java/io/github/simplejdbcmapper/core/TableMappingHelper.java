@@ -36,7 +36,7 @@ class TableMappingHelper {
 	// value - the table mapping
 	private final SimpleCache<String, TableMapping> tableMappingCache = new SimpleCache<>();
 
-	private final AnnotationHelper annoHelper;
+	private final AnnotationProcessor ap;
 
 	private final SimpleJdbcMapperSupport sjms;
 
@@ -44,14 +44,14 @@ class TableMappingHelper {
 
 	public TableMappingHelper(SimpleJdbcMapperSupport sjms) {
 		this.sjms = sjms;
-		this.annoHelper = new AnnotationHelper();
+		this.ap = new AnnotationProcessor();
 	}
 
 	public TableMapping getTableMapping(Class<?> clazz) {
 		Assert.notNull(clazz, "clazz must not be null");
 		TableMapping tableMapping = tableMappingCache.get(clazz.getName());
 		if (tableMapping == null) {
-			Table tableAnnotation = annoHelper.getTableAnnotation(clazz);
+			Table tableAnnotation = ap.getTableAnnotation(clazz);
 			String tableName = tableAnnotation.name();
 			String catalog = getCatalogForTable(tableAnnotation);
 			String schema = getSchemaForTable(tableAnnotation);
@@ -66,16 +66,16 @@ class TableMappingHelper {
 			Map<String, PropertyMapping> propNameToPropertyMapping = new LinkedHashMap<>();
 			for (Field field : fields) {
 				// process column annotation always first
-				annoHelper.processColumnAnnotation(field, tableName, propNameToPropertyMapping, columnNameToTpmd);
-				annoHelper.processIdAnnotation(field, tableName, propNameToPropertyMapping, columnNameToTpmd);
-				annoHelper.processVersionAnnotation(field, tableName, propNameToPropertyMapping, columnNameToTpmd);
-				annoHelper.processCreatedOnAnnotation(field, tableName, propNameToPropertyMapping, columnNameToTpmd);
-				annoHelper.processUpdatedOnAnnotation(field, tableName, propNameToPropertyMapping, columnNameToTpmd);
-				annoHelper.processCreatedByAnnotation(field, tableName, propNameToPropertyMapping, columnNameToTpmd);
-				annoHelper.processUpdatedByAnnotation(field, tableName, propNameToPropertyMapping, columnNameToTpmd);
+				ap.processColumnAnnotation(field, tableName, propNameToPropertyMapping, columnNameToTpmd);
+				ap.processIdAnnotation(field, tableName, propNameToPropertyMapping, columnNameToTpmd);
+				ap.processVersionAnnotation(field, tableName, propNameToPropertyMapping, columnNameToTpmd);
+				ap.processCreatedOnAnnotation(field, tableName, propNameToPropertyMapping, columnNameToTpmd);
+				ap.processUpdatedOnAnnotation(field, tableName, propNameToPropertyMapping, columnNameToTpmd);
+				ap.processCreatedByAnnotation(field, tableName, propNameToPropertyMapping, columnNameToTpmd);
+				ap.processUpdatedByAnnotation(field, tableName, propNameToPropertyMapping, columnNameToTpmd);
 			}
 			List<PropertyMapping> propertyMappings = new ArrayList<>(propNameToPropertyMapping.values());
-			annoHelper.validateAnnotations(propertyMappings, clazz);
+			ap.validateAnnotations(propertyMappings, clazz);
 			processOverridesForSqlType(propertyMappings);
 			tableMapping = new TableMapping(clazz, tableName, schema, catalog, idPropertyInfo, propertyMappings);
 			tableMappingCache.put(clazz.getName(), tableMapping);

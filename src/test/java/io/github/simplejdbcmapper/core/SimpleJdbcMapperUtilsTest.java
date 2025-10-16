@@ -87,7 +87,7 @@ class SimpleJdbcMapperUtilsTest {
 
 	}
 
-	// @Test
+	@Test
 	void mergeResultsToPopulateHasMany_success() {
 		List<Order> orders = sjm.findAll(Order.class);
 		List<Long> orderIdList = orders.stream().map(Order::getOrderId).toList();

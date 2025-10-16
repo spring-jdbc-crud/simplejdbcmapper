@@ -23,6 +23,7 @@ class UpdateHelper {
 	private static final String INCREMENTED_VERSION = "incrementedVersion";
 
 	private final SimpleJdbcMapperSupport sjms;
+
 	private final TableMappingHelper tmh;
 
 	// update sql cache

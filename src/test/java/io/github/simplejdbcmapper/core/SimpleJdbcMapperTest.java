@@ -22,7 +22,7 @@ import io.github.simplejdbcmapper.model.Order;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-class SimpleJdbcMapperOtherTest {
+class SimpleJdbcMapperTest {
 
 	@Value("${spring.datasource.driver-class-name}")
 	private String jdbcDriver;

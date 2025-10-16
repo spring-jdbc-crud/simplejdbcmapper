@@ -46,7 +46,6 @@ class SimpleJdbcMapperOtherTest {
 
 	@Test
 	void getBeanFriendlySqlColumns_test() {
-
 		NonDefaultNamingProduct p = new NonDefaultNamingProduct();
 		p.setId(9812);
 		p.setProductName("test");

@@ -27,6 +27,7 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 import javax.sql.DataSource;
@@ -34,10 +35,16 @@ import javax.sql.DataSource;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.core.convert.ConversionService;
+import org.springframework.core.convert.support.DefaultConversionService;
+import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.metadata.TableMetaDataContext;
 import org.springframework.jdbc.core.metadata.TableMetaDataProvider;
 import org.springframework.jdbc.core.metadata.TableMetaDataProviderFactory;
 import org.springframework.jdbc.core.metadata.TableParameterMetaData;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.jdbc.support.DatabaseMetaDataCallback;
 import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.jdbc.support.MetaDataAccessException;
@@ -72,9 +79,22 @@ class SimpleJdbcMapperSupport {
 
 	private final String catalogName;
 
+	private final JdbcClient jdbcClient;
+
+	private final JdbcTemplate jdbcTemplate;
+
+	private final NamedParameterJdbcTemplate npJdbcTemplate;
+
 	private String databaseProductName;
 
 	private boolean enableOffsetDateTimeSqlTypeAsTimestampWithTimeZone = false;
+
+	// Using Spring's DefaultConversionService as default conversionService for
+	// SimpleJdbcMapper
+	private ConversionService conversionService = DefaultConversionService.getSharedInstance();
+
+	private Supplier<?> recordAuditedOnSupplier;
+	private Supplier<?> recordAuditedBySupplier;
 
 	/**
 	 * Constructor.
@@ -88,6 +108,71 @@ class SimpleJdbcMapperSupport {
 		this.dataSource = dataSource;
 		this.schemaName = schemaName;
 		this.catalogName = catalogName;
+
+		this.npJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
+		this.jdbcTemplate = npJdbcTemplate.getJdbcTemplate();
+		this.jdbcClient = JdbcClient.create(jdbcTemplate);
+	}
+
+	public DataSource getDataSource() {
+		return this.dataSource;
+	}
+
+	public JdbcClient getJdbcClient() {
+		return this.jdbcClient;
+	}
+
+	public JdbcTemplate getJdbcTemplate() {
+		return this.jdbcTemplate;
+	}
+
+	public NamedParameterJdbcTemplate getNamedParameterJdbcTemplate() {
+		return this.npJdbcTemplate;
+	}
+
+	public <T> void setRecordAuditedBySupplier(Supplier<T> supplier) {
+		if (recordAuditedBySupplier == null) {
+			recordAuditedBySupplier = supplier;
+		} else {
+			throw new IllegalStateException("recordAuditedBySupplier was already set and cannot be changed.");
+		}
+	}
+
+	public <T> void setRecordAuditedOnSupplier(Supplier<T> supplier) {
+		if (recordAuditedOnSupplier == null) {
+			recordAuditedOnSupplier = supplier;
+		} else {
+			throw new IllegalStateException("recordAuditedOnSupplier was already set and cannot be changed.");
+		}
+	}
+
+	@SuppressWarnings("rawtypes")
+	public Supplier getRecordAuditedBySupplier() {
+		return recordAuditedBySupplier;
+	}
+
+	public @SuppressWarnings("rawtypes") Supplier getRecordAuditedOnSupplier() {
+		return recordAuditedOnSupplier;
+	}
+
+	public ConversionService getConversionService() {
+		return conversionService;
+	}
+
+	public void setConversionService(ConversionService conversionService) {
+		this.conversionService = conversionService;
+	}
+
+	public BeanWrapper getBeanWrapper(Object obj) {
+		BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(obj);
+		bw.setConversionService(conversionService);
+		return bw;
+	}
+
+	public <T> BeanPropertyRowMapper<T> getBeanPropertyRowMapper(Class<T> clazz) {
+		BeanPropertyRowMapper<T> rowMapper = BeanPropertyRowMapper.newInstance(clazz);
+		rowMapper.setConversionService(this.conversionService);
+		return rowMapper;
 	}
 
 	public String getSchemaName() {

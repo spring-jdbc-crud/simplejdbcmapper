@@ -44,8 +44,11 @@ public final class SimpleJdbcMapper {
 	private final SimpleJdbcMapperSupport sjms;
 
 	private final InsertHelper insertHelper;
+
 	private final FindHelper findHelper;
+
 	private final UpdateHelper updateHelper;
+
 	private final DeleteHelper deleteHelper;
 
 	/**

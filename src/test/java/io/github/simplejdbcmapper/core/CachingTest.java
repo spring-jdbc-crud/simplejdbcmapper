@@ -179,13 +179,13 @@ class CachingTest {
 		sjm.loadMapping(Employee.class);
 		assertEquals(2, cache.getSize());
 
-		sjm.loadMapping(Customer.class);
+		sjm.findById(Customer.class, 1);
 		assertEquals(2, cache.getSize());
 
 		sjm.loadMapping(Product.class);
 		assertEquals(3, cache.getSize());
 
-		sjm.loadMapping(Employee.class);
+		sjm.findAll(Employee.class);
 		assertEquals(3, cache.getSize());
 
 	}

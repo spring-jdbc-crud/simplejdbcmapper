@@ -23,9 +23,9 @@ import org.springframework.util.ObjectUtils;
  * @author Antony Joseph
  */
 class SqlAndParams {
-	private String sql; // the sql string
+	private final String sql; // the sql string
 
-	private Set<String> params; // the parameters for the sql
+	private final Set<String> params; // the parameters for the sql
 
 	public SqlAndParams(String sql, Set<String> params) {
 		if (ObjectUtils.isEmpty(sql) || params == null) {

@@ -52,7 +52,6 @@ class TableMapping {
 
 	private boolean autoAssignProperties = false;
 
-	// model property to database column mapping.
 	private List<PropertyMapping> propertyMappings;
 
 	private Map<String, PropertyMapping> columnNameMap;

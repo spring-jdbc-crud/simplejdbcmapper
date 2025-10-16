@@ -51,6 +51,7 @@ class SimpleJdbcMapperSupport {
 	private ConversionService conversionService = DefaultConversionService.getSharedInstance();
 
 	private Supplier<?> recordAuditedOnSupplier;
+
 	private Supplier<?> recordAuditedBySupplier;
 
 	/**
@@ -107,7 +108,8 @@ class SimpleJdbcMapperSupport {
 		return recordAuditedBySupplier;
 	}
 
-	public @SuppressWarnings("rawtypes") Supplier getRecordAuditedOnSupplier() {
+	@SuppressWarnings("rawtypes")
+	public Supplier getRecordAuditedOnSupplier() {
 		return recordAuditedOnSupplier;
 	}
 

@@ -52,9 +52,8 @@ class PropertyMapping {
 		}
 		this.propertyName = propertyName;
 		this.propertyClassName = propertyClassName;
-		// column names stored in lower case always
-		// No plans to support case sensitive table column names or column names with
-		// spaces in them
+		// column names stored in lower case always. No plans to support case sensitive
+		// table column names or column names with spaces in them
 		this.columnName = InternalUtils.toLowerCase(columnName);
 		this.columnSqlType = columnSqlType;
 		this.columnOverriddenSqlType = columnOverriddenSqlType;

@@ -11,25 +11,27 @@ import org.springframework.jdbc.core.SqlParameterValue;
 import org.springframework.util.Assert;
 
 class FindHelper {
-	private SimpleJdbcMapperSupport sjms;
+	private final SimpleJdbcMapperSupport sjms;
+	private final TableMappingHelper tmh;
 
 	// Map key - class name
 	// value - the sql
-	private SimpleCache<String, String> findByIdSqlCache = new SimpleCache<>();
+	private final SimpleCache<String, String> findByIdSqlCache = new SimpleCache<>();
 
 	// the column sql string with bean friendly column aliases for mapped properties
 	// of model.
 	// Map key - class name
 	// value - the column sql string
-	private SimpleCache<String, String> beanColumnsSqlCache = new SimpleCache<>();
+	private final SimpleCache<String, String> beanColumnsSqlCache = new SimpleCache<>();
 
-	public FindHelper(SimpleJdbcMapperSupport sjms) {
-		this.sjms = sjms;
+	public FindHelper(TableMappingHelper tmh) {
+		this.tmh = tmh;
+		this.sjms = tmh.getSimpleJdbcMapperSupport();
 	}
 
 	public <T> T findById(Class<T> clazz, Object id) {
 		Assert.notNull(clazz, "Class must not be null");
-		TableMapping tableMapping = sjms.getTableMapping(clazz);
+		TableMapping tableMapping = tmh.getTableMapping(clazz);
 		boolean foundInCache = false;
 		String sql = findByIdSqlCache.get(clazz.getName());
 		if (sql == null) {
@@ -54,7 +56,7 @@ class FindHelper {
 
 	public <T> List<T> findAll(Class<T> clazz) {
 		Assert.notNull(clazz, "Class must not be null");
-		TableMapping tableMapping = sjms.getTableMapping(clazz);
+		TableMapping tableMapping = tmh.getTableMapping(clazz);
 		String sql = "SELECT " + getBeanColumnsSql(tableMapping, clazz) + " FROM "
 				+ tableMapping.fullyQualifiedTableName();
 		BeanPropertyRowMapper<T> rowMapper = getBeanPropertyRowMapper(clazz);
@@ -62,11 +64,11 @@ class FindHelper {
 	}
 
 	public String getBeanFriendlySqlColumns(Class<?> clazz) {
-		return getBeanColumnsSql(sjms.getTableMapping(clazz), clazz);
+		return getBeanColumnsSql(tmh.getTableMapping(clazz), clazz);
 	}
 
 	public Map<String, String> getPropertyToColumnMappings(Class<?> clazz) {
-		TableMapping tableMapping = sjms.getTableMapping(clazz);
+		TableMapping tableMapping = tmh.getTableMapping(clazz);
 		Map<String, String> map = new LinkedHashMap<>();
 		for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {
 			map.put(propMapping.getPropertyName(), propMapping.getColumnName());

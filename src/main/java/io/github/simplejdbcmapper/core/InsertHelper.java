@@ -13,20 +13,22 @@ import org.springframework.util.Assert;
 import io.github.simplejdbcmapper.exception.MapperException;
 
 class InsertHelper {
-	private SimpleJdbcMapperSupport sjms;
+	private final SimpleJdbcMapperSupport sjms;
+	private final TableMappingHelper tmh;
 
 	// insert cache. Note that Spring SimpleJdbcInsert is thread safe.
 	// Map key - class name
 	// value - SimpleJdbcInsert
-	private SimpleCache<String, SimpleJdbcInsert> insertSqlCache = new SimpleCache<>();
+	private final SimpleCache<String, SimpleJdbcInsert> insertSqlCache = new SimpleCache<>();
 
-	public InsertHelper(SimpleJdbcMapperSupport sjms) {
-		this.sjms = sjms;
+	public InsertHelper(TableMappingHelper tmh) {
+		this.tmh = tmh;
+		this.sjms = tmh.getSimpleJdbcMapperSupport();
 	}
 
 	public void insert(Object obj) {
 		Assert.notNull(obj, "Object must not be null");
-		TableMapping tableMapping = sjms.getTableMapping(obj.getClass());
+		TableMapping tableMapping = tmh.getTableMapping(obj.getClass());
 		BeanWrapper bw = sjms.getBeanWrapper(obj);
 		validateId(tableMapping, bw);
 		populateAutoAssignProperties(tableMapping, bw);
@@ -155,7 +157,7 @@ class InsertHelper {
 			jdbcInsert.usingGeneratedKeyColumns(tableMapping.getIdColumnName());
 		}
 		// for oracle synonym table metadata
-		if ("oracle".equalsIgnoreCase(sjms.getCommonDatabaseName())) {
+		if ("oracle".equalsIgnoreCase(tmh.getCommonDatabaseName())) {
 			jdbcInsert.includeSynonymsForTableColumnMetaData();
 		}
 		return jdbcInsert;

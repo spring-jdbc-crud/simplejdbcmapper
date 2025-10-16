@@ -22,25 +22,27 @@ class UpdateHelper {
 
 	private static final String INCREMENTED_VERSION = "incrementedVersion";
 
-	private SimpleJdbcMapperSupport sjms;
+	private final SimpleJdbcMapperSupport sjms;
+	private final TableMappingHelper tmh;
 
 	// update sql cache
 	// Map key - class name
 	// value - the update sql and params
-	private SimpleCache<String, SqlAndParams> updateSqlCache = new SimpleCache<>();
+	private final SimpleCache<String, SqlAndParams> updateSqlCache = new SimpleCache<>();
 
 	// update specified properties sql cache
 	// Map key - class name and properties
 	// value - the update sql and params
-	private SimpleCache<String, SqlAndParams> updateSpecificPropertiesSqlCache = new SimpleCache<>(2000);
+	private final SimpleCache<String, SqlAndParams> updateSpecificPropertiesSqlCache = new SimpleCache<>(2000);
 
-	public UpdateHelper(SimpleJdbcMapperSupport sjms) {
-		this.sjms = sjms;
+	public UpdateHelper(TableMappingHelper tmh) {
+		this.tmh = tmh;
+		this.sjms = tmh.getSimpleJdbcMapperSupport();
 	}
 
 	public Integer update(Object obj) {
 		Assert.notNull(obj, "Object must not be null");
-		TableMapping tableMapping = sjms.getTableMapping(obj.getClass());
+		TableMapping tableMapping = tmh.getTableMapping(obj.getClass());
 		boolean foundInCache = false;
 		SqlAndParams sqlAndParams = updateSqlCache.get(obj.getClass().getName());
 		if (sqlAndParams == null) {
@@ -58,7 +60,7 @@ class UpdateHelper {
 	public Integer updateSpecificProperties(Object obj, String... propertyNames) {
 		Assert.notNull(obj, "Object must not be null");
 		Assert.notNull(propertyNames, "propertyNames must not be null");
-		TableMapping tableMapping = sjms.getTableMapping(obj.getClass());
+		TableMapping tableMapping = tmh.getTableMapping(obj.getClass());
 		boolean foundInCache = false;
 		SqlAndParams sqlAndParams = null;
 		String cacheKey = getUpdateSpecificPropertiesCacheKey(obj, propertyNames);
@@ -95,8 +97,7 @@ class UpdateHelper {
 		}
 		Set<String> parameters = sqlAndParams.getParams();
 		populateAutoAssignProperties(tableMapping, bw, parameters);
-		MapSqlParameterSource mapSqlParameterSource = createMapSqlParameterSource(tableMapping, bw,
-				parameters);
+		MapSqlParameterSource mapSqlParameterSource = createMapSqlParameterSource(tableMapping, bw, parameters);
 		int cnt = -1;
 		// if object has property version the version gets incremented on update.
 		// throws OptimisticLockingException when update fails.
@@ -118,8 +119,7 @@ class UpdateHelper {
 		return cnt;
 	}
 
-	private void populateAutoAssignProperties(TableMapping tableMapping, BeanWrapper bw,
-			Set<String> parameters) {
+	private void populateAutoAssignProperties(TableMapping tableMapping, BeanWrapper bw, Set<String> parameters) {
 		if (tableMapping.hasAutoAssignProperties()) {
 			PropertyMapping updatedByPropMapping = tableMapping.getUpdatedByPropertyMapping();
 			if (updatedByPropMapping != null && sjms.getRecordAuditedBySupplier() != null

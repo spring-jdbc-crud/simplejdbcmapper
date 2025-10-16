@@ -31,8 +31,7 @@ class AnnotationHelper {
 
 	public void processColumnAnnotation(Field field, String tableName,
 			Map<String, PropertyMapping> propNameToPropertyMapping,
-			Map<String, TableParameterMetaData> columnNameToTpmd,
-			boolean enableOffsetDateTimeSqlTypeAsTimestampWithTimeZone) {
+			Map<String, TableParameterMetaData> columnNameToTpmd) {
 		Column colAnnotation = AnnotationUtils.findAnnotation(field, Column.class);
 		if (colAnnotation != null) {
 			String propertyName = field.getName();

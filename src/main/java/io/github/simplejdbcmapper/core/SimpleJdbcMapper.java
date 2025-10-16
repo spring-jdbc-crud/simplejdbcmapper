@@ -51,6 +51,8 @@ public final class SimpleJdbcMapper {
 
 	private final DeleteOperation deleteOperation;
 
+	private final TableMappingHelper tmh;
+
 	/**
 	 * Constructor.
 	 *
@@ -84,6 +86,7 @@ public final class SimpleJdbcMapper {
 		this.findOperation = new FindOperation(this.sjms);
 		this.updateOperation = new UpdateOperation(this.sjms);
 		this.deleteOperation = new DeleteOperation(this.sjms);
+		this.tmh = new TableMappingHelper(this.sjms);
 
 	}
 
@@ -321,7 +324,7 @@ public final class SimpleJdbcMapper {
 	 * @param clazz the class
 	 */
 	public void loadMapping(Class<?> clazz) {
-		findOperation.getTableMapping(clazz);
+		tmh.getTableMapping(clazz);
 	}
 
 	/**
@@ -343,11 +346,11 @@ public final class SimpleJdbcMapper {
 	}
 
 	TableMapping getTableMapping(Class<?> clazz) {
-		return findOperation.getTableMapping(clazz);
+		return tmh.getTableMapping(clazz);
 	}
 
 	SimpleCache<String, TableMapping> getTableMappingCache() {
-		return findOperation.getTableMappingCache();
+		return tmh.getTableMappingCache();
 	}
 
 	SimpleCache<String, String> getFindByIdSqlCache() {

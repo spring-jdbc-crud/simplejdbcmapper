@@ -85,14 +85,6 @@ class FindOperation {
 		return beanColumnsSqlCache;
 	}
 
-	public TableMapping getTableMapping(Class<?> clazz) {
-		return tmh.getTableMapping(clazz);
-	}
-
-	public SimpleCache<String, TableMapping> getTableMappingCache() {
-		return tmh.getTableMappingCache();
-	}
-
 	private <T> String getBeanColumnsSql(TableMapping tableMapping, Class<T> clazz) {
 		String columnsSql = beanColumnsSqlCache.get(clazz.getName());
 		if (columnsSql == null) {

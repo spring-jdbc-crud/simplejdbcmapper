@@ -375,7 +375,8 @@ class Product {
 @Bean
 public SimpleJdbcMapper simpleJdbcMapper(DataSource dataSource) {
     SimpleJdbcMapper simpleJdbcMapper = new SimpleJdbcMapper(dataSource);
-    // Below are just examples. Provide your own custom Supplier. Make Sure the type returned by Supplier matches the type of the Property you are annotating.
+    // Provide your own custom Supplier. Make Sure the type returned by Supplier matches the type 
+    // of the Property you are annotating. Generally audited by is got from a thread local.
     simpleJdbcMapper.setRecordAuditedBySupplier(() -> "tester");
     simpleJdbcMapper.setRecordAuditedOnSupplier(() -> LocalDateTime.now());
     return simpleJdbcMapper;

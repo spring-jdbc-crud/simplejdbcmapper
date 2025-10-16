@@ -226,8 +226,7 @@ class TableMappingHelper {
 	}
 
 	private void processOverridesForSqlType(List<PropertyMapping> propertyMappings) {
-		// if (sjms.enableOffsetDateTimeSqlTypeAsTimestampWithTimeZone()) {
-		if (true) {
+		if (sjms.isEnableOffsetDateTimeSqlTypeAsTimestampWithTimeZone()) {
 			for (PropertyMapping pm : propertyMappings) {
 				if (getClassFor(pm.getPropertyClassName()) != null
 						&& OffsetDateTime.class.isAssignableFrom(getClassFor(pm.getPropertyClassName()))) {

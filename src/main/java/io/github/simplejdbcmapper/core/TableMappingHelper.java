@@ -31,7 +31,7 @@ import io.github.simplejdbcmapper.annotation.Table;
 import io.github.simplejdbcmapper.exception.AnnotationException;
 import io.github.simplejdbcmapper.exception.MapperException;
 
-public class TableMappingHelper {
+class TableMappingHelper {
 	// Map key - class name
 	// value - the table mapping
 	private final SimpleCache<String, TableMapping> tableMappingCache = new SimpleCache<>();

@@ -133,18 +133,6 @@ class SimpleJdbcMapperSupport {
 		return tableMapping;
 	}
 
-	private void processIdAnnotation(Field field, String tableName,
-			Map<String, PropertyMapping> propNameToPropertyMapping,
-			Map<String, TableParameterMetaData> columnNameToTpmd) {
-		processAnnotation(Id.class, field, tableName, propNameToPropertyMapping, columnNameToTpmd);
-	}
-
-	private void processVersionAnnotation(Field field, String tableName,
-			Map<String, PropertyMapping> propNameToPropertyMapping,
-			Map<String, TableParameterMetaData> columnNameToTpmd) {
-		processAnnotation(Version.class, field, tableName, propNameToPropertyMapping, columnNameToTpmd);
-	}
-
 	// gets all unique fields including from super classes.
 	public List<Field> getAllFields(Class<?> clazz) {
 		List<Field> fields = getAllFieldsInternal(clazz);
@@ -218,6 +206,18 @@ class SimpleJdbcMapperSupport {
 							getDatabaseMetaDataOverrideSqlType(field.getType())));
 
 		}
+	}
+
+	private void processIdAnnotation(Field field, String tableName,
+			Map<String, PropertyMapping> propNameToPropertyMapping,
+			Map<String, TableParameterMetaData> columnNameToTpmd) {
+		processAnnotation(Id.class, field, tableName, propNameToPropertyMapping, columnNameToTpmd);
+	}
+
+	private void processVersionAnnotation(Field field, String tableName,
+			Map<String, PropertyMapping> propNameToPropertyMapping,
+			Map<String, TableParameterMetaData> columnNameToTpmd) {
+		processAnnotation(Version.class, field, tableName, propNameToPropertyMapping, columnNameToTpmd);
 	}
 
 	private void processCreatedOnAnnotation(Field field, String tableName,

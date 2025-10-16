@@ -752,15 +752,6 @@ public final class SimpleJdbcMapper {
 		return versionVal + 1;
 	}
 
-	private SqlAndParams buildSqlAndParamsForUpdate(TableMapping tableMapping) {
-		Assert.notNull(tableMapping, "tableMapping must not be null");
-		List<String> propertyList = tableMapping.getPropertyMappings().stream().map(pm -> pm.getPropertyName())
-				.collect(Collectors.toList());
-		List<String> ignoreAttrs = getIgnoreAttributesForUpdate(tableMapping);
-		propertyList.removeAll(ignoreAttrs);
-		return buildSqlAndParams(tableMapping, propertyList);
-	}
-
 	private List<String> getIgnoreAttributesForUpdate(TableMapping tableMapping) {
 		List<String> ignoreAttrs = new ArrayList<>();
 		ignoreAttrs.add(tableMapping.getIdPropertyName());
@@ -773,6 +764,32 @@ public final class SimpleJdbcMapper {
 			ignoreAttrs.add(createdByPropMapping.getPropertyName());
 		}
 		return ignoreAttrs;
+	}
+
+	private List<String> getAutoAssignPropertiesForUpdate(TableMapping tableMapping) {
+		List<String> list = new ArrayList<>();
+		PropertyMapping updatedOnPropMapping = tableMapping.getUpdatedOnPropertyMapping();
+		if (updatedOnPropMapping != null) {
+			list.add(updatedOnPropMapping.getPropertyName());
+		}
+		PropertyMapping updatedByPropMapping = tableMapping.getUpdatedByPropertyMapping();
+		if (updatedByPropMapping != null) {
+			list.add(updatedByPropMapping.getPropertyName());
+		}
+		PropertyMapping versionPropMapping = tableMapping.getVersionPropertyMapping();
+		if (versionPropMapping != null) {
+			list.add(versionPropMapping.getPropertyName());
+		}
+		return list;
+	}
+
+	private SqlAndParams buildSqlAndParamsForUpdate(TableMapping tableMapping) {
+		Assert.notNull(tableMapping, "tableMapping must not be null");
+		List<String> propertyList = tableMapping.getPropertyMappings().stream().map(pm -> pm.getPropertyName())
+				.collect(Collectors.toList());
+		List<String> ignoreAttrs = getIgnoreAttributesForUpdate(tableMapping);
+		propertyList.removeAll(ignoreAttrs);
+		return buildSqlAndParams(tableMapping, propertyList);
 	}
 
 	private SqlAndParams buildSqlAndParamsForUpdateSpecificProperties(TableMapping tableMapping,
@@ -824,23 +841,6 @@ public final class SimpleJdbcMapper {
 		return new SqlAndParams(updateSql, params);
 	}
 
-	private List<String> getAutoAssignPropertiesForUpdate(TableMapping tableMapping) {
-		List<String> list = new ArrayList<>();
-		PropertyMapping updatedOnPropMapping = tableMapping.getUpdatedOnPropertyMapping();
-		if (updatedOnPropMapping != null) {
-			list.add(updatedOnPropMapping.getPropertyName());
-		}
-		PropertyMapping updatedByPropMapping = tableMapping.getUpdatedByPropertyMapping();
-		if (updatedByPropMapping != null) {
-			list.add(updatedByPropMapping.getPropertyName());
-		}
-		PropertyMapping versionPropMapping = tableMapping.getVersionPropertyMapping();
-		if (versionPropMapping != null) {
-			list.add(versionPropMapping.getPropertyName());
-		}
-		return list;
-	}
-
 	private void validateUpdateSpecificProperties(TableMapping tableMapping, String... propertyNames) {
 		for (String propertyName : propertyNames) {
 			PropertyMapping propertyMapping = tableMapping.getPropertyMappingByPropertyName(propertyName);
@@ -860,6 +860,16 @@ public final class SimpleJdbcMapper {
 				throw new MapperException("Auto assign property " + tableMapping.getTableClassName() + "."
 						+ propertyName + " cannot be updated.");
 			}
+		}
+	}
+
+	// will return null when updateSpecificProperties property count is more than
+	// CACHEABLE_UPDATE_PROPERTY_COUNT
+	private String getUpdateSpecificPropertiesCacheKey(Object obj, String[] propertyNames) {
+		if (propertyNames.length > CACHEABLE_UPDATE_PROPERTIES_COUNT) {
+			return null;
+		} else {
+			return obj.getClass().getName() + "-" + String.join("-", propertyNames);
 		}
 	}
 
@@ -885,16 +895,6 @@ public final class SimpleJdbcMapper {
 		BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(obj);
 		bw.setConversionService(conversionService);
 		return bw;
-	}
-
-	// will return null when updateSpecificProperties property count is more than
-	// CACHEABLE_UPDATE_PROPERTY_COUNT
-	private String getUpdateSpecificPropertiesCacheKey(Object obj, String[] propertyNames) {
-		if (propertyNames.length > CACHEABLE_UPDATE_PROPERTIES_COUNT) {
-			return null;
-		} else {
-			return obj.getClass().getName() + "-" + String.join("-", propertyNames);
-		}
 	}
 
 	private <T> BeanPropertyRowMapper<T> getBeanPropertyRowMapper(Class<T> clazz) {

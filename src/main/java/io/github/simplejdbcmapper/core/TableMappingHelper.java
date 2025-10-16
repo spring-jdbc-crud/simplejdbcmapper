@@ -47,6 +47,10 @@ class TableMappingHelper {
 		this.ap = new AnnotationProcessor();
 	}
 
+	public SimpleJdbcMapperSupport getSimpleJdbcMapperSupport() {
+		return sjms;
+	}
+
 	public TableMapping getTableMapping(Class<?> clazz) {
 		Assert.notNull(clazz, "clazz must not be null");
 		TableMapping tableMapping = tableMappingCache.get(clazz.getName());

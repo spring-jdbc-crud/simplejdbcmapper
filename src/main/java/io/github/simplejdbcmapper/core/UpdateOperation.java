@@ -22,9 +22,9 @@ class UpdateOperation {
 
 	private static final String INCREMENTED_VERSION = "incrementedVersion";
 
-	private final SimpleJdbcMapperSupport sjms;
+	private final SimpleJdbcMapperSupport sjmSupport;
 
-	private final TableMappingHelper tmh;
+	private final TableMappingHelper tmHelper;
 
 	// update sql cache
 	// Map key - class name
@@ -36,14 +36,14 @@ class UpdateOperation {
 	// value - the update sql and params
 	private final SimpleCache<String, SqlAndParams> updateSpecificPropertiesSqlCache = new SimpleCache<>(2000);
 
-	public UpdateOperation(SimpleJdbcMapperSupport sjms) {
-		this.sjms = sjms;
-		this.tmh = new TableMappingHelper(sjms);
+	public UpdateOperation(TableMappingHelper tmh) {
+		this.tmHelper = tmh;
+		this.sjmSupport = tmh.getSimpleJdbcMapperSupport();
 	}
 
 	public Integer update(Object obj) {
 		Assert.notNull(obj, "Object must not be null");
-		TableMapping tableMapping = tmh.getTableMapping(obj.getClass());
+		TableMapping tableMapping = tmHelper.getTableMapping(obj.getClass());
 		boolean foundInCache = false;
 		SqlAndParams sqlAndParams = updateSqlCache.get(obj.getClass().getName());
 		if (sqlAndParams == null) {
@@ -61,7 +61,7 @@ class UpdateOperation {
 	public Integer updateSpecificProperties(Object obj, String... propertyNames) {
 		Assert.notNull(obj, "Object must not be null");
 		Assert.notNull(propertyNames, "propertyNames must not be null");
-		TableMapping tableMapping = tmh.getTableMapping(obj.getClass());
+		TableMapping tableMapping = tmHelper.getTableMapping(obj.getClass());
 		boolean foundInCache = false;
 		SqlAndParams sqlAndParams = null;
 		String cacheKey = getUpdateSpecificPropertiesCacheKey(obj, propertyNames);
@@ -91,7 +91,7 @@ class UpdateOperation {
 	private Integer updateInternal(Object obj, SqlAndParams sqlAndParams, TableMapping tableMapping) {
 		Assert.notNull(obj, "Object must not be null");
 		Assert.notNull(sqlAndParams, "sqlAndParams must not be null");
-		BeanWrapper bw = sjms.getBeanWrapper(obj);
+		BeanWrapper bw = sjmSupport.getBeanWrapper(obj);
 		if (bw.getPropertyValue(tableMapping.getIdPropertyName()) == null) {
 			throw new IllegalArgumentException("Property " + tableMapping.getTableClassName() + "."
 					+ tableMapping.getIdPropertyName() + " is the id and must not be null.");
@@ -103,7 +103,7 @@ class UpdateOperation {
 		// if object has property version the version gets incremented on update.
 		// throws OptimisticLockingException when update fails.
 		if (sqlAndParams.getParams().contains(INCREMENTED_VERSION)) {
-			cnt = sjms.getNamedParameterJdbcTemplate().update(sqlAndParams.getSql(), mapSqlParameterSource);
+			cnt = sjmSupport.getNamedParameterJdbcTemplate().update(sqlAndParams.getSql(), mapSqlParameterSource);
 			if (cnt == 0) {
 				throw new OptimisticLockingException(obj.getClass().getSimpleName()
 						+ " update failed due to stale data. Failed for " + tableMapping.getIdColumnName() + " = "
@@ -115,7 +115,7 @@ class UpdateOperation {
 			bw.setPropertyValue(tableMapping.getVersionPropertyMapping().getPropertyName(),
 					mapSqlParameterSource.getValue(INCREMENTED_VERSION));
 		} else {
-			cnt = sjms.getNamedParameterJdbcTemplate().update(sqlAndParams.getSql(), mapSqlParameterSource);
+			cnt = sjmSupport.getNamedParameterJdbcTemplate().update(sqlAndParams.getSql(), mapSqlParameterSource);
 		}
 		return cnt;
 	}
@@ -123,14 +123,14 @@ class UpdateOperation {
 	private void populateAutoAssignProperties(TableMapping tableMapping, BeanWrapper bw, Set<String> parameters) {
 		if (tableMapping.hasAutoAssignProperties()) {
 			PropertyMapping updatedByPropMapping = tableMapping.getUpdatedByPropertyMapping();
-			if (updatedByPropMapping != null && sjms.getRecordAuditedBySupplier() != null
+			if (updatedByPropMapping != null && sjmSupport.getRecordAuditedBySupplier() != null
 					&& parameters.contains(updatedByPropMapping.getPropertyName())) {
-				bw.setPropertyValue(updatedByPropMapping.getPropertyName(), sjms.getRecordAuditedBySupplier().get());
+				bw.setPropertyValue(updatedByPropMapping.getPropertyName(), sjmSupport.getRecordAuditedBySupplier().get());
 			}
 			PropertyMapping updatedOnPropMapping = tableMapping.getUpdatedOnPropertyMapping();
-			if (updatedOnPropMapping != null && sjms.getRecordAuditedOnSupplier() != null
+			if (updatedOnPropMapping != null && sjmSupport.getRecordAuditedOnSupplier() != null
 					&& parameters.contains(updatedOnPropMapping.getPropertyName())) {
-				bw.setPropertyValue(updatedOnPropMapping.getPropertyName(), sjms.getRecordAuditedOnSupplier().get());
+				bw.setPropertyValue(updatedOnPropMapping.getPropertyName(), sjmSupport.getRecordAuditedOnSupplier().get());
 			}
 		}
 	}

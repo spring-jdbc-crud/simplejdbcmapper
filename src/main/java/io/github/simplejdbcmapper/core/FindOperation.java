@@ -11,9 +11,9 @@ import org.springframework.jdbc.core.SqlParameterValue;
 import org.springframework.util.Assert;
 
 class FindOperation {
-	private final SimpleJdbcMapperSupport sjms;
+	private final SimpleJdbcMapperSupport sjmSupport;
 
-	private final TableMappingHelper tmh;
+	private final TableMappingHelper tmHelper;
 
 	// Map key - class name
 	// value - the sql
@@ -25,14 +25,14 @@ class FindOperation {
 	// value - the column sql string
 	private final SimpleCache<String, String> beanColumnsSqlCache = new SimpleCache<>();
 
-	public FindOperation(SimpleJdbcMapperSupport sjms) {
-		this.sjms = sjms;
-		this.tmh = new TableMappingHelper(sjms);
+	public FindOperation(TableMappingHelper tmh) {
+		this.tmHelper = tmh;
+		this.sjmSupport = tmh.getSimpleJdbcMapperSupport();
 	}
 
 	public <T> T findById(Class<T> clazz, Object id) {
 		Assert.notNull(clazz, "Class must not be null");
-		TableMapping tableMapping = tmh.getTableMapping(clazz);
+		TableMapping tableMapping = tmHelper.getTableMapping(clazz);
 		boolean foundInCache = false;
 		String sql = findByIdSqlCache.get(clazz.getName());
 		if (sql == null) {
@@ -44,7 +44,7 @@ class FindOperation {
 		BeanPropertyRowMapper<T> rowMapper = getBeanPropertyRowMapper(clazz);
 		T obj = null;
 		try {
-			obj = sjms.getJdbcTemplate().queryForObject(sql, rowMapper,
+			obj = sjmSupport.getJdbcTemplate().queryForObject(sql, rowMapper,
 					new SqlParameterValue(tableMapping.getIdColumnSqlType(), id));
 		} catch (EmptyResultDataAccessException e) {
 			// do nothing
@@ -57,19 +57,19 @@ class FindOperation {
 
 	public <T> List<T> findAll(Class<T> clazz) {
 		Assert.notNull(clazz, "Class must not be null");
-		TableMapping tableMapping = tmh.getTableMapping(clazz);
+		TableMapping tableMapping = tmHelper.getTableMapping(clazz);
 		String sql = "SELECT " + getBeanColumnsSql(tableMapping, clazz) + " FROM "
 				+ tableMapping.fullyQualifiedTableName();
 		BeanPropertyRowMapper<T> rowMapper = getBeanPropertyRowMapper(clazz);
-		return sjms.getJdbcTemplate().query(sql, rowMapper);
+		return sjmSupport.getJdbcTemplate().query(sql, rowMapper);
 	}
 
 	public String getBeanFriendlySqlColumns(Class<?> clazz) {
-		return getBeanColumnsSql(tmh.getTableMapping(clazz), clazz);
+		return getBeanColumnsSql(tmHelper.getTableMapping(clazz), clazz);
 	}
 
 	public Map<String, String> getPropertyToColumnMappings(Class<?> clazz) {
-		TableMapping tableMapping = tmh.getTableMapping(clazz);
+		TableMapping tableMapping = tmHelper.getTableMapping(clazz);
 		Map<String, String> map = new LinkedHashMap<>();
 		for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {
 			map.put(propMapping.getPropertyName(), propMapping.getColumnName());
@@ -105,7 +105,7 @@ class FindOperation {
 
 	private <T> BeanPropertyRowMapper<T> getBeanPropertyRowMapper(Class<T> clazz) {
 		BeanPropertyRowMapper<T> rowMapper = BeanPropertyRowMapper.newInstance(clazz);
-		rowMapper.setConversionService(sjms.getConversionService());
+		rowMapper.setConversionService(sjmSupport.getConversionService());
 		return rowMapper;
 	}
 

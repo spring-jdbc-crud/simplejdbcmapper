@@ -41,7 +41,7 @@ import org.springframework.util.Assert;
  */
 public final class SimpleJdbcMapper {
 
-	private final SimpleJdbcMapperSupport sjms;
+	private final SimpleJdbcMapperSupport sjmSupport;
 
 	private final InsertOperation insertOperation;
 
@@ -51,7 +51,7 @@ public final class SimpleJdbcMapper {
 
 	private final DeleteOperation deleteOperation;
 
-	private final TableMappingHelper tmh;
+	private final TableMappingHelper tmHelper;
 
 	/**
 	 * Constructor.
@@ -81,13 +81,12 @@ public final class SimpleJdbcMapper {
 	 */
 	public SimpleJdbcMapper(DataSource dataSource, String schemaName, String catalogName) {
 		Assert.notNull(dataSource, "dataSource must not be null");
-		this.sjms = new SimpleJdbcMapperSupport(dataSource, schemaName, catalogName);
-		this.insertOperation = new InsertOperation(this.sjms);
-		this.findOperation = new FindOperation(this.sjms);
-		this.updateOperation = new UpdateOperation(this.sjms);
-		this.deleteOperation = new DeleteOperation(this.sjms);
-		this.tmh = new TableMappingHelper(this.sjms);
-
+		this.sjmSupport = new SimpleJdbcMapperSupport(dataSource, schemaName, catalogName);
+		this.tmHelper = new TableMappingHelper(this.sjmSupport);
+		this.insertOperation = new InsertOperation(this.tmHelper);
+		this.findOperation = new FindOperation(this.tmHelper);
+		this.updateOperation = new UpdateOperation(this.tmHelper);
+		this.deleteOperation = new DeleteOperation(this.tmHelper);
 	}
 
 	/**
@@ -243,7 +242,7 @@ public final class SimpleJdbcMapper {
 	 * @return the JdbcClient
 	 */
 	public JdbcClient getJdbcClient() {
-		return sjms.getJdbcClient();
+		return sjmSupport.getJdbcClient();
 	}
 
 	/**
@@ -252,7 +251,7 @@ public final class SimpleJdbcMapper {
 	 * @return the JdbcTemplate
 	 */
 	public JdbcTemplate getJdbcTemplate() {
-		return sjms.getJdbcTemplate();
+		return sjmSupport.getJdbcTemplate();
 	}
 
 	/**
@@ -261,7 +260,7 @@ public final class SimpleJdbcMapper {
 	 * @return the NamedParameterJdbcTemplate
 	 */
 	public NamedParameterJdbcTemplate getNamedParameterJdbcTemplate() {
-		return sjms.getNamedParameterJdbcTemplate();
+		return sjmSupport.getNamedParameterJdbcTemplate();
 	}
 
 	/**
@@ -272,7 +271,7 @@ public final class SimpleJdbcMapper {
 	 * @param supplier the Supplier for audited by.
 	 */
 	public <T> void setRecordAuditedBySupplier(Supplier<T> supplier) {
-		sjms.setRecordAuditedOnSupplier(supplier);
+		sjmSupport.setRecordAuditedOnSupplier(supplier);
 	}
 
 	/**
@@ -283,7 +282,7 @@ public final class SimpleJdbcMapper {
 	 * @param supplier the Supplier for audited on.
 	 */
 	public <T> void setRecordAuditedOnSupplier(Supplier<T> supplier) {
-		sjms.setRecordAuditedOnSupplier(supplier);
+		sjmSupport.setRecordAuditedOnSupplier(supplier);
 	}
 
 	/**
@@ -293,7 +292,7 @@ public final class SimpleJdbcMapper {
 	 * @return the conversion service.
 	 */
 	public ConversionService getConversionService() {
-		return sjms.getConversionService();
+		return sjmSupport.getConversionService();
 	}
 
 	/**
@@ -302,7 +301,7 @@ public final class SimpleJdbcMapper {
 	 * @param conversionService The conversion service to set
 	 */
 	public void setConversionService(ConversionService conversionService) {
-		sjms.setConversionService(conversionService);
+		sjmSupport.setConversionService(conversionService);
 	}
 
 	/**
@@ -313,7 +312,7 @@ public final class SimpleJdbcMapper {
 	 * to be Types.TIMESTAMP_WITH_TIMEZONE.
 	 */
 	public void enableOffsetDateTimeSqlTypeAsTimestampWithTimeZone() {
-		sjms.enableOffsetDateTimeSqlTypeAsTimestampWithTimeZone();
+		sjmSupport.enableOffsetDateTimeSqlTypeAsTimestampWithTimeZone();
 	}
 
 	/**
@@ -324,7 +323,7 @@ public final class SimpleJdbcMapper {
 	 * @param clazz the class
 	 */
 	public void loadMapping(Class<?> clazz) {
-		tmh.getTableMapping(clazz);
+		tmHelper.getTableMapping(clazz);
 	}
 
 	/**
@@ -333,7 +332,7 @@ public final class SimpleJdbcMapper {
 	 * @return the schema name.
 	 */
 	public String getSchemaName() {
-		return sjms.getSchemaName();
+		return sjmSupport.getSchemaName();
 	}
 
 	/**
@@ -342,15 +341,15 @@ public final class SimpleJdbcMapper {
 	 * @return the catalog name.
 	 */
 	public String getCatalogName() {
-		return sjms.getCatalogName();
+		return sjmSupport.getCatalogName();
 	}
 
 	TableMapping getTableMapping(Class<?> clazz) {
-		return tmh.getTableMapping(clazz);
+		return tmHelper.getTableMapping(clazz);
 	}
 
 	SimpleCache<String, TableMapping> getTableMappingCache() {
-		return tmh.getTableMappingCache();
+		return tmHelper.getTableMappingCache();
 	}
 
 	SimpleCache<String, String> getFindByIdSqlCache() {
@@ -375,11 +374,11 @@ public final class SimpleJdbcMapper {
 
 	@SuppressWarnings("rawtypes")
 	Supplier getRecordAuditedBySupplier() {
-		return sjms.getRecordAuditedBySupplier();
+		return sjmSupport.getRecordAuditedBySupplier();
 	}
 
 	@SuppressWarnings("rawtypes")
 	Supplier getRecordAuditedOnSupplier() {
-		return sjms.getRecordAuditedOnSupplier();
+		return sjmSupport.getRecordAuditedOnSupplier();
 	}
 }

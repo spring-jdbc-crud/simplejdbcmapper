@@ -4,31 +4,31 @@ import org.springframework.beans.BeanWrapper;
 import org.springframework.util.Assert;
 
 class DeleteOperation {
-	private final SimpleJdbcMapperSupport sjms;
+	private final SimpleJdbcMapperSupport sjmSupport;
 
-	private final TableMappingHelper tmh;
+	private final TableMappingHelper tmHelper;
 
-	public DeleteOperation(SimpleJdbcMapperSupport sjms) {
-		this.sjms = sjms;
-		this.tmh = new TableMappingHelper(sjms);
+	public DeleteOperation(TableMappingHelper tmh) {
+		this.tmHelper = tmh;
+		this.sjmSupport = tmh.getSimpleJdbcMapperSupport();
 	}
 
 	public Integer delete(Object obj) {
 		Assert.notNull(obj, "Object must not be null");
-		TableMapping tableMapping = tmh.getTableMapping(obj.getClass());
+		TableMapping tableMapping = tmHelper.getTableMapping(obj.getClass());
 		String sql = "DELETE FROM " + tableMapping.fullyQualifiedTableName() + " WHERE "
 				+ tableMapping.getIdColumnName() + "= ?";
-		BeanWrapper bw = sjms.getBeanWrapper(obj);
+		BeanWrapper bw = sjmSupport.getBeanWrapper(obj);
 		Object id = bw.getPropertyValue(tableMapping.getIdPropertyName());
-		return sjms.getJdbcTemplate().update(sql, id);
+		return sjmSupport.getJdbcTemplate().update(sql, id);
 	}
 
 	public Integer deleteById(Class<?> clazz, Object id) {
 		Assert.notNull(clazz, "Class must not be null");
 		Assert.notNull(id, "id must not be null");
-		TableMapping tableMapping = tmh.getTableMapping(clazz);
+		TableMapping tableMapping = tmHelper.getTableMapping(clazz);
 		String sql = "DELETE FROM " + tableMapping.fullyQualifiedTableName() + " WHERE "
 				+ tableMapping.getIdColumnName() + " = ?";
-		return sjms.getJdbcTemplate().update(sql, id);
+		return sjmSupport.getJdbcTemplate().update(sql, id);
 	}
 }

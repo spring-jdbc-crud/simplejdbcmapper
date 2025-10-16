@@ -22,8 +22,8 @@ import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
-import java.util.HashSet;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -109,7 +109,7 @@ class SimpleJdbcMapperSupport {
 			validateMetaDataConfig(catalog, schema);
 			List<Field> fields = getAllFields(clazz);
 			IdPropertyInfo idPropertyInfo = getIdPropertyInfo(clazz, fields);
-			// key:column name, value: ColumnInfo
+			// key:column name, value: TableParameterMetaData
 			Map<String, TableParameterMetaData> columnNameToTpmd = getTableParameterMetadataList(tableName, schema,
 					catalog, clazz).stream().collect(Collectors.toMap(o -> o.getParameterName(), o -> o));
 			// key:propertyName, value:PropertyMapping. LinkedHashMap to maintain order of
@@ -118,12 +118,12 @@ class SimpleJdbcMapperSupport {
 			for (Field field : fields) {
 				// process column annotation always first
 				processColumnAnnotation(field, tableName, propNameToPropertyMapping, columnNameToTpmd);
-				processAnnotation(Id.class, field, tableName, propNameToPropertyMapping, columnNameToTpmd);
-				processAnnotation(Version.class, field, tableName, propNameToPropertyMapping, columnNameToTpmd);
-				processAnnotation(CreatedOn.class, field, tableName, propNameToPropertyMapping, columnNameToTpmd);
-				processAnnotation(UpdatedOn.class, field, tableName, propNameToPropertyMapping, columnNameToTpmd);
-				processAnnotation(CreatedBy.class, field, tableName, propNameToPropertyMapping, columnNameToTpmd);
-				processAnnotation(UpdatedBy.class, field, tableName, propNameToPropertyMapping, columnNameToTpmd);
+				processIdAnnotation(field, tableName, propNameToPropertyMapping, columnNameToTpmd);
+				processVersionAnnotation(field, tableName, propNameToPropertyMapping, columnNameToTpmd);
+				processCreatedOnAnnotation(field, tableName, propNameToPropertyMapping, columnNameToTpmd);
+				processUpdatedOnAnnotation(field, tableName, propNameToPropertyMapping, columnNameToTpmd);
+				processCreatedByAnnotation(field, tableName, propNameToPropertyMapping, columnNameToTpmd);
+				processUpdatedByAnnotation(field, tableName, propNameToPropertyMapping, columnNameToTpmd);
 			}
 			List<PropertyMapping> propertyMappings = new ArrayList<>(propNameToPropertyMapping.values());
 			validateAnnotations(propertyMappings, clazz);
@@ -133,12 +133,48 @@ class SimpleJdbcMapperSupport {
 		return tableMapping;
 	}
 
+	private void processIdAnnotation(Field field, String tableName,
+			Map<String, PropertyMapping> propNameToPropertyMapping,
+			Map<String, TableParameterMetaData> columnNameToTpmd) {
+		processAnnotation(Id.class, field, tableName, propNameToPropertyMapping, columnNameToTpmd);
+	}
+
+	private void processVersionAnnotation(Field field, String tableName,
+			Map<String, PropertyMapping> propNameToPropertyMapping,
+			Map<String, TableParameterMetaData> columnNameToTpmd) {
+		processAnnotation(Version.class, field, tableName, propNameToPropertyMapping, columnNameToTpmd);
+	}
+
+	private void processCreatedOnAnnotation(Field field, String tableName,
+			Map<String, PropertyMapping> propNameToPropertyMapping,
+			Map<String, TableParameterMetaData> columnNameToTpmd) {
+		processAnnotation(CreatedOn.class, field, tableName, propNameToPropertyMapping, columnNameToTpmd);
+	}
+
+	private void processUpdatedOnAnnotation(Field field, String tableName,
+			Map<String, PropertyMapping> propNameToPropertyMapping,
+			Map<String, TableParameterMetaData> columnNameToTpmd) {
+		processAnnotation(UpdatedOn.class, field, tableName, propNameToPropertyMapping, columnNameToTpmd);
+	}
+
+	private void processCreatedByAnnotation(Field field, String tableName,
+			Map<String, PropertyMapping> propNameToPropertyMapping,
+			Map<String, TableParameterMetaData> columnNameToTpmd) {
+		processAnnotation(CreatedBy.class, field, tableName, propNameToPropertyMapping, columnNameToTpmd);
+	}
+
+	private void processUpdatedByAnnotation(Field field, String tableName,
+			Map<String, PropertyMapping> propNameToPropertyMapping,
+			Map<String, TableParameterMetaData> columnNameToTpmd) {
+		processAnnotation(UpdatedBy.class, field, tableName, propNameToPropertyMapping, columnNameToTpmd);
+	}
+
 	// gets all unique fields including from super classes.
 	public List<Field> getAllFields(Class<?> clazz) {
 		List<Field> fields = getAllFieldsInternal(clazz);
 		// there could be duplicate fields due to super classes. Get unique fields list
 		// by name
-		Set<String> set = new HashSet<>();
+		Set<String> set = new LinkedHashSet<>();
 		return fields.stream().filter(p -> set.add(p.getName())).toList();
 	}
 
@@ -223,7 +259,6 @@ class SimpleJdbcMapperSupport {
 		}
 	}
 
-	// invoked for all annotations other than @Column
 	private <T extends Annotation> void processAnnotation(Class<T> annotationClazz, Field field, String tableName,
 			Map<String, PropertyMapping> propNameToPropertyMapping,
 			Map<String, TableParameterMetaData> columnNameToTpmd) {

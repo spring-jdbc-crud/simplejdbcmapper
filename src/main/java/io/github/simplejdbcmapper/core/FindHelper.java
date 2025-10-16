@@ -36,7 +36,7 @@ class FindHelper {
 		} else {
 			foundInCache = true;
 		}
-		BeanPropertyRowMapper<T> rowMapper = sjms.getBeanPropertyRowMapper(clazz);
+		BeanPropertyRowMapper<T> rowMapper = getBeanPropertyRowMapper(clazz);
 		T obj = null;
 		try {
 			obj = sjms.getJdbcTemplate().queryForObject(sql, rowMapper,
@@ -55,7 +55,7 @@ class FindHelper {
 		TableMapping tableMapping = sjms.getTableMapping(clazz);
 		String sql = "SELECT " + getBeanColumnsSql(tableMapping, clazz) + " FROM "
 				+ tableMapping.fullyQualifiedTableName();
-		BeanPropertyRowMapper<T> rowMapper = sjms.getBeanPropertyRowMapper(clazz);
+		BeanPropertyRowMapper<T> rowMapper = getBeanPropertyRowMapper(clazz);
 		return sjms.getJdbcTemplate().query(sql, rowMapper);
 	}
 
@@ -87,6 +87,12 @@ class FindHelper {
 			beanColumnsSqlCache.put(clazz.getName(), columnsSql);
 		}
 		return columnsSql;
+	}
+
+	private <T> BeanPropertyRowMapper<T> getBeanPropertyRowMapper(Class<T> clazz) {
+		BeanPropertyRowMapper<T> rowMapper = BeanPropertyRowMapper.newInstance(clazz);
+		rowMapper.setConversionService(sjms.getConversionService());
+		return rowMapper;
 	}
 
 }

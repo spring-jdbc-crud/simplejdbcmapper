@@ -80,11 +80,11 @@ class UpdateOperation {
 		return cnt;
 	}
 
-	public SimpleCache<String, SqlAndParams> getUpdateSqlCache() {
+	SimpleCache<String, SqlAndParams> getUpdateSqlCache() {
 		return updateSqlCache;
 	}
 
-	public SimpleCache<String, SqlAndParams> getUpdateSpecificPropertiesSqlCache() {
+	SimpleCache<String, SqlAndParams> getUpdateSpecificPropertiesSqlCache() {
 		return updateSpecificPropertiesSqlCache;
 	}
 
@@ -125,12 +125,14 @@ class UpdateOperation {
 			PropertyMapping updatedByPropMapping = tableMapping.getUpdatedByPropertyMapping();
 			if (updatedByPropMapping != null && sjmSupport.getRecordAuditedBySupplier() != null
 					&& parameters.contains(updatedByPropMapping.getPropertyName())) {
-				bw.setPropertyValue(updatedByPropMapping.getPropertyName(), sjmSupport.getRecordAuditedBySupplier().get());
+				bw.setPropertyValue(updatedByPropMapping.getPropertyName(),
+						sjmSupport.getRecordAuditedBySupplier().get());
 			}
 			PropertyMapping updatedOnPropMapping = tableMapping.getUpdatedOnPropertyMapping();
 			if (updatedOnPropMapping != null && sjmSupport.getRecordAuditedOnSupplier() != null
 					&& parameters.contains(updatedOnPropMapping.getPropertyName())) {
-				bw.setPropertyValue(updatedOnPropMapping.getPropertyName(), sjmSupport.getRecordAuditedOnSupplier().get());
+				bw.setPropertyValue(updatedOnPropMapping.getPropertyName(),
+						sjmSupport.getRecordAuditedOnSupplier().get());
 			}
 		}
 	}

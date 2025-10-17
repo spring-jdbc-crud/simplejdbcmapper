@@ -91,10 +91,10 @@ A simple wrapper around Spring JDBC libraries that makes database CRUD operation
  */
  String sql = "SELECT " + sjm.getBeanFriendlySqlColumns(Product.class) +  " FROM product WHERE product_name = ?";
  
- // Using JdbcClient api for the above sql
+ // Using Spring's JdbcClient api for the above sql
  List<Product> products = sjm.getJdbcClient().sql(sql).param("someProductName").query(Product.class).list();
  
- // Using JdbcTemplate api for the above sql
+ // Using Spring's JdbcTemplate api for the above sql
  List<Product> products sjm.getJdbcTemplate().query(sql,BeanPropertyRowMapper.newInstance(Product.class),"someProductName");
  
  // Accessing the underlying JdbcClient, JdbcTemplate and NamedParameterJdbcTemplate.

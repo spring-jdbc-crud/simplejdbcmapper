@@ -77,11 +77,11 @@ class FindOperation {
 		return map;
 	}
 
-	public SimpleCache<String, String> getFindByIdSqlCache() {
+	SimpleCache<String, String> getFindByIdSqlCache() {
 		return findByIdSqlCache;
 	}
 
-	public SimpleCache<String, String> getBeanColumnsSqlCache() {
+	SimpleCache<String, String> getBeanColumnsSqlCache() {
 		return beanColumnsSqlCache;
 	}
 

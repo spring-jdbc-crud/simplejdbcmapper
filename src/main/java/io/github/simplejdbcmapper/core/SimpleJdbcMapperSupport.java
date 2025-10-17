@@ -44,7 +44,7 @@ class SimpleJdbcMapperSupport {
 
 	private final NamedParameterJdbcTemplate npJdbcTemplate;
 
-	private final TableMappingHelper tableMappingHelper;
+	private final TableMappingProvider tableMappingProvider;
 
 	private boolean enableOffsetDateTimeSqlTypeAsTimestampWithTimeZone = false;
 
@@ -71,7 +71,7 @@ class SimpleJdbcMapperSupport {
 		this.npJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
 		this.jdbcTemplate = npJdbcTemplate.getJdbcTemplate();
 		this.jdbcClient = JdbcClient.create(jdbcTemplate);
-		this.tableMappingHelper = new TableMappingHelper(this);
+		this.tableMappingProvider = new TableMappingProvider(this);
 	}
 
 	public DataSource getDataSource() {
@@ -141,11 +141,11 @@ class SimpleJdbcMapperSupport {
 	}
 
 	TableMapping getTableMapping(Class<?> clazz) {
-		return tableMappingHelper.getTableMapping(clazz);
+		return tableMappingProvider.getTableMapping(clazz);
 	}
 
 	String getCommonDatabaseName() {
-		return tableMappingHelper.getCommonDatabaseName();
+		return tableMappingProvider.getCommonDatabaseName();
 	}
 
 	BeanWrapper getBeanWrapper(Object obj) {
@@ -155,7 +155,7 @@ class SimpleJdbcMapperSupport {
 	}
 
 	SimpleCache<String, TableMapping> getTableMappingCache() {
-		return tableMappingHelper.getTableMappingCache();
+		return tableMappingProvider.getTableMappingCache();
 	}
 
 }

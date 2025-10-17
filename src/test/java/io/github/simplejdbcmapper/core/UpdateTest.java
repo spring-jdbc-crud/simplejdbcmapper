@@ -8,6 +8,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 import java.time.LocalDateTime;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,6 +31,14 @@ class UpdateTest {
 	@Autowired
 	private SimpleJdbcMapper sjm;
 
+	private SimpleJdbcMapperSupport sjmSupport;
+
+	@BeforeEach
+	void beforeMethod() {
+		// clear caches to force a table meta data lookup from database.
+		sjmSupport = TestUtils.getSimpleJdbcMapperSupport(sjm);
+	}
+
 	@Test
 	void update_Test() throws Exception {
 		Order order = sjm.findById(Order.class, 1);
@@ -42,10 +51,10 @@ class UpdateTest {
 
 		// check if auto assigned properties have changed.
 		assertEquals(2, order.getVersion());
-		if (sjm.getRecordAuditedBySupplier() != null) {
+		if (sjmSupport.getRecordAuditedBySupplier() != null) {
 			assertEquals("tester", order.getUpdatedBy());
 		}
-		if (sjm.getRecordAuditedOnSupplier() != null) {
+		if (sjmSupport.getRecordAuditedOnSupplier() != null) {
 			assertNotNull(order.getUpdatedOn());
 			assertTrue(order.getUpdatedOn().isAfter(prevUpdatedOn));
 		}
@@ -54,10 +63,10 @@ class UpdateTest {
 		order = sjm.findById(Order.class, 1);
 		assertEquals("COMPLETE", order.getStatus());
 		assertEquals(2, order.getVersion()); // version incremented
-		if (sjm.getRecordAuditedBySupplier() != null) {
+		if (sjmSupport.getRecordAuditedBySupplier() != null) {
 			assertEquals("tester", order.getUpdatedBy());
 		}
-		if (sjm.getRecordAuditedOnSupplier() != null) {
+		if (sjmSupport.getRecordAuditedOnSupplier() != null) {
 			assertNotNull(order.getUpdatedOn());
 			assertTrue(order.getUpdatedOn().isAfter(prevUpdatedOn));
 		}
@@ -234,13 +243,13 @@ class UpdateTest {
 		assertEquals("DONE", order.getStatus());
 		// check if auto assigned properties have changed.
 		assertEquals(2, order.getVersion());
-		if (sjm.getRecordAuditedOnSupplier() != null) {
+		if (sjmSupport.getRecordAuditedOnSupplier() != null) {
 			assertTrue(order.getUpdatedOn().isAfter(prevUpdatedOn));
 		}
-		if (sjm.getRecordAuditedBySupplier() != null) {
+		if (sjmSupport.getRecordAuditedBySupplier() != null) {
 			assertEquals("tester", order.getUpdatedBy());
 		}
-		if (sjm.getRecordAuditedOnSupplier() != null) {
+		if (sjmSupport.getRecordAuditedOnSupplier() != null) {
 			assertNotNull(order.getUpdatedOn());
 		}
 

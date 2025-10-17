@@ -9,6 +9,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,9 +30,19 @@ class AnnotationInheritedTest {
 	@Autowired
 	private SimpleJdbcMapper sjm;
 
+	private TableMappingHelper tmh;
+
+	private SimpleJdbcMapperSupport sjmSupport;
+
+	@BeforeEach
+	void beforeMethod() {
+		tmh = TestUtils.getTableMappingHelper(sjm);
+		sjmSupport = TestUtils.getSimpleJdbcMapperSupport(sjm);
+	}
+
 	@Test
 	void annotationOrderInheritedAuditProperty_Test() {
-		TableMapping tableMapping = sjm.getTableMapping(OrderInheritedAudit.class);
+		TableMapping tableMapping = tmh.getTableMapping(OrderInheritedAudit.class);
 		List<String> mappedProperties = Arrays.asList("orderId", "orderDate", "customerId", "status", "createdOn",
 				"createdBy", "updatedOn", "updatedBy", "version");
 		for (String propertyName : mappedProperties) {
@@ -49,11 +60,11 @@ class AnnotationInheritedTest {
 		sjm.insert(obj);
 
 		// check if auto assigned properties have been assigned.
-		if (sjm.getRecordAuditedBySupplier() != null) {
+		if (sjmSupport.getRecordAuditedBySupplier() != null) {
 			assertEquals("tester", obj.getCreatedBy());
 			assertEquals("tester", obj.getUpdatedBy());
 		}
-		if (sjm.getRecordAuditedOnSupplier() != null) {
+		if (sjmSupport.getRecordAuditedOnSupplier() != null) {
 			assertNotNull(obj.getCreatedOn());
 			assertNotNull(obj.getUpdatedOn());
 		}
@@ -62,11 +73,11 @@ class AnnotationInheritedTest {
 		OrderInheritedAudit obj2 = sjm.findById(OrderInheritedAudit.class, obj.getOrderId());
 		assertNotNull(obj2.getOrderId());
 		assertNotNull(obj2.getOrderDate());
-		if (sjm.getRecordAuditedBySupplier() != null) {
+		if (sjmSupport.getRecordAuditedBySupplier() != null) {
 			assertEquals("tester", obj.getCreatedBy());
 			assertEquals("tester", obj.getUpdatedBy());
 		}
-		if (sjm.getRecordAuditedOnSupplier() != null) {
+		if (sjmSupport.getRecordAuditedOnSupplier() != null) {
 			assertNotNull(obj.getCreatedOn());
 			assertNotNull(obj.getUpdatedOn());
 		}
@@ -75,7 +86,7 @@ class AnnotationInheritedTest {
 
 	@Test
 	void annotationOrderInheritedColumn_Test() {
-		TableMapping tableMapping = sjm.getTableMapping(OrderInheritedColumn.class);
+		TableMapping tableMapping = tmh.getTableMapping(OrderInheritedColumn.class);
 		List<String> mappedProperties = Arrays.asList("orderId", "orderDate", "customerId", "status");
 		for (String propertyName : mappedProperties) {
 			assertNotNull(tableMapping.getPropertyMappingByPropertyName(propertyName));
@@ -84,7 +95,7 @@ class AnnotationInheritedTest {
 
 	@Test
 	void annotationOrderInheritedId_Test() {
-		TableMapping tableMapping = sjm.getTableMapping(OrderInheritedId.class);
+		TableMapping tableMapping = tmh.getTableMapping(OrderInheritedId.class);
 		List<String> mappedProperties = Arrays.asList("orderId", "orderDate", "customerId", "status");
 		for (String propertyName : mappedProperties) {
 			assertNotNull(tableMapping.getPropertyMappingByPropertyName(propertyName));
@@ -94,7 +105,7 @@ class AnnotationInheritedTest {
 	@Test
 	void annotationOrderIdOverriden_failure_Test() {
 		Exception exception = Assertions.assertThrows(AnnotationException.class, () -> {
-			sjm.getTableMapping(OrderInheritedOverriddenId.class);
+			tmh.getTableMapping(OrderInheritedOverriddenId.class);
 		});
 		assertTrue(exception.getMessage().contains("@Id annotation not found in class"));
 
@@ -102,7 +113,7 @@ class AnnotationInheritedTest {
 
 	@Test
 	void tableAnnotationInherited_Test() {
-		Assertions.assertDoesNotThrow(() -> sjm.getTableMapping(ModelWithInheritedTableAnnotation.class));
+		Assertions.assertDoesNotThrow(() -> tmh.getTableMapping(ModelWithInheritedTableAnnotation.class));
 	}
 
 }

@@ -30,7 +30,8 @@ class CachingTest {
 
 	@Test
 	void findByIdCache_test() {
-		SimpleCache<String, String> cache = sjm.getFindByIdSqlCache();
+		FindOperation fo = TestUtils.getFindOperation(sjm);
+		SimpleCache<String, String> cache = fo.getFindByIdSqlCache();
 		cache.clear();
 
 		sjm.findById(Order.class, 1);
@@ -45,7 +46,8 @@ class CachingTest {
 
 	@Test
 	void insertCache_test() {
-		SimpleCache<String, SimpleJdbcInsert> cache = sjm.getInsertSqlCache();
+		InsertOperation io = TestUtils.getInsertOperation(sjm);
+		SimpleCache<String, SimpleJdbcInsert> cache = io.getInsertSqlCache();
 		cache.clear();
 
 		Order order = new Order();
@@ -75,7 +77,8 @@ class CachingTest {
 
 	@Test
 	void updateCache_test() {
-		SimpleCache<String, SqlAndParams> cache = sjm.getUpdateSqlCache();
+		UpdateOperation uo = TestUtils.getUpdateOperation(sjm);
+		SimpleCache<String, SqlAndParams> cache = uo.getUpdateSqlCache();
 		cache.clear();
 
 		Customer customer = new Customer();
@@ -112,7 +115,8 @@ class CachingTest {
 
 	@Test
 	void updateSpecificPropertiesCache_test() {
-		SimpleCache<String, SqlAndParams> cache = sjm.getUpdateSpecificPropertiesSqlCache();
+		UpdateOperation uo = TestUtils.getUpdateOperation(sjm);
+		SimpleCache<String, SqlAndParams> cache = uo.getUpdateSpecificPropertiesSqlCache();
 		cache.clear();
 
 		ProductWithNoAuditFields product = new ProductWithNoAuditFields();
@@ -151,7 +155,8 @@ class CachingTest {
 
 	@Test
 	void beanColumnsSqlCache_test() {
-		SimpleCache<String, String> cache = sjm.getBeanColumnsSqlCache();
+		FindOperation fo = TestUtils.getFindOperation(sjm);
+		SimpleCache<String, String> cache = fo.getBeanColumnsSqlCache();
 		cache.clear();
 
 		sjm.getBeanFriendlySqlColumns(Customer.class);
@@ -170,7 +175,8 @@ class CachingTest {
 
 	@Test
 	void tableMappingCache_test() {
-		SimpleCache<String, TableMapping> cache = sjm.getTableMappingCache();
+		TableMappingHelper tmh = TestUtils.getTableMappingHelper(sjm);
+		SimpleCache<String, TableMapping> cache = tmh.getTableMappingCache();
 		cache.clear();
 
 		sjm.loadMapping(Customer.class);

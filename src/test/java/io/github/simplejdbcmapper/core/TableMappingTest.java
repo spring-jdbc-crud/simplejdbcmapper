@@ -32,7 +32,9 @@ class TableMappingTest {
 			SimpleJdbcMapper sjm = new SimpleJdbcMapper(dataSource, "schema1");
 			sjm.loadMapping(CustomerSchema1.class);
 
-			TableMapping tm = sjm.getTableMapping(Order.class);
+			TableMappingHelper tmHelper = TestUtils.getTableMappingHelper(sjm);
+
+			TableMapping tm = tmHelper.getTableMapping(Order.class);
 			assertEquals("schema1", tm.getSchemaName());
 		}
 	}
@@ -43,7 +45,9 @@ class TableMappingTest {
 			SimpleJdbcMapper sjm = new SimpleJdbcMapper(dataSource);
 			sjm.loadMapping(CustomerSchema1.class);
 
-			TableMapping tm = sjm.getTableMapping(CustomerSchema1.class);
+			TableMappingHelper tmHelper = TestUtils.getTableMappingHelper(sjm);
+
+			TableMapping tm = tmHelper.getTableMapping(CustomerSchema1.class);
 			assertEquals("schema1", tm.getSchemaName());
 		}
 	}
@@ -54,7 +58,9 @@ class TableMappingTest {
 			SimpleJdbcMapper sjm = new SimpleJdbcMapper(dataSource, "schema1");
 			sjm.loadMapping(CustomerSchema1.class);
 
-			TableMapping tm = sjm.getTableMapping(CompanySchema2.class);
+			TableMappingHelper tmHelper = TestUtils.getTableMappingHelper(sjm);
+
+			TableMapping tm = tmHelper.getTableMapping(CompanySchema2.class);
 			assertEquals("SCHEMA2", tm.getSchemaName());
 		}
 	}
@@ -65,7 +71,8 @@ class TableMappingTest {
 			SimpleJdbcMapper sjm = new SimpleJdbcMapper(dataSource, null, "schema1");
 			sjm.loadMapping(Order.class);
 
-			TableMapping tm = sjm.getTableMapping(Order.class);
+			TableMappingHelper tmHelper = TestUtils.getTableMappingHelper(sjm);
+			TableMapping tm = tmHelper.getTableMapping(Order.class);
 			assertEquals("schema1", tm.getCatalogName());
 		}
 	}
@@ -75,8 +82,8 @@ class TableMappingTest {
 		if (jdbcDriver.contains("mysql")) {
 			SimpleJdbcMapper sjm = new SimpleJdbcMapper(dataSource);
 			sjm.loadMapping(CustomerCatalogSchema1.class);
-
-			TableMapping tm = sjm.getTableMapping(CustomerCatalogSchema1.class);
+			TableMappingHelper tmHelper = TestUtils.getTableMappingHelper(sjm);
+			TableMapping tm = tmHelper.getTableMapping(CustomerCatalogSchema1.class);
 			assertEquals("schema1", tm.getCatalogName());
 		}
 	}
@@ -87,7 +94,8 @@ class TableMappingTest {
 			SimpleJdbcMapper sjm = new SimpleJdbcMapper(dataSource, null, "schema1");
 			sjm.loadMapping(CompanyCatalogSchema2.class);
 
-			TableMapping tm = sjm.getTableMapping(CompanyCatalogSchema2.class);
+			TableMappingHelper tmHelper = TestUtils.getTableMappingHelper(sjm);
+			TableMapping tm = tmHelper.getTableMapping(CompanyCatalogSchema2.class);
 			assertEquals("schema2", tm.getCatalogName());
 		}
 	}

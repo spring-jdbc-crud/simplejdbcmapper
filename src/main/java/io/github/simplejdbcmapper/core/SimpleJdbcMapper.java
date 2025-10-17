@@ -50,8 +50,6 @@ public final class SimpleJdbcMapper {
 
 	private final DeleteOperation deleteOperation;
 
-	private final TableMappingHelper tableMappingHelper;
-
 	/**
 	 * Constructor.
 	 *
@@ -81,11 +79,10 @@ public final class SimpleJdbcMapper {
 	public SimpleJdbcMapper(DataSource dataSource, String schemaName, String catalogName) {
 		Assert.notNull(dataSource, "dataSource must not be null");
 		this.simpleJdbcMapperSupport = new SimpleJdbcMapperSupport(dataSource, schemaName, catalogName);
-		this.tableMappingHelper = new TableMappingHelper(this.simpleJdbcMapperSupport);
-		this.insertOperation = new InsertOperation(this.tableMappingHelper);
-		this.findOperation = new FindOperation(this.tableMappingHelper);
-		this.updateOperation = new UpdateOperation(this.tableMappingHelper);
-		this.deleteOperation = new DeleteOperation(this.tableMappingHelper);
+		this.insertOperation = new InsertOperation(simpleJdbcMapperSupport);
+		this.findOperation = new FindOperation(simpleJdbcMapperSupport);
+		this.updateOperation = new UpdateOperation(simpleJdbcMapperSupport);
+		this.deleteOperation = new DeleteOperation(simpleJdbcMapperSupport);
 	}
 
 	/**
@@ -322,7 +319,7 @@ public final class SimpleJdbcMapper {
 	 * @param clazz the class
 	 */
 	public void loadMapping(Class<?> clazz) {
-		tableMappingHelper.getTableMapping(clazz);
+		simpleJdbcMapperSupport.getTableMapping(clazz);
 	}
 
 	/**

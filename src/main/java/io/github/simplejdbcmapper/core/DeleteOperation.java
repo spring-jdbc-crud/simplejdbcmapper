@@ -6,16 +6,13 @@ import org.springframework.util.Assert;
 class DeleteOperation {
 	private final SimpleJdbcMapperSupport sjmSupport;
 
-	private final TableMappingHelper tmHelper;
-
-	public DeleteOperation(TableMappingHelper tmh) {
-		this.tmHelper = tmh;
-		this.sjmSupport = tmh.getSimpleJdbcMapperSupport();
+	public DeleteOperation(SimpleJdbcMapperSupport sjmSupport) {
+		this.sjmSupport = sjmSupport;
 	}
 
 	public Integer delete(Object obj) {
 		Assert.notNull(obj, "Object must not be null");
-		TableMapping tableMapping = tmHelper.getTableMapping(obj.getClass());
+		TableMapping tableMapping = sjmSupport.getTableMapping(obj.getClass());
 		String sql = "DELETE FROM " + tableMapping.fullyQualifiedTableName() + " WHERE "
 				+ tableMapping.getIdColumnName() + "= ?";
 		BeanWrapper bw = sjmSupport.getBeanWrapper(obj);
@@ -26,7 +23,7 @@ class DeleteOperation {
 	public Integer deleteById(Class<?> clazz, Object id) {
 		Assert.notNull(clazz, "Class must not be null");
 		Assert.notNull(id, "id must not be null");
-		TableMapping tableMapping = tmHelper.getTableMapping(clazz);
+		TableMapping tableMapping = sjmSupport.getTableMapping(clazz);
 		String sql = "DELETE FROM " + tableMapping.fullyQualifiedTableName() + " WHERE "
 				+ tableMapping.getIdColumnName() + " = ?";
 		return sjmSupport.getJdbcTemplate().update(sql, id);

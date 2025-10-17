@@ -13,8 +13,6 @@ import org.springframework.util.Assert;
 class FindOperation {
 	private final SimpleJdbcMapperSupport sjmSupport;
 
-	private final TableMappingHelper tmHelper;
-
 	// Map key - class name
 	// value - the sql
 	private final SimpleCache<String, String> findByIdSqlCache = new SimpleCache<>();
@@ -25,14 +23,13 @@ class FindOperation {
 	// value - the column sql string
 	private final SimpleCache<String, String> beanColumnsSqlCache = new SimpleCache<>();
 
-	public FindOperation(TableMappingHelper tmh) {
-		this.tmHelper = tmh;
-		this.sjmSupport = tmh.getSimpleJdbcMapperSupport();
+	public FindOperation(SimpleJdbcMapperSupport sjmSupport) {
+		this.sjmSupport = sjmSupport;
 	}
 
 	public <T> T findById(Class<T> clazz, Object id) {
 		Assert.notNull(clazz, "Class must not be null");
-		TableMapping tableMapping = tmHelper.getTableMapping(clazz);
+		TableMapping tableMapping = sjmSupport.getTableMapping(clazz);
 		boolean foundInCache = false;
 		String sql = findByIdSqlCache.get(clazz.getName());
 		if (sql == null) {
@@ -57,7 +54,7 @@ class FindOperation {
 
 	public <T> List<T> findAll(Class<T> clazz) {
 		Assert.notNull(clazz, "Class must not be null");
-		TableMapping tableMapping = tmHelper.getTableMapping(clazz);
+		TableMapping tableMapping = sjmSupport.getTableMapping(clazz);
 		String sql = "SELECT " + getBeanColumnsSql(tableMapping, clazz) + " FROM "
 				+ tableMapping.fullyQualifiedTableName();
 		BeanPropertyRowMapper<T> rowMapper = getBeanPropertyRowMapper(clazz);
@@ -65,11 +62,11 @@ class FindOperation {
 	}
 
 	public String getBeanFriendlySqlColumns(Class<?> clazz) {
-		return getBeanColumnsSql(tmHelper.getTableMapping(clazz), clazz);
+		return getBeanColumnsSql(sjmSupport.getTableMapping(clazz), clazz);
 	}
 
 	public Map<String, String> getPropertyToColumnMappings(Class<?> clazz) {
-		TableMapping tableMapping = tmHelper.getTableMapping(clazz);
+		TableMapping tableMapping = sjmSupport.getTableMapping(clazz);
 		Map<String, String> map = new LinkedHashMap<>();
 		for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {
 			map.put(propMapping.getPropertyName(), propMapping.getColumnName());

@@ -30,19 +30,16 @@ class AnnotationInheritedTest {
 	@Autowired
 	private SimpleJdbcMapper sjm;
 
-	private TableMappingHelper tmh;
-
 	private SimpleJdbcMapperSupport sjmSupport;
 
 	@BeforeEach
 	void beforeMethod() {
-		tmh = TestUtils.getTableMappingHelper(sjm);
 		sjmSupport = TestUtils.getSimpleJdbcMapperSupport(sjm);
 	}
 
 	@Test
 	void annotationOrderInheritedAuditProperty_Test() {
-		TableMapping tableMapping = tmh.getTableMapping(OrderInheritedAudit.class);
+		TableMapping tableMapping = sjmSupport.getTableMapping(OrderInheritedAudit.class);
 		List<String> mappedProperties = Arrays.asList("orderId", "orderDate", "customerId", "status", "createdOn",
 				"createdBy", "updatedOn", "updatedBy", "version");
 		for (String propertyName : mappedProperties) {
@@ -86,7 +83,7 @@ class AnnotationInheritedTest {
 
 	@Test
 	void annotationOrderInheritedColumn_Test() {
-		TableMapping tableMapping = tmh.getTableMapping(OrderInheritedColumn.class);
+		TableMapping tableMapping = sjmSupport.getTableMapping(OrderInheritedColumn.class);
 		List<String> mappedProperties = Arrays.asList("orderId", "orderDate", "customerId", "status");
 		for (String propertyName : mappedProperties) {
 			assertNotNull(tableMapping.getPropertyMappingByPropertyName(propertyName));
@@ -95,7 +92,7 @@ class AnnotationInheritedTest {
 
 	@Test
 	void annotationOrderInheritedId_Test() {
-		TableMapping tableMapping = tmh.getTableMapping(OrderInheritedId.class);
+		TableMapping tableMapping = sjmSupport.getTableMapping(OrderInheritedId.class);
 		List<String> mappedProperties = Arrays.asList("orderId", "orderDate", "customerId", "status");
 		for (String propertyName : mappedProperties) {
 			assertNotNull(tableMapping.getPropertyMappingByPropertyName(propertyName));
@@ -105,7 +102,7 @@ class AnnotationInheritedTest {
 	@Test
 	void annotationOrderIdOverriden_failure_Test() {
 		Exception exception = Assertions.assertThrows(AnnotationException.class, () -> {
-			tmh.getTableMapping(OrderInheritedOverriddenId.class);
+			sjmSupport.getTableMapping(OrderInheritedOverriddenId.class);
 		});
 		assertTrue(exception.getMessage().contains("@Id annotation not found in class"));
 
@@ -113,7 +110,7 @@ class AnnotationInheritedTest {
 
 	@Test
 	void tableAnnotationInherited_Test() {
-		Assertions.assertDoesNotThrow(() -> tmh.getTableMapping(ModelWithInheritedTableAnnotation.class));
+		Assertions.assertDoesNotThrow(() -> sjmSupport.getTableMapping(ModelWithInheritedTableAnnotation.class));
 	}
 
 }

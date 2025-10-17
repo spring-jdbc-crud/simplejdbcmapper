@@ -15,21 +15,18 @@ import io.github.simplejdbcmapper.exception.MapperException;
 class InsertOperation {
 	private final SimpleJdbcMapperSupport sjmSupport;
 
-	private final TableMappingHelper tmHelper;
-
 	// insert cache. Note that Spring SimpleJdbcInsert is thread safe.
 	// Map key - class name
 	// value - SimpleJdbcInsert
 	private final SimpleCache<String, SimpleJdbcInsert> insertSqlCache = new SimpleCache<>();
 
-	public InsertOperation(TableMappingHelper tmh) {
-		this.tmHelper = tmh;
-		this.sjmSupport = tmh.getSimpleJdbcMapperSupport();
+	public InsertOperation(SimpleJdbcMapperSupport sjmSupport) {
+		this.sjmSupport = sjmSupport;
 	}
 
 	public void insert(Object obj) {
 		Assert.notNull(obj, "Object must not be null");
-		TableMapping tableMapping = tmHelper.getTableMapping(obj.getClass());
+		TableMapping tableMapping = sjmSupport.getTableMapping(obj.getClass());
 		BeanWrapper bw = sjmSupport.getBeanWrapper(obj);
 		validateId(tableMapping, bw);
 		populateAutoAssignProperties(tableMapping, bw);
@@ -142,7 +139,7 @@ class InsertOperation {
 			jdbcInsert.usingGeneratedKeyColumns(tableMapping.getIdColumnName());
 		}
 		// for oracle synonym table metadata
-		if ("oracle".equalsIgnoreCase(tmHelper.getCommonDatabaseName())) {
+		if ("oracle".equalsIgnoreCase(sjmSupport.getCommonDatabaseName())) {
 			jdbcInsert.includeSynonymsForTableColumnMetaData();
 		}
 		return jdbcInsert;

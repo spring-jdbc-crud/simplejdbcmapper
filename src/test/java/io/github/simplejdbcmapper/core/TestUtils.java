@@ -14,17 +14,6 @@ public class TestUtils {
 		}
 	}
 
-	public static TableMappingHelper getTableMappingHelper(SimpleJdbcMapper sjm) {
-		try {
-			Field field = sjm.getClass().getDeclaredField("tableMappingHelper");
-			field.setAccessible(true);
-
-			return (TableMappingHelper) field.get(sjm);
-		} catch (Exception e) {
-			throw new RuntimeException(e);
-		}
-	}
-
 	public static FindOperation getFindOperation(SimpleJdbcMapper sjm) {
 		try {
 			Field field = sjm.getClass().getDeclaredField("findOperation");

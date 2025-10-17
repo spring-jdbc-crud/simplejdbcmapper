@@ -44,6 +44,8 @@ class SimpleJdbcMapperSupport {
 
 	private final NamedParameterJdbcTemplate npJdbcTemplate;
 
+	private final TableMappingHelper tableMappingHelper;
+
 	private boolean enableOffsetDateTimeSqlTypeAsTimestampWithTimeZone = false;
 
 	// Using Spring's DefaultConversionService as default conversionService for
@@ -69,6 +71,7 @@ class SimpleJdbcMapperSupport {
 		this.npJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
 		this.jdbcTemplate = npJdbcTemplate.getJdbcTemplate();
 		this.jdbcClient = JdbcClient.create(jdbcTemplate);
+		this.tableMappingHelper = new TableMappingHelper(this);
 	}
 
 	public DataSource getDataSource() {
@@ -137,10 +140,22 @@ class SimpleJdbcMapperSupport {
 		return enableOffsetDateTimeSqlTypeAsTimestampWithTimeZone;
 	}
 
+	TableMapping getTableMapping(Class<?> clazz) {
+		return tableMappingHelper.getTableMapping(clazz);
+	}
+
+	String getCommonDatabaseName() {
+		return tableMappingHelper.getCommonDatabaseName();
+	}
+
 	BeanWrapper getBeanWrapper(Object obj) {
 		BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(obj);
 		bw.setConversionService(conversionService);
 		return bw;
+	}
+
+	SimpleCache<String, TableMapping> getTableMappingCache() {
+		return tableMappingHelper.getTableMappingCache();
 	}
 
 }

@@ -24,8 +24,6 @@ class UpdateOperation {
 
 	private final SimpleJdbcMapperSupport sjmSupport;
 
-	private final TableMappingHelper tmHelper;
-
 	// update sql cache
 	// Map key - class name
 	// value - the update sql and params
@@ -36,14 +34,13 @@ class UpdateOperation {
 	// value - the update sql and params
 	private final SimpleCache<String, SqlAndParams> updateSpecificPropertiesSqlCache = new SimpleCache<>(2000);
 
-	public UpdateOperation(TableMappingHelper tmh) {
-		this.tmHelper = tmh;
-		this.sjmSupport = tmh.getSimpleJdbcMapperSupport();
+	public UpdateOperation(SimpleJdbcMapperSupport sjmSupport) {
+		this.sjmSupport = sjmSupport;
 	}
 
 	public Integer update(Object obj) {
 		Assert.notNull(obj, "Object must not be null");
-		TableMapping tableMapping = tmHelper.getTableMapping(obj.getClass());
+		TableMapping tableMapping = sjmSupport.getTableMapping(obj.getClass());
 		boolean foundInCache = false;
 		SqlAndParams sqlAndParams = updateSqlCache.get(obj.getClass().getName());
 		if (sqlAndParams == null) {
@@ -61,7 +58,7 @@ class UpdateOperation {
 	public Integer updateSpecificProperties(Object obj, String... propertyNames) {
 		Assert.notNull(obj, "Object must not be null");
 		Assert.notNull(propertyNames, "propertyNames must not be null");
-		TableMapping tableMapping = tmHelper.getTableMapping(obj.getClass());
+		TableMapping tableMapping = sjmSupport.getTableMapping(obj.getClass());
 		boolean foundInCache = false;
 		SqlAndParams sqlAndParams = null;
 		String cacheKey = getUpdateSpecificPropertiesCacheKey(obj, propertyNames);

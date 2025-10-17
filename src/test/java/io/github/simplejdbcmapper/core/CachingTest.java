@@ -175,8 +175,8 @@ class CachingTest {
 
 	@Test
 	void tableMappingCache_test() {
-		TableMappingHelper tmh = TestUtils.getTableMappingHelper(sjm);
-		SimpleCache<String, TableMapping> cache = tmh.getTableMappingCache();
+		SimpleJdbcMapperSupport sjms = TestUtils.getSimpleJdbcMapperSupport(sjm);
+		SimpleCache<String, TableMapping> cache = sjms.getTableMappingCache();
 		cache.clear();
 
 		sjm.loadMapping(Customer.class);

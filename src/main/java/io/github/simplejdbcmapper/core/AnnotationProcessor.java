@@ -23,14 +23,13 @@ import io.github.simplejdbcmapper.exception.AnnotationException;
 
 class AnnotationProcessor {
 
-	public Table getTableAnnotation(Class<?> clazz) {
+	Table getTableAnnotation(Class<?> clazz) {
 		Table tableAnnotation = AnnotationUtils.findAnnotation(clazz, Table.class);
 		validateTableAnnotation(tableAnnotation, clazz);
 		return tableAnnotation;
 	}
 
-	public void processColumnAnnotation(Field field, String tableName,
-			Map<String, PropertyMapping> propNameToPropertyMapping,
+	void processColumnAnnotation(Field field, String tableName, Map<String, PropertyMapping> propNameToPropertyMapping,
 			Map<String, TableParameterMetaData> columnNameToTpmd) {
 		Column colAnnotation = AnnotationUtils.findAnnotation(field, Column.class);
 		if (colAnnotation != null) {
@@ -49,46 +48,69 @@ class AnnotationProcessor {
 		}
 	}
 
-	public void processIdAnnotation(Field field, String tableName,
-			Map<String, PropertyMapping> propNameToPropertyMapping,
+	void processIdAnnotation(Field field, String tableName, Map<String, PropertyMapping> propNameToPropertyMapping,
 			Map<String, TableParameterMetaData> columnNameToTpmd) {
 		processAnnotation(Id.class, field, tableName, propNameToPropertyMapping, columnNameToTpmd);
 	}
 
-	public void processVersionAnnotation(Field field, String tableName,
-			Map<String, PropertyMapping> propNameToPropertyMapping,
+	void processVersionAnnotation(Field field, String tableName, Map<String, PropertyMapping> propNameToPropertyMapping,
 			Map<String, TableParameterMetaData> columnNameToTpmd) {
 		processAnnotation(Version.class, field, tableName, propNameToPropertyMapping, columnNameToTpmd);
 	}
 
-	public void processCreatedOnAnnotation(Field field, String tableName,
+	void processCreatedOnAnnotation(Field field, String tableName,
 			Map<String, PropertyMapping> propNameToPropertyMapping,
 			Map<String, TableParameterMetaData> columnNameToTpmd) {
 		processAnnotation(CreatedOn.class, field, tableName, propNameToPropertyMapping, columnNameToTpmd);
 	}
 
-	public void processUpdatedOnAnnotation(Field field, String tableName,
+	void processUpdatedOnAnnotation(Field field, String tableName,
 			Map<String, PropertyMapping> propNameToPropertyMapping,
 			Map<String, TableParameterMetaData> columnNameToTpmd) {
 		processAnnotation(UpdatedOn.class, field, tableName, propNameToPropertyMapping, columnNameToTpmd);
 	}
 
-	public void processCreatedByAnnotation(Field field, String tableName,
+	void processCreatedByAnnotation(Field field, String tableName,
 			Map<String, PropertyMapping> propNameToPropertyMapping,
 			Map<String, TableParameterMetaData> columnNameToTpmd) {
 		processAnnotation(CreatedBy.class, field, tableName, propNameToPropertyMapping, columnNameToTpmd);
 	}
 
-	public void processUpdatedByAnnotation(Field field, String tableName,
+	void processUpdatedByAnnotation(Field field, String tableName,
 			Map<String, PropertyMapping> propNameToPropertyMapping,
 			Map<String, TableParameterMetaData> columnNameToTpmd) {
 		processAnnotation(UpdatedBy.class, field, tableName, propNameToPropertyMapping, columnNameToTpmd);
 	}
 
-	public void validateAnnotations(List<PropertyMapping> propertyMappings, Class<?> clazz) {
+	void validateAnnotations(List<PropertyMapping> propertyMappings, Class<?> clazz) {
 		annotationDuplicateCheck(propertyMappings, clazz);
 		annotationConflictCheck(propertyMappings, clazz);
 		annotationVersionTypeCheck(propertyMappings, clazz);
+	}
+
+	private <T extends Annotation> void processAnnotation(Class<T> annotationClazz, Field field, String tableName,
+			Map<String, PropertyMapping> propNameToPropertyMapping,
+			Map<String, TableParameterMetaData> columnNameToTpmd) {
+		Annotation annotation = AnnotationUtils.findAnnotation(field, annotationClazz);
+		if (annotation != null) {
+			String propertyName = field.getName();
+			PropertyMapping propMapping = propNameToPropertyMapping.get(propertyName);
+			if (propMapping == null) { // it means there is no @Column annotation for the property
+				String colName = InternalUtils.toUnderscoreName(propertyName); // the default column name
+				if (!columnNameToTpmd.containsKey(colName)) {
+					throw new AnnotationException(
+							colName + " column not found in table " + tableName + " for model property "
+									+ field.getDeclaringClass().getSimpleName() + "." + field.getName());
+				}
+				propMapping = new PropertyMapping(propertyName, field.getType().getName(), colName,
+						columnNameToTpmd.get(colName).getSqlType());
+				propNameToPropertyMapping.put(propertyName, propMapping);
+			}
+			BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(propMapping);
+			// set idAnnotation, versionAnnotation, createdOnAnnotation etc on
+			// PropertyMapping object
+			bw.setPropertyValue(StringUtils.uncapitalize(annotationClazz.getSimpleName()) + "Annotation", true);
+		}
 	}
 
 	private void validateTableAnnotation(Table tableAnnotation, Class<?> clazz) {
@@ -182,31 +204,6 @@ class AnnotationProcessor {
 				throw new AnnotationException("@Version requires the type of property " + clazz.getSimpleName() + "."
 						+ propMapping.getPropertyName() + " to be Integer");
 			}
-		}
-	}
-
-	private <T extends Annotation> void processAnnotation(Class<T> annotationClazz, Field field, String tableName,
-			Map<String, PropertyMapping> propNameToPropertyMapping,
-			Map<String, TableParameterMetaData> columnNameToTpmd) {
-		Annotation annotation = AnnotationUtils.findAnnotation(field, annotationClazz);
-		if (annotation != null) {
-			String propertyName = field.getName();
-			PropertyMapping propMapping = propNameToPropertyMapping.get(propertyName);
-			if (propMapping == null) { // it means there is no @Column annotation for the property
-				String colName = InternalUtils.toUnderscoreName(propertyName); // the default column name
-				if (!columnNameToTpmd.containsKey(colName)) {
-					throw new AnnotationException(
-							colName + " column not found in table " + tableName + " for model property "
-									+ field.getDeclaringClass().getSimpleName() + "." + field.getName());
-				}
-				propMapping = new PropertyMapping(propertyName, field.getType().getName(), colName,
-						columnNameToTpmd.get(colName).getSqlType());
-				propNameToPropertyMapping.put(propertyName, propMapping);
-			}
-			BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(propMapping);
-			// set idAnnotation, versionAnnotation, createdOnAnnotation etc on
-			// PropertyMapping object
-			bw.setPropertyValue(StringUtils.uncapitalize(annotationClazz.getSimpleName()) + "Annotation", true);
 		}
 	}
 

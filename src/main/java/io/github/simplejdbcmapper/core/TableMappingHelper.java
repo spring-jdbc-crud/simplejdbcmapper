@@ -46,11 +46,7 @@ class TableMappingHelper {
 		this.ap = new AnnotationProcessor();
 	}
 
-	public SimpleJdbcMapperSupport getSimpleJdbcMapperSupport() {
-		return sjms;
-	}
-
-	public TableMapping getTableMapping(Class<?> clazz) {
+	TableMapping getTableMapping(Class<?> clazz) {
 		Assert.notNull(clazz, "clazz must not be null");
 		TableMapping tableMapping = tableMappingCache.get(clazz.getName());
 		if (tableMapping == null) {
@@ -89,11 +85,15 @@ class TableMappingHelper {
 		return tableMapping;
 	}
 
-	public String getCommonDatabaseName() {
+	SimpleJdbcMapperSupport getSimpleJdbcMapperSupport() {
+		return sjms;
+	}
+
+	String getCommonDatabaseName() {
 		return JdbcUtils.commonDatabaseName(getDatabaseProductName());
 	}
 
-	public SimpleCache<String, TableMapping> getTableMappingCache() {
+	SimpleCache<String, TableMapping> getTableMappingCache() {
 		return tableMappingCache;
 	}
 

@@ -61,7 +61,7 @@ class SimpleJdbcMapperSupport {
 	 * @param schemaName  database schema name.
 	 * @param catalogName database catalog name.
 	 */
-	public SimpleJdbcMapperSupport(DataSource dataSource, String schemaName, String catalogName) {
+	SimpleJdbcMapperSupport(DataSource dataSource, String schemaName, String catalogName) {
 		Assert.notNull(dataSource, "dataSource must not be null");
 		this.dataSource = dataSource;
 		this.schemaName = schemaName;
@@ -133,11 +133,11 @@ class SimpleJdbcMapperSupport {
 		enableOffsetDateTimeSqlTypeAsTimestampWithTimeZone = true;
 	}
 
-	public boolean isEnableOffsetDateTimeSqlTypeAsTimestampWithTimeZone() {
+	boolean isEnableOffsetDateTimeSqlTypeAsTimestampWithTimeZone() {
 		return enableOffsetDateTimeSqlTypeAsTimestampWithTimeZone;
 	}
 
-	public BeanWrapper getBeanWrapper(Object obj) {
+	BeanWrapper getBeanWrapper(Object obj) {
 		BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(obj);
 		bw.setConversionService(conversionService);
 		return bw;

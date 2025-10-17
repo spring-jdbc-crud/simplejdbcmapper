@@ -189,24 +189,20 @@ class TableMappingHelper {
 		if (databaseProductName != null) {
 			return databaseProductName;
 		} else {
-			synchronized (this) {
-				if (databaseProductName == null) {
-					try {
-						databaseProductName = JdbcUtils.extractDatabaseMetaData(sjms.getDataSource(),
-								new DatabaseMetaDataCallback<String>() {
-									public String processMetaData(DatabaseMetaData dbMetaData)
-											throws SQLException, MetaDataAccessException {
-										return dbMetaData.getDatabaseProductName() == null ? ""
-												: dbMetaData.getDatabaseProductName();
-									}
-								});
-					} catch (Exception e) {
-						throw new MapperException(e);
-					}
-				}
-				return databaseProductName;
+			try {
+				databaseProductName = JdbcUtils.extractDatabaseMetaData(sjms.getDataSource(),
+						new DatabaseMetaDataCallback<String>() {
+							public String processMetaData(DatabaseMetaData dbMetaData)
+									throws SQLException, MetaDataAccessException {
+								return dbMetaData.getDatabaseProductName() == null ? ""
+										: dbMetaData.getDatabaseProductName();
+							}
+						});
+			} catch (Exception e) {
+				throw new MapperException(e);
 			}
 		}
+		return databaseProductName;
 	}
 
 	private String getCatalogForTable(Table tableAnnotation) {

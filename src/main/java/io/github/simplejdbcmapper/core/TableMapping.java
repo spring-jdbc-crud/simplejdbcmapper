@@ -56,8 +56,10 @@ class TableMapping {
 
 	private List<PropertyMapping> propertyMappings;
 
+	// key: column name, value: property mapping
 	private Map<String, PropertyMapping> columnNameMap;
 
+	// key: property name, value: property mapping
 	private Map<String, PropertyMapping> propertyNameMap;
 
 	public TableMapping(Class<?> tableClass, String tableName, String schemaName, String catalogName,

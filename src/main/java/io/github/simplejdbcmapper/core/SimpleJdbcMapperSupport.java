@@ -63,7 +63,7 @@ class SimpleJdbcMapperSupport {
 	 * @param schemaName  database schema name.
 	 * @param catalogName database catalog name.
 	 */
-	SimpleJdbcMapperSupport(DataSource dataSource, String schemaName, String catalogName) {
+	public SimpleJdbcMapperSupport(DataSource dataSource, String schemaName, String catalogName) {
 		Assert.notNull(dataSource, "dataSource must not be null");
 		this.dataSource = dataSource;
 		this.schemaName = schemaName;

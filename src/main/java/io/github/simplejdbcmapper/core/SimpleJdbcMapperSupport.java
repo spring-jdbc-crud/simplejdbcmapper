@@ -46,8 +46,6 @@ class SimpleJdbcMapperSupport {
 
 	private final TableMappingProvider tableMappingProvider;
 
-	private boolean enableOffsetDateTimeSqlTypeAsTimestampWithTimeZone = false;
-
 	// Using Spring's DefaultConversionService as default conversionService for
 	// SimpleJdbcMapper
 	private ConversionService conversionService = DefaultConversionService.getSharedInstance();
@@ -130,14 +128,6 @@ class SimpleJdbcMapperSupport {
 
 	public String getCatalogName() {
 		return catalogName;
-	}
-
-	public void enableOffsetDateTimeSqlTypeAsTimestampWithTimeZone() {
-		enableOffsetDateTimeSqlTypeAsTimestampWithTimeZone = true;
-	}
-
-	boolean isEnableOffsetDateTimeSqlTypeAsTimestampWithTimeZone() {
-		return enableOffsetDateTimeSqlTypeAsTimestampWithTimeZone;
 	}
 
 	TableMapping getTableMapping(Class<?> clazz) {

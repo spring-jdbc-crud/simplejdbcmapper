@@ -3,8 +3,6 @@ package io.github.simplejdbcmapper.core;
 import java.lang.reflect.Field;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
-import java.sql.Types;
-import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -80,7 +78,7 @@ class TableMappingProvider {
 			}
 			List<PropertyMapping> propertyMappings = new ArrayList<>(propNameToPropertyMapping.values());
 			ap.validateAnnotations(propertyMappings, clazz);
-			processOverridesForSqlType(propertyMappings);
+			// processOverridesForSqlType(propertyMappings);
 			tableMapping = new TableMapping(clazz, tableName, schema, catalog, idPropertyInfo, propertyMappings);
 			tableMappingCache.put(clazz.getName(), tableMapping);
 		}
@@ -222,25 +220,6 @@ class TableMappingProvider {
 			throw new MapperException(commonDatabaseName
 					+ ": When creating SimpleJdbcMapper() if you are using the 'catalog' (argument 3) use 'schema' (argument 2) instead."
 					+ " If you are using the @Table annotation use the 'schema' attribue instead of 'catalog' attribute");
-		}
-	}
-
-	private void processOverridesForSqlType(List<PropertyMapping> propertyMappings) {
-		if (sjms.isEnableOffsetDateTimeSqlTypeAsTimestampWithTimeZone()) {
-			for (PropertyMapping pm : propertyMappings) {
-				if (getClassFor(pm.getPropertyClassName()) != null
-						&& OffsetDateTime.class.isAssignableFrom(getClassFor(pm.getPropertyClassName()))) {
-					pm.setColumnOverriddenSqlType(Types.TIMESTAMP_WITH_TIMEZONE);
-				}
-			}
-		}
-	}
-
-	private Class<?> getClassFor(String className) {
-		try {
-			return Class.forName(className);
-		} catch (Exception e) {
-			return null;
 		}
 	}
 }

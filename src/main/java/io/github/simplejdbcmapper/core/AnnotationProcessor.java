@@ -43,8 +43,13 @@ class AnnotationProcessor {
 				throw new AnnotationException(colName + " column not found in table " + tableName
 						+ " for model property " + field.getDeclaringClass().getSimpleName() + "." + propertyName);
 			}
-			propNameToPropertyMapping.put(propertyName, new PropertyMapping(propertyName, field.getType().getName(),
-					colName, columnNameToTpmd.get(colName).getSqlType()));
+			PropertyMapping propertyMapping = new PropertyMapping(propertyName, field.getType().getName(), colName,
+					columnNameToTpmd.get(colName).getSqlType());
+			propNameToPropertyMapping.put(propertyName, propertyMapping);
+			if (colAnnotation.sqlType() != -9999) {
+				propertyMapping.setColumnOverriddenSqlType(colAnnotation.sqlType());
+			}
+
 		}
 	}
 

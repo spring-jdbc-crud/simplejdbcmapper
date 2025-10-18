@@ -54,12 +54,6 @@ public class SimpleJdbcMapperConfig {
 		if (runWithConversionServiceNull) {
 			simpleJdbcMapper.setConversionService(null);
 		}
-		// postgres data metadata for column definition 'TIMESTAMP WITH TIMEZONE'
-		// returns java.sql.Types.TIMESTAMP which is wrong causing conversion failures
-		// for OffsetDateTime. Override the database metadata for OffsetDateTime
-		if (jdbcDriver.contains("postgres")) {
-			simpleJdbcMapper.enableOffsetDateTimeSqlTypeAsTimestampWithTimeZone();
-		}
 		return simpleJdbcMapper;
 	}
 

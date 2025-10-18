@@ -14,7 +14,7 @@ A simple wrapper around Spring JDBC libraries that makes database CRUD operation
   3. Helper methods to get the SQL for the mapped objects that can be used with Spring row mappers like BeanPropertyRowMapper, SimplePropertyRowMapper etc.
   4. For transaction management use Spring transactions since its just a wrapper library.
   5. To log the SQL statements use the same SQL logging configurations as Spring. See the logging section further below.
-  6. Tested against PostgreSQL, MySQL, Oracle, SQLServer.
+  6. Tested against PostgreSQL, MySQL, Oracle, SQLServer. Should work with other databases.
   7. Only dependency is Spring JDBC libraries. No other external dependencies.
 
 ## Example code

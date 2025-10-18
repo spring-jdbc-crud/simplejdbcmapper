@@ -284,12 +284,10 @@ class UpdateOperation {
 				throw new MapperException("No mapping found for property '" + propertyName + "' in class "
 						+ tableMapping.getTableClassName());
 			}
-			// id property cannot be updated
 			if (propertyMapping.isIdAnnotation()) {
 				throw new MapperException(
 						"Id property " + tableMapping.getTableClassName() + "." + propertyName + " cannot be updated.");
 			}
-			// auto assign properties cannot be updated
 			if (propertyMapping.isCreatedByAnnotation() || propertyMapping.isCreatedOnAnnotation()
 					|| propertyMapping.isUpdatedByAnnotation() || propertyMapping.isUpdatedOnAnnotation()
 					|| propertyMapping.isVersionAnnotation()) {

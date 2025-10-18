@@ -45,10 +45,10 @@ class AnnotationProcessor {
 			}
 			PropertyMapping propertyMapping = new PropertyMapping(propertyName, field.getType().getName(), colName,
 					columnNameToTpmd.get(colName).getSqlType());
-			propNameToPropertyMapping.put(propertyName, propertyMapping);
 			if (colAnnotation.sqlType() != -99999) {
 				propertyMapping.setColumnOverriddenSqlType(colAnnotation.sqlType());
 			}
+			propNameToPropertyMapping.put(propertyName, propertyMapping);
 
 		}
 	}

@@ -13,6 +13,8 @@
  */
 package io.github.simplejdbcmapper.core;
 
+import java.sql.DatabaseMetaData;
+import java.sql.SQLException;
 import java.util.function.Supplier;
 
 import javax.sql.DataSource;
@@ -24,7 +26,12 @@ import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.JdbcClient;
+import org.springframework.jdbc.support.DatabaseMetaDataCallback;
+import org.springframework.jdbc.support.JdbcUtils;
+import org.springframework.jdbc.support.MetaDataAccessException;
 import org.springframework.util.Assert;
+
+import io.github.simplejdbcmapper.exception.MapperException;
 
 /**
  * Support class for SimpleJdbcMapper
@@ -53,6 +60,8 @@ class SimpleJdbcMapperSupport {
 	private Supplier<?> recordAuditedOnSupplier;
 
 	private Supplier<?> recordAuditedBySupplier;
+
+	private String databaseProductName;
 
 	/**
 	 * Constructor.
@@ -135,7 +144,7 @@ class SimpleJdbcMapperSupport {
 	}
 
 	String getCommonDatabaseName() {
-		return tableMappingProvider.getCommonDatabaseName();
+		return JdbcUtils.commonDatabaseName(getDatabaseProductName());
 	}
 
 	BeanWrapper getBeanWrapper(Object obj) {
@@ -146,6 +155,28 @@ class SimpleJdbcMapperSupport {
 
 	SimpleCache<String, TableMapping> getTableMappingCache() {
 		return tableMappingProvider.getTableMappingCache();
+	}
+
+	private String getDatabaseProductName() {
+		// No side effects even if there is thread contention and it gets set more than
+		// once
+		if (databaseProductName != null) {
+			return databaseProductName;
+		} else {
+			try {
+				databaseProductName = JdbcUtils.extractDatabaseMetaData(dataSource,
+						new DatabaseMetaDataCallback<String>() {
+							public String processMetaData(DatabaseMetaData dbMetaData)
+									throws SQLException, MetaDataAccessException {
+								return dbMetaData.getDatabaseProductName() == null ? ""
+										: dbMetaData.getDatabaseProductName();
+							}
+						});
+			} catch (Exception e) {
+				throw new MapperException(e);
+			}
+		}
+		return databaseProductName;
 	}
 
 }

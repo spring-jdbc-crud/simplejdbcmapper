@@ -1,8 +1,6 @@
 package io.github.simplejdbcmapper.core;
 
 import java.lang.reflect.Field;
-import java.sql.DatabaseMetaData;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -17,9 +15,6 @@ import org.springframework.jdbc.core.metadata.TableMetaDataContext;
 import org.springframework.jdbc.core.metadata.TableMetaDataProvider;
 import org.springframework.jdbc.core.metadata.TableMetaDataProviderFactory;
 import org.springframework.jdbc.core.metadata.TableParameterMetaData;
-import org.springframework.jdbc.support.DatabaseMetaDataCallback;
-import org.springframework.jdbc.support.JdbcUtils;
-import org.springframework.jdbc.support.MetaDataAccessException;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
@@ -38,8 +33,6 @@ class TableMappingProvider {
 	private final AnnotationProcessor ap;
 
 	private final SimpleJdbcMapperSupport sjms;
-
-	private String databaseProductName;
 
 	public TableMappingProvider(SimpleJdbcMapperSupport sjms) {
 		this.sjms = sjms;
@@ -83,10 +76,6 @@ class TableMappingProvider {
 			tableMappingCache.put(clazz.getName(), tableMapping);
 		}
 		return tableMapping;
-	}
-
-	String getCommonDatabaseName() {
-		return JdbcUtils.commonDatabaseName(getDatabaseProductName());
 	}
 
 	SimpleCache<String, TableMapping> getTableMappingCache() {
@@ -179,28 +168,6 @@ class TableMappingProvider {
 		return errMsg;
 	}
 
-	private String getDatabaseProductName() {
-		// No side effects even if there is thread contention and it gets set more than
-		// once
-		if (databaseProductName != null) {
-			return databaseProductName;
-		} else {
-			try {
-				databaseProductName = JdbcUtils.extractDatabaseMetaData(sjms.getDataSource(),
-						new DatabaseMetaDataCallback<String>() {
-							public String processMetaData(DatabaseMetaData dbMetaData)
-									throws SQLException, MetaDataAccessException {
-								return dbMetaData.getDatabaseProductName() == null ? ""
-										: dbMetaData.getDatabaseProductName();
-							}
-						});
-			} catch (Exception e) {
-				throw new MapperException(e);
-			}
-		}
-		return databaseProductName;
-	}
-
 	private String getCatalogForTable(Table tableAnnotation) {
 		return StringUtils.hasText(tableAnnotation.catalog()) ? tableAnnotation.catalog() : sjms.getCatalogName();
 	}
@@ -210,7 +177,7 @@ class TableMappingProvider {
 	}
 
 	private void validateMetaDataConfig(String catalog, String schema) {
-		String commonDatabaseName = JdbcUtils.commonDatabaseName(getDatabaseProductName());
+		String commonDatabaseName = sjms.getCommonDatabaseName();
 		if ("mysql".equalsIgnoreCase(commonDatabaseName) && StringUtils.hasText(schema)) {
 			throw new MapperException(commonDatabaseName
 					+ ": When creating SimpleJdbcMapper() if you are using 'schema' (argument 2) use 'catalog' (argument 3) instead."

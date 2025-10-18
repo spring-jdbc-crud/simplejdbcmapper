@@ -23,6 +23,8 @@ import org.springframework.jdbc.support.DatabaseMetaDataCallback;
 import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.jdbc.support.MetaDataAccessException;
 import org.springframework.util.Assert;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 import io.github.simplejdbcmapper.annotation.Id;
 import io.github.simplejdbcmapper.annotation.IdType;
@@ -140,14 +142,14 @@ class TableMappingProvider {
 
 	private List<TableParameterMetaData> getTableParameterMetaDataList(String tableName, String schema, String catalog,
 			Class<?> clazz) {
-		if (InternalUtils.isBlank(tableName)) {
+		if (!StringUtils.hasText(tableName)) {
 			throw new IllegalArgumentException("tableName must not be blank");
 		}
 		TableMetaDataContext tableMetaDataContext = createNewTableMetaDataContext(tableName, schema, catalog);
 		TableMetaDataProvider provider = TableMetaDataProviderFactory.createMetaDataProvider(sjms.getDataSource(),
 				tableMetaDataContext);
 		List<TableParameterMetaData> tpmdList = provider.getTableParameterMetaData();
-		if (InternalUtils.isEmpty(tpmdList)) {
+		if (ObjectUtils.isEmpty(tpmdList)) {
 			throw new AnnotationException(getTableMetaDataNotFoundErrMsg(clazz, tableName, schema, catalog));
 		}
 		return tpmdList;
@@ -202,21 +204,21 @@ class TableMappingProvider {
 	}
 
 	private String getCatalogForTable(Table tableAnnotation) {
-		return InternalUtils.isBlank(tableAnnotation.catalog()) ? sjms.getCatalogName() : tableAnnotation.catalog();
+		return StringUtils.hasText(tableAnnotation.catalog()) ? tableAnnotation.catalog() : sjms.getCatalogName();
 	}
 
 	private String getSchemaForTable(Table tableAnnotation) {
-		return InternalUtils.isBlank(tableAnnotation.schema()) ? sjms.getSchemaName() : tableAnnotation.schema();
+		return StringUtils.hasText(tableAnnotation.schema()) ? tableAnnotation.schema() : sjms.getSchemaName();
 	}
 
 	private void validateMetaDataConfig(String catalog, String schema) {
 		String commonDatabaseName = JdbcUtils.commonDatabaseName(getDatabaseProductName());
-		if ("mysql".equalsIgnoreCase(commonDatabaseName) && InternalUtils.isNotEmpty(schema)) {
+		if ("mysql".equalsIgnoreCase(commonDatabaseName) && StringUtils.hasText(schema)) {
 			throw new MapperException(commonDatabaseName
 					+ ": When creating SimpleJdbcMapper() if you are using 'schema' (argument 2) use 'catalog' (argument 3) instead."
 					+ " If you are using the @Table annotation use the 'catalog' attribue instead of 'schema' attribute");
 		}
-		if ("oracle".equalsIgnoreCase(commonDatabaseName) && InternalUtils.isNotEmpty(catalog)) {
+		if ("oracle".equalsIgnoreCase(commonDatabaseName) && StringUtils.hasText(catalog)) {
 			throw new MapperException(commonDatabaseName
 					+ ": When creating SimpleJdbcMapper() if you are using the 'catalog' (argument 3) use 'schema' (argument 2) instead."
 					+ " If you are using the @Table annotation use the 'schema' attribue instead of 'catalog' attribute");

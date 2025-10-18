@@ -118,7 +118,7 @@ class AnnotationProcessor {
 			throw new AnnotationException(
 					clazz.getSimpleName() + " does not have the @Table annotation. It is required");
 		}
-		if (InternalUtils.isBlank(tableAnnotation.name())) {
+		if (!StringUtils.hasText(tableAnnotation.name())) {
 			throw new AnnotationException("For " + clazz.getSimpleName() + " the @Table annotation has a blank name");
 		}
 	}

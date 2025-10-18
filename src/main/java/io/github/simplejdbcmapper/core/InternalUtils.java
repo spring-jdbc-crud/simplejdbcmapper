@@ -13,10 +13,10 @@
  */
 package io.github.simplejdbcmapper.core;
 
-import java.util.Collection;
 import java.util.Locale;
 
 import org.springframework.jdbc.support.JdbcUtils;
+import org.springframework.util.StringUtils;
 
 /**
  * Utility methods used by mapper.
@@ -47,7 +47,7 @@ class InternalUtils {
 	 * @return the underscore case string
 	 */
 	public static String toUnderscoreName(String str) {
-		if (isBlank(str)) {
+		if (!StringUtils.hasText(str)) {
 			return "";
 		}
 		StringBuilder result = new StringBuilder();
@@ -61,41 +61,6 @@ class InternalUtils {
 			}
 		}
 		return result.toString();
-	}
-
-	public static boolean isBlank(final CharSequence cs) {
-		int strLen;
-		if (cs == null || (strLen = cs.length()) == 0) {
-			return true;
-		}
-		for (int i = 0; i < strLen; i++) {
-			if (!Character.isWhitespace(cs.charAt(i))) {
-				return false;
-			}
-		}
-		return true;
-	}
-
-	public static boolean isNotBlank(final CharSequence cs) {
-		return !isBlank(cs);
-	}
-
-	public static boolean isEmpty(String str) {
-		return str == null || str.isEmpty();
-	}
-
-	@SuppressWarnings("all")
-	public static boolean isEmpty(Collection coll) {
-		return (coll == null || coll.isEmpty());
-	}
-
-	public static boolean isNotEmpty(String str) {
-		return !isEmpty(str);
-	}
-
-	@SuppressWarnings("all")
-	public static boolean isNotEmpty(Collection coll) {
-		return !isEmpty(coll);
 	}
 
 	public static String toLowerCase(String str) {

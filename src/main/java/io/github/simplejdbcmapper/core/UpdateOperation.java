@@ -299,8 +299,6 @@ class UpdateOperation {
 		}
 	}
 
-	// will return null when updateSpecificProperties property count is more than
-	// CACHEABLE_UPDATE_PROPERTY_COUNT
 	private String getUpdateSpecificPropertiesCacheKey(Object obj, String[] propertyNames) {
 		if (propertyNames.length > CACHEABLE_UPDATE_PROPERTIES_COUNT) {
 			return null;

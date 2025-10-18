@@ -295,13 +295,14 @@ In this case you will have to manually set the id value before invoking insert()
 
 Properties that need be persisted to the database will need @Column annotation unless the property is already annotated with one of the other annotations (@Id, @Version, @CreatedOn @CreatedBy @UpdatedOn @UpdatedBy). @Column can be used with the other annotations to map to a different column name.
 
-The two ways to use it:
-
 @Column  
 This will map the property to a column using the default naming convention of camel case to underscore case. For example property 'lastName' will map to column 'last_name' by default
 
 @Column(name="somecolumnname")  
-This will map the property to the column specified by name attribute.   
+This will map the property to the column specified by name attribute.
+
+@Column(sqlType = Types.TIMESTAMP_WITH_TIMEZONE)
+This will override the sqlType of the database metadata for the column. Use this in cases where drivers dont return the  correct sql type. For example some postgres drivers for column definition 'TIMESTAMP WITH TIMEZONE' return java.sql.Types.TIMESTAMP instead of Types.TIMESTAMP_WITH_TIMEZONE) which causes conversion failures when used with OffsetDateTime. You can use the above attribute to override the sqlType.
 
 **@Version**
 
@@ -428,4 +429,11 @@ For **Postgres/Oracle/Sqlserver** try setting the 'schema' parameter on construc
     new SimpleJdbcMapper(dataSource, "SCHEMA_NAME");
     Or
     @Table(name="sometablename", schema="SCHEMA_NAME");
+
+3.**Postgres and OffsetDateTime**
+
+Some postgres drivers for column definition 'TIMESTAMP WITH TIMEZONE' return java.sql.Types.TIMESTAMP instead of java.sql.Types.TIMESTAMP_WITH_TIMEZONE which causes conversion failures when used with OffsetDateTime. Do the following to override the sql type.
+  
+@Column(sqlType = Types.TIMESTAMP_WITH_TIMEZONE)
+private OffsetDateTime someOffsetDateTime;
 

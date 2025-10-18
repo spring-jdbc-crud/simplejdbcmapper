@@ -29,5 +29,5 @@ import java.lang.annotation.Target;
 public @interface Column {
 	String name() default "[DEFAULT]";
 
-	int sqlType() default -9999;
+	int sqlType() default -99999;
 }

@@ -292,7 +292,7 @@ class UpdateOperation {
 					|| propertyMapping.isUpdatedByAnnotation() || propertyMapping.isUpdatedOnAnnotation()
 					|| propertyMapping.isVersionAnnotation()) {
 				throw new MapperException("Auto assign property " + tableMapping.getTableClassName() + "."
-						+ propertyName + " cannot be updated.");
+						+ propertyName + " are not properties that can be manually updated.");
 			}
 		}
 	}

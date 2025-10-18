@@ -85,10 +85,6 @@ class TableMappingProvider {
 		return tableMapping;
 	}
 
-	SimpleJdbcMapperSupport getSimpleJdbcMapperSupport() {
-		return sjms;
-	}
-
 	String getCommonDatabaseName() {
 		return JdbcUtils.commonDatabaseName(getDatabaseProductName());
 	}

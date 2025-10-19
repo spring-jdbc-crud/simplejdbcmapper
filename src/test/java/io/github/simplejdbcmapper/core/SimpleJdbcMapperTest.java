@@ -6,12 +6,15 @@ import java.time.LocalDateTime;
 import java.util.List;
 import java.util.function.Supplier;
 
+import javax.sql.DataSource;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
@@ -26,6 +29,9 @@ class SimpleJdbcMapperTest {
 
 	@Value("${spring.datasource.driver-class-name}")
 	private String jdbcDriver;
+
+	@Autowired
+	private DataSource dataSource;
 
 	@Autowired
 	private SimpleJdbcMapper sjm;
@@ -74,19 +80,31 @@ class SimpleJdbcMapperTest {
 
 	@Test
 	void setRecordAuditedBySupplier_resetting_failure() {
+		SimpleJdbcMapper m = new SimpleJdbcMapper(dataSource);
 		Supplier<String> supplier = () -> "tester";
 		Assertions.assertThrows(IllegalStateException.class, () -> {
-			sjm.setRecordAuditedBySupplier(supplier);
-			sjm.setRecordAuditedBySupplier(supplier);
+			m.setRecordAuditedBySupplier(supplier);
+			m.setRecordAuditedBySupplier(supplier);
 		});
 	}
 
 	@Test
 	void setRecordAuditedOnSupplier_resetting_failure() {
+		SimpleJdbcMapper m = new SimpleJdbcMapper(dataSource);
 		Supplier<LocalDateTime> supplier = () -> LocalDateTime.now();
 		Assertions.assertThrows(IllegalStateException.class, () -> {
-			sjm.setRecordAuditedOnSupplier(supplier);
-			sjm.setRecordAuditedOnSupplier(supplier);
+			m.setRecordAuditedOnSupplier(supplier);
+			m.setRecordAuditedOnSupplier(supplier);
+		});
+	}
+
+	@Test
+	void setConversionService_resetting_failure() {
+		SimpleJdbcMapper m = new SimpleJdbcMapper(dataSource);
+		DefaultConversionService dcs = new DefaultConversionService();
+		m.setConversionService(dcs);
+		Assertions.assertThrows(IllegalStateException.class, () -> {
+			m.setConversionService(dcs);
 		});
 	}
 

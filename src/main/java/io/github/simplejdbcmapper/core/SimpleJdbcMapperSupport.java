@@ -54,6 +54,8 @@ class SimpleJdbcMapperSupport {
 
 	private Supplier<?> recordAuditedBySupplier;
 
+	private boolean conversionServiceManuallySet = false;
+
 	/**
 	 * Constructor.
 	 *
@@ -119,7 +121,12 @@ class SimpleJdbcMapperSupport {
 	}
 
 	public void setConversionService(ConversionService conversionService) {
-		this.conversionService = conversionService;
+		if (conversionServiceManuallySet) {
+			throw new IllegalStateException("conversionService was already set and cannot be changed.");
+		} else {
+			this.conversionService = conversionService;
+			conversionServiceManuallySet = true;
+		}
 	}
 
 	public String getSchemaName() {

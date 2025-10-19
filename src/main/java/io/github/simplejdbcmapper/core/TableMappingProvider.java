@@ -67,7 +67,7 @@ class TableMappingProvider {
 			IdPropertyInfo idPropertyInfo = getIdPropertyInfo(clazz, fields);
 			List<TableParameterMetaData> tpmdList = getTableParameterMetaDataList(tableName, schema, catalog);
 			if (ObjectUtils.isEmpty(tpmdList)) {
-				throw new AnnotationException(getTableMetaDataNotFoundErrMsg(clazz, tableName, schema, catalog));
+				throw new MapperException(getTableMetaDataNotFoundErrMsg(clazz, tableName, schema, catalog));
 			}
 			// key:column name, value: TableParameterMetaData
 			Map<String, TableParameterMetaData> columnNameToTpmd = new LinkedHashMap<>();

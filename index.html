@@ -152,7 +152,7 @@ Note that in this case the &#x27;name&#x27; property is mapped to the &#x27;prod
  List&lt;Product&gt; products = sjm.getJdbcClient().sql(sql).param(<span class="hljs-string1">&quot;someProductName&quot;</span>).query(Product.class).list();
  
  <span class="hljs-comment">// Using Spring&#x27;s JdbcTemplate api for the above sql</span>
- List&lt;Product&gt; products sjm.getJdbcTemplate().query(sql, BeanPropertyRowMapper.newInstance(Product.class), <span class="hljs-string1">&quot;someProductName&quot;</span>);
+ List&lt;Product&gt; products = sjm.getJdbcTemplate().query(sql, BeanPropertyRowMapper.newInstance(Product.class), <span class="hljs-string1">&quot;someProductName&quot;</span>);
  
  <span class="hljs-comment">// Accessing the underlying JdbcClient, JdbcTemplate and NamedParameterJdbcTemplate.</span>
  JdbcClient jdbcClient = sjm.getJdbcClient();

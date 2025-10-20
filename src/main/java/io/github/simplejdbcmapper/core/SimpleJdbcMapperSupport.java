@@ -48,7 +48,7 @@ class SimpleJdbcMapperSupport {
 
 	// Using Spring's DefaultConversionService as default conversionService for
 	// SimpleJdbcMapper
-	private ConversionService conversionService = DefaultConversionService.getSharedInstance();
+	private ConversionService conversionService = new DefaultConversionService();
 
 	private Supplier<?> recordAuditedOnSupplier;
 

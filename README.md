@@ -95,7 +95,7 @@ A simple wrapper around Spring JDBC libraries that makes database CRUD operation
  List<Product> products = sjm.getJdbcClient().sql(sql).param("someProductName").query(Product.class).list();
  
  // Using Spring's JdbcTemplate api for the above sql
- List<Product> products sjm.getJdbcTemplate().query(sql,BeanPropertyRowMapper.newInstance(Product.class),"someProductName");
+ List<Product> products sjm.getJdbcTemplate().query(sql, BeanPropertyRowMapper.newInstance(Product.class), "someProductName");
  
  // Accessing the underlying JdbcClient, JdbcTemplate and NamedParameterJdbcTemplate.
  JdbcClient jdbcClient = sjm.getJdbcClient();

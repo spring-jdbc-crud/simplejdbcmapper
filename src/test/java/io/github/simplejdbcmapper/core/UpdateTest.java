@@ -178,27 +178,27 @@ class UpdateTest {
 		exception = Assertions.assertThrows(MapperException.class, () -> {
 			sjm.updateSpecificProperties(order, "createdOn"); // @CreatedOn auto assign
 		});
-		assertTrue(exception.getMessage().contains("are not properties that can be manually updated"));
+		assertTrue(exception.getMessage().contains("are not properties that can be specifically updated"));
 
 		exception = Assertions.assertThrows(MapperException.class, () -> {
 			sjm.updateSpecificProperties(order, "createdBy"); // @CreatedBy auto assign
 		});
-		assertTrue(exception.getMessage().contains("are not properties that can be manually updated"));
+		assertTrue(exception.getMessage().contains("are not properties that can be specifically updated"));
 
 		exception = Assertions.assertThrows(MapperException.class, () -> {
 			sjm.updateSpecificProperties(order, "updatedOn"); // @UpdatedOn auto assign
 		});
-		assertTrue(exception.getMessage().contains("are not properties that can be manually updated"));
+		assertTrue(exception.getMessage().contains("are not properties that can be specifically updated"));
 
 		exception = Assertions.assertThrows(MapperException.class, () -> {
 			sjm.updateSpecificProperties(order, "updatedBy"); // @UpdatedBy auto assign
 		});
-		assertTrue(exception.getMessage().contains("are not properties that can be manually updated"));
+		assertTrue(exception.getMessage().contains("are not properties that can be specifically updated"));
 
 		exception = Assertions.assertThrows(MapperException.class, () -> {
 			sjm.updateSpecificProperties(order, "version"); // @Version auto assign
 		});
-		assertTrue(exception.getMessage().contains("are not properties that can be manually updated"));
+		assertTrue(exception.getMessage().contains("are not properties that can be specifically updated"));
 
 	}
 

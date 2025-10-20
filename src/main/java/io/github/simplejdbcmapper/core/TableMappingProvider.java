@@ -156,9 +156,7 @@ class TableMappingProvider {
 		TableMetaDataContext tableMetaDataContext = createNewTableMetaDataContext(tableName, schema, catalog);
 		TableMetaDataProvider provider = TableMetaDataProviderFactory.createMetaDataProvider(dataSource,
 				tableMetaDataContext);
-		List<TableParameterMetaData> tpmdList = provider.getTableParameterMetaData();
-
-		return tpmdList;
+		return provider.getTableParameterMetaData();
 	}
 
 	private TableMetaDataContext createNewTableMetaDataContext(String table, String schema, String catalog) {

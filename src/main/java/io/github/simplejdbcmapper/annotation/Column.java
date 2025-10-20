@@ -28,4 +28,6 @@ import java.lang.annotation.Target;
 @Target(ElementType.FIELD)
 public @interface Column {
 	String name() default "[DEFAULT]";
+
+	int sqlType() default -99999;
 }

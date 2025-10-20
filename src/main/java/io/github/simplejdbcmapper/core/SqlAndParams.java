@@ -16,6 +16,7 @@ package io.github.simplejdbcmapper.core;
 import java.util.Set;
 
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 /**
  * This holds the sql and the sql params needed to issue an update.
@@ -28,8 +29,8 @@ class SqlAndParams {
 	private final Set<String> params; // the parameters for the sql
 
 	public SqlAndParams(String sql, Set<String> params) {
-		if (ObjectUtils.isEmpty(sql) || params == null) {
-			throw new IllegalArgumentException("sql or params cannot be null");
+		if (!StringUtils.hasText(sql) || ObjectUtils.isEmpty(params)) {
+			throw new IllegalArgumentException("sql or params cannot be empty");
 		}
 		this.sql = sql;
 		this.params = params;

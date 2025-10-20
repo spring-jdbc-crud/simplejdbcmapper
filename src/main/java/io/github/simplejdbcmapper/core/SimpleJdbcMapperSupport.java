@@ -44,9 +44,7 @@ class SimpleJdbcMapperSupport {
 
 	private final NamedParameterJdbcTemplate npJdbcTemplate;
 
-	private final TableMappingHelper tableMappingHelper;
-
-	private boolean enableOffsetDateTimeSqlTypeAsTimestampWithTimeZone = false;
+	private final TableMappingProvider tableMappingProvider;
 
 	// Using Spring's DefaultConversionService as default conversionService for
 	// SimpleJdbcMapper
@@ -56,6 +54,8 @@ class SimpleJdbcMapperSupport {
 
 	private Supplier<?> recordAuditedBySupplier;
 
+	private boolean conversionServiceManuallySet = false;
+
 	/**
 	 * Constructor.
 	 *
@@ -63,7 +63,7 @@ class SimpleJdbcMapperSupport {
 	 * @param schemaName  database schema name.
 	 * @param catalogName database catalog name.
 	 */
-	SimpleJdbcMapperSupport(DataSource dataSource, String schemaName, String catalogName) {
+	public SimpleJdbcMapperSupport(DataSource dataSource, String schemaName, String catalogName) {
 		Assert.notNull(dataSource, "dataSource must not be null");
 		this.dataSource = dataSource;
 		this.schemaName = schemaName;
@@ -71,7 +71,7 @@ class SimpleJdbcMapperSupport {
 		this.npJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
 		this.jdbcTemplate = npJdbcTemplate.getJdbcTemplate();
 		this.jdbcClient = JdbcClient.create(jdbcTemplate);
-		this.tableMappingHelper = new TableMappingHelper(this);
+		this.tableMappingProvider = new TableMappingProvider(dataSource, schemaName, catalogName);
 	}
 
 	public DataSource getDataSource() {
@@ -121,7 +121,12 @@ class SimpleJdbcMapperSupport {
 	}
 
 	public void setConversionService(ConversionService conversionService) {
-		this.conversionService = conversionService;
+		if (conversionServiceManuallySet) {
+			throw new IllegalStateException("conversionService was already set and cannot be changed.");
+		} else {
+			this.conversionService = conversionService;
+			conversionServiceManuallySet = true;
+		}
 	}
 
 	public String getSchemaName() {
@@ -132,20 +137,12 @@ class SimpleJdbcMapperSupport {
 		return catalogName;
 	}
 
-	public void enableOffsetDateTimeSqlTypeAsTimestampWithTimeZone() {
-		enableOffsetDateTimeSqlTypeAsTimestampWithTimeZone = true;
-	}
-
-	boolean isEnableOffsetDateTimeSqlTypeAsTimestampWithTimeZone() {
-		return enableOffsetDateTimeSqlTypeAsTimestampWithTimeZone;
-	}
-
 	TableMapping getTableMapping(Class<?> clazz) {
-		return tableMappingHelper.getTableMapping(clazz);
+		return tableMappingProvider.getTableMapping(clazz);
 	}
 
 	String getCommonDatabaseName() {
-		return tableMappingHelper.getCommonDatabaseName();
+		return tableMappingProvider.getCommonDatabaseName();
 	}
 
 	BeanWrapper getBeanWrapper(Object obj) {
@@ -155,7 +152,7 @@ class SimpleJdbcMapperSupport {
 	}
 
 	SimpleCache<String, TableMapping> getTableMappingCache() {
-		return tableMappingHelper.getTableMappingCache();
+		return tableMappingProvider.getTableMappingCache();
 	}
 
 }

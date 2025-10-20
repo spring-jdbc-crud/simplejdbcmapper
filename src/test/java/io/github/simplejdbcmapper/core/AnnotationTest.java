@@ -11,6 +11,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import io.github.simplejdbcmapper.exception.AnnotationException;
+import io.github.simplejdbcmapper.exception.MapperException;
 import io.github.simplejdbcmapper.model.BlankTableObject;
 import io.github.simplejdbcmapper.model.ConflictAnnotation;
 import io.github.simplejdbcmapper.model.ConflictAnnotation2;
@@ -21,8 +22,8 @@ import io.github.simplejdbcmapper.model.DuplicateIdAnnotion;
 import io.github.simplejdbcmapper.model.DuplicateUpdatedByAnnotation;
 import io.github.simplejdbcmapper.model.DuplicateUpdatedOnAnnotation;
 import io.github.simplejdbcmapper.model.DuplicateVersionAnnotation;
-import io.github.simplejdbcmapper.model.ModelWithVersionNotInteger;
 import io.github.simplejdbcmapper.model.InvalidTableObject;
+import io.github.simplejdbcmapper.model.ModelWithVersionNotInteger;
 import io.github.simplejdbcmapper.model.NoIdObject;
 import io.github.simplejdbcmapper.model.NoMatchingColumn;
 import io.github.simplejdbcmapper.model.NoMatchingColumn2;
@@ -48,7 +49,7 @@ class AnnotationTest {
 
 	@Test
 	void invalidTable_Test() {
-		Exception exception = Assertions.assertThrows(AnnotationException.class, () -> {
+		Exception exception = Assertions.assertThrows(MapperException.class, () -> {
 			sjm.findById(InvalidTableObject.class, 1);
 		});
 		assertTrue(exception.getMessage().contains("Unable to locate meta-data for table"));

@@ -1,6 +1,7 @@
 package io.github.simplejdbcmapper.model;
 
 import java.math.BigDecimal;
+import java.sql.Types;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -39,9 +40,8 @@ public class TypeCheckPostgres {
 
 	@Column
 	private UUID someUuid;
-	
-	
-	@Column
+
+	@Column(sqlType = Types.TIMESTAMP_WITH_TIMEZONE)
 	private OffsetDateTime offsetDateTimeData;
 
 	@Column(name = "string_enum")
@@ -134,5 +134,5 @@ public class TypeCheckPostgres {
 	public void setOffsetDateTimeData(OffsetDateTime offsetDateTimeData) {
 		this.offsetDateTimeData = offsetDateTimeData;
 	}
-	
+
 }

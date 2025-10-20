@@ -43,8 +43,13 @@ class AnnotationProcessor {
 				throw new AnnotationException(colName + " column not found in table " + tableName
 						+ " for model property " + field.getDeclaringClass().getSimpleName() + "." + propertyName);
 			}
-			propNameToPropertyMapping.put(propertyName, new PropertyMapping(propertyName, field.getType().getName(),
-					colName, columnNameToTpmd.get(colName).getSqlType()));
+			PropertyMapping propertyMapping = new PropertyMapping(propertyName, field.getType().getName(), colName,
+					columnNameToTpmd.get(colName).getSqlType());
+			if (colAnnotation.sqlType() != -99999) {
+				propertyMapping.setColumnOverriddenSqlType(colAnnotation.sqlType());
+			}
+			propNameToPropertyMapping.put(propertyName, propertyMapping);
+
 		}
 	}
 
@@ -118,7 +123,7 @@ class AnnotationProcessor {
 			throw new AnnotationException(
 					clazz.getSimpleName() + " does not have the @Table annotation. It is required");
 		}
-		if (InternalUtils.isBlank(tableAnnotation.name())) {
+		if (!StringUtils.hasText(tableAnnotation.name())) {
 			throw new AnnotationException("For " + clazz.getSimpleName() + " the @Table annotation has a blank name");
 		}
 	}

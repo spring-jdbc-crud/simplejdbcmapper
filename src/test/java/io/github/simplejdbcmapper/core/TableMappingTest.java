@@ -30,10 +30,7 @@ class TableMappingTest {
 	void schema_name_from_simplejdbcmapper_config_test() {
 		if (!jdbcDriver.contains("mysql")) {
 			SimpleJdbcMapper sjm = new SimpleJdbcMapper(dataSource, "schema1");
-			sjm.loadMapping(CustomerSchema1.class);
-
 			SimpleJdbcMapperSupport sjmSupport = TestUtils.getSimpleJdbcMapperSupport(sjm);
-
 			TableMapping tm = sjmSupport.getTableMapping(Order.class);
 			assertEquals("schema1", tm.getSchemaName());
 		}
@@ -43,8 +40,6 @@ class TableMappingTest {
 	void schema_name_from_table_annotation_test() {
 		if (!jdbcDriver.contains("mysql") && !jdbcDriver.contains("oracle")) {
 			SimpleJdbcMapper sjm = new SimpleJdbcMapper(dataSource);
-			sjm.loadMapping(CustomerSchema1.class);
-
 			SimpleJdbcMapperSupport sjmSupport = TestUtils.getSimpleJdbcMapperSupport(sjm);
 
 			TableMapping tm = sjmSupport.getTableMapping(CustomerSchema1.class);
@@ -56,8 +51,6 @@ class TableMappingTest {
 	void schema_name_overriddenby_table_annotation_test() {
 		if (!jdbcDriver.contains("mysql")) {
 			SimpleJdbcMapper sjm = new SimpleJdbcMapper(dataSource, "schema1");
-			sjm.loadMapping(CustomerSchema1.class);
-
 			SimpleJdbcMapperSupport sjmSupport = TestUtils.getSimpleJdbcMapperSupport(sjm);
 
 			TableMapping tm = sjmSupport.getTableMapping(CompanySchema2.class);
@@ -69,8 +62,6 @@ class TableMappingTest {
 	void catalog_name_from_simplejdbcmapper_config_test() {
 		if (jdbcDriver.contains("mysql")) {
 			SimpleJdbcMapper sjm = new SimpleJdbcMapper(dataSource, null, "schema1");
-			sjm.loadMapping(Order.class);
-
 			SimpleJdbcMapperSupport sjmSupport = TestUtils.getSimpleJdbcMapperSupport(sjm);
 			TableMapping tm = sjmSupport.getTableMapping(Order.class);
 			assertEquals("schema1", tm.getCatalogName());
@@ -81,7 +72,6 @@ class TableMappingTest {
 	void catalog_name_from_table_annotation_test() {
 		if (jdbcDriver.contains("mysql")) {
 			SimpleJdbcMapper sjm = new SimpleJdbcMapper(dataSource);
-			sjm.loadMapping(CustomerCatalogSchema1.class);
 			SimpleJdbcMapperSupport sjmSupport = TestUtils.getSimpleJdbcMapperSupport(sjm);
 			TableMapping tm = sjmSupport.getTableMapping(CustomerCatalogSchema1.class);
 			assertEquals("schema1", tm.getCatalogName());
@@ -92,8 +82,6 @@ class TableMappingTest {
 	void catalog_name_overriddenby_table_annotation_test() {
 		if (jdbcDriver.contains("mysql")) {
 			SimpleJdbcMapper sjm = new SimpleJdbcMapper(dataSource, null, "schema1");
-			sjm.loadMapping(CompanyCatalogSchema2.class);
-
 			SimpleJdbcMapperSupport sjmSupport = TestUtils.getSimpleJdbcMapperSupport(sjm);
 			TableMapping tm = sjmSupport.getTableMapping(CompanyCatalogSchema2.class);
 			assertEquals("schema2", tm.getCatalogName());

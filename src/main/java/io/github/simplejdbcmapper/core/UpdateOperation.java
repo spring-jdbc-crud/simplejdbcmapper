@@ -284,23 +284,19 @@ class UpdateOperation {
 				throw new MapperException("No mapping found for property '" + propertyName + "' in class "
 						+ tableMapping.getTableClassName());
 			}
-			// id property cannot be updated
 			if (propertyMapping.isIdAnnotation()) {
 				throw new MapperException(
 						"Id property " + tableMapping.getTableClassName() + "." + propertyName + " cannot be updated.");
 			}
-			// auto assign properties cannot be updated
 			if (propertyMapping.isCreatedByAnnotation() || propertyMapping.isCreatedOnAnnotation()
 					|| propertyMapping.isUpdatedByAnnotation() || propertyMapping.isUpdatedOnAnnotation()
 					|| propertyMapping.isVersionAnnotation()) {
 				throw new MapperException("Auto assign property " + tableMapping.getTableClassName() + "."
-						+ propertyName + " cannot be updated.");
+						+ propertyName + " are not properties that can be manually updated.");
 			}
 		}
 	}
 
-	// will return null when updateSpecificProperties property count is more than
-	// CACHEABLE_UPDATE_PROPERTY_COUNT
 	private String getUpdateSpecificPropertiesCacheKey(Object obj, String[] propertyNames) {
 		if (propertyNames.length > CACHEABLE_UPDATE_PROPERTIES_COUNT) {
 			return null;

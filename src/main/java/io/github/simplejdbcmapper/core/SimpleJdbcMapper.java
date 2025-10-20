@@ -301,17 +301,6 @@ public final class SimpleJdbcMapper {
 	}
 
 	/**
-	 * SimpleJdbcMapper depends on database meta data. Some drivers do not return
-	 * correct java.sql.Types. For example some postgres drivers for column
-	 * definition 'TIMESTAMP WITH TIMEZONE' return Types.TIMESTAMP which causes
-	 * conversion failures when used with OffsetDateTime. This method overrides it
-	 * to be Types.TIMESTAMP_WITH_TIMEZONE.
-	 */
-	public void enableOffsetDateTimeSqlTypeAsTimestampWithTimeZone() {
-		simpleJdbcMapperSupport.enableOffsetDateTimeSqlTypeAsTimestampWithTimeZone();
-	}
-
-	/**
 	 * Loads the mapping for a class. Mappings are lazy loaded ie they are loaded
 	 * when the mapped object is used for the first time. This method is provided so
 	 * that the mappings can be loaded during Spring application startup if needed.

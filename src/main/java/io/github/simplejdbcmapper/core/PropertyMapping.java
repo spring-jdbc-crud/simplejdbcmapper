@@ -25,7 +25,7 @@ class PropertyMapping {
 
 	private String columnName;
 
-	private int columnSqlType; // see java.sql.Types
+	private int columnSqlType; // java.sql.Types from database meta data.
 
 	private Integer columnOverriddenSqlType;
 
@@ -42,11 +42,6 @@ class PropertyMapping {
 	private boolean updatedByAnnotation = false;
 
 	public PropertyMapping(String propertyName, String propertyClassName, String columnName, int columnSqlType) {
-		this(propertyName, propertyClassName, columnName, columnSqlType, null);
-	}
-
-	public PropertyMapping(String propertyName, String propertyClassName, String columnName, int columnSqlType,
-			Integer columnOverriddenSqlType) {
 		if (propertyName == null || propertyClassName == null || columnName == null) {
 			throw new IllegalArgumentException("propertyName, propertyClassName, columnName must not be null");
 		}
@@ -56,7 +51,6 @@ class PropertyMapping {
 		// table column names or column names with spaces in them
 		this.columnName = InternalUtils.toLowerCase(columnName);
 		this.columnSqlType = columnSqlType;
-		this.columnOverriddenSqlType = columnOverriddenSqlType;
 	}
 
 	public int getColumnSqlType() {

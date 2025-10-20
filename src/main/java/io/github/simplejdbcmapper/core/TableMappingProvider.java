@@ -3,8 +3,6 @@ package io.github.simplejdbcmapper.core;
 import java.lang.reflect.Field;
 import java.sql.DatabaseMetaData;
 import java.sql.SQLException;
-import java.sql.Types;
-import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -13,6 +11,8 @@ import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import javax.sql.DataSource;
 
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.jdbc.core.metadata.TableMetaDataContext;
@@ -23,6 +23,8 @@ import org.springframework.jdbc.support.DatabaseMetaDataCallback;
 import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.jdbc.support.MetaDataAccessException;
 import org.springframework.util.Assert;
+import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 import io.github.simplejdbcmapper.annotation.Id;
 import io.github.simplejdbcmapper.annotation.IdType;
@@ -30,19 +32,25 @@ import io.github.simplejdbcmapper.annotation.Table;
 import io.github.simplejdbcmapper.exception.AnnotationException;
 import io.github.simplejdbcmapper.exception.MapperException;
 
-class TableMappingHelper {
+class TableMappingProvider {
+	private final DataSource dataSource;
+
+	private final String schemaName;
+
+	private final String catalogName;
+
 	// Map key - class name
 	// value - the table mapping
 	private final SimpleCache<String, TableMapping> tableMappingCache = new SimpleCache<>();
 
 	private final AnnotationProcessor ap;
 
-	private final SimpleJdbcMapperSupport sjms;
-
 	private String databaseProductName;
 
-	public TableMappingHelper(SimpleJdbcMapperSupport sjms) {
-		this.sjms = sjms;
+	public TableMappingProvider(DataSource dataSource, String schemaName, String catalogName) {
+		this.dataSource = dataSource;
+		this.schemaName = schemaName;
+		this.catalogName = catalogName;
 		this.ap = new AnnotationProcessor();
 	}
 
@@ -57,7 +65,10 @@ class TableMappingHelper {
 			validateMetaDataConfig(catalog, schema);
 			List<Field> fields = getAllFields(clazz);
 			IdPropertyInfo idPropertyInfo = getIdPropertyInfo(clazz, fields);
-			List<TableParameterMetaData> tpmdList = getTableParameterMetaDataList(tableName, schema, catalog, clazz);
+			List<TableParameterMetaData> tpmdList = getTableParameterMetaDataList(tableName, schema, catalog);
+			if (ObjectUtils.isEmpty(tpmdList)) {
+				throw new MapperException(getTableMetaDataNotFoundErrMsg(clazz, tableName, schema, catalog));
+			}
 			// key:column name, value: TableParameterMetaData
 			Map<String, TableParameterMetaData> columnNameToTpmd = new LinkedHashMap<>();
 			for (TableParameterMetaData tpmd : tpmdList) {
@@ -78,15 +89,10 @@ class TableMappingHelper {
 			}
 			List<PropertyMapping> propertyMappings = new ArrayList<>(propNameToPropertyMapping.values());
 			ap.validateAnnotations(propertyMappings, clazz);
-			processOverridesForSqlType(propertyMappings);
 			tableMapping = new TableMapping(clazz, tableName, schema, catalog, idPropertyInfo, propertyMappings);
 			tableMappingCache.put(clazz.getName(), tableMapping);
 		}
 		return tableMapping;
-	}
-
-	SimpleJdbcMapperSupport getSimpleJdbcMapperSupport() {
-		return sjms;
 	}
 
 	String getCommonDatabaseName() {
@@ -142,19 +148,15 @@ class TableMappingHelper {
 		return result;
 	}
 
-	private List<TableParameterMetaData> getTableParameterMetaDataList(String tableName, String schema, String catalog,
-			Class<?> clazz) {
-		if (InternalUtils.isBlank(tableName)) {
+	private List<TableParameterMetaData> getTableParameterMetaDataList(String tableName, String schema,
+			String catalog) {
+		if (!StringUtils.hasText(tableName)) {
 			throw new IllegalArgumentException("tableName must not be blank");
 		}
 		TableMetaDataContext tableMetaDataContext = createNewTableMetaDataContext(tableName, schema, catalog);
-		TableMetaDataProvider provider = TableMetaDataProviderFactory.createMetaDataProvider(sjms.getDataSource(),
+		TableMetaDataProvider provider = TableMetaDataProviderFactory.createMetaDataProvider(dataSource,
 				tableMetaDataContext);
-		List<TableParameterMetaData> tpmdList = provider.getTableParameterMetaData();
-		if (InternalUtils.isEmpty(tpmdList)) {
-			throw new AnnotationException(getTableMetaDataNotFoundErrMsg(clazz, tableName, schema, catalog));
-		}
-		return tpmdList;
+		return provider.getTableParameterMetaData();
 	}
 
 	private TableMetaDataContext createNewTableMetaDataContext(String table, String schema, String catalog) {
@@ -183,70 +185,47 @@ class TableMappingHelper {
 		return errMsg;
 	}
 
-	private String getDatabaseProductName() {
-		// No side effects even if there is thread contention and it gets set more than
-		// once
-		if (databaseProductName != null) {
-			return databaseProductName;
-		} else {
-			synchronized (this) {
-				if (databaseProductName == null) {
-					try {
-						databaseProductName = JdbcUtils.extractDatabaseMetaData(sjms.getDataSource(),
-								new DatabaseMetaDataCallback<String>() {
-									public String processMetaData(DatabaseMetaData dbMetaData)
-											throws SQLException, MetaDataAccessException {
-										return dbMetaData.getDatabaseProductName() == null ? ""
-												: dbMetaData.getDatabaseProductName();
-									}
-								});
-					} catch (Exception e) {
-						throw new MapperException(e);
-					}
-				}
-				return databaseProductName;
-			}
-		}
-	}
-
 	private String getCatalogForTable(Table tableAnnotation) {
-		return InternalUtils.isBlank(tableAnnotation.catalog()) ? sjms.getCatalogName() : tableAnnotation.catalog();
+		return StringUtils.hasText(tableAnnotation.catalog()) ? tableAnnotation.catalog() : catalogName;
 	}
 
 	private String getSchemaForTable(Table tableAnnotation) {
-		return InternalUtils.isBlank(tableAnnotation.schema()) ? sjms.getSchemaName() : tableAnnotation.schema();
+		return StringUtils.hasText(tableAnnotation.schema()) ? tableAnnotation.schema() : schemaName;
 	}
 
 	private void validateMetaDataConfig(String catalog, String schema) {
-		String commonDatabaseName = JdbcUtils.commonDatabaseName(getDatabaseProductName());
-		if ("mysql".equalsIgnoreCase(commonDatabaseName) && InternalUtils.isNotEmpty(schema)) {
+		String commonDatabaseName = getCommonDatabaseName();
+		if ("mysql".equalsIgnoreCase(commonDatabaseName) && StringUtils.hasText(schema)) {
 			throw new MapperException(commonDatabaseName
 					+ ": When creating SimpleJdbcMapper() if you are using 'schema' (argument 2) use 'catalog' (argument 3) instead."
 					+ " If you are using the @Table annotation use the 'catalog' attribue instead of 'schema' attribute");
 		}
-		if ("oracle".equalsIgnoreCase(commonDatabaseName) && InternalUtils.isNotEmpty(catalog)) {
+		if ("oracle".equalsIgnoreCase(commonDatabaseName) && StringUtils.hasText(catalog)) {
 			throw new MapperException(commonDatabaseName
 					+ ": When creating SimpleJdbcMapper() if you are using the 'catalog' (argument 3) use 'schema' (argument 2) instead."
 					+ " If you are using the @Table annotation use the 'schema' attribue instead of 'catalog' attribute");
 		}
 	}
 
-	private void processOverridesForSqlType(List<PropertyMapping> propertyMappings) {
-		if (sjms.isEnableOffsetDateTimeSqlTypeAsTimestampWithTimeZone()) {
-			for (PropertyMapping pm : propertyMappings) {
-				if (getClassFor(pm.getPropertyClassName()) != null
-						&& OffsetDateTime.class.isAssignableFrom(getClassFor(pm.getPropertyClassName()))) {
-					pm.setColumnOverriddenSqlType(Types.TIMESTAMP_WITH_TIMEZONE);
-				}
+	private String getDatabaseProductName() {
+		// No side effects even if there is thread contention and it gets set more than
+		// once
+		if (databaseProductName != null) {
+			return databaseProductName;
+		} else {
+			try {
+				databaseProductName = JdbcUtils.extractDatabaseMetaData(dataSource,
+						new DatabaseMetaDataCallback<String>() {
+							public String processMetaData(DatabaseMetaData dbMetaData)
+									throws SQLException, MetaDataAccessException {
+								return dbMetaData.getDatabaseProductName() == null ? ""
+										: dbMetaData.getDatabaseProductName();
+							}
+						});
+			} catch (Exception e) {
+				throw new MapperException(e);
 			}
 		}
-	}
-
-	private Class<?> getClassFor(String className) {
-		try {
-			return Class.forName(className);
-		} catch (Exception e) {
-			return null;
-		}
+		return databaseProductName;
 	}
 }

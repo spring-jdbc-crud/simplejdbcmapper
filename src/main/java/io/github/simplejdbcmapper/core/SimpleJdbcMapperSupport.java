@@ -46,7 +46,7 @@ class SimpleJdbcMapperSupport {
 
 	private final TableMappingProvider tableMappingProvider;
 
-	// Using Spring's DefaultConversionService as default conversionService for
+	// Using Spring's DefaultConversionService as conversionService for
 	// SimpleJdbcMapper
 	private ConversionService conversionService = new DefaultConversionService();
 

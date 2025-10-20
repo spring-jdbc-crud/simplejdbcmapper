@@ -141,10 +141,6 @@ class SimpleJdbcMapperSupport {
 		return tableMappingProvider.getTableMapping(clazz);
 	}
 
-	String getCommonDatabaseName() {
-		return tableMappingProvider.getCommonDatabaseName();
-	}
-
 	BeanWrapper getBeanWrapper(Object obj) {
 		BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(obj);
 		bw.setConversionService(conversionService);

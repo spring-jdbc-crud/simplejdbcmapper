@@ -95,10 +95,6 @@ class TableMappingProvider {
 		return tableMapping;
 	}
 
-	String getCommonDatabaseName() {
-		return JdbcUtils.commonDatabaseName(getDatabaseProductName());
-	}
-
 	SimpleCache<String, TableMapping> getTableMappingCache() {
 		return tableMappingCache;
 	}
@@ -194,7 +190,7 @@ class TableMappingProvider {
 	}
 
 	private void validateMetaDataConfig(String catalog, String schema) {
-		String commonDatabaseName = getCommonDatabaseName();
+		String commonDatabaseName = JdbcUtils.commonDatabaseName(getDatabaseProductName());
 		if ("mysql".equalsIgnoreCase(commonDatabaseName) && StringUtils.hasText(schema)) {
 			throw new MapperException(commonDatabaseName
 					+ ": When creating SimpleJdbcMapper() if you are using 'schema' (argument 2) use 'catalog' (argument 3) instead."

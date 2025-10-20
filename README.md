@@ -232,8 +232,7 @@ spring.datasource.driver-class-name=com.microsoft.sqlserver.jdbc.SQLServerDriver
 
 **@Table**
 
-Required class level annotation. The table or view should exist in database. The schema/catalog attributes set with @Table will override corresponding values 
-on the SimpleJdbcMapper() constructor. 
+Required class level annotation. The table or view should exist in database. The schema/catalog attributes set with @Table will override corresponding values on the SimpleJdbcMapper() constructor (if any). 
 
 ```java 
 
@@ -301,8 +300,8 @@ This will map the property to a column using the default naming convention of ca
 @Column(name="somecolumnname")  
 This will map the property to the column specified by name attribute.
 
-@Column(sqlType = Types.TIMESTAMP_WITH_TIMEZONE)
-This will override the sqlType of the database metadata for the column. Use this in cases where drivers dont return the  correct sql type. For example some postgres drivers for column definition 'TIMESTAMP WITH TIMEZONE' return java.sql.Types.TIMESTAMP instead of Types.TIMESTAMP_WITH_TIMEZONE) which causes conversion failures when used with OffsetDateTime. You can use the above attribute to override the sqlType.
+@Column(sqlType = somejavasqlTypes)
+This will override the sqlType of the database metadata for the column. Use this in cases where drivers don't return the  correct sql type. For example some postgres drivers for column definition 'TIMESTAMP WITH TIMEZONE' return java.sql.Types.TIMESTAMP instead of Types.TIMESTAMP_WITH_TIMEZONE, which causes conversion failures when used with OffsetDateTime. You can use the above attribute to override the database metadata sqlType.
 
 **@Version**
 
@@ -418,22 +417,28 @@ Try to connect to the database using Spring JdbcClient or JdbcTemplate without t
 
 For **MySql** try setting the 'catalog' parameter on constructor of SimpleJdbcMapper() (3rd argument) or set the 'catalog' attribute on the @Table annotation of the object. Database name is considered the same as catalog name for mysql.
 
-Example: 
+Example:
 
+```
     new SimpleJdbcMapper(dataSource, null, "DATABASE_NAME");
     Or
     @Table(name="sometablename", catalog="DATABASE_NAME");
+```
     
 For **Postgres/Oracle/Sqlserver** try setting the 'schema' parameter on constructor of SimpleJdbcMapper() (2nd argument) or set the 'schema' attribute on the @Table annotation of the object.
 
+```
     new SimpleJdbcMapper(dataSource, "SCHEMA_NAME");
     Or
     @Table(name="sometablename", schema="SCHEMA_NAME");
+```
 
 3.**Postgres and OffsetDateTime**
 
-Some postgres drivers for column definition 'TIMESTAMP WITH TIMEZONE' return java.sql.Types.TIMESTAMP instead of java.sql.Types.TIMESTAMP_WITH_TIMEZONE which causes conversion failures when used with OffsetDateTime. Do the following to override the sql type.
+Some postgres drivers for column definition 'TIMESTAMP WITH TIMEZONE' return java.sql.Types.TIMESTAMP instead of java.sql.Types.TIMESTAMP_WITH_TIMEZONE, which causes conversion failures when used with OffsetDateTime. Do the following to override the database metadata sql type.
   
+```
 @Column(sqlType = Types.TIMESTAMP_WITH_TIMEZONE)
 private OffsetDateTime someOffsetDateTime;
+```
 

@@ -188,18 +188,18 @@ class UpdateOperation {
 		return versionVal + 1;
 	}
 
-	private List<String> getIgnoreAttributes(TableMapping tableMapping) {
-		List<String> ignoreAttrs = new ArrayList<>();
-		ignoreAttrs.add(tableMapping.getIdPropertyName());
+	private List<String> getIgnoreProperties(TableMapping tableMapping) {
+		List<String> ignoreProps = new ArrayList<>();
+		ignoreProps.add(tableMapping.getIdPropertyName());
 		PropertyMapping createdOnPropMapping = tableMapping.getCreatedOnPropertyMapping();
 		if (createdOnPropMapping != null) {
-			ignoreAttrs.add(createdOnPropMapping.getPropertyName());
+			ignoreProps.add(createdOnPropMapping.getPropertyName());
 		}
 		PropertyMapping createdByPropMapping = tableMapping.getCreatedByPropertyMapping();
 		if (createdByPropMapping != null) {
-			ignoreAttrs.add(createdByPropMapping.getPropertyName());
+			ignoreProps.add(createdByPropMapping.getPropertyName());
 		}
-		return ignoreAttrs;
+		return ignoreProps;
 	}
 
 	private List<String> getAutoAssignProperties(TableMapping tableMapping) {
@@ -223,7 +223,7 @@ class UpdateOperation {
 		Assert.notNull(tableMapping, "tableMapping must not be null");
 		List<String> propertyList = tableMapping.getPropertyMappings().stream().map(pm -> pm.getPropertyName())
 				.collect(Collectors.toList());
-		List<String> ignoreAttrs = getIgnoreAttributes(tableMapping);
+		List<String> ignoreAttrs = getIgnoreProperties(tableMapping);
 		propertyList.removeAll(ignoreAttrs);
 		return buildSqlAndParams(tableMapping, propertyList);
 	}

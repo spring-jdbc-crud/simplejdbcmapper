@@ -265,9 +265,8 @@ class UpdateTest {
 		product.setCost(4.75);
 		sjm.insert(product);
 
-		// number of properties larger than ACHEABLE_UPDATE_PROPERTIES_COUNT = 3. Just
-		// want to make sure
-		// it works.
+		// number of properties larger than CACHEABLE_UPDATE_PROPERTIES_COUNT. Just
+		// want to make sure it works.
 		product.setVersion(1);
 		product.setCreatedOn(LocalDateTime.now());
 		sjm.updateSpecificProperties(product, "cost", "name", "version", "createdOn");

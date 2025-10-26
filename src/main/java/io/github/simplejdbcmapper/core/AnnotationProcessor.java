@@ -155,22 +155,22 @@ class AnnotationProcessor {
 			}
 		}
 		if (idCnt > 1) {
-			throw new AnnotationException(" model " + clazz.getSimpleName() + " has multiple @Id annotations");
+			throw new AnnotationException(clazz.getSimpleName() + " has multiple @Id annotations");
 		}
 		if (versionCnt > 1) {
-			throw new AnnotationException(" model " + clazz.getSimpleName() + " has multiple @Version annotations");
+			throw new AnnotationException(clazz.getSimpleName() + " has multiple @Version annotations");
 		}
 		if (createdOnCnt > 1) {
-			throw new AnnotationException(" model " + clazz.getSimpleName() + " has multiple @CreatedOn annotations");
+			throw new AnnotationException(clazz.getSimpleName() + " has multiple @CreatedOn annotations");
 		}
 		if (createdByCnt > 1) {
-			throw new AnnotationException(" model " + clazz.getSimpleName() + " has multiple @CreatedBy annotations");
+			throw new AnnotationException(clazz.getSimpleName() + " has multiple @CreatedBy annotations");
 		}
 		if (updatedOnCnt > 1) {
-			throw new AnnotationException(" model " + clazz.getSimpleName() + " has multiple @UpdatedOn annotations");
+			throw new AnnotationException(clazz.getSimpleName() + " has multiple @UpdatedOn annotations");
 		}
 		if (updatedByCnt > 1) {
-			throw new AnnotationException(" model " + clazz.getSimpleName() + " has multiple @UpdatedBy annotations");
+			throw new AnnotationException(clazz.getSimpleName() + " has multiple @UpdatedBy annotations");
 		}
 	}
 

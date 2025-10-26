@@ -16,7 +16,7 @@ package io.github.simplejdbcmapper.exception;
 /**
  * Generic Mapper Exception.
  *
- * @author ajoseph
+ * @author Antony Joseph
  */
 public class MapperException extends RuntimeException {
 

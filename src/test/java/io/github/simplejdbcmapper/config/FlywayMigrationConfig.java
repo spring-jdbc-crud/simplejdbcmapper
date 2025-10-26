@@ -1,7 +1,7 @@
 package io.github.simplejdbcmapper.config;
 
-import jakarta.annotation.PostConstruct;
 import javax.sql.DataSource;
+
 import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Qualifier;
@@ -10,11 +10,13 @@ import org.springframework.boot.autoconfigure.flyway.FlywayMigrationStrategy;
 import org.springframework.context.annotation.Bean;
 import org.springframework.stereotype.Component;
 
+import jakarta.annotation.PostConstruct;
+
 /**
  * Every time the tests are run the database is reset (schema is dropped) and
  * migration scripts run again so we have a fresh set of tables and data.
  *
- * @author ajoseph
+ * @author Antony Joseph
  */
 @Component
 public class FlywayMigrationConfig {

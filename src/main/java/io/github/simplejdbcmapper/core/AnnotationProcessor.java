@@ -49,7 +49,6 @@ class AnnotationProcessor {
 				propertyMapping.setColumnOverriddenSqlType(colAnnotation.sqlType());
 			}
 			propNameToPropertyMapping.put(propertyName, propertyMapping);
-
 		}
 	}
 

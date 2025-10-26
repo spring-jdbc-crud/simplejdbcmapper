@@ -112,7 +112,7 @@ A simple wrapper around Spring JDBC libraries that makes database CRUD operation
 
 JDK **21+**
 
-Spring framework **6.1.4+** or SpringBoot **3.2.3+**
+SpringBoot **3.2.3+** or Spring framework **6.1.4+**
  
 ## Maven coordinates
 

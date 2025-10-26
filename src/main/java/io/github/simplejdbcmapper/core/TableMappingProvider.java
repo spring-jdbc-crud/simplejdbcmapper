@@ -6,6 +6,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.List;
@@ -70,7 +71,7 @@ class TableMappingProvider {
 				throw new MapperException(getTableMetaDataNotFoundErrMsg(clazz, tableName, schema, catalog));
 			}
 			// key:column name, value: TableParameterMetaData
-			Map<String, TableParameterMetaData> columnNameToTpmd = new LinkedHashMap<>();
+			Map<String, TableParameterMetaData> columnNameToTpmd = new HashMap<>();
 			for (TableParameterMetaData tpmd : tpmdList) {
 				columnNameToTpmd.put(InternalUtils.toLowerCase(tpmd.getParameterName()), tpmd);
 			}

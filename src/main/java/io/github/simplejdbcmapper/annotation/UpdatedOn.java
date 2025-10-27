@@ -21,7 +21,7 @@ import java.lang.annotation.Target;
 /**
  * If a Supplier is configured with SimpleJdbcMapper, the annotated property
  * value will be set to the value supplied when the record is updated. The type
- * returned should match the type of the property.
+ * returned by supplier should match the type of the property.
  * 
  * @author Antony Joseph
  */

@@ -30,7 +30,6 @@ class InsertTest {
 
 	@BeforeEach
 	void beforeMethod() {
-		// clear caches to force a table meta data lookup from database.
 		sjmSupport = TestUtils.getSimpleJdbcMapperSupport(sjm);
 	}
 

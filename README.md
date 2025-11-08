@@ -104,7 +104,7 @@ A simple wrapper around Spring JDBC libraries that makes database CRUD operation
  
  // See logging section for details to view the SQL
  
- // See troubleshooting section if you have issues with the initial setup.
+ // See troubleshooting section if you have issues.
  
  // Thats all folks. Happy coding!!!
  ```

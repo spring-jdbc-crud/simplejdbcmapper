@@ -102,9 +102,8 @@ class AnnotationProcessor {
 			if (propMapping == null) { // it means there is no @Column annotation for the property
 				String colName = InternalUtils.toUnderscoreName(propertyName); // the default column name
 				if (!columnNameToTpmd.containsKey(colName)) {
-					throw new AnnotationException(
-							colName + " column not found in table " + tableName + " for model property "
-									+ field.getDeclaringClass().getSimpleName() + "." + field.getName());
+					throw new AnnotationException(colName + " column not found in table " + tableName + " for property "
+							+ field.getDeclaringClass().getSimpleName() + "." + field.getName());
 				}
 				propMapping = new PropertyMapping(propertyName, field.getType().getName(), colName,
 						columnNameToTpmd.get(colName).getSqlType());

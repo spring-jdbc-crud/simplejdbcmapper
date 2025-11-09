@@ -18,7 +18,6 @@ class FindOperation {
 	private final SimpleCache<String, String> findByIdSqlCache = new SimpleCache<>();
 
 	// the column sql string with bean friendly column aliases for mapped properties
-	// of model.
 	// Map key - class name
 	// value - the column sql string
 	private final SimpleCache<String, String> beanColumnsSqlCache = new SimpleCache<>();

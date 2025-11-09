@@ -7,8 +7,8 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedHashMap;
-import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -105,7 +105,7 @@ class TableMappingProvider {
 		List<Field> fields = getAllFieldsInternal(clazz);
 		// there could be duplicate fields due to super classes. Get unique fields list
 		// by name
-		Set<String> set = new LinkedHashSet<>();
+		Set<String> set = new HashSet<>();
 		return fields.stream().filter(p -> set.add(p.getName())).toList();
 	}
 

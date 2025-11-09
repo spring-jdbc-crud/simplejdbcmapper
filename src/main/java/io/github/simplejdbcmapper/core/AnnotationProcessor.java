@@ -40,8 +40,8 @@ class AnnotationProcessor {
 			}
 			colName = InternalUtils.toLowerCase(colName);
 			if (!columnNameToTpmd.containsKey(colName)) {
-				throw new AnnotationException(colName + " column not found in table " + tableName
-						+ " for model property " + field.getDeclaringClass().getSimpleName() + "." + propertyName);
+				throw new AnnotationException(colName + " column not found in table " + tableName + " for property "
+						+ field.getDeclaringClass().getSimpleName() + "." + propertyName);
 			}
 			PropertyMapping propertyMapping = new PropertyMapping(propertyName, field.getType().getName(), colName,
 					columnNameToTpmd.get(colName).getSqlType());

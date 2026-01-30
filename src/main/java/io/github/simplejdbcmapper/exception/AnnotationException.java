@@ -16,7 +16,7 @@ package io.github.simplejdbcmapper.exception;
 /**
  * Annotation Exception.
  *
- * @author ajoseph
+ * @author Antony Joseph
  */
 public class AnnotationException extends RuntimeException {
 

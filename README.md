@@ -104,7 +104,7 @@ A simple wrapper around Spring JDBC libraries that makes database CRUD operation
  
  // See logging section for details to view the SQL
  
- // See troubleshooting section if you have issues with the initial setup.
+ // See troubleshooting section if you have issues.
  
  // Thats all folks. Happy coding!!!
  ```
@@ -112,7 +112,7 @@ A simple wrapper around Spring JDBC libraries that makes database CRUD operation
 
 JDK **21+**
 
-Spring framework **6.1.4+** or SpringBoot **3.2.3+**
+SpringBoot **3.2.3+** or Spring framework **6.1.4+**
  
 ## Maven coordinates
 
@@ -318,7 +318,7 @@ If a Supplier is configured using simpleJdbcMapper.setRecordAuditedOnSupplier(),
 
 **@CreatedBy**
 
-If a Supplier is configured using simpleJdbcMapper.setRecordAuditedBySupplier(), it will be used to to set the value for the @CreatedBy property. The type of the Supplier should match the type of the property. @Column annotation can also be used with the to map to a different column name.
+If a Supplier is configured using simpleJdbcMapper.setRecordAuditedBySupplier(), it will be used to to set the value for the @CreatedBy property. The type of the Supplier should match the type of the property. @Column annotation can also be used with the property to map to a different column name.
 
 **@UpdatedBy**
 If a Supplier is configured using simpleJdbcMapper.setRecordAuditedBySupplier(), it will be used to to set the value for the @UpdatedBy property. The type of the Supplier should match the type of the property. @Column annotation can also be used with the property to map to a different column name.

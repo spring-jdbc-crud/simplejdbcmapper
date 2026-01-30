@@ -40,8 +40,8 @@ class AnnotationProcessor {
 			}
 			colName = InternalUtils.toLowerCase(colName);
 			if (!columnNameToTpmd.containsKey(colName)) {
-				throw new AnnotationException(colName + " column not found in table " + tableName
-						+ " for model property " + field.getDeclaringClass().getSimpleName() + "." + propertyName);
+				throw new AnnotationException(colName + " column not found in table " + tableName + " for property "
+						+ field.getDeclaringClass().getSimpleName() + "." + propertyName);
 			}
 			PropertyMapping propertyMapping = new PropertyMapping(propertyName, field.getType().getName(), colName,
 					columnNameToTpmd.get(colName).getSqlType());
@@ -49,7 +49,6 @@ class AnnotationProcessor {
 				propertyMapping.setColumnOverriddenSqlType(colAnnotation.sqlType());
 			}
 			propNameToPropertyMapping.put(propertyName, propertyMapping);
-
 		}
 	}
 
@@ -103,9 +102,8 @@ class AnnotationProcessor {
 			if (propMapping == null) { // it means there is no @Column annotation for the property
 				String colName = InternalUtils.toUnderscoreName(propertyName); // the default column name
 				if (!columnNameToTpmd.containsKey(colName)) {
-					throw new AnnotationException(
-							colName + " column not found in table " + tableName + " for model property "
-									+ field.getDeclaringClass().getSimpleName() + "." + field.getName());
+					throw new AnnotationException(colName + " column not found in table " + tableName + " for property "
+							+ field.getDeclaringClass().getSimpleName() + "." + field.getName());
 				}
 				propMapping = new PropertyMapping(propertyName, field.getType().getName(), colName,
 						columnNameToTpmd.get(colName).getSqlType());
@@ -156,22 +154,22 @@ class AnnotationProcessor {
 			}
 		}
 		if (idCnt > 1) {
-			throw new AnnotationException(" model " + clazz.getSimpleName() + " has multiple @Id annotations");
+			throw new AnnotationException(clazz.getSimpleName() + " has multiple @Id annotations");
 		}
 		if (versionCnt > 1) {
-			throw new AnnotationException(" model " + clazz.getSimpleName() + " has multiple @Version annotations");
+			throw new AnnotationException(clazz.getSimpleName() + " has multiple @Version annotations");
 		}
 		if (createdOnCnt > 1) {
-			throw new AnnotationException(" model " + clazz.getSimpleName() + " has multiple @CreatedOn annotations");
+			throw new AnnotationException(clazz.getSimpleName() + " has multiple @CreatedOn annotations");
 		}
 		if (createdByCnt > 1) {
-			throw new AnnotationException(" model " + clazz.getSimpleName() + " has multiple @CreatedBy annotations");
+			throw new AnnotationException(clazz.getSimpleName() + " has multiple @CreatedBy annotations");
 		}
 		if (updatedOnCnt > 1) {
-			throw new AnnotationException(" model " + clazz.getSimpleName() + " has multiple @UpdatedOn annotations");
+			throw new AnnotationException(clazz.getSimpleName() + " has multiple @UpdatedOn annotations");
 		}
 		if (updatedByCnt > 1) {
-			throw new AnnotationException(" model " + clazz.getSimpleName() + " has multiple @UpdatedBy annotations");
+			throw new AnnotationException(clazz.getSimpleName() + " has multiple @UpdatedBy annotations");
 		}
 	}
 

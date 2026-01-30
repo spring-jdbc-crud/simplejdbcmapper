@@ -94,7 +94,7 @@ class UpdateOperation {
 					+ tableMapping.getIdPropertyName() + " is the id and must not be null.");
 		}
 		Set<String> parameters = sqlAndParams.getParams();
-		populateAutoAssignProperties(tableMapping, bw, parameters);
+		populateAuditProperties(tableMapping, bw, parameters);
 		MapSqlParameterSource mapSqlParameterSource = createMapSqlParameterSource(tableMapping, bw, parameters);
 		int cnt = -1;
 		// if object has property version the version gets incremented on update.
@@ -117,7 +117,7 @@ class UpdateOperation {
 		return cnt;
 	}
 
-	private void populateAutoAssignProperties(TableMapping tableMapping, BeanWrapper bw, Set<String> parameters) {
+	private void populateAuditProperties(TableMapping tableMapping, BeanWrapper bw, Set<String> parameters) {
 		if (tableMapping.hasAutoAssignProperties()) {
 			PropertyMapping updatedByPropMapping = tableMapping.getUpdatedByPropertyMapping();
 			if (updatedByPropMapping != null && sjmSupport.getRecordAuditedBySupplier() != null

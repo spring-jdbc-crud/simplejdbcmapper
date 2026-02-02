@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
   <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 	
 	<!-- Begin Jekyll SEO tag v2.8.0 -->
 
@@ -22,6 +22,7 @@
 {"@context":"https://schema.org","@type":"WebSite","description":"Simple CRUD for Spring JDBC","headline":"Simple CRUD for Spring JDBC #","name":"Simple CRUD for Spring JDBC","url":"https://spring-jdbc-crud.github.io/simplejdbcmapper"}</script>
 
 <!-- End Jekyll SEO tag -->
+  
     <title>SimpleJdbcMapper</title>
     <link type="text/css" rel="stylesheet" href="assets/css/bootstrap.css"/>
     <link type="text/css" rel="stylesheet" href="assets/css/bootstrap-responsive.css"/>
@@ -161,16 +162,16 @@ Note that in this case the &#x27;name&#x27; property is mapped to the &#x27;prod
  
  <span class="hljs-comment">// See logging section for details to view the SQL</span>
  
- <span class="hljs-comment">// See troubleshooting section if you have issues with the initial setup.</span>
+ <span class="hljs-comment">// See troubleshooting section if you have issues.</span>
  
  <span class="hljs-comment">// Thats all folks. Happy coding!!!</span></code></pre><h2 id="jdk-and-spring-version-requirements"><a class="header-link" href="#jdk-and-spring-version-requirements"></a>JDK and Spring version requirements</h2>
 <p>JDK <strong>21+</strong></p>
-<p>Spring framework <strong>6.1.4+</strong> or SpringBoot <strong>3.2.3+</strong></p>
+<p>SpringBoot <strong>3.2.3+</strong> or Spring framework <strong>6.1.4+</strong></p>
 <h2 id="maven-coordinates"><a class="header-link" href="#maven-coordinates"></a>Maven coordinates</h2>
 <pre class="hljs"><code> <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>io.github.spring-jdbc-crud<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>simplejdbcmapper<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
-   <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>1.6.1<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>1.6.2<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre><h2 id="spring-bean-configuration-for-simplejdbcmapper"><a class="header-link" href="#spring-bean-configuration-for-simplejdbcmapper"></a>Spring bean configuration for SimpleJdbcMapper</h2>
 <p>SimpleJdbcMapper should always be prepared in a Spring application context and given to services as a bean reference. It maintains state, for example caches table meta-data, insert/update SQL etc.</p>
 <p><strong>Note: An instance of SimpleJdbcMapper is thread safe</strong></p>
@@ -311,7 +312,7 @@ Will be set to 1 when record is created and will incremented on updates. On upda
 <p><strong>@UpdatedOn</strong></p>
 <p>If a Supplier is configured using simpleJdbcMapper.setRecordAuditedOnSupplier(), it will be used to to set the value for the @UpdatedOn property. The type of the Supplier should match the type of the property. @Column annotation can also be used with the property to map to a different column name.</p>
 <p><strong>@CreatedBy</strong></p>
-<p>If a Supplier is configured using simpleJdbcMapper.setRecordAuditedBySupplier(), it will be used to to set the value for the @CreatedBy property. The type of the Supplier should match the type of the property. @Column annotation can also be used with the to map to a different column name.</p>
+<p>If a Supplier is configured using simpleJdbcMapper.setRecordAuditedBySupplier(), it will be used to to set the value for the @CreatedBy property. The type of the Supplier should match the type of the property. @Column annotation can also be used with the property to map to a different column name.</p>
 <p><strong>@UpdatedBy</strong>
 If a Supplier is configured using simpleJdbcMapper.setRecordAuditedBySupplier(), it will be used to to set the value for the @UpdatedBy property. The type of the Supplier should match the type of the property. @Column annotation can also be used with the property to map to a different column name.</p>
 <p> Annotation examples:</p>

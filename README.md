@@ -97,7 +97,7 @@ A simple wrapper around Spring JDBC libraries that makes database CRUD operation
  // Using Spring's JdbcTemplate api for the above sql
  List<Product> products = sjm.getJdbcTemplate().query(sql, BeanPropertyRowMapper.newInstance(Product.class), "someProductName");
  
- // Accessing the underlying JdbcClient, JdbcTemplate and NamedParameterJdbcTemplate.
+ // Accessing the underlying JdbcClient, JdbcTemplate and NamedParameterJdbcTemplate. 
  JdbcClient jdbcClient = sjm.getJdbcClient();
  JdbcTemplate jdbcTemplate = sjm.getJdbcTemplate();
  NamedParameterJdbcTemplate namedParameterJdbcTemplate = sjm.getNamedParameterJdbcTemplate();
@@ -389,6 +389,7 @@ public SimpleJdbcMapper simpleJdbcMapper(DataSource dataSource) {
  JdbcTemplate jdbcTemplate = sjm.getJdbcTemplate();
  NamedParameterJdbcTemplate namedParameterJdbcTemplate = sjm.getNamedParameterJdbcTemplate();
 ```
+ You can always create your own JdbcClient/JdbcTemplate (since you already have the Datasource) and use it.
 
 ## Logging
  

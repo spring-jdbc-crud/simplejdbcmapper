@@ -51,7 +51,7 @@ class InsertOperation {
 			jdbcInsert.execute(mapSqlParameterSource);
 		}
 		if (!foundInCache) {
-			// SimpleJdbcInsert is thread safe.
+			// SimpleJdbcInsert is thread safe so can be cached
 			insertSqlCache.put(obj.getClass().getName(), jdbcInsert);
 		}
 	}

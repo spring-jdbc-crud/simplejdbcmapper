@@ -32,7 +32,7 @@ class FindOperation {
 		boolean foundInCache = false;
 		String sql = findByIdSqlCache.get(clazz.getName());
 		if (sql == null) {
-			sql = "SELECT " + getBeanColumnsSql(tableMapping, clazz) + " FROM " + tableMapping.fullyQualifiedTableName()
+			sql = "SELECT " + getBeanFriendlySqlColumns(clazz) + " FROM " + tableMapping.fullyQualifiedTableName()
 					+ " WHERE " + tableMapping.getIdColumnName() + " = ?";
 		} else {
 			foundInCache = true;
@@ -54,14 +54,28 @@ class FindOperation {
 	public <T> List<T> findAll(Class<T> clazz) {
 		Assert.notNull(clazz, "Class must not be null");
 		TableMapping tableMapping = sjmSupport.getTableMapping(clazz);
-		String sql = "SELECT " + getBeanColumnsSql(tableMapping, clazz) + " FROM "
-				+ tableMapping.fullyQualifiedTableName();
+		String sql = "SELECT " + getBeanFriendlySqlColumns(clazz) + " FROM " + tableMapping.fullyQualifiedTableName();
 		BeanPropertyRowMapper<T> rowMapper = getBeanPropertyRowMapper(clazz);
 		return sjmSupport.getJdbcTemplate().query(sql, rowMapper);
 	}
 
 	public String getBeanFriendlySqlColumns(Class<?> clazz) {
-		return getBeanColumnsSql(sjmSupport.getTableMapping(clazz), clazz);
+		String columnsSql = beanColumnsSqlCache.get(clazz.getName());
+		if (columnsSql == null) {
+			TableMapping tableMapping = sjmSupport.getTableMapping(clazz);
+			StringJoiner sj = new StringJoiner(", ", " ", " ");
+			for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {
+				String underscorePropertyName = InternalUtils.toUnderscoreName(propMapping.getPropertyName());
+				if (!underscorePropertyName.equalsIgnoreCase(propMapping.getColumnName())) {
+					sj.add(propMapping.getColumnName() + " AS " + underscorePropertyName);
+				} else {
+					sj.add(propMapping.getColumnName());
+				}
+			}
+			columnsSql = sj.toString();
+			beanColumnsSqlCache.put(clazz.getName(), columnsSql);
+		}
+		return columnsSql;
 	}
 
 	public Map<String, String> getPropertyToColumnMappings(Class<?> clazz) {
@@ -79,24 +93,6 @@ class FindOperation {
 
 	SimpleCache<String, String> getBeanColumnsSqlCache() {
 		return beanColumnsSqlCache;
-	}
-
-	private <T> String getBeanColumnsSql(TableMapping tableMapping, Class<T> clazz) {
-		String columnsSql = beanColumnsSqlCache.get(clazz.getName());
-		if (columnsSql == null) {
-			StringJoiner sj = new StringJoiner(", ", " ", " ");
-			for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {
-				String underscorePropertyName = InternalUtils.toUnderscoreName(propMapping.getPropertyName());
-				if (!underscorePropertyName.equalsIgnoreCase(propMapping.getColumnName())) {
-					sj.add(propMapping.getColumnName() + " AS " + underscorePropertyName);
-				} else {
-					sj.add(propMapping.getColumnName());
-				}
-			}
-			columnsSql = sj.toString();
-			beanColumnsSqlCache.put(clazz.getName(), columnsSql);
-		}
-		return columnsSql;
 	}
 
 	private <T> BeanPropertyRowMapper<T> getBeanPropertyRowMapper(Class<T> clazz) {

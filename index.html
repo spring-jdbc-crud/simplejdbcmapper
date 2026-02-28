@@ -1,8 +1,8 @@
 <!DOCTYPE html>
 <html>
   <head>
-  <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 
 	<!-- Begin SEO tag -->
 
@@ -20,10 +20,9 @@
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"WebSite","description":"A simple wrapper around Spring JDBC libraries that makes database CRUD operations less verbose","headline":"Spring CRUD using SimpleJdbcMapper #","name":"Spring CRUD using SimpleJdbcMapper","url":"https://spring-jdbc-crud.github.io/simplejdbcmapper"}</script>
 
-   <!-- End SEO tag -->
-  
-    <title>Spring CRUD using SimpleJdbcMapper</title>
+<!-- End SEO tag -->
     
+    <title>Spring CRUD using SimpleJdbcMapper</title>
     <link type="text/css" rel="stylesheet" href="assets/css/bootstrap.css"/>
     <link type="text/css" rel="stylesheet" href="assets/css/bootstrap-responsive.css"/>
     <link type="text/css" rel="stylesheet" href="assets/css/pilcrow.css"/>
@@ -48,8 +47,9 @@
     <li class="sidebar-header-2"><a href="#maven-coordinates">Maven coordinates</a></li>
     <li class="sidebar-header-2"><a href="#spring-bean-configuration-for-simplejdbcmapper">Spring bean configuration for SimpleJdbcMapper</a></li>
     <li class="sidebar-header-2"><a href="#annotations">Annotations</a></li>
-    <li class="sidebar-header-2"><a href="#configuration-for-auto-assigning-createdby-updateby-createdon-updatedon">Configuration for auto assigning @CreatedBy, @UpdateBy, @CreatedOn, @UpdatedOn</a></li>
+    <li class="sidebar-header-2"><a href="#configuration-for-auto-assigning-createdby-@updateby-createdon-updatedon">Configuration for auto assigning @CreatedBy, @UpdateBy, @CreatedOn, @UpdatedOn</a></li>
     <li class="sidebar-header-2"><a href="#accessing-jdbcclientjdbctemplate">Accessing JdbcClient/JdbcTemplate</a></li>
+    <li class="sidebar-header-2"><a href="#blobclob-mapping">BLOB/CLOB mapping</a></li>
     <li class="sidebar-header-2"><a href="#logging">Logging</a></li>
     <li class="sidebar-header-2"><a href="#troubleshooting">TroubleShooting</a></li>
 </ul>
@@ -156,7 +156,7 @@ Note that in this case the &#x27;name&#x27; property is mapped to the &#x27;prod
  <span class="hljs-comment">// Using Spring&#x27;s JdbcTemplate api for the above sql</span>
  List&lt;Product&gt; products = sjm.getJdbcTemplate().query(sql, BeanPropertyRowMapper.newInstance(Product.class), <span class="hljs-string1">&quot;someProductName&quot;</span>);
  
- <span class="hljs-comment">// Accessing the underlying JdbcClient, JdbcTemplate and NamedParameterJdbcTemplate.</span>
+ <span class="hljs-comment">// Accessing the underlying JdbcClient, JdbcTemplate and NamedParameterJdbcTemplate. </span>
  JdbcClient jdbcClient = sjm.getJdbcClient();
  JdbcTemplate jdbcTemplate = sjm.getJdbcTemplate();
  NamedParameterJdbcTemplate namedParameterJdbcTemplate = sjm.getNamedParameterJdbcTemplate();
@@ -172,7 +172,7 @@ Note that in this case the &#x27;name&#x27; property is mapped to the &#x27;prod
 <pre class="hljs"><code> <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>io.github.spring-jdbc-crud<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>simplejdbcmapper<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
-   <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>1.6.2<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>1.6.3<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre><h2 id="spring-bean-configuration-for-simplejdbcmapper"><a class="header-link" href="#spring-bean-configuration-for-simplejdbcmapper"></a>Spring bean configuration for SimpleJdbcMapper</h2>
 <p>SimpleJdbcMapper should always be prepared in a Spring application context and given to services as a bean reference. It maintains state, for example caches table meta-data, insert/update SQL etc.</p>
 <p><strong>Note: An instance of SimpleJdbcMapper is thread safe</strong></p>
@@ -277,6 +277,7 @@ spring.datasource.driver-<span class="hljs-class"><span class="hljs-keyword">cla
   ...
 }
 </code></pre><p><strong>@Id</strong></p>
+<p>The java type of the property can be any type. @Id can only be mapped to a single database column.  Multi-column primary keys are not supported.</p>
 <p>There are 2 forms of usage for this.</p>
 <ul class="list">
 <li><strong>auto generated id usage</strong></li>
@@ -362,14 +363,19 @@ If a Supplier is configured using simpleJdbcMapper.setRecordAuditedBySupplier(),
 <span class="hljs-function"><span class="hljs-keyword">public</span> SimpleJdbcMapper <span class="hljs-title">simpleJdbcMapper</span><span class="hljs-params">(DataSource dataSource)</span> </span>{
     SimpleJdbcMapper simpleJdbcMapper = <span class="hljs-keyword">new</span> SimpleJdbcMapper(dataSource);
     <span class="hljs-comment">// Provide your own custom Supplier. Make Sure the type returned by Supplier matches the type </span>
-    <span class="hljs-comment">// of the Property you are annotating. Generally audited by is got from a thread local.</span>
+    <span class="hljs-comment">// of the Property you are annotating. Generally &#x27;audited by&#x27; is got from a thread local variable </span>
+    <span class="hljs-comment">// for example when using spring security.</span>
     simpleJdbcMapper.setRecordAuditedBySupplier(() -&gt; <span class="hljs-string1">&quot;tester&quot;</span>);
     simpleJdbcMapper.setRecordAuditedOnSupplier(() -&gt; LocalDateTime.now());
     <span class="hljs-keyword">return</span> simpleJdbcMapper;
 }</code></pre><h2 id="accessing-jdbcclientjdbctemplate"><a class="header-link" href="#accessing-jdbcclientjdbctemplate"></a>Accessing JdbcClient/JdbcTemplate</h2>
 <pre class="hljs"><code> <span class="hljs-keyword">JdbcClient </span><span class="hljs-keyword">jdbcClient </span>= sjm.getJdbcClient();
  <span class="hljs-keyword">JdbcTemplate </span><span class="hljs-keyword">jdbcTemplate </span>= sjm.getJdbcTemplate();
- NamedParameterJdbcTemplate namedParameterJdbcTemplate = sjm.getNamedParameterJdbcTemplate();</code></pre><h2 id="logging"><a class="header-link" href="#logging"></a>Logging</h2>
+ NamedParameterJdbcTemplate namedParameterJdbcTemplate = sjm.getNamedParameterJdbcTemplate();</code></pre><p>You can also create your own JdbcClient/JdbcTemplate and use it. </p>
+<h2 id="blobclob-mapping"><a class="header-link" href="#blobclob-mapping"></a>BLOB/CLOB mapping</h2>
+<p>BLOB database columns should be mapped to java type byte[]. No other type is supported.</p>
+<p>CLOB database columns should be mapped to java type char[]. No other type is supported.</p>
+<h2 id="logging"><a class="header-link" href="#logging"></a>Logging</h2>
 <p>Uses the same logging configurations as Spring. In application.properties:</p>
 <pre class="hljs"><code>
 <span class="hljs-comment"># log the SQL</span>

@@ -4,8 +4,7 @@
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-	<!-- Begin SEO tag -->
-
+<!-- Begin SEO tag -->
 <meta property="og:title" content="Spring CRUD using SimpleJdbcMapper" />
 <meta property="og:locale" content="en_US" />
 <meta name="description" content="A simple wrapper around Spring JDBC libraries that makes database CRUD operations less verbose" />
@@ -22,11 +21,9 @@
 
 <!-- End SEO tag -->
 
-
-
-
 *) ADD THIS after the Initial description of project for links
 
 	<a href="https://github.com/spring-jdbc-crud/simplejdbcmapper">github</a> |
 	<a href="https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/index.html">Javadoc</a> |
-	<a href="https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper">Demo Application</a>
+	<a href="https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper">Demo Application</a> |
+	<a href="https://dzone.com/articles/using-simplejdbcmapper-with-spring">Dzone Article</a>

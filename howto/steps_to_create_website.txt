@@ -5,13 +5,14 @@ The simplejdbcmapper website is published from the 'website' branch.
 1) create javadoc
    *)git checkout main
      mvn javadoc:javadoc
+     
    *)copy javadoc to website branch
      git checkout website
      rm -rf javadoc
      cp -r target/reports/apidocs ./javadoc
      
 2) create the index.html file from README.md
-   *) README.md file should be in input directory
+   *) README.md file (from main branch) should be in input directory
       generate-md --layout mixu-gray --input ./input --output ./output
      
       

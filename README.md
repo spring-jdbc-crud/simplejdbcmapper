@@ -260,7 +260,7 @@ class Product {
 
 **@Id**
 
-This annotation can only be mapped to a single database column.  Multi-column primary keys are not supported.
+The java type of the property can be any type. @Id can only be mapped to a single database column.  Multi-column primary keys are not supported.
 
 There are 2 forms of usage for this.
 
@@ -394,7 +394,7 @@ public SimpleJdbcMapper simpleJdbcMapper(DataSource dataSource) {
 ```
 You can also create your own JdbcClient/JdbcTemplate and use it. 
 
-## BLOB/CLOB support
+## BLOB/CLOB mapping
 
 BLOB database columns should be mapped to java type byte[]. No other type is supported.
 

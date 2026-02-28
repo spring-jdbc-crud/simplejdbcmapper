@@ -23,6 +23,7 @@ The simplejdbcmapper website is published from the 'website' branch.
    *) Fix the links on index.html
       1) remove @ (and sometimes ',')  on links for @CreatedBy @UpdatedBy @CreatedOn @UpdatedOn
       2) remove / on links for JdbcClient/JdbcTemplate
-      3) replace all hljs-string with hljs-string1 to turn of red highlighting of quoted strings
+      3) remove / on links for BLOB/CLOB
+      4) replace all hljs-string with hljs-string1 to turn of red highlighting of quoted strings
 
 

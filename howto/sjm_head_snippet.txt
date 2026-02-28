@@ -1,26 +1,26 @@
 *) Copy to top of index.html between head and title
+*) change title to "Spring CRUD using SimpleJdbcMapper"
 
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-	
-	<!-- Begin Jekyll SEO tag v2.8.0 -->
 
-<meta name="generator" content="Jekyll v3.9.3" />
-<meta property="og:title" content="Simple CRUD for Spring JDBC" />
+	<!-- Begin SEO tag -->
+
+<meta property="og:title" content="Spring CRUD using SimpleJdbcMapper" />
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="Simple CRUD for Spring JDBC" />
-<meta property="og:description" content="Simple CRUD for Spring JDBC" />
+<meta name="description" content="A simple wrapper around Spring JDBC libraries that makes database CRUD operations less verbose" />
+<meta property="og:description" content="A simple wrapper around Spring JDBC libraries that makes database CRUD operations less verbose" />
 <meta property="og:url"
 	content="https://spring-jdbc-crud.github.io/simplejdbcmapper" />
-<meta property="og:site_name" content="Simple CRUD for Spring JDBC" />
+<meta property="og:site_name" content="Spring CRUD using SimpleJdbcMapper" />
 <meta property="og:type" content="website" />
 <meta name="twitter:card" content="summary" />
 <meta property="twitter:title"
-	content="A simple wrapper around Spring JDBC libraries that makes database CRUD operations less verbose" />
+	content="Spring CRUD using SimpleJdbcMapper" />
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebSite","description":"Simple CRUD for Spring JDBC","headline":"Simple CRUD for Spring JDBC #","name":"Simple CRUD for Spring JDBC","url":"https://spring-jdbc-crud.github.io/simplejdbcmapper"}</script>
+{"@context":"https://schema.org","@type":"WebSite","description":"A simple wrapper around Spring JDBC libraries that makes database CRUD operations less verbose","headline":"Spring CRUD using SimpleJdbcMapper #","name":"Spring CRUD using SimpleJdbcMapper","url":"https://spring-jdbc-crud.github.io/simplejdbcmapper"}</script>
 
-<!-- End Jekyll SEO tag -->
+<!-- End SEO tag -->
 
 
 

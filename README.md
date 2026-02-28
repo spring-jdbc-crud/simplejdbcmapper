@@ -260,6 +260,8 @@ class Product {
 
 **@Id**
 
+This annotation can only be mapped to a single database column.  Multi-column primary keys are not supported.
+
 There are 2 forms of usage for this.
 
 * **auto generated id usage**
@@ -376,7 +378,8 @@ class Product {
 public SimpleJdbcMapper simpleJdbcMapper(DataSource dataSource) {
     SimpleJdbcMapper simpleJdbcMapper = new SimpleJdbcMapper(dataSource);
     // Provide your own custom Supplier. Make Sure the type returned by Supplier matches the type 
-    // of the Property you are annotating. Generally audited by is got from a thread local.
+    // of the Property you are annotating. Generally 'audited by' is got from a thread local variable 
+    // for example when using spring security.
     simpleJdbcMapper.setRecordAuditedBySupplier(() -> "tester");
     simpleJdbcMapper.setRecordAuditedOnSupplier(() -> LocalDateTime.now());
     return simpleJdbcMapper;
@@ -389,7 +392,14 @@ public SimpleJdbcMapper simpleJdbcMapper(DataSource dataSource) {
  JdbcTemplate jdbcTemplate = sjm.getJdbcTemplate();
  NamedParameterJdbcTemplate namedParameterJdbcTemplate = sjm.getNamedParameterJdbcTemplate();
 ```
- You can always create your own JdbcClient/JdbcTemplate (since you already have the Datasource) and use it.
+You can also create your own JdbcClient/JdbcTemplate and use it. 
+
+## blob/clob
+
+blob database columns should be mapped to java type byte[]. No other type is supported.
+
+clob database columns should be mapped to java type char[]. No other type is supported.
+
 
 ## Logging
  

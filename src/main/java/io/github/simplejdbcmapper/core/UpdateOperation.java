@@ -20,7 +20,7 @@ import io.github.simplejdbcmapper.exception.OptimisticLockingException;
 class UpdateOperation {
 	private static final int CACHEABLE_UPDATE_SPECIFIC_PROPERTIES_COUNT = 3;
 
-	private static final String INCREMENTED_VERSION = "incrementedVersion";
+	private static final String INCREMENTED_VERSION = "[incrementedVersion]";
 
 	private final SimpleJdbcMapperSupport sjmSupport;
 

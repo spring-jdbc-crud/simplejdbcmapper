@@ -285,14 +285,14 @@ class UpdateOperation {
 						+ tableMapping.getTableClassName());
 			}
 			if (propertyMapping.isIdAnnotation()) {
-				throw new MapperException(
-						"Id property " + tableMapping.getTableClassName() + "." + propertyName + " cannot be updated.");
+				throw new MapperException("Id property " + tableMapping.getTableClassName() + "." + propertyName
+						+ " cannot be updated using updateSpecificProperties() method.");
 			}
 			if (propertyMapping.isCreatedByAnnotation() || propertyMapping.isCreatedOnAnnotation()
 					|| propertyMapping.isUpdatedByAnnotation() || propertyMapping.isUpdatedOnAnnotation()
 					|| propertyMapping.isVersionAnnotation()) {
 				throw new MapperException("Auto assign property " + tableMapping.getTableClassName() + "."
-						+ propertyName + " are not properties that can be specifically updated.");
+						+ propertyName + " cannot be updated using updateSpecificProperties() method.");
 			}
 		}
 	}

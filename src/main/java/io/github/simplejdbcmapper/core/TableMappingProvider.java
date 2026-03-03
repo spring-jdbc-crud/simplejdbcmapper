@@ -66,7 +66,6 @@ class TableMappingProvider {
 			List<Field> fields = getAllFields(clazz);
 			IdPropertyInfo idPropertyInfo = getIdPropertyInfo(clazz, fields);
 			List<PropertyMapping> propertyMappings = getPropertyMappings(clazz, tableName, catalog, schema, fields);
-			ap.validateAnnotations(propertyMappings, clazz);
 			tableMapping = new TableMapping(clazz, tableName, schema, catalog, idPropertyInfo, propertyMappings);
 			tableMappingCache.put(clazz.getName(), tableMapping);
 		}
@@ -101,7 +100,9 @@ class TableMappingProvider {
 			ap.processCreatedByAnnotation(field, tableName, propNameToPropertyMapping, columnNameToTpmd);
 			ap.processUpdatedByAnnotation(field, tableName, propNameToPropertyMapping, columnNameToTpmd);
 		}
-		return new ArrayList<>(propNameToPropertyMapping.values());
+		List<PropertyMapping> propertyMappings = new ArrayList<>(propNameToPropertyMapping.values());
+		ap.validateAnnotations(propertyMappings, clazz);
+		return propertyMappings;
 	}
 
 	private List<Field> getAllFields(Class<?> clazz) {

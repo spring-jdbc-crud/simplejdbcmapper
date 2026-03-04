@@ -91,7 +91,7 @@ A simple wrapper around Spring JDBC libraries that makes database CRUD operation
  */
  String sql = "SELECT " + sjm.getBeanFriendlySqlColumns(Product.class) +  " FROM product WHERE product_name = ?";
  
- // Using Spring's JdbcClient api for the above sql
+ // Using Spring's JdbcClient api for the above sql. 
  List<Product> products = sjm.getJdbcClient().sql(sql).param("someProductName").query(Product.class).list();
  
  // Using Spring's JdbcTemplate api for the above sql
@@ -392,7 +392,7 @@ public SimpleJdbcMapper simpleJdbcMapper(DataSource dataSource) {
  JdbcTemplate jdbcTemplate = sjm.getJdbcTemplate();
  NamedParameterJdbcTemplate namedParameterJdbcTemplate = sjm.getNamedParameterJdbcTemplate();
 ```
-You can also create your own JdbcClient/JdbcTemplate and use it. 
+There is no requirement that you have to use the underlying JdbcClient/JdbcTemplate for your custom queries. You can create your own JdbcClient/JdbcTemplate and use it. 
 
 ## BLOB/CLOB mapping
 

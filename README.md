@@ -260,7 +260,7 @@ class Product {
 
 **@Id**
 
-The java type of the property can be any type. @Id can only be mapped to a single database column.  Multi-column primary keys are not supported.
+The java type of the property can be any type. @Id can only be mapped to a single database column.  Multi-column id  are not supported.
 
 There are 2 forms of usage for this.
 
@@ -418,6 +418,11 @@ Uses the same logging configurations as Spring. In application.properties:
 
  ```
  
+## Limitations
+1. @Id can only be mapped to a single database column.  Multi-column id are not supported.
+2. No support for table/column names with spaces in them. 
+   No support for table/column names which are reserved keywords for that specific database.
+  
 ## TroubleShooting
 
 1.**Connection issues:**

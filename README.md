@@ -232,7 +232,7 @@ spring.datasource.driver-class-name=com.microsoft.sqlserver.jdbc.SQLServerDriver
 
 **@Table**
 
-Required class level annotation. The table or view should exist in database. The schema/catalog attributes set with @Table will override corresponding values on the SimpleJdbcMapper() constructor (if any). 
+Required class level annotation. The table or view should exist in database. The schema/catalog attributes set with @Table will override corresponding values on the SimpleJdbcMapper() constructor (if any). Note that table names with spaces are not supported.
 
 ```java 
 
@@ -294,7 +294,7 @@ In this case you will have to manually set the id value before invoking insert()
 
 **@Column**
 
-Properties that need be persisted to the database will need @Column annotation unless the property is already annotated with one of the other annotations (@Id, @Version, @CreatedOn @CreatedBy @UpdatedOn @UpdatedBy). @Column can be used along with the other annotations to map to a property to a non default column name.
+Properties that need be persisted to the database will need @Column annotation unless the property is already annotated with one of the other annotations (@Id, @Version, @CreatedOn @CreatedBy @UpdatedOn @UpdatedBy). @Column can be used along with the other annotations to map to a property to a non default column name. Note that column names with spaces are not supported.
 
 @Column  
 This will map the property to a column using the default naming convention of camel case to underscore case. For example property 'lastName' will map to column 'last_name' by default

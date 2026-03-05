@@ -91,7 +91,7 @@ A simple wrapper around Spring JDBC libraries that makes database CRUD operation
  */
  String sql = "SELECT " + sjm.getBeanFriendlySqlColumns(Product.class) +  " FROM product WHERE product_name = ?";
  
- // Using Spring's JdbcClient api for the above sql
+ // Using Spring's JdbcClient api for the above sql. 
  List<Product> products = sjm.getJdbcClient().sql(sql).param("someProductName").query(Product.class).list();
  
  // Using Spring's JdbcTemplate api for the above sql
@@ -232,7 +232,7 @@ spring.datasource.driver-class-name=com.microsoft.sqlserver.jdbc.SQLServerDriver
 
 **@Table**
 
-Required class level annotation. The table or view should exist in database. The schema/catalog attributes set with @Table will override corresponding values on the SimpleJdbcMapper() constructor (if any). 
+Required class level annotation. The table or view should exist in database. The schema/catalog attributes set with @Table will override corresponding values on the SimpleJdbcMapper() constructor (if any). Note that table names with spaces are not supported.
 
 ```java 
 
@@ -260,7 +260,7 @@ class Product {
 
 **@Id**
 
-The java type of the property can be any type. @Id can only be mapped to a single database column.  Multi-column primary keys are not supported.
+The java type of the property can be any type. @Id can only be mapped to a single database column.  Multi-column id  are not supported.
 
 There are 2 forms of usage for this.
 
@@ -294,16 +294,16 @@ In this case you will have to manually set the id value before invoking insert()
 
 **@Column**
 
-Properties that need be persisted to the database will need @Column annotation unless the property is already annotated with one of the other annotations (@Id, @Version, @CreatedOn @CreatedBy @UpdatedOn @UpdatedBy). @Column can be used with the other annotations to map to a different column name.
+Properties that need be persisted to the database will need @Column annotation unless the property is already annotated with one of the other annotations (@Id, @Version, @CreatedOn @CreatedBy @UpdatedOn @UpdatedBy). @Column can be used along with the other annotations to map to a property to a non default column name. Note that column names with spaces are not supported.
 
 @Column  
 This will map the property to a column using the default naming convention of camel case to underscore case. For example property 'lastName' will map to column 'last_name' by default
 
 @Column(name="somecolumnname")  
-This will map the property to the column specified by name attribute.
+This will map the property to the column specified by the 'name' attribute.
 
 @Column(sqlType = somejavasqlTypes)
-This will override the sqlType of the database metadata for the column. Use this in cases where drivers don't return the  correct sql type. For example some postgres drivers for column definition 'TIMESTAMP WITH TIMEZONE' return java.sql.Types.TIMESTAMP instead of Types.TIMESTAMP_WITH_TIMEZONE, which causes conversion failures when used with OffsetDateTime. You can use the above attribute to override the database metadata sqlType.
+This will override the sqlType of the database metadata for the column. Use this in cases where drivers don't return the  correct sql type. For example some postgres drivers for column definition 'TIMESTAMP WITH TIMEZONE' return java.sql.Types.TIMESTAMP instead of Types.TIMESTAMP_WITH_TIMEZONE, which causes conversion failures when used with java type OffsetDateTime. You can use the above attribute to override the database metadata sqlType.
 
 **@Version**
 
@@ -392,7 +392,7 @@ public SimpleJdbcMapper simpleJdbcMapper(DataSource dataSource) {
  JdbcTemplate jdbcTemplate = sjm.getJdbcTemplate();
  NamedParameterJdbcTemplate namedParameterJdbcTemplate = sjm.getNamedParameterJdbcTemplate();
 ```
-You can also create your own JdbcClient/JdbcTemplate and use it. 
+There is no requirement that you have to use the underlying JdbcClient/JdbcTemplate for your custom queries. You can create your own JdbcClient/JdbcTemplate and use it. 
 
 ## BLOB/CLOB mapping
 
@@ -418,6 +418,11 @@ Uses the same logging configurations as Spring. In application.properties:
 
  ```
  
+## Limitations
+
+1. @Id can only be mapped to a single database column.  Multi-column id are not supported.
+2. No support for table/column names with spaces in them. 
+  
 ## TroubleShooting
 
 1.**Connection issues:**

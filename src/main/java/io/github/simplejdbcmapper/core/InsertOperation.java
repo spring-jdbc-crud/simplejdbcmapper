@@ -157,12 +157,4 @@ class InsertOperation {
 		}
 	}
 
-	private Class<?> getClassFor(String className) {
-		try {
-			return Class.forName(className);
-		} catch (Exception e) {
-			return null;
-		}
-	}
-
 }

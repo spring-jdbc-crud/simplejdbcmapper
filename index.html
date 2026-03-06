@@ -5,23 +5,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <!-- Begin SEO tag -->
-<meta property="og:title" content="Spring CRUD using SimpleJdbcMapper" >
+<meta property="og:title" content="A simple wrapper around Spring JDBC libraries that makes CRUD operations less verbose when using JdbcClient/JdbcTemplate" >
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="A simple wrapper around Spring JDBC libraries that makes database CRUD operations less verbose" >
-<meta property="og:description" content="A simple wrapper around Spring JDBC libraries that makes database CRUD operations less verbose" >
+<meta name="description" content="Simplify Spring JDBC CRUD operations with SimpleJdbcMapper, using JdbcClient/JdbcTemplate for less verbose database queries, inserts, updates, and deletes." >
+<meta property="og:description" content="Simplify Spring JDBC CRUD operations with SimpleJdbcMapper, using JdbcClient/JdbcTemplate for less verbose database queries, inserts, updates, and deletes." >
 <meta property="og:url"
 	content="https://spring-jdbc-crud.github.io/simplejdbcmapper" >
 <meta property="og:site_name" content="Spring CRUD using SimpleJdbcMapper" >
 <meta property="og:type" content="website" >
 <meta name="twitter:card" content="summary" >
 <meta property="twitter:title" content="Spring CRUD using SimpleJdbcMapper" >	
-<meta name="keywords" content="CRUD, Spring Framework, Relational database">
+<meta name="keywords" content="CRUD, Spring Framework, Relational database, jdbcclient, jdbctemplate">
 	
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebSite","description":"A simple wrapper around Spring JDBC libraries that makes database CRUD operations less verbose","headline":"Spring CRUD using SimpleJdbcMapper #","name":"Spring CRUD using SimpleJdbcMapper","url":"https://spring-jdbc-crud.github.io/simplejdbcmapper"}</script>
+{"@context":"https://schema.org","@type":"WebSite","description":"A simple wrapper around Spring JDBC libraries that makes CRUD operations less verbose when using JdbcClient/JdbcTemplate","headline":"Spring CRUD using SimpleJdbcMapper #","name":"Spring CRUD using SimpleJdbcMapper","url":"https://spring-jdbc-crud.github.io/simplejdbcmapper"}</script>
 
 <!-- End SEO tag -->
-    <title>Spring CRUD using SimpleJdbcMapper</title>
+    <title>A simple wrapper around Spring JDBC libraries that makes CRUD operations less verbose when using JdbcClient/JdbcTemplate</title>
     <link type="text/css" rel="stylesheet" href="assets/css/bootstrap.css"/>
     <link type="text/css" rel="stylesheet" href="assets/css/bootstrap-responsive.css"/>
     <link type="text/css" rel="stylesheet" href="assets/css/pilcrow.css"/>
@@ -172,7 +172,7 @@ Note that in this case the &#x27;name&#x27; property is mapped to the &#x27;prod
 <pre class="hljs"><code> <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>io.github.spring-jdbc-crud<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>simplejdbcmapper<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
-   <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>1.6.3<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>1.6.4<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre><h2 id="spring-bean-configuration-for-simplejdbcmapper"><a class="header-link" href="#spring-bean-configuration-for-simplejdbcmapper"></a>Spring bean configuration for SimpleJdbcMapper</h2>
 <p>SimpleJdbcMapper should always be prepared in a Spring application context and given to services as a bean reference. It maintains state, for example caches table meta-data, insert/update SQL etc.</p>
 <p><strong>Note: An instance of SimpleJdbcMapper is thread safe</strong></p>
@@ -301,8 +301,8 @@ spring.datasource.driver-<span class="hljs-class"><span class="hljs-keyword">cla
   ...
 }</code></pre><p>In this case you will have to manually set the id value before invoking insert()  </p>
 <p><strong>@Column</strong></p>
-<p>Properties that need be persisted to the database will need @Column annotation unless the property is already annotated with one of the other annotations (@Id, @Version, @CreatedOn @CreatedBy @UpdatedOn @UpdatedBy). @Column can be used along with the other annotations to map to a property to a non default column name. Note that column names with spaces are not supported.</p>
-<p>@Column<br>This will map the property to a column using the default naming convention of camel case to underscore case. For example property &#39;lastName&#39; will map to column &#39;last_name&#39; by default</p>
+<p>Properties that need be persisted to the database will need @Column annotation unless the property is already annotated with one of the other annotations (@Id, @Version, @CreatedOn @CreatedBy @UpdatedOn @UpdatedBy). @Column can be used along with the other annotations to map a property to a non default column name. The default column name is camel case property name converted to underscore case name. Note that column names with spaces are not supported.</p>
+<p>@Column<br>This will map the property to a column using the default naming convention of camel case to underscore case. For example property &#39;lastName&#39; will map to column &#39;last_name&#39; by default.</p>
 <p>@Column(name=&quot;somecolumnname&quot;)<br>This will map the property to the column specified by the &#39;name&#39; attribute.</p>
 <p>@Column(sqlType = somejavasqlTypes)
 This will override the sqlType of the database metadata for the column. Use this in cases where drivers don&#39;t return the  correct sql type. For example some postgres drivers for column definition &#39;TIMESTAMP WITH TIMEZONE&#39; return java.sql.Types.TIMESTAMP instead of Types.TIMESTAMP_WITH_TIMEZONE, which causes conversion failures when used with java type OffsetDateTime. You can use the above attribute to override the database metadata sqlType.</p>

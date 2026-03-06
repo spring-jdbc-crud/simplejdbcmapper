@@ -38,7 +38,7 @@ class SimpleJdbcMapperSupport {
 
 	private final String catalogName;
 
-	private final JdbcClient jdbcClient;
+	private JdbcClient jdbcClient;
 
 	private final JdbcTemplate jdbcTemplate;
 
@@ -70,7 +70,7 @@ class SimpleJdbcMapperSupport {
 		this.catalogName = catalogName;
 		this.npJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
 		this.jdbcTemplate = npJdbcTemplate.getJdbcTemplate();
-		this.jdbcClient = JdbcClient.create(npJdbcTemplate);
+		this.jdbcClient = JdbcClient.create(npJdbcTemplate, conversionService);
 		this.tableMappingProvider = new TableMappingProvider(dataSource, schemaName, catalogName);
 	}
 
@@ -125,6 +125,7 @@ class SimpleJdbcMapperSupport {
 			throw new IllegalStateException("conversionService was already set and cannot be changed.");
 		} else {
 			this.conversionService = conversionService;
+			this.jdbcClient = JdbcClient.create(npJdbcTemplate, conversionService);
 			conversionServiceManuallySet = true;
 		}
 	}

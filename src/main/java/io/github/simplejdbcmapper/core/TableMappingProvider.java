@@ -65,30 +65,7 @@ class TableMappingProvider {
 			validateMetaDataConfig(catalog, schema);
 			List<Field> fields = getAllFields(clazz);
 			IdPropertyInfo idPropertyInfo = getIdPropertyInfo(clazz, fields);
-			List<TableParameterMetaData> tpmdList = getTableParameterMetaDataList(tableName, schema, catalog);
-			if (ObjectUtils.isEmpty(tpmdList)) {
-				throw new MapperException(getTableMetaDataNotFoundErrMsg(clazz, tableName, schema, catalog));
-			}
-			// key:column name, value: TableParameterMetaData
-			Map<String, TableParameterMetaData> columnNameToTpmd = new HashMap<>();
-			for (TableParameterMetaData tpmd : tpmdList) {
-				columnNameToTpmd.put(InternalUtils.toLowerCase(tpmd.getParameterName()), tpmd);
-			}
-			// key:propertyName, value:PropertyMapping. LinkedHashMap to maintain order of
-			// properties
-			Map<String, PropertyMapping> propNameToPropertyMapping = new LinkedHashMap<>();
-			for (Field field : fields) {
-				// process column annotation always first
-				ap.processColumnAnnotation(field, tableName, propNameToPropertyMapping, columnNameToTpmd);
-				ap.processIdAnnotation(field, tableName, propNameToPropertyMapping, columnNameToTpmd);
-				ap.processVersionAnnotation(field, tableName, propNameToPropertyMapping, columnNameToTpmd);
-				ap.processCreatedOnAnnotation(field, tableName, propNameToPropertyMapping, columnNameToTpmd);
-				ap.processUpdatedOnAnnotation(field, tableName, propNameToPropertyMapping, columnNameToTpmd);
-				ap.processCreatedByAnnotation(field, tableName, propNameToPropertyMapping, columnNameToTpmd);
-				ap.processUpdatedByAnnotation(field, tableName, propNameToPropertyMapping, columnNameToTpmd);
-			}
-			List<PropertyMapping> propertyMappings = new ArrayList<>(propNameToPropertyMapping.values());
-			ap.validateAnnotations(propertyMappings, clazz);
+			List<PropertyMapping> propertyMappings = getPropertyMappings(clazz, tableName, catalog, schema, fields);
 			tableMapping = new TableMapping(clazz, tableName, schema, catalog, idPropertyInfo, propertyMappings);
 			tableMappingCache.put(clazz.getName(), tableMapping);
 		}
@@ -99,7 +76,35 @@ class TableMappingProvider {
 		return tableMappingCache;
 	}
 
-	// gets all unique fields including from super classes.
+	private List<PropertyMapping> getPropertyMappings(Class<?> clazz, String tableName, String catalog, String schema,
+			List<Field> fields) {
+		List<TableParameterMetaData> tpmdList = getTableParameterMetaDataList(tableName, schema, catalog);
+		if (ObjectUtils.isEmpty(tpmdList)) {
+			throw new MapperException(getTableMetaDataNotFoundErrMsg(clazz, tableName, schema, catalog));
+		}
+		// key:column name, value: TableParameterMetaData
+		Map<String, TableParameterMetaData> columnNameToTpmd = new HashMap<>();
+		for (TableParameterMetaData tpmd : tpmdList) {
+			columnNameToTpmd.put(InternalUtils.toLowerCase(tpmd.getParameterName()), tpmd);
+		}
+		// key:propertyName, value:PropertyMapping. LinkedHashMap to maintain order of
+		// properties
+		Map<String, PropertyMapping> propNameToPropertyMapping = new LinkedHashMap<>();
+		for (Field field : fields) {
+			// process column annotation always first
+			ap.processColumnAnnotation(field, tableName, propNameToPropertyMapping, columnNameToTpmd);
+			ap.processIdAnnotation(field, tableName, propNameToPropertyMapping, columnNameToTpmd);
+			ap.processVersionAnnotation(field, tableName, propNameToPropertyMapping, columnNameToTpmd);
+			ap.processCreatedOnAnnotation(field, tableName, propNameToPropertyMapping, columnNameToTpmd);
+			ap.processUpdatedOnAnnotation(field, tableName, propNameToPropertyMapping, columnNameToTpmd);
+			ap.processCreatedByAnnotation(field, tableName, propNameToPropertyMapping, columnNameToTpmd);
+			ap.processUpdatedByAnnotation(field, tableName, propNameToPropertyMapping, columnNameToTpmd);
+		}
+		List<PropertyMapping> propertyMappings = new ArrayList<>(propNameToPropertyMapping.values());
+		ap.validateAnnotations(propertyMappings, clazz);
+		return propertyMappings;
+	}
+
 	private List<Field> getAllFields(Class<?> clazz) {
 		List<Field> fields = new ArrayList<>();
 		Class<?> type = clazz;

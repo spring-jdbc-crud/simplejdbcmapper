@@ -20,7 +20,7 @@ import io.github.simplejdbcmapper.exception.OptimisticLockingException;
 class UpdateOperation {
 	private static final int CACHEABLE_UPDATE_SPECIFIC_PROPERTIES_COUNT = 3;
 
-	private static final String INCREMENTED_VERSION = "incrementedVersion";
+	private static final String INCREMENTED_VERSION = "[incrementedVersion]";
 
 	private final SimpleJdbcMapperSupport sjmSupport;
 
@@ -285,14 +285,14 @@ class UpdateOperation {
 						+ tableMapping.getTableClassName());
 			}
 			if (propertyMapping.isIdAnnotation()) {
-				throw new MapperException(
-						"Id property " + tableMapping.getTableClassName() + "." + propertyName + " cannot be updated.");
+				throw new MapperException("Id property " + tableMapping.getTableClassName() + "." + propertyName
+						+ " cannot be updated using updateSpecificProperties() method.");
 			}
 			if (propertyMapping.isCreatedByAnnotation() || propertyMapping.isCreatedOnAnnotation()
 					|| propertyMapping.isUpdatedByAnnotation() || propertyMapping.isUpdatedOnAnnotation()
 					|| propertyMapping.isVersionAnnotation()) {
 				throw new MapperException("Auto assign property " + tableMapping.getTableClassName() + "."
-						+ propertyName + " are not properties that can be specifically updated.");
+						+ propertyName + " cannot be updated using updateSpecificProperties() method.");
 			}
 		}
 	}

@@ -66,10 +66,10 @@ class FindOperation {
 			StringJoiner sj = new StringJoiner(", ", " ", " ");
 			for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {
 				String underscorePropertyName = InternalUtils.toUnderscoreName(propMapping.getPropertyName());
-				if (!underscorePropertyName.equalsIgnoreCase(propMapping.getColumnName())) {
-					sj.add(propMapping.getColumnName() + " AS " + underscorePropertyName);
-				} else {
+				if (underscorePropertyName.equalsIgnoreCase(propMapping.getColumnName())) {
 					sj.add(propMapping.getColumnName());
+				} else {
+					sj.add(propMapping.getColumnName() + " AS " + underscorePropertyName);
 				}
 			}
 			columnsSql = sj.toString();

@@ -65,17 +65,18 @@ A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations by maki
 </p>
 <h2 id="features"><a class="header-link" href="#features"></a>Features</h2>
 <ol class="list">
-<li>One liners for CRUD.</li>
-<li>Auto assign properties for models:<ul class="list">
-<li>auto assign created on, updated on.</li>
-<li>auto assign created by, updated by.</li>
-<li>optimistic locking feature for updates.</li>
+<li>One liners for CRUD</li>
+<li>Simple configuration similar to JdbcTemplate/JdbClient configuration.</li>
+<li>Helper methods to construct SQL for the mapped objects that can be used with Spring row mappers like BeanPropertyRowMapper, SimplePropertyRowMapper, which avoids writing custom row mappers.</li>
+<li>For transaction management use Spring transactions since it’s just a wrapper library.</li>
+<li>To log the SQL statements use the same SQL logging configurations as Spring. See the logging section further below.</li>
+<li>Auto assign properties for models<ul class="list">
+<li>auto assign audited  by (created by, updated by) by providing a Supplier</li>
+<li>auto assign audited on (created on, updated on) by providing a Supplier</li>
+<li>optimistic locking feature for updates using versioning.</li>
 </ul>
 </li>
-<li>Helper methods to get the SQL for the mapped objects that can be used with Spring row mappers like BeanPropertyRowMapper, SimplePropertyRowMapper etc.</li>
-<li>For transaction management use Spring transactions since its just a wrapper library.</li>
-<li>To log the SQL statements use the same SQL logging configurations as Spring. See the logging section further below.</li>
-<li>Tested against PostgreSQL, MySQL, Oracle, SQLServer. Should work with other databases.</li>
+<li>Tests are run against PostgreSQL, MySQL, Oracle, SQLServer. Should work with other databases.</li>
 <li>Only dependency is Spring JDBC libraries. No other external dependencies.</li>
 </ol>
 <h2 id="example-code"><a class="header-link" href="#example-code"></a>Example code</h2>

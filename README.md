@@ -6,16 +6,17 @@ A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations by maki
  
 ## Features
 
-  1. One liners for CRUD.
-  2. Auto assign properties for models:
-      * auto assign created on, updated on.
-      * auto assign created by, updated by.
-      * optimistic locking feature for updates.
-  3. Helper methods to get the SQL for the mapped objects that can be used with Spring row mappers like BeanPropertyRowMapper, SimplePropertyRowMapper etc.
-  4. For transaction management use Spring transactions since its just a wrapper library.
-  5. To log the SQL statements use the same SQL logging configurations as Spring. See the logging section further below.
-  6. Tested against PostgreSQL, MySQL, Oracle, SQLServer. Should work with other databases.
-  7. Only dependency is Spring JDBC libraries. No other external dependencies.
+1. One liners for CRUD
+2. Simple configuration similar to Jdbctemplate/JdbClient configuration.
+3. Helper methods to construct SQL for the mapped objects that can be used with Spring row mappers like BeanPropertyRowMapper, SimplePropertyRowMapper, which avoids writing custom row mappers.
+4. For transaction management use Spring transactions since it’s just a wrapper library.
+5. To log the SQL statements use the same SQL logging configurations as Spring. See the logging section further below.
+6. Auto assign properties for models
+    * auto assign audited  by (created by, updated by) by providing a Supplier
+    * auto assign audited on (created on, updated on) by providing a Supplier
+    * optimistic locking feature for updates using versioning.
+7. Tests are run against PostgreSQL, MySQL, Oracle, SQLServer. Should work with other databases.
+8. Only dependency is Spring JDBC libraries. No other external dependencies.
 
 ## Example code
   ```java 

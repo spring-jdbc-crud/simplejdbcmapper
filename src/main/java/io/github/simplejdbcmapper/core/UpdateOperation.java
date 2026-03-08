@@ -147,8 +147,8 @@ class UpdateOperation {
 						: tableMapping.getColumnOverriddenSqlType(paramName);
 				if (columnSqlType == Types.BLOB) {
 					assignBlobMapSqlParameterSource(bw, mapSqlParameterSource, paramName);
-				} else if (columnSqlType == Types.CLOB) {
-					assignClobMapSqlParameterSource(bw, mapSqlParameterSource, paramName);
+				} else if (columnSqlType == Types.CLOB || columnSqlType == Types.NCLOB) {
+					assignClobMapSqlParameterSource(bw, mapSqlParameterSource, paramName, columnSqlType);
 				} else {
 					mapSqlParameterSource.addValue(paramName, bw.getPropertyValue(paramName), columnSqlType);
 				}
@@ -160,7 +160,7 @@ class UpdateOperation {
 	private void assignBlobMapSqlParameterSource(BeanWrapper bw, MapSqlParameterSource mapSqlParameterSource,
 			String paramName) {
 		if (bw.getPropertyValue(paramName) == null) {
-			mapSqlParameterSource.addValue(paramName, null, Types.BLOB);
+			mapSqlParameterSource.addValue(paramName, null);
 		} else {
 			mapSqlParameterSource.addValue(paramName, new SqlBinaryValue((byte[]) bw.getPropertyValue(paramName)),
 					Types.BLOB);
@@ -168,12 +168,12 @@ class UpdateOperation {
 	}
 
 	private void assignClobMapSqlParameterSource(BeanWrapper bw, MapSqlParameterSource mapSqlParameterSource,
-			String paramName) {
+			String paramName, int sqlType) {
 		if (bw.getPropertyValue(paramName) == null) {
-			mapSqlParameterSource.addValue(paramName, null, Types.CLOB);
+			mapSqlParameterSource.addValue(paramName, null);
 		} else {
 			mapSqlParameterSource.addValue(paramName, new SqlCharacterValue((char[]) bw.getPropertyValue(paramName)),
-					Types.CLOB);
+					sqlType);
 		}
 	}
 

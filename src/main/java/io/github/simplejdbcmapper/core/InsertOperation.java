@@ -61,8 +61,8 @@ class InsertOperation {
 					: propMapping.getColumnOverriddenSqlType();
 			if (columnSqlType == Types.BLOB) {
 				assignBlobMapSqlParameterSource(bw, mapSqlParameterSource, propMapping);
-			} else if (columnSqlType == Types.CLOB) {
-				assignClobMapSqlParameterSource(bw, mapSqlParameterSource, propMapping);
+			} else if (columnSqlType == Types.CLOB || columnSqlType == Types.NCLOB) {
+				assignClobMapSqlParameterSource(bw, mapSqlParameterSource, propMapping, columnSqlType);
 			} else {
 				// SimpleJdbcInsert logs extra stuff when we override its internal sqltype so
 				// keep it to a minimum
@@ -148,12 +148,12 @@ class InsertOperation {
 	}
 
 	private void assignClobMapSqlParameterSource(BeanWrapper bw, MapSqlParameterSource mapSqlParameterSource,
-			PropertyMapping propMapping) {
+			PropertyMapping propMapping, int sqlType) {
 		if (bw.getPropertyValue(propMapping.getPropertyName()) == null) {
 			mapSqlParameterSource.addValue(propMapping.getColumnName(), null);
 		} else {
 			mapSqlParameterSource.addValue(propMapping.getColumnName(),
-					new SqlCharacterValue((char[]) bw.getPropertyValue(propMapping.getPropertyName())), Types.CLOB);
+					new SqlCharacterValue((char[]) bw.getPropertyValue(propMapping.getPropertyName())), sqlType);
 		}
 	}
 

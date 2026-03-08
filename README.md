@@ -399,7 +399,7 @@ There is no requirement that you have to use the underlying JdbcClient/JdbcTempl
 
 BLOB database columns should be mapped to java type byte[]. No other type is supported.
 
-CLOB database columns should be mapped to java type char[]. No other type is supported.
+CLOB/NCLOB database columns should be mapped to java type char[]. No other type is supported.
 
 
 ## Logging

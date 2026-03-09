@@ -77,6 +77,8 @@ class TypeCheckOracleTest {
 
 		iObj.setClobData("123456789".toCharArray());
 
+		iObj.setNclobData("nclob123456789".toCharArray());
+
 		sjm.insert(iObj);
 
 		TypeCheckOracle tc = sjm.findById(TypeCheckOracle.class, iObj.getId());
@@ -101,6 +103,7 @@ class TypeCheckOracleTest {
 
 		assertNotNull(tc.getImage());
 		assertNotNull(tc.getClobData());
+		assertNotNull(tc.getNclobData());
 
 	}
 
@@ -143,6 +146,7 @@ class TypeCheckOracleTest {
 		uObj.setOffsetDateTimeData(offsetVal);
 
 		uObj.setClobData("123456789".toCharArray());
+		uObj.setNclobData("nclob123456789".toCharArray());
 
 		sjm.update(uObj);
 
@@ -168,6 +172,7 @@ class TypeCheckOracleTest {
 
 		assertNotNull(tc.getImage());
 		assertNotNull(tc.getClobData());
+		assertNotNull(tc.getNclobData());
 
 	}
 

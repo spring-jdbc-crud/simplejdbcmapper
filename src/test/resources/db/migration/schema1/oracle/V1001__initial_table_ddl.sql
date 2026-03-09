@@ -72,6 +72,7 @@ CREATE TABLE SCHEMA1.type_check (
    non_model_column varchar(100),
    image blob,
    clob_data clob,
+   nclob_data nclob,
    offset_date_time_data timestamp with time zone
 );
 

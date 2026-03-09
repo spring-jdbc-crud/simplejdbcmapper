@@ -160,7 +160,7 @@ class UpdateOperation {
 	private void assignBlobMapSqlParameterSource(BeanWrapper bw, MapSqlParameterSource mapSqlParameterSource,
 			String paramName) {
 		if (bw.getPropertyValue(paramName) == null) {
-			mapSqlParameterSource.addValue(paramName, null);
+			mapSqlParameterSource.addValue(paramName, null, Types.BLOB);
 		} else {
 			mapSqlParameterSource.addValue(paramName, new SqlBinaryValue((byte[]) bw.getPropertyValue(paramName)),
 					Types.BLOB);
@@ -170,7 +170,7 @@ class UpdateOperation {
 	private void assignClobMapSqlParameterSource(BeanWrapper bw, MapSqlParameterSource mapSqlParameterSource,
 			String paramName, int sqlType) {
 		if (bw.getPropertyValue(paramName) == null) {
-			mapSqlParameterSource.addValue(paramName, null);
+			mapSqlParameterSource.addValue(paramName, null, sqlType);
 		} else {
 			mapSqlParameterSource.addValue(paramName, new SqlCharacterValue((char[]) bw.getPropertyValue(paramName)),
 					sqlType);

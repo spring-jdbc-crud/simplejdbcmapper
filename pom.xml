@@ -12,10 +12,10 @@
 
 	<groupId>io.github.spring-jdbc-crud</groupId>
 	<artifactId>simplejdbcmapper</artifactId>
-	<version>1.6.4</version>
+	<version>1.6.5</version>
 	<name>simplejdbcmapper</name>
 	<description>
-      A simple wrapper around Spring JDBC libraries that makes database CRUD operations less verbose
+      A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations by making them less verbose.
     </description>
 	<packaging>jar</packaging>
 

@@ -405,7 +405,7 @@ public SimpleJdbcMapper simpleJdbcMapper(DataSource dataSource) {
 }
 ```
  
-## Accessing JdbcClient/JdbcTemplate
+## Accessing JdbcClient JdbcTemplate
 ``` 
  JdbcClient jdbcClient = sjm.getJdbcClient();
  JdbcTemplate jdbcTemplate = sjm.getJdbcTemplate();
@@ -413,7 +413,7 @@ public SimpleJdbcMapper simpleJdbcMapper(DataSource dataSource) {
 ```
 There is no requirement that you have to use the underlying JdbcClient/JdbcTemplate for your custom queries. You can create your own JdbcClient/JdbcTemplate and use it. 
 
-## BLOB/CLOB mapping
+## BLOB CLOB mapping
 
 BLOB database columns should be mapped to java type byte[]. No other type is supported.
 

@@ -3,6 +3,21 @@
 A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations by making them less verbose.
   
 [Javadoc](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/index.html) | [Website](https://spring-jdbc-crud.github.io/simplejdbcmapper) | [Demo Application](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper) | [Dzone Article](https://dzone.com/articles/using-simplejdbcmapper-with-spring)
+
+
+## Table of contents
+[Features](#features)  
+[Example code](#example-code)  
+[Maven coordinates](#maven-coordinates)     
+[JDK and Spring version requirements](#jdk-and-spring-version-requirements)  
+[Spring bean configuration for SimpleJdbcMapper](#spring-bean-configuration-for-simplejdbcmapper)  
+[Annotations](#annotations)  
+[Configuration for auto assigning @CreatedBy, @UpdateBy, @CreatedOn, @UpdatedOn](#configuration-for-auto-assigning-createdby-updateby-createdon-updatedon)  
+[Accessing JdbcClient/JdbcTemplate](#accessing-jdbcclient-jdbctemplate)  
+[BLOB/CLOB mapping](#blob-clob-mapping)  
+[Logging](#logging)  
+[Limitations](#limitations)  
+[Troubleshooting](#troubleshooting)  
  
 ## Features
 

@@ -22,6 +22,7 @@
 
 <!-- End SEO tag -->
     <title>Simplify Spring JdbcTemplate/JdbcClient CRUD operations by making them less verbose using SimpleJdbcMapper</title>
+
     <link type="text/css" rel="stylesheet" href="assets/css/bootstrap.css"/>
     <link type="text/css" rel="stylesheet" href="assets/css/bootstrap-responsive.css"/>
     <link type="text/css" rel="stylesheet" href="assets/css/pilcrow.css"/>
@@ -40,23 +41,23 @@
     <div class="row-fluid">
       <div class="span3"><ul class="nav nav-list">
     <li class="sidebar-header-1"><a href="#simplejdbcmapper">SimpleJdbcMapper</a></li>
+    <li class="sidebar-header-2"><a href="#table-of-contents">Table of contents</a></li>
     <li class="sidebar-header-2"><a href="#features">Features</a></li>
+    <li class="sidebar-header-2"><a href="#maven-configuration">Maven configuration</a></li>
     <li class="sidebar-header-2"><a href="#example-code">Example code</a></li>
     <li class="sidebar-header-2"><a href="#jdk-and-spring-version-requirements">JDK and Spring version requirements</a></li>
-    <li class="sidebar-header-2"><a href="#maven-coordinates">Maven coordinates</a></li>
     <li class="sidebar-header-2"><a href="#spring-bean-configuration-for-simplejdbcmapper">Spring bean configuration for SimpleJdbcMapper</a></li>
     <li class="sidebar-header-2"><a href="#annotations">Annotations</a></li>
     <li class="sidebar-header-2"><a href="#configuration-for-auto-assigning-createdby-updateby-createdon-updatedon">Configuration for auto assigning @CreatedBy, @UpdateBy, @CreatedOn, @UpdatedOn</a></li>
-    <li class="sidebar-header-2"><a href="#accessing-jdbcclientjdbctemplate">Accessing JdbcClient/JdbcTemplate</a></li>
-    <li class="sidebar-header-2"><a href="#blobclob-mapping">BLOB/CLOB mapping</a></li>
+    <li class="sidebar-header-2"><a href="#accessing-jdbcclient-jdbctemplate">Accessing JdbcClient JdbcTemplate</a></li>
+    <li class="sidebar-header-2"><a href="#blob-clob-mapping">BLOB CLOB mapping</a></li>
     <li class="sidebar-header-2"><a href="#logging">Logging</a></li>
     <li class="sidebar-header-2"><a href="#limitations">Limitations</a></li>
     <li class="sidebar-header-2"><a href="#troubleshooting">TroubleShooting</a></li>
 </ul>
       </div>
       <div class="span9 main"><h1 id="simplejdbcmapper"><a class="header-link" href="#simplejdbcmapper"></a>SimpleJdbcMapper</h1>
-<p>
-A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations by making them less verbose.</p>
+<p>A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations by making them less verbose.</p>
 <p>
 	<a href="https://github.com/spring-jdbc-crud/simplejdbcmapper">github</a> |
 	<a href="https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/index.html">Javadoc</a> |
@@ -66,7 +67,7 @@ A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations by maki
 <h2 id="features"><a class="header-link" href="#features"></a>Features</h2>
 <ol class="list">
 <li>One liners for CRUD</li>
-<li>Simple configuration similar to JdbcTemplate/JdbClient configuration.</li>
+<li>Simple configuration similar to Jdbctemplate/JdbClient configuration.</li>
 <li>Helper methods to construct SQL for the mapped objects that can be used with Spring row mappers like BeanPropertyRowMapper, SimplePropertyRowMapper, which avoids writing custom row mappers.</li>
 <li>For transaction management use Spring transactions since it’s just a wrapper library.</li>
 <li>To log the SQL statements use the same SQL logging configurations as Spring. See the logging section further below.</li>
@@ -79,7 +80,12 @@ A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations by maki
 <li>Tests are run against PostgreSQL, MySQL, Oracle, SQLServer. Should work with other databases.</li>
 <li>Only dependency is Spring JDBC libraries. No other external dependencies.</li>
 </ol>
-<h2 id="example-code"><a class="header-link" href="#example-code"></a>Example code</h2>
+<h2 id="maven-configuration"><a class="header-link" href="#maven-configuration"></a>Maven configuration</h2>
+<pre class="hljs"><code> <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>io.github.spring-jdbc-crud<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>simplejdbcmapper<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>1.6.5<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
+<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre><h2 id="example-code"><a class="header-link" href="#example-code"></a>Example code</h2>
 <pre class="hljs"><code> <span class="hljs-comment">//@Table annotation is required</span>
  <span class="hljs-meta">@Table(name=&quot;product&quot;)</span>
  <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Product</span> </span>{
@@ -170,12 +176,7 @@ Note that in this case the &#x27;name&#x27; property is mapped to the &#x27;prod
  <span class="hljs-comment">// Thats all folks. Happy coding!!!</span></code></pre><h2 id="jdk-and-spring-version-requirements"><a class="header-link" href="#jdk-and-spring-version-requirements"></a>JDK and Spring version requirements</h2>
 <p>JDK <strong>21+</strong></p>
 <p>SpringBoot <strong>3.2.3+</strong> or Spring framework <strong>6.1.4+</strong></p>
-<h2 id="maven-coordinates"><a class="header-link" href="#maven-coordinates"></a>Maven coordinates</h2>
-<pre class="hljs"><code> <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
-   <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>io.github.spring-jdbc-crud<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
-   <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>simplejdbcmapper<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
-   <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>1.6.4<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
-<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre><h2 id="spring-bean-configuration-for-simplejdbcmapper"><a class="header-link" href="#spring-bean-configuration-for-simplejdbcmapper"></a>Spring bean configuration for SimpleJdbcMapper</h2>
+<h2 id="spring-bean-configuration-for-simplejdbcmapper"><a class="header-link" href="#spring-bean-configuration-for-simplejdbcmapper"></a>Spring bean configuration for SimpleJdbcMapper</h2>
 <p>SimpleJdbcMapper should always be prepared in a Spring application context and given to services as a bean reference. It maintains state, for example caches table meta-data, insert/update SQL etc.</p>
 <p><strong>Note: An instance of SimpleJdbcMapper is thread safe</strong></p>
 <p>Examples for different databases below. Depending on the versions of springboot/database/driver, there could be some differences to the properties. The properties are same as datasource properties used to configure Spring JdbcClient/JdbcTemplate.</p>
@@ -258,6 +259,7 @@ spring.datasource.driver-<span class="hljs-class"><span class="hljs-keyword">cla
   </code></pre><h2 id="annotations"><a class="header-link" href="#annotations"></a>Annotations</h2>
 <p><strong>@Table</strong></p>
 <p>Required class level annotation. The table or view should exist in database. The schema/catalog attributes set with @Table will override corresponding values on the SimpleJdbcMapper() constructor (if any). Note that table names with spaces are not supported.</p>
+<p>Multiple objects can be mapped to the same table. So for example if you have a wide table you could have 2 objects mapped to it. One with a few commonly used columns and another with all the columns.</p>
 <pre class="hljs"><code>
 <span class="hljs-meta">@Table(name=&quot;product&quot;)</span>
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Product</span> </span>{
@@ -370,13 +372,13 @@ If a Supplier is configured using simpleJdbcMapper.setRecordAuditedBySupplier(),
     simpleJdbcMapper.setRecordAuditedBySupplier(() -&gt; <span class="hljs-string1">&quot;tester&quot;</span>);
     simpleJdbcMapper.setRecordAuditedOnSupplier(() -&gt; LocalDateTime.now());
     <span class="hljs-keyword">return</span> simpleJdbcMapper;
-}</code></pre><h2 id="accessing-jdbcclientjdbctemplate"><a class="header-link" href="#accessing-jdbcclientjdbctemplate"></a>Accessing JdbcClient/JdbcTemplate</h2>
+}</code></pre><h2 id="accessing-jdbcclient-jdbctemplate"><a class="header-link" href="#accessing-jdbcclient-jdbctemplate"></a>Accessing JdbcClient JdbcTemplate</h2>
 <pre class="hljs"><code> <span class="hljs-keyword">JdbcClient </span><span class="hljs-keyword">jdbcClient </span>= sjm.getJdbcClient();
  <span class="hljs-keyword">JdbcTemplate </span><span class="hljs-keyword">jdbcTemplate </span>= sjm.getJdbcTemplate();
  NamedParameterJdbcTemplate namedParameterJdbcTemplate = sjm.getNamedParameterJdbcTemplate();</code></pre><p>There is no requirement that you have to use the underlying JdbcClient/JdbcTemplate for your custom queries. You can create your own JdbcClient/JdbcTemplate and use it. </p>
-<h2 id="blobclob-mapping"><a class="header-link" href="#blobclob-mapping"></a>BLOB/CLOB mapping</h2>
+<h2 id="blob-clob-mapping"><a class="header-link" href="#blob-clob-mapping"></a>BLOB CLOB mapping</h2>
 <p>BLOB database columns should be mapped to java type byte[]. No other type is supported.</p>
-<p>CLOB database columns should be mapped to java type char[]. No other type is supported.</p>
+<p>CLOB/NCLOB database columns should be mapped to java type char[]. No other type is supported.</p>
 <h2 id="logging"><a class="header-link" href="#logging"></a>Logging</h2>
 <p>Uses the same logging configurations as Spring. In application.properties:</p>
 <pre class="hljs"><code>

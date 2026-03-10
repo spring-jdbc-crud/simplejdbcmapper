@@ -2,13 +2,13 @@
  
 A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations by making them less verbose.
   
-[Javadoc](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/index.html) | [Website](https://spring-jdbc-crud.github.io/simplejdbcmapper) | [Demo Application](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper) | [Dzone Article](https://dzone.com/articles/using-simplejdbcmapper-with-spring)
+[Javadoc](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/index.html) | [Demo Application](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper) | [Dzone Article](https://dzone.com/articles/using-simplejdbcmapper-with-spring)
 
 
 ## Table of contents
 [Features](#features)  
+[Maven dependency](#maven-dependency)   
 [Example code](#example-code)  
-[Maven coordinates](#maven-coordinates)     
 [JDK and Spring version requirements](#jdk-and-spring-version-requirements)  
 [Spring bean configuration for SimpleJdbcMapper](#spring-bean-configuration-for-simplejdbcmapper)  
 [Annotations](#annotations)  
@@ -32,6 +32,17 @@ A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations by maki
     * optimistic locking feature for updates using versioning.
 7. Tests are run against PostgreSQL, MySQL, Oracle, SQLServer. Should work with other databases.
 8. Only dependency is Spring JDBC libraries. No other external dependencies.
+
+## Maven dependency
+
+ ``` 
+  <dependency>
+    <groupId>io.github.spring-jdbc-crud</groupId>
+    <artifactId>simplejdbcmapper</artifactId>
+    <version>1.6.4</version>
+ </dependency>
+ ```
+ 
 
 ## Example code
   ```java 
@@ -129,16 +140,6 @@ A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations by maki
 JDK **21+**
 
 SpringBoot **3.2.3+** or Spring framework **6.1.4+**
- 
-## Maven coordinates
-
- ``` 
-  <dependency>
-    <groupId>io.github.spring-jdbc-crud</groupId>
-    <artifactId>simplejdbcmapper</artifactId>
-    <version>1.6.4</version>
- </dependency>
- ```
  
 ## Spring bean configuration for SimpleJdbcMapper
 

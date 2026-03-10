@@ -7,7 +7,7 @@ A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations by maki
 
 ## Table of contents
 [Features](#features)  
-[Maven dependency](#maven-dependency)   
+[Maven configuration](#maven-configuration)   
 [Example code](#example-code)  
 [JDK and Spring version requirements](#jdk-and-spring-version-requirements)  
 [Spring bean configuration for SimpleJdbcMapper](#spring-bean-configuration-for-simplejdbcmapper)  
@@ -33,7 +33,7 @@ A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations by maki
 7. Tests are run against PostgreSQL, MySQL, Oracle, SQLServer. Should work with other databases.
 8. Only dependency is Spring JDBC libraries. No other external dependencies.
 
-## Maven dependency
+## Maven configuration
 
  ``` 
   <dependency>

@@ -13,8 +13,8 @@ A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations by maki
 [Spring bean configuration for SimpleJdbcMapper](#spring-bean-configuration-for-simplejdbcmapper)  
 [Annotations](#annotations)  
 [Configuration for auto assigning @CreatedBy, @UpdateBy, @CreatedOn, @UpdatedOn](#configuration-for-auto-assigning-createdby-updateby-createdon-updatedon)  
-[Accessing JdbcClient/JdbcTemplate](#accessing-jdbcclientjdbctemplate)  
-[BLOB/CLOB mapping](#blobclob-mapping)  
+[Accessing JdbcClient JdbcTemplate](#accessing-jdbcclient-jdbctemplate)  
+[BLOB CLOB mapping](#blob-clob-mapping)  
 [Logging](#logging)  
 [Limitations](#limitations)  
 [Troubleshooting](#troubleshooting)  
@@ -249,6 +249,8 @@ spring.datasource.driver-class-name=com.microsoft.sqlserver.jdbc.SQLServerDriver
 **@Table**
 
 Required class level annotation. The table or view should exist in database. The schema/catalog attributes set with @Table will override corresponding values on the SimpleJdbcMapper() constructor (if any). Note that table names with spaces are not supported.
+
+Multiple objects can be mapped to the same table. So for example if you have a wide table you could have 2 objects mapped to it. One with a few commonly used columns and another with all the columns.
 
 ```java 
 

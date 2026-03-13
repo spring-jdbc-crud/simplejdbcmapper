@@ -115,6 +115,7 @@ class TypeCheckOracleTest {
 		TypeCheckOracle obj = new TypeCheckOracle();
 		obj.setImage(null);
 		obj.setClobData(null);
+		obj.setClobDataStr(null);
 		obj.setNclobData(null);
 		Assertions.assertDoesNotThrow(() -> {
 			sjm.insert(obj);

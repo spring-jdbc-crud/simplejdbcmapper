@@ -322,7 +322,7 @@ This will map the property to a column using the default naming convention of ca
 This will map the property to the column specified by the 'name' attribute.
 
 @Column(sqlType = somejavasqlTypes)
-This will override the sqlType of the database metadata for the column. Use this in cases where drivers don't return the  correct sql type. For example some postgres drivers for column definition 'TIMESTAMP WITH TIMEZONE' return java.sql.Types.TIMESTAMP instead of Types.TIMESTAMP_WITH_TIMEZONE, which causes conversion failures when used with java type OffsetDateTime. You can use the above attribute to override the database metadata sqlType.
+Use this in cases when you want to for whatever reason override the database metadata sqltype. For example some postgres drivers for column definition 'TIMESTAMP WITH TIMEZONE' return Types.TIMESTAMP instead of Types.TIMESTAMP_WITH_TIMEZONE, which causes conversion failures when used with java type OffsetDateTime. You can use the above attribute to override the database metadata sqlType.
 
 **@Version**
 

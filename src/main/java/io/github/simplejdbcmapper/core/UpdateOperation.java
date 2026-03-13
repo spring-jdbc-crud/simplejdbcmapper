@@ -174,11 +174,9 @@ class UpdateOperation {
 			mapSqlParameterSource.addValue(paramName, null, sqlType);
 		} else {
 			if (val instanceof CharSequence) {
-				mapSqlParameterSource.addValue(paramName,
-						new SqlCharacterValue((CharSequence) bw.getPropertyValue(paramName)), sqlType);
+				mapSqlParameterSource.addValue(paramName, new SqlCharacterValue((CharSequence) val), sqlType);
 			} else if (val instanceof char[]) {
-				mapSqlParameterSource.addValue(paramName,
-						new SqlCharacterValue((char[]) bw.getPropertyValue(paramName)), sqlType);
+				mapSqlParameterSource.addValue(paramName, new SqlCharacterValue((char[]) val), sqlType);
 			} else {
 				throw new MapperException("CLOB/NCLOB can only be mapped to types CharSequence or char[]");
 			}

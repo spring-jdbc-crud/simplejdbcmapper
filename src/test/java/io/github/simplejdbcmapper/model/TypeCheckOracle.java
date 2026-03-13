@@ -43,6 +43,9 @@ public class TypeCheckOracle {
 	private char[] clobData;
 
 	@Column
+	private String clobDataStr;
+
+	@Column
 	private char[] nclobData;
 
 	public StatusEnum getStatus() {
@@ -131,6 +134,14 @@ public class TypeCheckOracle {
 
 	public void setNclobData(char[] nclobData) {
 		this.nclobData = nclobData;
+	}
+
+	public String getClobDataStr() {
+		return clobDataStr;
+	}
+
+	public void setClobDataStr(String clobDataStr) {
+		this.clobDataStr = clobDataStr;
 	}
 
 }

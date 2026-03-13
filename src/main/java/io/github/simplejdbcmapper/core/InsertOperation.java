@@ -149,11 +149,19 @@ class InsertOperation {
 
 	private void assignClobMapSqlParameterSource(BeanWrapper bw, MapSqlParameterSource mapSqlParameterSource,
 			PropertyMapping propMapping, int sqlType) {
-		if (bw.getPropertyValue(propMapping.getPropertyName()) == null) {
+		Object val = bw.getPropertyValue(propMapping.getPropertyName());
+		if (val == null) {
 			mapSqlParameterSource.addValue(propMapping.getColumnName(), null);
 		} else {
-			mapSqlParameterSource.addValue(propMapping.getColumnName(),
-					new SqlCharacterValue((char[]) bw.getPropertyValue(propMapping.getPropertyName())), sqlType);
+			if (val instanceof CharSequence) {
+				mapSqlParameterSource.addValue(propMapping.getColumnName(), new SqlCharacterValue((CharSequence) val),
+						sqlType);
+			} else if (val instanceof char[]) {
+				mapSqlParameterSource.addValue(propMapping.getColumnName(), new SqlCharacterValue((char[]) val),
+						sqlType);
+			} else {
+				throw new MapperException("CLOB/NCLOB can only be mapped to types CharSequence or char[]");
+			}
 		}
 	}
 

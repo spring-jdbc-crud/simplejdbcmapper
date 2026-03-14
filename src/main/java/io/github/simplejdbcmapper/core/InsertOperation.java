@@ -139,11 +139,17 @@ class InsertOperation {
 
 	private void assignBlobMapSqlParameterSource(BeanWrapper bw, MapSqlParameterSource mapSqlParameterSource,
 			PropertyMapping propMapping) {
-		if (bw.getPropertyValue(propMapping.getPropertyName()) == null) {
+		Object val = bw.getPropertyValue(propMapping.getPropertyName());
+		if (val == null) {
 			mapSqlParameterSource.addValue(propMapping.getColumnName(), null);
 		} else {
-			mapSqlParameterSource.addValue(propMapping.getColumnName(),
-					new SqlBinaryValue((byte[]) bw.getPropertyValue(propMapping.getPropertyName())), Types.BLOB);
+			if (val instanceof byte[]) {
+				mapSqlParameterSource.addValue(propMapping.getColumnName(), new SqlBinaryValue((byte[]) val),
+						Types.BLOB);
+			} else {
+				throw new MapperException(bw.getWrappedClass().getSimpleName() + "." + propMapping.getPropertyName()
+						+ " : java type should be byte[] for BLOB");
+			}
 		}
 	}
 
@@ -160,7 +166,8 @@ class InsertOperation {
 				mapSqlParameterSource.addValue(propMapping.getColumnName(), new SqlCharacterValue((char[]) val),
 						sqlType);
 			} else {
-				throw new MapperException("CLOB/NCLOB can only be mapped to types CharSequence or char[]");
+				throw new MapperException(bw.getWrappedClass().getSimpleName() + "." + propMapping.getPropertyName()
+						+ " : java type should be CharSequence or char[] for CLOB/NCLOB");
 			}
 		}
 	}

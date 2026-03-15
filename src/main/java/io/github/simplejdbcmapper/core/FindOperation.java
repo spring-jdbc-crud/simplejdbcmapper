@@ -29,13 +29,11 @@ class FindOperation {
 	public <T> T findById(Class<T> clazz, Object id) {
 		Assert.notNull(clazz, "Class must not be null");
 		TableMapping tableMapping = sjmSupport.getTableMapping(clazz);
-		boolean foundInCache = false;
 		String sql = findByIdSqlCache.get(clazz.getName());
 		if (sql == null) {
 			sql = "SELECT " + getBeanFriendlySqlColumns(clazz) + " FROM " + tableMapping.fullyQualifiedTableName()
 					+ " WHERE " + tableMapping.getIdColumnName() + " = ?";
-		} else {
-			foundInCache = true;
+			findByIdSqlCache.put(clazz.getName(), sql);
 		}
 		BeanPropertyRowMapper<T> rowMapper = getBeanPropertyRowMapper(clazz);
 		T obj = null;
@@ -44,9 +42,6 @@ class FindOperation {
 					new SqlParameterValue(tableMapping.getIdColumnSqlType(), id));
 		} catch (EmptyResultDataAccessException e) {
 			// do nothing
-		}
-		if (!foundInCache && obj != null) {
-			findByIdSqlCache.put(clazz.getName(), sql);
 		}
 		return obj;
 	}

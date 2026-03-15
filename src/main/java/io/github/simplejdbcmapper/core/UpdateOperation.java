@@ -174,7 +174,7 @@ class UpdateOperation {
 				mapSqlParameterSource.addValue(paramName, new SqlCharacterValue((char[]) val), sqlType);
 			} else {
 				throw new MapperException(bw.getWrappedClass().getSimpleName() + "." + paramName
-						+ " : java types should be CharSequence or char[] for CLOB/NCLOB");
+						+ " : java type should be CharSequence or char[] for CLOB/NCLOB");
 			}
 		}
 	}

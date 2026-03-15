@@ -46,4 +46,15 @@ public class TestUtils {
 			throw new RuntimeException(e);
 		}
 	}
+
+	public static DeleteOperation getDeleteOperation(SimpleJdbcMapper sjm) {
+		try {
+			Field field = sjm.getClass().getDeclaredField("deleteOperation");
+			field.setAccessible(true);
+
+			return (DeleteOperation) field.get(sjm);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 }

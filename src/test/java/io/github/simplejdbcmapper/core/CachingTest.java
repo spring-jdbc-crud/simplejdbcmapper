@@ -190,6 +190,30 @@ class CachingTest {
 	}
 
 	@Test
+	void deleteSqlCache_test() {
+		DeleteOperation op = TestUtils.getDeleteOperation(sjm);
+		SimpleCache<String, String> cache = op.getDeleteSqlCache();
+		cache.clear();
+
+		Order ord = new Order();
+		ord.setOrderId(801l);
+		sjm.delete(ord);
+		assertEquals(1, cache.getSize());
+
+		sjm.deleteById(Order.class, 802);
+		assertEquals(1, cache.getSize());
+
+		Product prod = new Product();
+		prod.setProductId(901);
+		sjm.delete(prod);
+		assertEquals(2, cache.getSize());
+
+		sjm.deleteById(Product.class, 902);
+		assertEquals(2, cache.getSize());
+
+	}
+
+	@Test
 	void tableMappingCache_test() {
 		SimpleJdbcMapperSupport sjms = TestUtils.getSimpleJdbcMapperSupport(sjm);
 		SimpleCache<String, TableMapping> cache = sjms.getTableMappingCache();

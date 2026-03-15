@@ -61,6 +61,7 @@ class FindOperation {
 	}
 
 	public String getBeanFriendlySqlColumns(Class<?> clazz) {
+		Assert.notNull(clazz, "Class must not be null");
 		String columnsSql = beanColumnsSqlCache.get(clazz.getName());
 		if (columnsSql == null) {
 			TableMapping tableMapping = sjmSupport.getTableMapping(clazz);

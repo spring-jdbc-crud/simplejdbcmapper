@@ -45,6 +45,22 @@ class CachingTest {
 	}
 
 	@Test
+	void findAllCache_test() {
+		FindOperation fo = TestUtils.getFindOperation(sjm);
+		SimpleCache<String, String> cache = fo.getFindAllSqlCache();
+		cache.clear();
+
+		sjm.findAll(Order.class);
+		assertEquals(1, cache.getSize());
+
+		sjm.findAll(Order.class);
+		assertEquals(1, cache.getSize());
+
+		sjm.findAll(Customer.class);
+		assertEquals(2, cache.getSize());
+	}
+
+	@Test
 	void insertCache_test() {
 		InsertOperation io = TestUtils.getInsertOperation(sjm);
 		SimpleCache<String, SimpleJdbcInsert> cache = io.getInsertSqlCache();

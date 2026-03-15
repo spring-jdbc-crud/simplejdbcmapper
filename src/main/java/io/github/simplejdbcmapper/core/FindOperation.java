@@ -17,6 +17,10 @@ class FindOperation {
 	// value - the sql
 	private final SimpleCache<String, String> findByIdSqlCache = new SimpleCache<>();
 
+	// Map key - class name
+	// value - the sql
+	private final SimpleCache<String, String> findAllSqlCache = new SimpleCache<>();
+
 	// the column sql string with bean friendly column aliases for mapped properties
 	// Map key - class name
 	// value - the column sql string
@@ -49,7 +53,11 @@ class FindOperation {
 	public <T> List<T> findAll(Class<T> clazz) {
 		Assert.notNull(clazz, "Class must not be null");
 		TableMapping tableMapping = sjmSupport.getTableMapping(clazz);
-		String sql = "SELECT " + getBeanFriendlySqlColumns(clazz) + " FROM " + tableMapping.fullyQualifiedTableName();
+		String sql = findAllSqlCache.get(clazz.getName());
+		if (sql == null) {
+			sql = "SELECT " + getBeanFriendlySqlColumns(clazz) + " FROM " + tableMapping.fullyQualifiedTableName();
+			findAllSqlCache.put(clazz.getName(), sql);
+		}
 		BeanPropertyRowMapper<T> rowMapper = getBeanPropertyRowMapper(clazz);
 		return sjmSupport.getJdbcTemplate().query(sql, rowMapper);
 	}
@@ -84,6 +92,10 @@ class FindOperation {
 
 	SimpleCache<String, String> getFindByIdSqlCache() {
 		return findByIdSqlCache;
+	}
+
+	SimpleCache<String, String> getFindAllSqlCache() {
+		return findAllSqlCache;
 	}
 
 	SimpleCache<String, String> getBeanColumnsSqlCache() {

@@ -22,7 +22,6 @@
 
 <!-- End SEO tag -->
     <title>Simplify Spring JdbcTemplate/JdbcClient CRUD operations by making them less verbose using SimpleJdbcMapper</title>
-
     <link type="text/css" rel="stylesheet" href="assets/css/bootstrap.css"/>
     <link type="text/css" rel="stylesheet" href="assets/css/bootstrap-responsive.css"/>
     <link type="text/css" rel="stylesheet" href="assets/css/pilcrow.css"/>
@@ -63,7 +62,6 @@
 	<a href="https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/index.html">Javadoc</a> |
 	<a href="https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper">Demo Application</a> |
 	<a href="https://dzone.com/articles/using-simplejdbcmapper-with-spring">Dzone Article</a>
-</p>
 <h2 id="features"><a class="header-link" href="#features"></a>Features</h2>
 <ol class="list">
 <li>One liners for CRUD</li>
@@ -84,7 +82,7 @@
 <pre class="hljs"><code> <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>io.github.spring-jdbc-crud<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>simplejdbcmapper<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
-   <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>1.6.5<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>1.6.6<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre><h2 id="example-code"><a class="header-link" href="#example-code"></a>Example code</h2>
 <pre class="hljs"><code> <span class="hljs-comment">//@Table annotation is required</span>
  <span class="hljs-meta">@Table(name=&quot;product&quot;)</span>
@@ -309,7 +307,7 @@ spring.datasource.driver-<span class="hljs-class"><span class="hljs-keyword">cla
 <p>@Column<br>This will map the property to a column using the default naming convention of camel case to underscore case. For example property &#39;lastName&#39; will map to column &#39;last_name&#39; by default.</p>
 <p>@Column(name=&quot;somecolumnname&quot;)<br>This will map the property to the column specified by the &#39;name&#39; attribute.</p>
 <p>@Column(sqlType = somejavasqlTypes)
-This will override the sqlType of the database metadata for the column. Use this in cases where drivers don&#39;t return the  correct sql type. For example some postgres drivers for column definition &#39;TIMESTAMP WITH TIMEZONE&#39; return java.sql.Types.TIMESTAMP instead of Types.TIMESTAMP_WITH_TIMEZONE, which causes conversion failures when used with java type OffsetDateTime. You can use the above attribute to override the database metadata sqlType.</p>
+Use this in cases when you need to override the database metadata sqltype. For example some postgres drivers for column definition &#39;TIMESTAMP WITH TIMEZONE&#39; return Types.TIMESTAMP instead of Types.TIMESTAMP_WITH_TIMEZONE, which causes conversion failures when used with java type OffsetDateTime. You can use the above attribute to override the database metadata sqlType.</p>
 <p><strong>@Version</strong></p>
 <p>This annotation is used for optimistic locking. It has to be of type Integer.
 Will be set to 1 when record is created and will incremented on updates. On updates if the version is stale an OptimisticLockingException will be thrown.  @Column annotation can be used with this to map to a different column name.</p>
@@ -378,7 +376,7 @@ If a Supplier is configured using simpleJdbcMapper.setRecordAuditedBySupplier(),
  NamedParameterJdbcTemplate namedParameterJdbcTemplate = sjm.getNamedParameterJdbcTemplate();</code></pre><p>There is no requirement that you have to use the underlying JdbcClient/JdbcTemplate for your custom queries. You can create your own JdbcClient/JdbcTemplate and use it. </p>
 <h2 id="blob-clob-mapping"><a class="header-link" href="#blob-clob-mapping"></a>BLOB CLOB mapping</h2>
 <p>BLOB database columns should be mapped to java type byte[]. No other type is supported.</p>
-<p>CLOB/NCLOB database columns should be mapped to java type char[]. No other type is supported.</p>
+<p>CLOB/NCLOB database columns should be mapped to java types CharSequence or char[]. No other type is supported.</p>
 <h2 id="logging"><a class="header-link" href="#logging"></a>Logging</h2>
 <p>Uses the same logging configurations as Spring. In application.properties:</p>
 <pre class="hljs"><code>

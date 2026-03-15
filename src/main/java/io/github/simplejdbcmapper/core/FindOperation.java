@@ -39,10 +39,9 @@ class FindOperation {
 					+ " WHERE " + tableMapping.getIdColumnName() + " = ?";
 			findByIdSqlCache.put(clazz.getName(), sql);
 		}
-		BeanPropertyRowMapper<T> rowMapper = getBeanPropertyRowMapper(clazz);
 		T obj = null;
 		try {
-			obj = sjmSupport.getJdbcTemplate().queryForObject(sql, rowMapper,
+			obj = sjmSupport.getJdbcTemplate().queryForObject(sql, getBeanPropertyRowMapper(clazz),
 					new SqlParameterValue(tableMapping.getIdColumnSqlType(), id));
 		} catch (EmptyResultDataAccessException e) {
 			// do nothing
@@ -58,8 +57,7 @@ class FindOperation {
 			sql = "SELECT " + getBeanFriendlySqlColumns(clazz) + " FROM " + tableMapping.fullyQualifiedTableName();
 			findAllSqlCache.put(clazz.getName(), sql);
 		}
-		BeanPropertyRowMapper<T> rowMapper = getBeanPropertyRowMapper(clazz);
-		return sjmSupport.getJdbcTemplate().query(sql, rowMapper);
+		return sjmSupport.getJdbcTemplate().query(sql, getBeanPropertyRowMapper(clazz));
 	}
 
 	public String getBeanFriendlySqlColumns(Class<?> clazz) {

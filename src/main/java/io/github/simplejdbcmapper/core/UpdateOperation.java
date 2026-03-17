@@ -153,8 +153,8 @@ class UpdateOperation {
 		if (val == null) {
 			mapSqlParameterSource.addValue(paramName, null, Types.BLOB);
 		} else {
-			if (val instanceof byte[]) {
-				mapSqlParameterSource.addValue(paramName, new SqlBinaryValue((byte[]) val), Types.BLOB);
+			if (val instanceof byte[] byteArray) {
+				mapSqlParameterSource.addValue(paramName, new SqlBinaryValue(byteArray), Types.BLOB);
 			} else {
 				throw new MapperException(bw.getWrappedClass().getSimpleName() + "." + paramName
 						+ ": java type should be byte[] for BLOB");
@@ -168,10 +168,10 @@ class UpdateOperation {
 		if (val == null) {
 			mapSqlParameterSource.addValue(paramName, null, sqlType);
 		} else {
-			if (val instanceof CharSequence) {
-				mapSqlParameterSource.addValue(paramName, new SqlCharacterValue((CharSequence) val), sqlType);
-			} else if (val instanceof char[]) {
-				mapSqlParameterSource.addValue(paramName, new SqlCharacterValue((char[]) val), sqlType);
+			if (val instanceof CharSequence charSequence) {
+				mapSqlParameterSource.addValue(paramName, new SqlCharacterValue(charSequence), sqlType);
+			} else if (val instanceof char[] charArray) {
+				mapSqlParameterSource.addValue(paramName, new SqlCharacterValue(charArray), sqlType);
 			} else {
 				throw new MapperException(bw.getWrappedClass().getSimpleName() + "." + paramName
 						+ " : java type should be CharSequence or char[] for CLOB/NCLOB");

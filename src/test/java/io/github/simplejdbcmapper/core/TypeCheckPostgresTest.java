@@ -22,6 +22,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import io.github.simplejdbcmapper.model.IdSqlTypeOverridden;
 import io.github.simplejdbcmapper.model.StatusEnum;
 import io.github.simplejdbcmapper.model.TypeCheckPostgres;
 import io.github.simplejdbcmapper.model.UuidTable;
@@ -178,6 +179,45 @@ class TypeCheckPostgresTest {
 		// so we have to check for instant
 		assertEquals(offsetVal.toInstant(), tc.getOffsetDateTimeData().toInstant());
 
+	}
+
+	@Test
+	void find_IdSqlTypeOverriddenTest() {
+		IdSqlTypeOverridden obj = new IdSqlTypeOverridden();
+		OffsetDateTime idVal = OffsetDateTime.now();
+		obj.setId(idVal);
+		obj.setComments("some comment");
+		sjm.insert(obj);
+
+		IdSqlTypeOverridden findObj = sjm.findById(IdSqlTypeOverridden.class, idVal);
+
+		assertNotNull(findObj);
+	}
+
+	@Test
+	void deleteById_IdSqlTypeOverriddenTest() {
+		IdSqlTypeOverridden obj = new IdSqlTypeOverridden();
+		OffsetDateTime idVal = OffsetDateTime.now();
+		obj.setId(idVal);
+		obj.setComments("some comment");
+		sjm.insert(obj);
+
+		Integer cnt = sjm.deleteById(IdSqlTypeOverridden.class, idVal);
+
+		assertTrue(cnt > 0);
+	}
+
+	@Test
+	void delete_IdSqlTypeOverriddenTest() {
+		IdSqlTypeOverridden obj = new IdSqlTypeOverridden();
+		OffsetDateTime idVal = OffsetDateTime.now();
+		obj.setId(idVal);
+		obj.setComments("some comment");
+		sjm.insert(obj);
+
+		Integer cnt = sjm.delete(obj);
+
+		assertTrue(cnt > 0);
 	}
 
 }

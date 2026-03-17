@@ -131,6 +131,12 @@ CREATE TABLE schema1.uuid_table (
 	CONSTRAINT table_with_autoincrement_uuid_pk PRIMARY KEY (id)
 );
 
+CREATE TABLE schema1.id_sqltype_overridden (
+   id TIMESTAMP WITH TIME ZONE NOT NULL,
+   comments varchar(100),
+   CONSTRAINT id_sqltype_overridden_pk PRIMARY KEY (id)
+);
+
 
 
 

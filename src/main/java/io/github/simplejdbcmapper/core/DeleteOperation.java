@@ -1,6 +1,7 @@
 package io.github.simplejdbcmapper.core;
 
 import org.springframework.beans.BeanWrapper;
+import org.springframework.jdbc.core.SqlParameterValue;
 import org.springframework.util.Assert;
 
 class DeleteOperation {
@@ -24,7 +25,7 @@ class DeleteOperation {
 		}
 		BeanWrapper bw = sjmSupport.getBeanWrapper(obj);
 		Object id = bw.getPropertyValue(tableMapping.getIdPropertyName());
-		return sjmSupport.getJdbcTemplate().update(sql, id);
+		return sjmSupport.getJdbcTemplate().update(sql, new SqlParameterValue(getIdSqlType(tableMapping), id));
 	}
 
 	public Integer deleteById(Class<?> clazz, Object id) {
@@ -36,7 +37,7 @@ class DeleteOperation {
 			sql = getDeleteSql(tableMapping);
 			deleteSqlCache.put(clazz.getName(), sql);
 		}
-		return sjmSupport.getJdbcTemplate().update(sql, id);
+		return sjmSupport.getJdbcTemplate().update(sql, new SqlParameterValue(getIdSqlType(tableMapping), id));
 	}
 
 	SimpleCache<String, String> getDeleteSqlCache() {
@@ -46,5 +47,11 @@ class DeleteOperation {
 	private String getDeleteSql(TableMapping tableMapping) {
 		return "DELETE FROM " + tableMapping.fullyQualifiedTableName() + " WHERE " + tableMapping.getIdColumnName()
 				+ " = ?";
+	}
+
+	private int getIdSqlType(TableMapping tableMapping) {
+		PropertyMapping idPropMapping = tableMapping.getIdPropertyMapping();
+		return idPropMapping.getColumnOverriddenSqlType() == null ? idPropMapping.getColumnSqlType()
+				: idPropMapping.getColumnOverriddenSqlType();
 	}
 }

@@ -121,7 +121,7 @@ class InsertOperation {
 	}
 
 	private SimpleJdbcInsert createNewSimpleJdbcInsert(TableMapping tableMapping) {
-		SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(sjmSupport.getDataSource())
+		SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(sjmSupport.getJdbcTemplate())
 				.withCatalogName(tableMapping.getCatalogName()).withSchemaName(tableMapping.getSchemaName())
 				.withTableName(tableMapping.getTableName());
 		// need this for oracle
@@ -138,9 +138,8 @@ class InsertOperation {
 		if (val == null) {
 			mapSqlParameterSource.addValue(propMapping.getColumnName(), null);
 		} else {
-			if (val instanceof byte[]) {
-				mapSqlParameterSource.addValue(propMapping.getColumnName(), new SqlBinaryValue((byte[]) val),
-						Types.BLOB);
+			if (val instanceof byte[] byteArray) {
+				mapSqlParameterSource.addValue(propMapping.getColumnName(), new SqlBinaryValue(byteArray), Types.BLOB);
 			} else {
 				throw new MapperException(bw.getWrappedClass().getSimpleName() + "." + propMapping.getPropertyName()
 						+ " : java type should be byte[] for BLOB");
@@ -154,12 +153,11 @@ class InsertOperation {
 		if (val == null) {
 			mapSqlParameterSource.addValue(propMapping.getColumnName(), null);
 		} else {
-			if (val instanceof CharSequence) {
-				mapSqlParameterSource.addValue(propMapping.getColumnName(), new SqlCharacterValue((CharSequence) val),
+			if (val instanceof CharSequence charSequence) {
+				mapSqlParameterSource.addValue(propMapping.getColumnName(), new SqlCharacterValue(charSequence),
 						sqlType);
-			} else if (val instanceof char[]) {
-				mapSqlParameterSource.addValue(propMapping.getColumnName(), new SqlCharacterValue((char[]) val),
-						sqlType);
+			} else if (val instanceof char[] charArray) {
+				mapSqlParameterSource.addValue(propMapping.getColumnName(), new SqlCharacterValue(charArray), sqlType);
 			} else {
 				throw new MapperException(bw.getWrappedClass().getSimpleName() + "." + propMapping.getPropertyName()
 						+ " : java type should be CharSequence or char[] for CLOB/NCLOB");

@@ -22,6 +22,7 @@
 
 <!-- End SEO tag -->
     <title>Simplify Spring JdbcTemplate/JdbcClient CRUD operations by making them less verbose using SimpleJdbcMapper</title>
+
     <link type="text/css" rel="stylesheet" href="assets/css/bootstrap.css"/>
     <link type="text/css" rel="stylesheet" href="assets/css/bootstrap-responsive.css"/>
     <link type="text/css" rel="stylesheet" href="assets/css/pilcrow.css"/>
@@ -40,7 +41,6 @@
     <div class="row-fluid">
       <div class="span3"><ul class="nav nav-list">
     <li class="sidebar-header-1"><a href="#simplejdbcmapper">SimpleJdbcMapper</a></li>
-    <li class="sidebar-header-2"><a href="#table-of-contents">Table of contents</a></li>
     <li class="sidebar-header-2"><a href="#features">Features</a></li>
     <li class="sidebar-header-2"><a href="#maven-configuration">Maven configuration</a></li>
     <li class="sidebar-header-2"><a href="#example-code">Example code</a></li>
@@ -65,9 +65,9 @@
 <h2 id="features"><a class="header-link" href="#features"></a>Features</h2>
 <ol class="list">
 <li>One liners for CRUD</li>
-<li>Simple configuration similar to Jdbctemplate/JdbClient configuration.</li>
+<li>Simple configuration similar to JdbcTemplate/JdbClient configuration.</li>
 <li>Helper methods to construct SQL for the mapped objects that can be used with Spring row mappers like BeanPropertyRowMapper, SimplePropertyRowMapper, which avoids writing custom row mappers.</li>
-<li>For transaction management use Spring transactions since it’s just a wrapper library.</li>
+<li>For transaction management use Spring transactions since it’s just a wrapper library. Behind the scenes its using JdbcTemplate</li>
 <li>To log the SQL statements use the same SQL logging configurations as Spring. See the logging section further below.</li>
 <li>Auto assign properties for models<ul class="list">
 <li>auto assign audited  by (created by, updated by) by providing a Supplier</li>
@@ -82,7 +82,7 @@
 <pre class="hljs"><code> <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>io.github.spring-jdbc-crud<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>simplejdbcmapper<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
-   <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>1.6.6<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>1.6.7<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre><h2 id="example-code"><a class="header-link" href="#example-code"></a>Example code</h2>
 <pre class="hljs"><code> <span class="hljs-comment">//@Table annotation is required</span>
  <span class="hljs-meta">@Table(name=&quot;product&quot;)</span>

@@ -121,7 +121,7 @@ class InsertOperation {
 	}
 
 	private SimpleJdbcInsert createNewSimpleJdbcInsert(TableMapping tableMapping) {
-		SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(sjmSupport.getDataSource())
+		SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(sjmSupport.getJdbcTemplate())
 				.withCatalogName(tableMapping.getCatalogName()).withSchemaName(tableMapping.getSchemaName())
 				.withTableName(tableMapping.getTableName());
 		// need this for oracle

@@ -82,8 +82,8 @@ class SimpleJdbcMapperTest {
 	void setRecordAuditedBySupplier_resetting_failure() {
 		SimpleJdbcMapper m = new SimpleJdbcMapper(dataSource);
 		Supplier<String> supplier = () -> "tester";
+		m.setRecordAuditedBySupplier(supplier);
 		Assertions.assertThrows(IllegalStateException.class, () -> {
-			m.setRecordAuditedBySupplier(supplier);
 			m.setRecordAuditedBySupplier(supplier);
 		});
 	}
@@ -92,8 +92,8 @@ class SimpleJdbcMapperTest {
 	void setRecordAuditedOnSupplier_resetting_failure() {
 		SimpleJdbcMapper m = new SimpleJdbcMapper(dataSource);
 		Supplier<LocalDateTime> supplier = () -> LocalDateTime.now();
+		m.setRecordAuditedOnSupplier(supplier);
 		Assertions.assertThrows(IllegalStateException.class, () -> {
-			m.setRecordAuditedOnSupplier(supplier);
 			m.setRecordAuditedOnSupplier(supplier);
 		});
 	}

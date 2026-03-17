@@ -42,7 +42,7 @@ class FindOperation {
 		T obj = null;
 		try {
 			obj = sjmSupport.getJdbcTemplate().queryForObject(sql, getBeanPropertyRowMapper(clazz),
-					new SqlParameterValue(tableMapping.getIdColumnSqlType(), id));
+					new SqlParameterValue(getIdSqlType(tableMapping), id));
 		} catch (EmptyResultDataAccessException e) {
 			// do nothing
 		}
@@ -105,6 +105,12 @@ class FindOperation {
 		BeanPropertyRowMapper<T> rowMapper = BeanPropertyRowMapper.newInstance(clazz);
 		rowMapper.setConversionService(sjmSupport.getConversionService());
 		return rowMapper;
+	}
+
+	private int getIdSqlType(TableMapping tableMapping) {
+		PropertyMapping idPropMapping = tableMapping.getIdPropertyMapping();
+		return idPropMapping.getColumnOverriddenSqlType() == null ? idPropMapping.getColumnSqlType()
+				: idPropMapping.getColumnOverriddenSqlType();
 	}
 
 }

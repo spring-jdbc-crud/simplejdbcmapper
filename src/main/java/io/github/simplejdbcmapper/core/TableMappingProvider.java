@@ -205,9 +205,7 @@ class TableMappingProvider {
 	private String getDatabaseProductName() {
 		// No side effects even if there is thread contention and it gets set more than
 		// once
-		if (databaseProductName != null) {
-			return databaseProductName;
-		} else {
+		if (databaseProductName == null) {
 			try {
 				databaseProductName = JdbcUtils.extractDatabaseMetaData(dataSource,
 						new DatabaseMetaDataCallback<String>() {

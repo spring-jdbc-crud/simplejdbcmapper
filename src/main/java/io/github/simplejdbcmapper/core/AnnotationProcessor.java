@@ -43,7 +43,7 @@ class AnnotationProcessor {
 				throw new AnnotationException(colName + " column not found in table " + tableName + " for property "
 						+ field.getDeclaringClass().getSimpleName() + "." + propertyName);
 			}
-			PropertyMapping propertyMapping = new PropertyMapping(propertyName, field.getType().getName(), colName,
+			PropertyMapping propertyMapping = new PropertyMapping(propertyName, field.getType(), colName,
 					columnNameToTpmd.get(colName).getSqlType());
 			if (colAnnotation.sqlType() != -99999) {
 				propertyMapping.setColumnOverriddenSqlType(colAnnotation.sqlType());
@@ -105,7 +105,7 @@ class AnnotationProcessor {
 					throw new AnnotationException(colName + " column not found in table " + tableName + " for property "
 							+ field.getDeclaringClass().getSimpleName() + "." + field.getName());
 				}
-				propMapping = new PropertyMapping(propertyName, field.getType().getName(), colName,
+				propMapping = new PropertyMapping(propertyName, field.getType(), colName,
 						columnNameToTpmd.get(colName).getSqlType());
 				propNameToPropertyMapping.put(propertyName, propMapping);
 			}
@@ -203,15 +203,11 @@ class AnnotationProcessor {
 
 	private void annotationVersionTypeCheck(List<PropertyMapping> propertyMappings, Class<?> clazz) {
 		for (PropertyMapping propMapping : propertyMappings) {
-			if (propMapping.isVersionAnnotation() && !isIntegerClass(propMapping.getPropertyClassName())) {
+			if (propMapping.isVersionAnnotation() && !(propMapping.getPropertyType() == Integer.class)) {
 				throw new AnnotationException("@Version requires the type of property " + clazz.getSimpleName() + "."
 						+ propMapping.getPropertyName() + " to be Integer");
 			}
 		}
-	}
-
-	private boolean isIntegerClass(String className) {
-		return "java.lang.Integer".equals(className);
 	}
 
 }

@@ -125,16 +125,6 @@ class TypeCheckOracleTest {
 	}
 
 	@Test
-	void insert_BlobErrTest() {
-		BlobErr obj = new BlobErr();
-		obj.setImage("ABC");
-		Exception exception = Assertions.assertThrows(MapperException.class, () -> {
-			sjm.insert(obj);
-		});
-		assertTrue(exception.getMessage().contains("java type should be byte[] for BLOB"));
-	}
-
-	@Test
 	void insert_ClobErrTest() {
 		ClobErr obj = new ClobErr();
 		obj.setClobData(new byte[] { 10, 20, 30 });

@@ -21,7 +21,7 @@ package io.github.simplejdbcmapper.core;
 class PropertyMapping {
 	private String propertyName;
 
-	private String propertyClassName;
+	private Class<?> propertyType;
 
 	private String columnName;
 
@@ -41,12 +41,12 @@ class PropertyMapping {
 
 	private boolean updatedByAnnotation = false;
 
-	public PropertyMapping(String propertyName, String propertyClassName, String columnName, int columnSqlType) {
-		if (propertyName == null || propertyClassName == null || columnName == null) {
+	public PropertyMapping(String propertyName, Class<?> propertyType, String columnName, int columnSqlType) {
+		if (propertyName == null || propertyType == null || columnName == null) {
 			throw new IllegalArgumentException("propertyName, propertyClassName, columnName must not be null");
 		}
 		this.propertyName = propertyName;
-		this.propertyClassName = propertyClassName;
+		this.propertyType = propertyType;
 		// column names stored in lower case always. No plans to support case sensitive
 		// table column names or column names with spaces in them
 		this.columnName = InternalUtils.toLowerCase(columnName);
@@ -73,8 +73,8 @@ class PropertyMapping {
 		return propertyName;
 	}
 
-	public String getPropertyClassName() {
-		return propertyClassName;
+	public Class<?> getPropertyType() {
+		return propertyType;
 	}
 
 	public String getColumnName() {

@@ -54,9 +54,10 @@ class InsertOperation {
 		for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {
 			int columnSqlType = propMapping.getColumnOverriddenSqlType() == null ? propMapping.getColumnSqlType()
 					: propMapping.getColumnOverriddenSqlType();
-			if (columnSqlType == Types.BLOB) {
-				assignBlobMapSqlParameterSource(bw, mapSqlParameterSource, propMapping);
-			} else if (columnSqlType == Types.CLOB || columnSqlType == Types.NCLOB) {
+			if (propMapping.getPropertyType() == byte[].class) {
+				assignBlobMapSqlParameterSource(bw, mapSqlParameterSource, propMapping, columnSqlType);
+			} else if (columnSqlType == Types.CLOB || columnSqlType == Types.NCLOB || columnSqlType == Types.LONGVARCHAR
+					|| columnSqlType == Types.LONGNVARCHAR) {
 				assignClobMapSqlParameterSource(bw, mapSqlParameterSource, propMapping, columnSqlType);
 			} else {
 				// SimpleJdbcInsert logs extra stuff when we override its internal sqltype so
@@ -133,17 +134,13 @@ class InsertOperation {
 	}
 
 	private void assignBlobMapSqlParameterSource(BeanWrapper bw, MapSqlParameterSource mapSqlParameterSource,
-			PropertyMapping propMapping) {
+			PropertyMapping propMapping, int columnSqlType) {
 		Object val = bw.getPropertyValue(propMapping.getPropertyName());
 		if (val == null) {
 			mapSqlParameterSource.addValue(propMapping.getColumnName(), null);
 		} else {
-			if (val instanceof byte[] byteArray) {
-				mapSqlParameterSource.addValue(propMapping.getColumnName(), new SqlBinaryValue(byteArray), Types.BLOB);
-			} else {
-				throw new MapperException(bw.getWrappedClass().getSimpleName() + "." + propMapping.getPropertyName()
-						+ " : java type should be byte[] for BLOB");
-			}
+			mapSqlParameterSource.addValue(propMapping.getColumnName(), new SqlBinaryValue((byte[]) val),
+					columnSqlType);
 		}
 	}
 
@@ -156,11 +153,9 @@ class InsertOperation {
 			if (val instanceof CharSequence charSequence) {
 				mapSqlParameterSource.addValue(propMapping.getColumnName(), new SqlCharacterValue(charSequence),
 						sqlType);
-			} else if (val instanceof char[] charArray) {
-				mapSqlParameterSource.addValue(propMapping.getColumnName(), new SqlCharacterValue(charArray), sqlType);
 			} else {
 				throw new MapperException(bw.getWrappedClass().getSimpleName() + "." + propMapping.getPropertyName()
-						+ " : java type should be CharSequence or char[] for CLOB/NCLOB");
+						+ " : java type should be CharSequence (String etc) for CLOB/NCLOB/LONGVARCHAR/LONGNVARCHAR");
 			}
 		}
 	}

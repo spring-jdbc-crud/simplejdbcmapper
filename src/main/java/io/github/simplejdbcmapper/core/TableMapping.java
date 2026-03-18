@@ -117,7 +117,7 @@ class TableMapping {
 
 	public String getPropertyClassName(String propertyName) {
 		PropertyMapping propMapping = propertyNameMap.get(propertyName);
-		return propMapping == null ? null : propMapping.getPropertyClassName();
+		return propMapping == null ? null : propMapping.getPropertyType().getName();
 	}
 
 	public int getColumnSqlType(String propertyName) {
@@ -151,7 +151,7 @@ class TableMapping {
 	}
 
 	public String getIdPropertyClassName() {
-		return getIdPropertyMapping().getPropertyClassName();
+		return getIdPropertyMapping().getPropertyType().getName();
 	}
 
 	public int getIdColumnSqlType() {

@@ -26,7 +26,6 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import io.github.simplejdbcmapper.exception.MapperException;
-import io.github.simplejdbcmapper.model.BlobErr;
 import io.github.simplejdbcmapper.model.ClobErr;
 import io.github.simplejdbcmapper.model.Order;
 import io.github.simplejdbcmapper.model.StatusEnum;
@@ -127,11 +126,11 @@ class TypeCheckOracleTest {
 	@Test
 	void insert_ClobErrTest() {
 		ClobErr obj = new ClobErr();
-		obj.setClobData(new byte[] { 10, 20, 30 });
+		obj.setClobData(new String[] { "a", "b", "c" });
 		Exception exception = Assertions.assertThrows(MapperException.class, () -> {
 			sjm.insert(obj);
 		});
-		assertTrue(exception.getMessage().contains("java type should be CharSequence or char[] for CLOB/NCLOB"));
+		assertTrue(exception.getMessage().contains("java type should be CharSequence"));
 	}
 
 	@Test
@@ -215,25 +214,14 @@ class TypeCheckOracleTest {
 	}
 
 	@Test
-	void update_BlobErrTest() {
-		BlobErr obj = new BlobErr();
-		obj.setId(1);
-		obj.setImage("ABC");
-		Exception exception = Assertions.assertThrows(MapperException.class, () -> {
-			sjm.update(obj);
-		});
-		assertTrue(exception.getMessage().contains("java type should be byte[] for BLOB"));
-	}
-
-	@Test
 	void update_ClobErrTest() {
 		ClobErr obj = new ClobErr();
 		obj.setId(1);
-		obj.setClobData(new byte[] { 10, 20, 30 });
+		obj.setClobData(new String[] { "a", "b", "c" });
 		Exception exception = Assertions.assertThrows(MapperException.class, () -> {
 			sjm.update(obj);
 		});
-		assertTrue(exception.getMessage().contains("java type should be CharSequence or char[] for CLOB/NCLOB"));
+		assertTrue(exception.getMessage().contains("java type should be CharSequence"));
 	}
 
 	@Test

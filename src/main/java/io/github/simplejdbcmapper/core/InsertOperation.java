@@ -1,7 +1,5 @@
 package io.github.simplejdbcmapper.core;
 
-import java.sql.Types;
-
 import org.springframework.beans.BeanWrapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -54,10 +52,9 @@ class InsertOperation {
 		for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {
 			int columnSqlType = propMapping.getColumnOverriddenSqlType() == null ? propMapping.getColumnSqlType()
 					: propMapping.getColumnOverriddenSqlType();
-			if (propMapping.getPropertyType() == byte[].class) {
+			if (propMapping.isBinaryLargeObject()) {
 				assignBlobMapSqlParameterSource(bw, mapSqlParameterSource, propMapping, columnSqlType);
-			} else if (columnSqlType == Types.CLOB || columnSqlType == Types.NCLOB || columnSqlType == Types.LONGVARCHAR
-					|| columnSqlType == Types.LONGNVARCHAR) {
+			} else if (propMapping.isCharacterLargeObject()) {
 				assignClobMapSqlParameterSource(bw, mapSqlParameterSource, propMapping, columnSqlType);
 			} else {
 				// SimpleJdbcInsert logs extra stuff when we override its internal sqltype so
@@ -145,17 +142,20 @@ class InsertOperation {
 	}
 
 	private void assignClobMapSqlParameterSource(BeanWrapper bw, MapSqlParameterSource mapSqlParameterSource,
-			PropertyMapping propMapping, int sqlType) {
+			PropertyMapping propMapping, int columnSqlType) {
 		Object val = bw.getPropertyValue(propMapping.getPropertyName());
 		if (val == null) {
 			mapSqlParameterSource.addValue(propMapping.getColumnName(), null);
 		} else {
 			if (val instanceof CharSequence charSequence) {
 				mapSqlParameterSource.addValue(propMapping.getColumnName(), new SqlCharacterValue(charSequence),
-						sqlType);
+						columnSqlType);
+			} else if (val instanceof char[] charArray) {
+				mapSqlParameterSource.addValue(propMapping.getColumnName(), new SqlCharacterValue(charArray),
+						columnSqlType);
 			} else {
 				throw new MapperException(bw.getWrappedClass().getSimpleName() + "." + propMapping.getPropertyName()
-						+ " : java type should be CharSequence (String etc) for CLOB/NCLOB/LONGVARCHAR/LONGNVARCHAR");
+						+ " : java type should be CharSequence or char[]");
 			}
 		}
 	}

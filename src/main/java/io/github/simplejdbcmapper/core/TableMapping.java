@@ -102,6 +102,7 @@ class TableMapping {
 			}
 			columnNameMap.put(propMapping.getColumnName(), propMapping);
 			propertyNameMap.put(propMapping.getPropertyName(), propMapping);
+
 		}
 	}
 
@@ -222,4 +223,5 @@ class TableMapping {
 	public boolean hasAutoAssignProperties() {
 		return autoAssignProperties;
 	}
+
 }

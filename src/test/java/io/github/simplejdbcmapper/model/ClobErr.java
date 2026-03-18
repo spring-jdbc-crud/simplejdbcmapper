@@ -12,7 +12,7 @@ public class ClobErr {
 
 	// CLOB being mapped to invalid type byte[]
 	@Column
-	private byte[] clobData;
+	private String[] clobData;
 
 	public Integer getId() {
 		return id;
@@ -22,11 +22,11 @@ public class ClobErr {
 		this.id = id;
 	}
 
-	public byte[] getClobData() {
+	public String[] getClobData() {
 		return clobData;
 	}
 
-	public void setClobData(byte[] clobData) {
+	public void setClobData(String[] clobData) {
 		this.clobData = clobData;
 	}
 

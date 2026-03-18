@@ -130,14 +130,14 @@ class UpdateOperation {
 		for (String paramName : parameters) {
 			if (paramName.equals(INCREMENTED_VERSION)) {
 				Integer incrementedVersionVal = getIncrementedVersionValue(tableMapping, bw);
-				mapSqlParameterSource.addValue(INCREMENTED_VERSION, incrementedVersionVal, java.sql.Types.INTEGER);
+				mapSqlParameterSource.addValue(INCREMENTED_VERSION, incrementedVersionVal, Types.INTEGER);
 			} else {
 				int columnSqlType = tableMapping.getColumnOverriddenSqlType(paramName) == null
 						? tableMapping.getColumnSqlType(paramName)
 						: tableMapping.getColumnOverriddenSqlType(paramName);
-				if (columnSqlType == Types.BLOB) {
-					assignBlobMapSqlParameterSource(bw, mapSqlParameterSource, paramName);
-				} else if (columnSqlType == Types.CLOB || columnSqlType == Types.NCLOB) {
+				if (tableMapping.getPropertyMappingByPropertyName(paramName).isBinaryLargeObject()) {
+					assignBlobMapSqlParameterSource(bw, mapSqlParameterSource, paramName, columnSqlType);
+				} else if (tableMapping.getPropertyMappingByPropertyName(paramName).isCharacterLargeObject()) {
 					assignClobMapSqlParameterSource(bw, mapSqlParameterSource, paramName, columnSqlType);
 				} else {
 					mapSqlParameterSource.addValue(paramName, bw.getPropertyValue(paramName), columnSqlType);
@@ -148,18 +148,14 @@ class UpdateOperation {
 	}
 
 	private void assignBlobMapSqlParameterSource(BeanWrapper bw, MapSqlParameterSource mapSqlParameterSource,
-			String paramName) {
+			String paramName, int columnSqlType) {
 		Object val = bw.getPropertyValue(paramName);
 		if (val == null) {
-			mapSqlParameterSource.addValue(paramName, null, Types.BLOB);
+			mapSqlParameterSource.addValue(paramName, null, columnSqlType);
 		} else {
-			if (val instanceof byte[] byteArray) {
-				mapSqlParameterSource.addValue(paramName, new SqlBinaryValue(byteArray), Types.BLOB);
-			} else {
-				throw new MapperException(bw.getWrappedClass().getSimpleName() + "." + paramName
-						+ ": java type should be byte[] for BLOB");
-			}
+			mapSqlParameterSource.addValue(paramName, new SqlBinaryValue((byte[]) val), columnSqlType);
 		}
+
 	}
 
 	private void assignClobMapSqlParameterSource(BeanWrapper bw, MapSqlParameterSource mapSqlParameterSource,
@@ -174,7 +170,7 @@ class UpdateOperation {
 				mapSqlParameterSource.addValue(paramName, new SqlCharacterValue(charArray), sqlType);
 			} else {
 				throw new MapperException(bw.getWrappedClass().getSimpleName() + "." + paramName
-						+ " : java type should be CharSequence or char[] for CLOB/NCLOB");
+						+ " : java type should be CharSequence or char[]");
 			}
 		}
 	}

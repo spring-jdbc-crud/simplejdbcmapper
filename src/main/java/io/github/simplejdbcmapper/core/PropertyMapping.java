@@ -13,6 +13,8 @@
  */
 package io.github.simplejdbcmapper.core;
 
+import java.sql.Types;
+
 /**
  * Object property to database column mapping.
  *
@@ -41,7 +43,16 @@ class PropertyMapping {
 
 	private boolean updatedByAnnotation = false;
 
+	private boolean binaryLargeObject = false;
+
+	private boolean characterLargeObject = false;
+
 	public PropertyMapping(String propertyName, Class<?> propertyType, String columnName, int columnSqlType) {
+		this(propertyName, propertyType, columnName, columnSqlType, null);
+	}
+
+	public PropertyMapping(String propertyName, Class<?> propertyType, String columnName, int columnSqlType,
+			Integer columnOverriddenSqlType) {
 		if (propertyName == null || propertyType == null || columnName == null) {
 			throw new IllegalArgumentException("propertyName, propertyClassName, columnName must not be null");
 		}
@@ -51,6 +62,11 @@ class PropertyMapping {
 		// table column names or column names with spaces in them
 		this.columnName = InternalUtils.toLowerCase(columnName);
 		this.columnSqlType = columnSqlType;
+		this.columnOverriddenSqlType = columnOverriddenSqlType;
+
+		determineBinaryLargeObject();
+		determineCharacterLargeObject();
+
 	}
 
 	public int getColumnSqlType() {
@@ -63,10 +79,6 @@ class PropertyMapping {
 
 	public Integer getColumnOverriddenSqlType() {
 		return columnOverriddenSqlType;
-	}
-
-	public void setColumnOverriddenSqlType(Integer columnOverriddenSqlType) {
-		this.columnOverriddenSqlType = columnOverriddenSqlType;
 	}
 
 	public String getPropertyName() {
@@ -127,6 +139,32 @@ class PropertyMapping {
 
 	public void setUpdatedByAnnotation(boolean updatedByAnnotation) {
 		this.updatedByAnnotation = updatedByAnnotation;
+	}
+
+	public boolean isBinaryLargeObject() {
+		return binaryLargeObject;
+	}
+
+	public boolean isCharacterLargeObject() {
+		return characterLargeObject;
+	}
+
+	private void determineBinaryLargeObject() {
+		if (propertyType == byte[].class) {
+			binaryLargeObject = true;
+		}
+	}
+
+	private void determineCharacterLargeObject() {
+		if (propertyType == char[].class) {
+			characterLargeObject = true;
+			return;
+		}
+		int effectiveSqlType = columnOverriddenSqlType == null ? columnSqlType : columnOverriddenSqlType;
+		if (effectiveSqlType == Types.CLOB || effectiveSqlType == Types.NCLOB || effectiveSqlType == Types.LONGVARCHAR
+				|| effectiveSqlType == Types.LONGNVARCHAR) {
+			characterLargeObject = true;
+		}
 	}
 
 }

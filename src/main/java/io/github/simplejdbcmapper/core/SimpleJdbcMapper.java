@@ -205,11 +205,11 @@ public final class SimpleJdbcMapper {
 	 * underscore case property name.
 	 *
 	 * <p>
-	 * Will return something like below if 'name' property is mapped to 'last_name'
-	 * column in database:
+	 * Will return something like below if 'userLastName' property is mapped to
+	 * 'last_name' column in database:
 	 *
 	 * <pre>
-	 * "somecolumn, someothercolumn, last_name AS name"
+	 * "somecolumn, someothercolumn, last_name AS user_last_name"
 	 * </pre>
 	 * 
 	 * @param clazz the class

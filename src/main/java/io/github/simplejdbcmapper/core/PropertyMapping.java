@@ -54,7 +54,7 @@ class PropertyMapping {
 	public PropertyMapping(String propertyName, Class<?> propertyType, String columnName, int columnSqlType,
 			Integer columnOverriddenSqlType) {
 		if (propertyName == null || propertyType == null || columnName == null) {
-			throw new IllegalArgumentException("propertyName, propertyClassName, columnName must not be null");
+			throw new IllegalArgumentException("propertyName, propertyType, columnName must not be null");
 		}
 		this.propertyName = propertyName;
 		this.propertyType = propertyType;
@@ -63,10 +63,8 @@ class PropertyMapping {
 		this.columnName = InternalUtils.toLowerCase(columnName);
 		this.columnSqlType = columnSqlType;
 		this.columnOverriddenSqlType = columnOverriddenSqlType;
-
 		determineBinaryLargeObject();
 		determineCharacterLargeObject();
-
 	}
 
 	public int getColumnSqlType() {

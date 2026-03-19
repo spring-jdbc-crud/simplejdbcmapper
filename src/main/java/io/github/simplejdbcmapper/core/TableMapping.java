@@ -13,7 +13,6 @@
  */
 package io.github.simplejdbcmapper.core;
 
-import java.sql.Types;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -113,16 +112,6 @@ class TableMapping {
 	public String getPropertyName(String columnName) {
 		PropertyMapping propMapping = columnNameMap.get(columnName);
 		return propMapping == null ? null : propMapping.getPropertyName();
-	}
-
-	public int getColumnSqlType(String propertyName) {
-		PropertyMapping propMapping = propertyNameMap.get(propertyName);
-		return propMapping == null ? Types.NULL : propMapping.getColumnSqlType();
-	}
-
-	public Integer getColumnOverriddenSqlType(String propertyName) {
-		PropertyMapping propMapping = propertyNameMap.get(propertyName);
-		return propMapping == null ? null : propMapping.getColumnOverriddenSqlType();
 	}
 
 	public String getTableClassName() {

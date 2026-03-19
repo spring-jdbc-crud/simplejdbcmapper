@@ -132,12 +132,12 @@ class UpdateOperation {
 				Integer incrementedVersionVal = getIncrementedVersionValue(tableMapping, bw);
 				mapSqlParameterSource.addValue(INCREMENTED_VERSION, incrementedVersionVal, Types.INTEGER);
 			} else {
-				int columnSqlType = tableMapping.getColumnOverriddenSqlType(paramName) == null
-						? tableMapping.getColumnSqlType(paramName)
-						: tableMapping.getColumnOverriddenSqlType(paramName);
-				if (tableMapping.getPropertyMappingByPropertyName(paramName).isBinaryLargeObject()) {
+				PropertyMapping propMapping = tableMapping.getPropertyMappingByPropertyName(paramName);
+				int columnSqlType = propMapping.getColumnOverriddenSqlType() == null ? propMapping.getColumnSqlType()
+						: propMapping.getColumnOverriddenSqlType();
+				if (propMapping.isBinaryLargeObject()) {
 					assignBlobMapSqlParameterSource(bw, mapSqlParameterSource, paramName, columnSqlType);
-				} else if (tableMapping.getPropertyMappingByPropertyName(paramName).isCharacterLargeObject()) {
+				} else if (propMapping.isCharacterLargeObject()) {
 					assignClobMapSqlParameterSource(bw, mapSqlParameterSource, paramName, columnSqlType);
 				} else {
 					mapSqlParameterSource.addValue(paramName, bw.getPropertyValue(paramName), columnSqlType);
@@ -155,7 +155,6 @@ class UpdateOperation {
 		} else {
 			mapSqlParameterSource.addValue(paramName, new SqlBinaryValue((byte[]) val), columnSqlType);
 		}
-
 	}
 
 	private void assignClobMapSqlParameterSource(BeanWrapper bw, MapSqlParameterSource mapSqlParameterSource,

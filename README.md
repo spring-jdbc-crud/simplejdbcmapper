@@ -14,7 +14,7 @@ A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations by maki
 [Annotations](#annotations)  
 [Configuration for auto assigning @CreatedBy, @UpdateBy, @CreatedOn, @UpdatedOn](#configuration-for-auto-assigning-createdby-updateby-createdon-updatedon)  
 [Accessing JdbcClient JdbcTemplate](#accessing-jdbcclient-jdbctemplate)  
-[BLOB CLOB mapping](#blob-clob-mapping)  
+[Large Object mapping](#large-object-mapping)  
 [Logging](#logging)  
 [Limitations](#limitations)  
 [Troubleshooting](#troubleshooting)  
@@ -413,11 +413,13 @@ public SimpleJdbcMapper simpleJdbcMapper(DataSource dataSource) {
 ```
 There is no requirement that you have to use the underlying JdbcClient/JdbcTemplate for your custom queries. You can create your own JdbcClient/JdbcTemplate and use it. 
 
-## BLOB CLOB mapping
+## Large Object mapping
 
-BLOB database columns should be mapped to java type byte[]. No other type is supported.
+Binary large object database columns should be mapped to java type byte[]. No other type is supported.
 
-CLOB/NCLOB database columns should be mapped to java types String (CharSequence). No other type is supported.
+Character large object database columns should be mapped to java types String or other CharSequence or char[]. No other types are supported.
+
+If there is a need to use InputStream/Reader you will have to use JdbcTemplate directly for that use case.
 
 
 ## Logging

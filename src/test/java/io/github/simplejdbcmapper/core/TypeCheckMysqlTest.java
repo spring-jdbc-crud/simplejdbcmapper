@@ -104,7 +104,7 @@ class TypeCheckMysqlTest {
 		DateTimeFormatter oFmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 		assertEquals(oFmt.format(offsetVal), oFmt.format(tc.getOffsetDateTimeData()));
 
-		assertEquals("123456", tc.getTextData());
+		assertEquals(iObj.getTextData(), tc.getTextData());
 
 	}
 
@@ -164,7 +164,7 @@ class TypeCheckMysqlTest {
 		DateTimeFormatter oFmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 		assertEquals(oFmt.format(offsetVal), oFmt.format(tc.getOffsetDateTimeData()));
 
-		assertEquals("123456", tc.getTextData());
+		assertEquals(uObj.getTextData(), tc.getTextData());
 
 	}
 

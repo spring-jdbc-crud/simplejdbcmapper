@@ -10,7 +10,7 @@ public class ClobErr {
 	@Id(type = IdType.AUTO_GENERATED)
 	private Integer id;
 
-	// CLOB being mapped to invalid type byte[]
+	// CLOB being mapped to invalid type
 	@Column
 	private String[] clobData;
 

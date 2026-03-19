@@ -158,15 +158,15 @@ class UpdateOperation {
 	}
 
 	private void assignClobMapSqlParameterSource(BeanWrapper bw, MapSqlParameterSource mapSqlParameterSource,
-			String paramName, int sqlType) {
+			String paramName, int columnSqlType) {
 		Object val = bw.getPropertyValue(paramName);
 		if (val == null) {
-			mapSqlParameterSource.addValue(paramName, null, sqlType);
+			mapSqlParameterSource.addValue(paramName, null, columnSqlType);
 		} else {
 			if (val instanceof CharSequence charSequence) {
-				mapSqlParameterSource.addValue(paramName, new SqlCharacterValue(charSequence), sqlType);
+				mapSqlParameterSource.addValue(paramName, new SqlCharacterValue(charSequence), columnSqlType);
 			} else if (val instanceof char[] charArray) {
-				mapSqlParameterSource.addValue(paramName, new SqlCharacterValue(charArray), sqlType);
+				mapSqlParameterSource.addValue(paramName, new SqlCharacterValue(charArray), columnSqlType);
 			} else {
 				throw new MapperException(bw.getWrappedClass().getSimpleName() + "." + paramName
 						+ " : java type should be String or other CharSequence or char[]");

@@ -130,7 +130,7 @@ class TypeCheckOracleTest {
 		Exception exception = Assertions.assertThrows(MapperException.class, () -> {
 			sjm.insert(obj);
 		});
-		assertTrue(exception.getMessage().contains("java type should be CharSequence"));
+		assertTrue(exception.getMessage().contains("java type should be String or other CharSequence or"));
 	}
 
 	@Test
@@ -221,7 +221,7 @@ class TypeCheckOracleTest {
 		Exception exception = Assertions.assertThrows(MapperException.class, () -> {
 			sjm.update(obj);
 		});
-		assertTrue(exception.getMessage().contains("java type should be CharSequence"));
+		assertTrue(exception.getMessage().contains("java type should be String or other CharSequence or"));
 	}
 
 	@Test

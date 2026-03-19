@@ -39,6 +39,9 @@ public class TypeCheckPostgres {
 	private byte[] image;
 
 	@Column
+	private String clobData;
+
+	@Column
 	private UUID someUuid;
 
 	@Column(sqlType = Types.TIMESTAMP_WITH_TIMEZONE)
@@ -109,6 +112,14 @@ public class TypeCheckPostgres {
 
 	public void setImage(byte[] image) {
 		this.image = image;
+	}
+
+	public String getClobData() {
+		return clobData;
+	}
+
+	public void setClobData(String clobData) {
+		this.clobData = clobData;
 	}
 
 	public StatusEnum getStatus() {

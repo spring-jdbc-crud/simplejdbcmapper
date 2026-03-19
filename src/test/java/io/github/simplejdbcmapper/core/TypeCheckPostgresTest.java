@@ -75,6 +75,8 @@ class TypeCheckPostgresTest {
 
 		iObj.setImage(new byte[] { 10, 20, 30 });
 
+		iObj.setClobData("test");
+
 		var timestampVal = new Date();
 		iObj.setJavaUtilDateTsData(timestampVal);
 
@@ -101,6 +103,8 @@ class TypeCheckPostgresTest {
 
 		assertArrayEquals(iObj.getImage(), tc.getImage());
 
+		assertEquals(iObj.getClobData(), tc.getClobData());
+
 		assertTrue(tc.getBooleanVal());
 
 		SimpleDateFormat fmtTs = new SimpleDateFormat("yyyyMMdd HHmmss");
@@ -114,6 +118,7 @@ class TypeCheckPostgresTest {
 		// postgres stores TIMESTAMP WITH TIMEZONE as absolute timestamp value
 		// so we have to check for instant
 		assertEquals(offsetVal.toInstant(), tc.getOffsetDateTimeData().toInstant());
+
 	}
 
 	@Test
@@ -139,6 +144,8 @@ class TypeCheckPostgresTest {
 
 		uObj.setImage(new byte[] { 10, 20, 30 });
 
+		uObj.setClobData("test");
+
 		var timestampVal = new Date();
 		uObj.setJavaUtilDateTsData(timestampVal);
 
@@ -163,7 +170,9 @@ class TypeCheckPostgresTest {
 
 		assertEquals(0, tc.getBigDecimalData().compareTo(tc.getBigDecimalData()));
 
-		assertArrayEquals(tc.getImage(), tc.getImage());
+		assertArrayEquals(uObj.getImage(), tc.getImage());
+
+		assertEquals(uObj.getClobData(), tc.getClobData());
 
 		assertTrue(tc.getBooleanVal());
 

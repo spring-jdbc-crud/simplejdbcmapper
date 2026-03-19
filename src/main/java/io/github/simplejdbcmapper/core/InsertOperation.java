@@ -155,7 +155,7 @@ class InsertOperation {
 						columnSqlType);
 			} else {
 				throw new MapperException(bw.getWrappedClass().getSimpleName() + "." + propMapping.getPropertyName()
-						+ " : java type should be CharSequence or char[]");
+						+ " : java type should be String or other CharSequence or char[]");
 			}
 		}
 	}

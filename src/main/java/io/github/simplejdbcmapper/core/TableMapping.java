@@ -102,7 +102,6 @@ class TableMapping {
 			}
 			columnNameMap.put(propMapping.getColumnName(), propMapping);
 			propertyNameMap.put(propMapping.getPropertyName(), propMapping);
-
 		}
 	}
 
@@ -114,11 +113,6 @@ class TableMapping {
 	public String getPropertyName(String columnName) {
 		PropertyMapping propMapping = columnNameMap.get(columnName);
 		return propMapping == null ? null : propMapping.getPropertyName();
-	}
-
-	public String getPropertyClassName(String propertyName) {
-		PropertyMapping propMapping = propertyNameMap.get(propertyName);
-		return propMapping == null ? null : propMapping.getPropertyType().getName();
 	}
 
 	public int getColumnSqlType(String propertyName) {
@@ -149,10 +143,6 @@ class TableMapping {
 
 	public String getIdPropertyName() {
 		return getIdPropertyMapping().getPropertyName();
-	}
-
-	public String getIdPropertyClassName() {
-		return getIdPropertyMapping().getPropertyType().getName();
 	}
 
 	public int getIdColumnSqlType() {
@@ -223,5 +213,4 @@ class TableMapping {
 	public boolean hasAutoAssignProperties() {
 		return autoAssignProperties;
 	}
-
 }

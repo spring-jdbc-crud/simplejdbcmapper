@@ -42,6 +42,9 @@ public class TypeCheckMysql {
 	@Column(name = "string_enum")
 	private StatusEnum status;
 
+	@Column
+	private String textData;
+
 	public Integer getId() {
 		return id;
 	}
@@ -120,6 +123,14 @@ public class TypeCheckMysql {
 
 	public void setStatus(StatusEnum status) {
 		this.status = status;
+	}
+
+	public String getTextData() {
+		return textData;
+	}
+
+	public void setTextData(String textData) {
+		this.textData = textData;
 	}
 
 }

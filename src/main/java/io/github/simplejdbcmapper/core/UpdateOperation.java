@@ -170,7 +170,7 @@ class UpdateOperation {
 				mapSqlParameterSource.addValue(paramName, new SqlCharacterValue(charArray), sqlType);
 			} else {
 				throw new MapperException(bw.getWrappedClass().getSimpleName() + "." + paramName
-						+ " : java type should be CharSequence or char[]");
+						+ " : java type should be String or other CharSequence or char[]");
 			}
 		}
 	}

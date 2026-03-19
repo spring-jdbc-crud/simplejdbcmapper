@@ -78,6 +78,8 @@ class TypeCheckMysqlTest {
 		var offsetVal = OffsetDateTime.now();
 		iObj.setOffsetDateTimeData(offsetVal);
 
+		iObj.setTextData("123456");
+
 		sjm.insert(iObj);
 
 		TypeCheckMysql tc = sjm.findById(TypeCheckMysql.class, iObj.getId());
@@ -101,6 +103,8 @@ class TypeCheckMysqlTest {
 		assertEquals(StatusEnum.OPEN, tc.getStatus());
 		DateTimeFormatter oFmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 		assertEquals(oFmt.format(offsetVal), oFmt.format(tc.getOffsetDateTimeData()));
+
+		assertEquals("123456", tc.getTextData());
 
 	}
 

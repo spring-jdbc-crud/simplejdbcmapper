@@ -69,6 +69,7 @@ CREATE TABLE schema1.type_check (
    big_decimal_data numeric(10,2),
    boolean_val BOOLEAN,
    image blob,
+   text_data text,
    offset_date_time_data timestamp,
    string_enum varchar(100),
    non_model_column varchar(100),

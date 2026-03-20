@@ -106,16 +106,6 @@ class SimpleJdbcMapperSupport {
 		}
 	}
 
-	@SuppressWarnings("rawtypes")
-	public Supplier getRecordAuditedBySupplier() {
-		return recordAuditedBySupplier;
-	}
-
-	@SuppressWarnings("rawtypes")
-	public Supplier getRecordAuditedOnSupplier() {
-		return recordAuditedOnSupplier;
-	}
-
 	public ConversionService getConversionService() {
 		return conversionService;
 	}
@@ -146,6 +136,16 @@ class SimpleJdbcMapperSupport {
 		BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(obj);
 		bw.setConversionService(conversionService);
 		return bw;
+	}
+
+	@SuppressWarnings("rawtypes")
+	Supplier getRecordAuditedBySupplier() {
+		return recordAuditedBySupplier;
+	}
+
+	@SuppressWarnings("rawtypes")
+	Supplier getRecordAuditedOnSupplier() {
+		return recordAuditedOnSupplier;
 	}
 
 	SimpleCache<String, TableMapping> getTableMappingCache() {

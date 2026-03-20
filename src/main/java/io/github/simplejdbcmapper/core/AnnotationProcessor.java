@@ -206,7 +206,8 @@ class AnnotationProcessor {
 
 	private void annotationVersionTypeCheck(List<PropertyMapping> propertyMappings, Class<?> clazz) {
 		for (PropertyMapping propMapping : propertyMappings) {
-			if (propMapping.isVersionAnnotation() && (propMapping.getPropertyType() != Integer.class)) {
+			if (propMapping.isVersionAnnotation()
+					&& !(Integer.class.getName().equals(propMapping.getPropertyClassName()))) {
 				throw new AnnotationException("@Version requires the type of property " + clazz.getSimpleName() + "."
 						+ propMapping.getPropertyName() + " to be Integer");
 			}

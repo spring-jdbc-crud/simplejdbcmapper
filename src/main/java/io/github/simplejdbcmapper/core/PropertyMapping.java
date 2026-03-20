@@ -23,7 +23,7 @@ import java.sql.Types;
 class PropertyMapping {
 	private String propertyName;
 
-	private Class<?> propertyType;
+	private String propertyClassName;
 
 	private String columnName;
 
@@ -57,7 +57,7 @@ class PropertyMapping {
 			throw new IllegalArgumentException("propertyName, propertyType, columnName must not be null");
 		}
 		this.propertyName = propertyName;
-		this.propertyType = propertyType;
+		this.propertyClassName = propertyType.getName();
 		// column names stored in lower case always. No plans to support case sensitive
 		// table column names or column names with spaces in them
 		this.columnName = InternalUtils.toLowerCase(columnName);
@@ -83,8 +83,8 @@ class PropertyMapping {
 		return propertyName;
 	}
 
-	public Class<?> getPropertyType() {
-		return propertyType;
+	public String getPropertyClassName() {
+		return propertyClassName;
 	}
 
 	public String getColumnName() {
@@ -148,13 +148,13 @@ class PropertyMapping {
 	}
 
 	private void determineBinaryLargeObject() {
-		if (propertyType == byte[].class) {
+		if (byte[].class.getName().equals(propertyClassName)) {
 			binaryLargeObject = true;
 		}
 	}
 
 	private void determineCharacterLargeObject() {
-		if (propertyType == char[].class) {
+		if (char[].class.getName().equals(propertyClassName)) {
 			characterLargeObject = true;
 			return;
 		}

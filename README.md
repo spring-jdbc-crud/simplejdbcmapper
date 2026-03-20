@@ -279,7 +279,7 @@ class Product {
 
 **@Id**
 
-The java type of the property can be any type. @Id can only be mapped to a single database column.  Multi-column id  are not supported.
+The id property can be of any java type. @Id can only be mapped to a single database column.  Multi-column ids  are not supported.
 
 There are 2 forms of usage for this.
 

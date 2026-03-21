@@ -148,13 +148,13 @@ class TableMappingProvider {
 		if (!StringUtils.hasText(tableName)) {
 			throw new IllegalArgumentException("tableName must not be blank");
 		}
-		TableMetaDataContext tableMetaDataContext = createNewTableMetaDataContext(tableName, schema, catalog);
+		TableMetaDataContext tableMetaDataContext = createTableMetaDataContext(tableName, schema, catalog);
 		TableMetaDataProvider provider = TableMetaDataProviderFactory.createMetaDataProvider(dataSource,
 				tableMetaDataContext);
 		return provider.getTableParameterMetaData();
 	}
 
-	private TableMetaDataContext createNewTableMetaDataContext(String table, String schema, String catalog) {
+	private TableMetaDataContext createTableMetaDataContext(String table, String schema, String catalog) {
 		TableMetaDataContext tableMetaDataContext = new TableMetaDataContext();
 		tableMetaDataContext.setTableName(table);
 		tableMetaDataContext.setSchemaName(schema);

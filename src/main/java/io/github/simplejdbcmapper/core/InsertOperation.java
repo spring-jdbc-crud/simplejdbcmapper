@@ -31,7 +31,7 @@ class InsertOperation {
 		MapSqlParameterSource mapSqlParameterSource = createMapSqlParameterSource(tableMapping, bw);
 		SimpleJdbcInsert simpleJdbcInsert = insertSqlCache.get(obj.getClass().getName());
 		if (simpleJdbcInsert == null) {
-			simpleJdbcInsert = createNewSimpleJdbcInsert(tableMapping);
+			simpleJdbcInsert = createSimpleJdbcInsert(tableMapping);
 			// SimpleJdbcInsert is thread safe so can be cached
 			insertSqlCache.put(obj.getClass().getName(), simpleJdbcInsert);
 		}
@@ -118,7 +118,7 @@ class InsertOperation {
 		}
 	}
 
-	private SimpleJdbcInsert createNewSimpleJdbcInsert(TableMapping tableMapping) {
+	private SimpleJdbcInsert createSimpleJdbcInsert(TableMapping tableMapping) {
 		SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(sjmSupport.getJdbcTemplate())
 				.withCatalogName(tableMapping.getCatalogName()).withSchemaName(tableMapping.getSchemaName())
 				.withTableName(tableMapping.getTableName());

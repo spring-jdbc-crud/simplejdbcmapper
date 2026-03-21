@@ -283,7 +283,8 @@ public final class SimpleJdbcMapper {
 
 	/**
 	 * Exposing the conversion service used, so if necessary new converters can be
-	 * added etc.
+	 * added etc. The default conversion service used in SimpleJdbcMapper is
+	 * Spring's DefaultConvertionService class.
 	 *
 	 * @return the conversion service.
 	 */

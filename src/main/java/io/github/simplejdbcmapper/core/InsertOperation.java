@@ -50,8 +50,7 @@ class InsertOperation {
 	private MapSqlParameterSource createMapSqlParameterSource(TableMapping tableMapping, BeanWrapper bw) {
 		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
 		for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {
-			int columnSqlType = propMapping.getColumnOverriddenSqlType() == null ? propMapping.getColumnSqlType()
-					: propMapping.getColumnOverriddenSqlType();
+			int columnSqlType = propMapping.getEffectiveSqlType();
 			if (propMapping.isBinaryLargeObject()) {
 				assignBlobMapSqlParameterSource(bw, mapSqlParameterSource, propMapping, columnSqlType);
 			} else if (propMapping.isCharacterLargeObject()) {

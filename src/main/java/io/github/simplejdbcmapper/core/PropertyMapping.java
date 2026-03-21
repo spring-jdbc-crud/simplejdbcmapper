@@ -139,6 +139,10 @@ class PropertyMapping {
 		this.updatedByAnnotation = updatedByAnnotation;
 	}
 
+	public int getEffectiveSqlType() {
+		return columnOverriddenSqlType == null ? columnSqlType : columnOverriddenSqlType;
+	}
+
 	public boolean isBinaryLargeObject() {
 		return binaryLargeObject;
 	}

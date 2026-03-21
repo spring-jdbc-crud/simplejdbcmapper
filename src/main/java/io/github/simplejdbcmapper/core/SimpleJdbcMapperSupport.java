@@ -90,7 +90,7 @@ class SimpleJdbcMapperSupport {
 		return this.npJdbcTemplate;
 	}
 
-	public <T> void setRecordAuditedBySupplier(Supplier<T> supplier) {
+	public synchronized <T> void setRecordAuditedBySupplier(Supplier<T> supplier) {
 		if (recordAuditedBySupplier == null) {
 			recordAuditedBySupplier = supplier;
 		} else {
@@ -98,7 +98,7 @@ class SimpleJdbcMapperSupport {
 		}
 	}
 
-	public <T> void setRecordAuditedOnSupplier(Supplier<T> supplier) {
+	public synchronized <T> void setRecordAuditedOnSupplier(Supplier<T> supplier) {
 		if (recordAuditedOnSupplier == null) {
 			recordAuditedOnSupplier = supplier;
 		} else {

@@ -31,7 +31,7 @@ import org.springframework.util.Assert;
  * <pre>
  * SimpleJdbcMapper should always be prepared in a Spring application context
  * and given to services as a bean reference. It maintains state, for example
- * caches table meta-data, insert/update SQL etc.
+ * caches insert/update SQL etc.
  * 
  * <b> Note: An instance of SimpleJdbcMapper is thread safe.</b>
  * </pre>

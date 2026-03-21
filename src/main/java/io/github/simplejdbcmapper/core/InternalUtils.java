@@ -24,10 +24,6 @@ import org.springframework.util.StringUtils;
  * @author Antony Joseph
  */
 class InternalUtils {
-
-	private InternalUtils() {
-	}
-
 	/**
 	 * Converts underscore case to camel case. Ex: user_last_name gets converted to
 	 * userLastName.
@@ -67,4 +63,6 @@ class InternalUtils {
 		return str != null ? str.toLowerCase(Locale.US) : null;
 	}
 
+	private InternalUtils() {
+	}
 }

@@ -162,7 +162,7 @@ class PropertyMapping {
 			characterLargeObject = true;
 			return;
 		}
-		int effectiveSqlType = columnOverriddenSqlType == null ? columnSqlType : columnOverriddenSqlType;
+		int effectiveSqlType = getEffectiveSqlType();
 		if (effectiveSqlType == Types.CLOB || effectiveSqlType == Types.NCLOB || effectiveSqlType == Types.LONGVARCHAR
 				|| effectiveSqlType == Types.LONGNVARCHAR) {
 			characterLargeObject = true;

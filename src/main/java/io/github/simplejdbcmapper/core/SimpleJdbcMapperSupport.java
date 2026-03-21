@@ -91,6 +91,7 @@ class SimpleJdbcMapperSupport {
 	}
 
 	public synchronized <T> void setRecordAuditedBySupplier(Supplier<T> supplier) {
+		// not using volatile since this can be called only once
 		if (recordAuditedBySupplier == null) {
 			recordAuditedBySupplier = supplier;
 		} else {
@@ -99,6 +100,7 @@ class SimpleJdbcMapperSupport {
 	}
 
 	public synchronized <T> void setRecordAuditedOnSupplier(Supplier<T> supplier) {
+		// not using volatile since this can be called only once
 		if (recordAuditedOnSupplier == null) {
 			recordAuditedOnSupplier = supplier;
 		} else {
@@ -111,6 +113,7 @@ class SimpleJdbcMapperSupport {
 	}
 
 	public synchronized void setConversionService(ConversionService conversionService) {
+		// not using volatile since this can be called only once
 		if (conversionServiceManuallySet) {
 			throw new IllegalStateException("conversionService was already set and cannot be changed.");
 		} else {

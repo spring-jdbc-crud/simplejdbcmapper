@@ -250,7 +250,7 @@ spring.datasource.driver-class-name=com.microsoft.sqlserver.jdbc.SQLServerDriver
 
 **@Table**
 
-Required class level annotation. The table or view should exist in database. The schema/catalog attributes set with @Table will override corresponding values on the SimpleJdbcMapper() constructor (if any). Note that table names with spaces are not supported.
+Required class level annotation. The table or view should exist in database. The schema/catalog attributes set with @Table will override corresponding values on the SimpleJdbcMapper() constructor (if any). **Note that table names with spaces are not supported.**
 
 Multiple objects can be mapped to the same table. So for example if you have a wide table you could have 2 objects mapped to it. One with a few commonly used columns and another with all the columns.
 
@@ -280,7 +280,7 @@ class Product {
 
 **@Id**
 
-The id property can be of any java type. @Id can only be mapped to a single database column.  Multi-column ids  are not supported.
+The id property can be of any java type. @Id can only be mapped to a single database column.  **Multi-column ids  are not supported.**
 
 There are 2 forms of usage for this.
 
@@ -314,7 +314,7 @@ In this case you will have to manually set the id value before invoking insert()
 
 **@Column**
 
-Properties that need be persisted to the database will need @Column annotation unless the property is already annotated with one of the other annotations (@Id, @Version, @CreatedOn @CreatedBy @UpdatedOn @UpdatedBy). @Column can be used along with the other annotations to map a property to a non default column name. The default column name is camel case property name converted to underscore case name. Note that column names with spaces are not supported.
+Properties that need be persisted to the database will need @Column annotation unless the property is already annotated with one of the other annotations (@Id, @Version, @CreatedOn @CreatedBy @UpdatedOn @UpdatedBy). @Column can be used along with the other annotations to map a property to a non default column name. The default column name is camel case property name converted to underscore case name. **Note that column names with spaces are not supported.**
 
 @Column  
 This will map the property to a column using the default naming convention of camel case to underscore case. For example property 'lastName' will map to column 'last_name' by default.
@@ -401,6 +401,8 @@ Character large object database columns should be mapped to java types String or
 If there is a need to use InputStream/Reader you will have to use JdbcTemplate directly for that use case.
 
 ## Enum mapping
+Enums can be mapped to a database column which stores strings.
+
 ```
 public enum StatusEnum {
 	OPEN, CLOSED;
@@ -452,7 +454,7 @@ Uses the same logging configurations as Spring. In application.properties:
  
 ## Limitations
 
-1. @Id can only be mapped to a single database column.  Multi-column id is not supported.
+1. @Id can only be mapped to a single database column.  Multi-column ids are not supported.
 2. No support for table/column names with spaces in them. 
   
 ## TroubleShooting

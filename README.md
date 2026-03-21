@@ -401,7 +401,6 @@ Character large object database columns should be mapped to java types String or
 If there is a need to use InputStream/Reader you will have to use JdbcTemplate directly for that use case.
 
 ## Enum mapping
-
 ```
 public enum StatusEnum {
 	OPEN, CLOSED;
@@ -410,7 +409,6 @@ public enum StatusEnum {
 ...
 @Column
 private StatusEnum status;  // Maps to a String column in the database (e.g., 'OPEN')
-	
 ```
 
 ## Configuration for auto assigning @CreatedBy, @UpdateBy, @CreatedOn, @UpdatedOn

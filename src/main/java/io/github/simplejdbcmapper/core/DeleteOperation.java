@@ -25,7 +25,8 @@ class DeleteOperation {
 		}
 		BeanWrapper bw = sjmSupport.getBeanWrapper(obj);
 		Object id = bw.getPropertyValue(tableMapping.getIdPropertyName());
-		return sjmSupport.getJdbcTemplate().update(sql, new SqlParameterValue(getIdSqlType(tableMapping), id));
+		return sjmSupport.getJdbcTemplate().update(sql,
+				new SqlParameterValue(tableMapping.getIdPropertyMapping().getEffectiveSqlType(), id));
 	}
 
 	public Integer deleteById(Class<?> clazz, Object id) {
@@ -37,7 +38,8 @@ class DeleteOperation {
 			sql = getDeleteSql(tableMapping);
 			deleteSqlCache.put(clazz.getName(), sql);
 		}
-		return sjmSupport.getJdbcTemplate().update(sql, new SqlParameterValue(getIdSqlType(tableMapping), id));
+		return sjmSupport.getJdbcTemplate().update(sql,
+				new SqlParameterValue(tableMapping.getIdPropertyMapping().getEffectiveSqlType(), id));
 	}
 
 	SimpleCache<String, String> getDeleteSqlCache() {
@@ -49,9 +51,4 @@ class DeleteOperation {
 				+ " = ?";
 	}
 
-	private int getIdSqlType(TableMapping tableMapping) {
-		PropertyMapping idPropMapping = tableMapping.getIdPropertyMapping();
-		return idPropMapping.getColumnOverriddenSqlType() == null ? idPropMapping.getColumnSqlType()
-				: idPropMapping.getColumnOverriddenSqlType();
-	}
 }

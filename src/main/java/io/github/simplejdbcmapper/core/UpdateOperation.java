@@ -133,8 +133,7 @@ class UpdateOperation {
 				mapSqlParameterSource.addValue(INCREMENTED_VERSION, incrementedVersionVal, Types.INTEGER);
 			} else {
 				PropertyMapping propMapping = tableMapping.getPropertyMappingByPropertyName(paramName);
-				int columnSqlType = propMapping.getColumnOverriddenSqlType() == null ? propMapping.getColumnSqlType()
-						: propMapping.getColumnOverriddenSqlType();
+				int columnSqlType = propMapping.getEffectiveSqlType();
 				if (propMapping.isBinaryLargeObject()) {
 					assignBlobMapSqlParameterSource(bw, mapSqlParameterSource, paramName, columnSqlType);
 				} else if (propMapping.isCharacterLargeObject()) {

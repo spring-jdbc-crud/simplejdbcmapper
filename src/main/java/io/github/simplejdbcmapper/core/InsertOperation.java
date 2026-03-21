@@ -57,7 +57,7 @@ class InsertOperation {
 			} else if (propMapping.isCharacterLargeObject()) {
 				assignClobMapSqlParameterSource(bw, mapSqlParameterSource, propMapping, columnSqlType);
 			} else {
-				// SimpleJdbcInsert logs extra stuff when we override its internal sqltype so
+				// SimpleJdbcInsert logs extra stuff when its internal sqltype is overridden so
 				// keep it to a minimum
 				if (propMapping.getColumnOverriddenSqlType() == null) {
 					mapSqlParameterSource.addValue(propMapping.getColumnName(),

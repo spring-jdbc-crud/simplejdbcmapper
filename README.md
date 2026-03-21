@@ -441,7 +441,7 @@ Uses the same logging configurations as Spring. In application.properties:
  
 ## Limitations
 
-1. @Id can only be mapped to a single database column.  Multi-column id are not supported.
+1. @Id can only be mapped to a single database column.  Multi-column id is not supported.
 2. No support for table/column names with spaces in them. 
   
 ## TroubleShooting

@@ -12,9 +12,10 @@ A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations by maki
 [JDK and Spring version requirements](#jdk-and-spring-version-requirements)  
 [Spring bean configuration for SimpleJdbcMapper](#spring-bean-configuration-for-simplejdbcmapper)  
 [Annotations](#annotations)  
+[Large Object mapping](#large-object-mapping)  
+[Enum mapping](#enum-mapping)  
 [Configuration for auto assigning @CreatedBy, @UpdateBy, @CreatedOn, @UpdatedOn](#configuration-for-auto-assigning-createdby-updateby-createdon-updatedon)  
 [Accessing JdbcClient JdbcTemplate](#accessing-jdbcclient-jdbctemplate)  
-[Large Object mapping](#large-object-mapping)  
 [Logging](#logging)  
 [Limitations](#limitations)  
 [Troubleshooting](#troubleshooting)  
@@ -391,6 +392,27 @@ class Product {
 }
 ```
 
+## Large Object mapping
+
+Binary large object database columns should be mapped to java type byte[]. No other type is supported.
+
+Character large object database columns should be mapped to java types String or other CharSequence or char[]. No other types are supported.
+
+If there is a need to use InputStream/Reader you will have to use JdbcTemplate directly for that use case.
+
+## Enum mapping
+
+```
+public enum StatusEnum {
+	OPEN, CLOSED;
+}
+
+...
+@Column
+private StatusEnum status;  // Maps to a String column in the database (e.g., 'OPEN')
+	
+```
+
 ## Configuration for auto assigning @CreatedBy, @UpdateBy, @CreatedOn, @UpdatedOn
 ```java 
 @Bean
@@ -412,15 +434,6 @@ public SimpleJdbcMapper simpleJdbcMapper(DataSource dataSource) {
  NamedParameterJdbcTemplate namedParameterJdbcTemplate = sjm.getNamedParameterJdbcTemplate();
 ```
 There is no requirement that you have to use the underlying JdbcClient/JdbcTemplate for your custom queries. You can create your own JdbcClient/JdbcTemplate and use it. 
-
-## Large Object mapping
-
-Binary large object database columns should be mapped to java type byte[]. No other type is supported.
-
-Character large object database columns should be mapped to java types String or other CharSequence or char[]. No other types are supported.
-
-If there is a need to use InputStream/Reader you will have to use JdbcTemplate directly for that use case.
-
 
 ## Logging
  

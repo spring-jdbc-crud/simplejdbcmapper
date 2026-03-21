@@ -110,7 +110,7 @@ class SimpleJdbcMapperSupport {
 		return conversionService;
 	}
 
-	public void setConversionService(ConversionService conversionService) {
+	public synchronized void setConversionService(ConversionService conversionService) {
 		if (conversionServiceManuallySet) {
 			throw new IllegalStateException("conversionService was already set and cannot be changed.");
 		} else {

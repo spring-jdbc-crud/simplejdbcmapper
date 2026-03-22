@@ -9,7 +9,8 @@
 <meta property="og:locale" content="en_US" />
 <meta name="description" content="Simplify Spring JdbcTemplate/JdbcClient CRUD operations by making them less verbose using SimpleJdbcMapper" >
 <meta property="og:description" content="Simplify Spring JdbcTemplate/JdbcClient CRUD operations by making them less verbose using SimpleJdbcMapper" >
-<meta property="og:url" content="https://spring-jdbc-crud.github.io/simplejdbcmapper" >
+<meta property="og:url"
+	content="https://spring-jdbc-crud.github.io/simplejdbcmapper" >
 <meta property="og:site_name" content="Simplify Spring JdbcTemplate/JdbcClient CRUD operations by making them less verbose using SimpleJdbcMapper" >
 <meta property="og:type" content="website" >
 <meta name="twitter:card" content="summary" >
@@ -21,7 +22,6 @@
 
 <!-- End SEO tag -->
     <title>Simplify Spring JdbcTemplate/JdbcClient CRUD operations by making them less verbose using SimpleJdbcMapper</title>
-
     <link type="text/css" rel="stylesheet" href="assets/css/bootstrap.css"/>
     <link type="text/css" rel="stylesheet" href="assets/css/bootstrap-responsive.css"/>
     <link type="text/css" rel="stylesheet" href="assets/css/pilcrow.css"/>
@@ -41,14 +41,15 @@
       <div class="span3"><ul class="nav nav-list">
     <li class="sidebar-header-1"><a href="#simplejdbcmapper">SimpleJdbcMapper</a></li>
     <li class="sidebar-header-2"><a href="#features">Features</a></li>
-    <li class="sidebar-header-2"><a href="#maven-configuration">Maven configuration</a></li>
+    <li class="sidebar-header-2"><a href="#maven-coordinates">Maven coordinates</a></li>
     <li class="sidebar-header-2"><a href="#example-code">Example code</a></li>
     <li class="sidebar-header-2"><a href="#jdk-and-spring-version-requirements">JDK and Spring version requirements</a></li>
     <li class="sidebar-header-2"><a href="#spring-bean-configuration-for-simplejdbcmapper">Spring bean configuration for SimpleJdbcMapper</a></li>
     <li class="sidebar-header-2"><a href="#annotations">Annotations</a></li>
+    <li class="sidebar-header-2"><a href="#blob-clob-mapping">BLOB CLOB mapping</a></li>
+    <li class="sidebar-header-2"><a href="#enum-mapping">Enum mapping</a></li>
     <li class="sidebar-header-2"><a href="#configuration-for-auto-assigning-createdby-updateby-createdon-updatedon">Configuration for auto assigning @CreatedBy, @UpdateBy, @CreatedOn, @UpdatedOn</a></li>
     <li class="sidebar-header-2"><a href="#accessing-jdbcclient-jdbctemplate">Accessing JdbcClient JdbcTemplate</a></li>
-    <li class="sidebar-header-2"><a href="#blob-clob-mapping">BLOB CLOB mapping</a></li>
     <li class="sidebar-header-2"><a href="#logging">Logging</a></li>
     <li class="sidebar-header-2"><a href="#limitations">Limitations</a></li>
     <li class="sidebar-header-2"><a href="#troubleshooting">TroubleShooting</a></li>
@@ -61,27 +62,28 @@
 	<a href="https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/index.html">Javadoc</a> |
 	<a href="https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper">Demo Application</a> |
 	<a href="https://dzone.com/articles/using-simplejdbcmapper-with-spring">Dzone Article</a>
+</p>
 <h2 id="features"><a class="header-link" href="#features"></a>Features</h2>
 <ol class="list">
 <li>One liners for CRUD</li>
-<li>Simple configuration similar to JdbcTemplate/JdbClient configuration.</li>
+<li>Simple configuration similar to Jdbctemplate/JdbClient configuration.</li>
 <li>Helper methods to construct SQL for the mapped objects that can be used with Spring row mappers like BeanPropertyRowMapper, SimplePropertyRowMapper, which avoids writing custom row mappers.</li>
-<li>For transaction management use Spring transactions since it’s just a wrapper library. Behind the scenes its using JdbcTemplate</li>
-<li>To log the SQL statements use the same SQL logging configurations as Spring. See the logging section further below.</li>
-<li>Auto assign properties for models<ul class="list">
+<li>Auto assign properties<ul class="list">
 <li>auto assign audited  by (created by, updated by) by providing a Supplier</li>
 <li>auto assign audited on (created on, updated on) by providing a Supplier</li>
 <li>optimistic locking feature for updates using versioning.</li>
 </ul>
 </li>
+<li>Transaction management is the same as in Spring applications since the library is using JdbcTemplate behind the scenes.</li>
+<li>To log the SQL statements use the same SQL logging configurations as Spring. See the logging section further below.</li>
 <li>Tests are run against PostgreSQL, MySQL, Oracle, SQLServer. Should work with other databases.</li>
 <li>Only dependency is Spring JDBC libraries. No other external dependencies.</li>
 </ol>
-<h2 id="maven-configuration"><a class="header-link" href="#maven-configuration"></a>Maven configuration</h2>
+<h2 id="maven-coordinates"><a class="header-link" href="#maven-coordinates"></a>Maven coordinates</h2>
 <pre class="hljs"><code> <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>io.github.spring-jdbc-crud<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>simplejdbcmapper<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
-   <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>1.6.7<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>1.6.8<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre><h2 id="example-code"><a class="header-link" href="#example-code"></a>Example code</h2>
 <pre class="hljs"><code> <span class="hljs-comment">//@Table annotation is required</span>
  <span class="hljs-meta">@Table(name=&quot;product&quot;)</span>
@@ -174,7 +176,7 @@ Note that in this case the &#x27;name&#x27; property is mapped to the &#x27;prod
 <p>JDK <strong>21+</strong></p>
 <p>SpringBoot <strong>3.2.3+</strong> or Spring framework <strong>6.1.4+</strong></p>
 <h2 id="spring-bean-configuration-for-simplejdbcmapper"><a class="header-link" href="#spring-bean-configuration-for-simplejdbcmapper"></a>Spring bean configuration for SimpleJdbcMapper</h2>
-<p>SimpleJdbcMapper should always be prepared in a Spring application context and given to services as a bean reference. It maintains state, for example caches table meta-data, insert/update SQL etc.</p>
+<p>SimpleJdbcMapper should always be prepared in a Spring application context and given to services as a bean reference. It maintains state for example it caches insert/update SQL etc.</p>
 <p><strong>Note: An instance of SimpleJdbcMapper is thread safe</strong></p>
 <p>Examples for different databases below. Depending on the versions of springboot/database/driver, there could be some differences to the properties. The properties are same as datasource properties used to configure Spring JdbcClient/JdbcTemplate.</p>
 <p><strong>PostgreSQL</strong></p>
@@ -255,7 +257,7 @@ spring.datasource.driver-<span class="hljs-class"><span class="hljs-keyword">cla
   }
   </code></pre><h2 id="annotations"><a class="header-link" href="#annotations"></a>Annotations</h2>
 <p><strong>@Table</strong></p>
-<p>Required class level annotation. The table or view should exist in database. The schema/catalog attributes set with @Table will override corresponding values on the SimpleJdbcMapper() constructor (if any). Note that table names with spaces are not supported.</p>
+<p>Required class level annotation. The table or view should exist in database. The schema/catalog attributes set with @Table will override corresponding values on the SimpleJdbcMapper() constructor (if any). <strong>Note that table names with spaces are not supported.</strong></p>
 <p>Multiple objects can be mapped to the same table. So for example if you have a wide table you could have 2 objects mapped to it. One with a few commonly used columns and another with all the columns.</p>
 <pre class="hljs"><code>
 <span class="hljs-meta">@Table(name=&quot;product&quot;)</span>
@@ -278,7 +280,7 @@ spring.datasource.driver-<span class="hljs-class"><span class="hljs-keyword">cla
   ...
 }
 </code></pre><p><strong>@Id</strong></p>
-<p>The java type of the property can be any type. @Id can only be mapped to a single database column.  Multi-column id  are not supported.</p>
+<p>The id property can be of any java type. @Id can only be mapped to a single database column.  <strong>Multi-column ids  are not supported.</strong></p>
 <p>There are 2 forms of usage for this.</p>
 <ul class="list">
 <li><strong>auto generated id usage</strong></li>
@@ -302,10 +304,10 @@ spring.datasource.driver-<span class="hljs-class"><span class="hljs-keyword">cla
   ...
 }</code></pre><p>In this case you will have to manually set the id value before invoking insert()  </p>
 <p><strong>@Column</strong></p>
-<p>Properties that need be persisted to the database will need @Column annotation unless the property is already annotated with one of the other annotations (@Id, @Version, @CreatedOn @CreatedBy @UpdatedOn @UpdatedBy). @Column can be used along with the other annotations to map a property to a non default column name. The default column name is camel case property name converted to underscore case name. Note that column names with spaces are not supported.</p>
+<p>Properties that need be persisted to the database will need @Column annotation unless the property is already annotated with one of the other annotations (@Id, @Version, @CreatedOn @CreatedBy @UpdatedOn @UpdatedBy). @Column can be used along with the other annotations to map a property to a non default column name. The default column name is camel case property name converted to underscore case name. <strong>Note that column names with spaces are not supported.</strong></p>
 <p>@Column<br>This will map the property to a column using the default naming convention of camel case to underscore case. For example property &#39;lastName&#39; will map to column &#39;last_name&#39; by default.</p>
 <p>@Column(name=&quot;somecolumnname&quot;)<br>This will map the property to the column specified by the &#39;name&#39; attribute.</p>
-<p>@Column(sqlType = somejavasqlTypes)
+<p>@Column(sqlType = somesqltype)
 Use this in cases when you need to override the database metadata sqltype. For example some postgres drivers for column definition &#39;TIMESTAMP WITH TIMEZONE&#39; return Types.TIMESTAMP instead of Types.TIMESTAMP_WITH_TIMEZONE, which causes conversion failures when used with java type OffsetDateTime. You can use the above attribute to override the database metadata sqlType.</p>
 <p><strong>@Version</strong></p>
 <p>This annotation is used for optimistic locking. It has to be of type Integer.
@@ -359,7 +361,19 @@ If a Supplier is configured using simpleJdbcMapper.setRecordAuditedBySupplier(),
                                    <span class="hljs-comment">// Property type should be Integer. Used for optimistic locking.</span>
                                    <span class="hljs-comment">// Gets incremented every successful update.</span>
   
-}</code></pre><h2 id="configuration-for-auto-assigning-createdby-updateby-createdon-updatedon"><a class="header-link" href="#configuration-for-auto-assigning-createdby-updateby-createdon-updatedon"></a>Configuration for auto assigning @CreatedBy, @UpdateBy, @CreatedOn, @UpdatedOn</h2>
+}</code></pre><h2 id="blob-clob-mapping"><a class="header-link" href="#blob-clob-mapping"></a>BLOB CLOB mapping</h2>
+<p>Binary large object database columns should be mapped to java type byte[]. No other type is supported.</p>
+<p>Character large object database columns should be mapped to java types String or other CharSequence or char[]. No other types are supported.</p>
+<p>If there is a need to use InputStream/Reader you will have to use JdbcTemplate directly for that use case.</p>
+<h2 id="enum-mapping"><a class="header-link" href="#enum-mapping"></a>Enum mapping</h2>
+<p>Enums can be mapped to a database column which stores strings.</p>
+<pre class="hljs"><code><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">enum</span> <span class="hljs-title">StatusEnum</span> </span>{
+    OPEN, CLOSED;
+}
+...
+<span class="hljs-meta">@Column</span>
+<span class="hljs-keyword">private</span> StatusEnum status;  <span class="hljs-comment">// Mapped to a String column in the database (e.g., &#x27;OPEN&#x27;)</span>
+...</code></pre><h2 id="configuration-for-auto-assigning-createdby-updateby-createdon-updatedon"><a class="header-link" href="#configuration-for-auto-assigning-createdby-updateby-createdon-updatedon"></a>Configuration for auto assigning @CreatedBy, @UpdateBy, @CreatedOn, @UpdatedOn</h2>
 <pre class="hljs"><code><span class="hljs-meta">@Bean</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> SimpleJdbcMapper <span class="hljs-title">simpleJdbcMapper</span><span class="hljs-params">(DataSource dataSource)</span> </span>{
     SimpleJdbcMapper simpleJdbcMapper = <span class="hljs-keyword">new</span> SimpleJdbcMapper(dataSource);
@@ -373,9 +387,6 @@ If a Supplier is configured using simpleJdbcMapper.setRecordAuditedBySupplier(),
 <pre class="hljs"><code> <span class="hljs-keyword">JdbcClient </span><span class="hljs-keyword">jdbcClient </span>= sjm.getJdbcClient();
  <span class="hljs-keyword">JdbcTemplate </span><span class="hljs-keyword">jdbcTemplate </span>= sjm.getJdbcTemplate();
  NamedParameterJdbcTemplate namedParameterJdbcTemplate = sjm.getNamedParameterJdbcTemplate();</code></pre><p>There is no requirement that you have to use the underlying JdbcClient/JdbcTemplate for your custom queries. You can create your own JdbcClient/JdbcTemplate and use it. </p>
-<h2 id="blob-clob-mapping"><a class="header-link" href="#blob-clob-mapping"></a>BLOB CLOB mapping</h2>
-<p>BLOB database columns should be mapped to java type byte[]. No other type is supported.</p>
-<p>CLOB/NCLOB database columns should be mapped to java types CharSequence or char[]. No other type is supported.</p>
 <h2 id="logging"><a class="header-link" href="#logging"></a>Logging</h2>
 <p>Uses the same logging configurations as Spring. In application.properties:</p>
 <pre class="hljs"><code>
@@ -389,7 +400,7 @@ If a Supplier is configured using simpleJdbcMapper.setRecordAuditedBySupplier(),
 <span class="hljs-attr">logging.level.org.springframework.jdbc.core.StatementCreatorUtils</span>=TRACE
 </code></pre><h2 id="limitations"><a class="header-link" href="#limitations"></a>Limitations</h2>
 <ol class="list">
-<li>@Id can only be mapped to a single database column.  Multi-column id are not supported.</li>
+<li>@Id can only be mapped to a single database column.  Multi-column ids are not supported.</li>
 <li>No support for table/column names with spaces in them. </li>
 </ol>
 <h2 id="troubleshooting"><a class="header-link" href="#troubleshooting"></a>TroubleShooting</h2>

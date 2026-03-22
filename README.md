@@ -407,10 +407,10 @@ Enums can be mapped to a database column which stores strings.
 public enum StatusEnum {
 	OPEN, CLOSED;
 }
-
 ...
 @Column
-private StatusEnum status;  // Maps to a String column in the database (e.g., 'OPEN')
+private StatusEnum status;  // Mapped to a String column in the database (e.g., 'OPEN')
+...
 ```
 
 ## Configuration for auto assigning @CreatedBy, @UpdateBy, @CreatedOn, @UpdatedOn

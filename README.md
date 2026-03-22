@@ -40,7 +40,7 @@ A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations by maki
   <dependency>
     <groupId>io.github.spring-jdbc-crud</groupId>
     <artifactId>simplejdbcmapper</artifactId>
-    <version>1.6.7</version>
+    <version>1.6.8</version>
  </dependency>
  ```
  

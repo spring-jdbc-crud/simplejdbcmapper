@@ -12,7 +12,7 @@ A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations by maki
 [JDK and Spring version requirements](#jdk-and-spring-version-requirements)  
 [Spring bean configuration for SimpleJdbcMapper](#spring-bean-configuration-for-simplejdbcmapper)  
 [Annotations](#annotations)  
-[Large Object mapping](#large-object-mapping)  
+[BLOB CLOB mapping](#blob-clob-mapping)  
 [Enum mapping](#enum-mapping)  
 [Configuration for auto assigning @CreatedBy, @UpdateBy, @CreatedOn, @UpdatedOn](#configuration-for-auto-assigning-createdby-updateby-createdon-updatedon)  
 [Accessing JdbcClient JdbcTemplate](#accessing-jdbcclient-jdbctemplate)  
@@ -392,7 +392,7 @@ class Product {
 }
 ```
 
-## Large Object mapping
+## BLOB CLOB mapping
 
 Binary large object database columns should be mapped to java type byte[]. No other type is supported.
 

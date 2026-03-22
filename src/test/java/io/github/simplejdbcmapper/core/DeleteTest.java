@@ -50,7 +50,7 @@ class DeleteTest {
 	@Test
 	void deleteById_nullId_count_Test() {
 		int cnt = sjm.deleteById(Product.class, null);
-		assertTrue(cnt == 0);
+		assertEquals(0, cnt);
 	}
 
 }

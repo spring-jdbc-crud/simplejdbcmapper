@@ -90,7 +90,7 @@ class SimpleJdbcMapperSupport {
 		return this.npJdbcTemplate;
 	}
 
-	public synchronized <T> void setRecordAuditedBySupplier(Supplier<T> supplier) {
+	public <T> void setRecordAuditedBySupplier(Supplier<T> supplier) {
 		if (recordAuditedBySupplier == null) {
 			recordAuditedBySupplier = supplier;
 		} else {
@@ -98,7 +98,7 @@ class SimpleJdbcMapperSupport {
 		}
 	}
 
-	public synchronized <T> void setRecordAuditedOnSupplier(Supplier<T> supplier) {
+	public <T> void setRecordAuditedOnSupplier(Supplier<T> supplier) {
 		if (recordAuditedOnSupplier == null) {
 			recordAuditedOnSupplier = supplier;
 		} else {
@@ -110,7 +110,7 @@ class SimpleJdbcMapperSupport {
 		return conversionService;
 	}
 
-	public synchronized void setConversionService(ConversionService conversionService) {
+	public void setConversionService(ConversionService conversionService) {
 		if (conversionServiceManuallySet) {
 			throw new IllegalStateException("conversionService was already set and cannot be changed.");
 		} else {

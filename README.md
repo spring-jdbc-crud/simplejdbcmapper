@@ -420,7 +420,7 @@ public SimpleJdbcMapper simpleJdbcMapper(DataSource dataSource) {
     SimpleJdbcMapper simpleJdbcMapper = new SimpleJdbcMapper(dataSource);
     // Provide your own custom Supplier. Make Sure the type returned by Supplier matches the type 
     // of the Property you are annotating. Generally 'audited by' is got from a thread local variable 
-    // for example when using spring security. Make sure the suppliers are thread safe.
+    // for example when using spring security.
     simpleJdbcMapper.setRecordAuditedBySupplier(() -> "tester");
     simpleJdbcMapper.setRecordAuditedOnSupplier(() -> LocalDateTime.now());
     return simpleJdbcMapper;

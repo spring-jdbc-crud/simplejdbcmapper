@@ -48,11 +48,9 @@ class DeleteTest {
 	}
 
 	@Test
-	void deleteById_nullIdFailure_Test() {
-		Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
-			sjm.deleteById(Product.class, null);
-		});
-		assertTrue(exception.getMessage().contains("id must not be null"));
+	void deleteById_nullId_count_Test() {
+		int cnt = sjm.deleteById(Product.class, null);
+		assertTrue(cnt == 0);
 	}
 
 }

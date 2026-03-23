@@ -146,7 +146,7 @@ SpringBoot **3.2.3+** or Spring framework **6.1.4+**
 
 SimpleJdbcMapper should always be prepared in a Spring application context and given to services as a bean reference. It maintains state for example it caches insert/update SQL etc.
 
-**Note: An instance of SimpleJdbcMapper is thread safe**
+**Note: An instance of SimpleJdbcMapper is thread safe once configured.**
 
 Examples for different databases below. Depending on the versions of springboot/database/driver, there could be some differences to the properties. The properties are same as datasource properties used to configure Spring JdbcClient/JdbcTemplate.
 
@@ -398,7 +398,7 @@ Binary large object database columns should be mapped to java type byte[]. No ot
 
 Character large object database columns should be mapped to java types String or other CharSequence or char[]. No other types are supported.
 
-If there is a need to use InputStream/Reader you will have to use JdbcTemplate directly for that use case.
+If there is a need to use InputStream/Resource you will have to use JdbcTemplate directly for that use case.
 
 ## Enum mapping
 Enums can be mapped to a database column which stores strings.

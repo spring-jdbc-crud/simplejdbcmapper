@@ -33,7 +33,7 @@ import org.springframework.util.Assert;
  * and given to services as a bean reference. It maintains state, for example
  * caches insert/update SQL etc.
  * 
- * <b> Note: An instance of SimpleJdbcMapper is thread safe.</b>
+ * <b> Note: An instance of SimpleJdbcMapper is thread safe once configured.</b>
  * </pre>
  * 
  * @author Antony Joseph

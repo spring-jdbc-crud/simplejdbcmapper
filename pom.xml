@@ -50,6 +50,7 @@
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-jdbc</artifactId>
+			<scope>provided</scope>
 		</dependency>
 
 		<!-- All dependencies below this line are for testing and deployment -->

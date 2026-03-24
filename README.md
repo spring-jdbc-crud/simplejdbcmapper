@@ -109,7 +109,7 @@ A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations by maki
  sjm.delete(product);
  
  // delete by id
- sjm.delete(Product.class, 5);
+ sjm.deleteById(Product.class, 5);
  
  /*
   The following method gets the sql for the columns. Works well with Spring row mappers like 

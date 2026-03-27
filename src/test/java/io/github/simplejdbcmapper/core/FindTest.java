@@ -152,18 +152,16 @@ class FindTest {
 
 	@Test
 	void findByPropertyValues_ofWhichHasOnlyNull_Test() {
-		String[] productIds = { null };
-		List<Product> products = sjm.findByPropertyValues(Product.class, "description",
-				new HashSet<String>(Arrays.asList(productIds)));
+		String[] descriptions = { null };
+		List<Product> products = sjm.findByPropertyValues(Product.class, "description", Arrays.asList(descriptions));
 		assertTrue(products.size() > 0);
 	}
 
 	@Test
 	void findByPropertyValuesInvalidProperty_Test() {
 		Integer[] orderIds = { 1, 2, 3 };
-		Set<Integer> set = new HashSet<Integer>(Arrays.asList(orderIds));
 		Exception exception = Assertions.assertThrows(MapperException.class, () -> {
-			sjm.findByPropertyValues(Order.class, "x", set);
+			sjm.findByPropertyValues(Order.class, "x", Arrays.asList(orderIds));
 		});
 		assertTrue(exception.getMessage().contains("does not have a mapping"));
 	}

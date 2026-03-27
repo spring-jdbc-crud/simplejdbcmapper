@@ -61,7 +61,11 @@ A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations by maki
              
      // The 'name' property will map to 'product_name' column in database table.
      @Column(name="product_name")            
-     private String name;                    
+     private String name;
+     
+     // will map to column 'sku'
+     @Column
+     private string sku;                 
      
      // will map to column 'available_date' by default using camel case to underscore case naming convention
      @Column
@@ -84,6 +88,7 @@ A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations by maki
 
  Product product = new Product();
  product.setName("some product name");
+ product.setSku("sku1");
  product.setPrice(10.25);
  product.setAvailableDate(LocalDateTime.now());
  
@@ -112,18 +117,26 @@ A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations by maki
  sjm.deleteById(Product.class, 5);
  
  /*
-  The following method gets the sql for the columns. Works well with Spring row mappers like 
-  BeanPropertyRowMapper(), SimplePropertyRowMapper() etc. Will create the needed column aliases 
-  when the column name does not match the corresponding underscore case property name. 
+  For custom queries use the following method to get the columns sql. Will create the needed column aliases 
+  when the column names do not match the corresponding underscore case property names. The Spring row mappers 
+  like  BeanPropertyRowMapper(), SimplePropertyRowMapper() etc. are then able to populate all the properties.
   Note that in this case the 'name' property is mapped to the 'product_name' column.
  */
  String sql = "SELECT " + sjm.getBeanFriendlySqlColumns(Product.class) +  " FROM product WHERE product_name = ?";
  
- // Using Spring's JdbcClient api for the above sql. 
+ // Using Spring's JdbcClient api for the above sql. JdbcClient is using SimplePropertyRowMapper() 
+ // internally here.
  List<Product> products = sjm.getJdbcClient().sql(sql).param("someProductName").query(Product.class).list();
  
  // Using Spring's JdbcTemplate api for the above sql
  List<Product> products = sjm.getJdbcTemplate().query(sql, BeanPropertyRowMapper.newInstance(Product.class), "someProductName");
+ 
+ // find by a property value
+ List<Product> products = sjm.findByPropertyValue(Product.class, "sku", "some sku#");
+ 
+ // find by multiple property values
+ String[] skus = { "sku1", "sku2"};
+ List<Product> products = sjm.findByPropertyValues(Product.class, "sku", Array.toList(skus));
  
  // Accessing the underlying JdbcClient, JdbcTemplate and NamedParameterJdbcTemplate. 
  JdbcClient jdbcClient = sjm.getJdbcClient();

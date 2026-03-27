@@ -1,11 +1,17 @@
 package io.github.simplejdbcmapper.core;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,8 +19,12 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import io.github.simplejdbcmapper.exception.MapperException;
+import io.github.simplejdbcmapper.model.Customer;
 import io.github.simplejdbcmapper.model.Order;
+import io.github.simplejdbcmapper.model.OrderLine;
 import io.github.simplejdbcmapper.model.PersonView;
+import io.github.simplejdbcmapper.model.Product;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -63,6 +73,99 @@ class FindTest {
 			assertNotNull(orders.get(idx).getOrderId());
 			assertNotNull(orders.get(idx).getOrderDate());
 		}
+	}
+
+	@Test
+	void findByPropertyValue_Test() {
+		List<OrderLine> orderLines = sjm.findByPropertyValue(OrderLine.class, "orderId", 1);
+		assertEquals(2, orderLines.size());
+	}
+
+	@Test
+	void findByPropertyValue_nullPropertyName_Test() {
+		Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			sjm.findByPropertyValue(OrderLine.class, null, 1);
+		});
+		assertTrue(exception.getMessage().contains("propertyName must not be null"));
+	}
+
+	@Test
+	void findByPropertyValue_nullClazz_Test() {
+		Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			sjm.findByPropertyValue(null, "orderId", 1);
+		});
+		assertTrue(exception.getMessage().contains("Class must not be null"));
+	}
+
+	@Test
+	void findByPropertyValue_nullPropertyValue_Test() {
+		List<Customer> list = sjm.findByPropertyValue(Customer.class, "firstName", null);
+		assertEquals(1, list.size());
+	}
+
+	@Test
+	void findByPropertyValue_InvalidProperty_Test() {
+		Exception exception = Assertions.assertThrows(MapperException.class, () -> {
+			sjm.findByPropertyValue(OrderLine.class, "x", 1);
+		});
+		assertTrue(exception.getMessage().contains("does not have a mapping"));
+	}
+
+	@Test
+	void findByPropertyValues_success_Test() {
+		Integer[] orderIds = { 1, 2, 3 };
+		List<Order> orders = sjm.findByPropertyValues(Order.class, "orderId", Arrays.asList(orderIds));
+		assertEquals(3, orders.size());
+	}
+
+	@Test
+	void findByPropertyValues_nullPropertyName_Test() {
+		Set<Integer> set = new HashSet<>();
+		Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			sjm.findByPropertyValues(OrderLine.class, null, set);
+		});
+		assertTrue(exception.getMessage().contains("propertyName must not be null"));
+	}
+
+	@Test
+	void findByPropertyValues_nullPropertyValues_Test() {
+		Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			sjm.findByPropertyValues(OrderLine.class, "orderId", null);
+		});
+		assertTrue(exception.getMessage().contains("propertyValues must not be null"));
+	}
+
+	@Test
+	void findByPropertyValues_emptyPropertyValues_Test() {
+		List<OrderLine> lines = sjm.findByPropertyValues(OrderLine.class, "orderId", new ArrayList<Integer>());
+		assertEquals(0, lines.size());
+	}
+
+	@Test
+	void findByPropertyValues_ofWhichSomeAreNull_Test() {
+		String[] descriptions = { null, "some description", null };
+		List<Product> products = sjm.findByPropertyValues(Product.class, "description",
+				new HashSet<String>(Arrays.asList(descriptions)));
+		assertTrue(products.stream().filter(e -> "some description".equals(e.getDescription())).count() > 0);
+		assertTrue(products.stream().filter(e -> e.getDescription() == null).count() > 0);
+	}
+
+	@Test
+	void findByPropertyValues_ofWhichHasOnlyNull_Test() {
+		String[] productIds = { null };
+		List<Product> products = sjm.findByPropertyValues(Product.class, "description",
+				new HashSet<String>(Arrays.asList(productIds)));
+		assertTrue(products.size() > 0);
+	}
+
+	@Test
+	void findByPropertyValuesInvalidProperty_Test() {
+		Integer[] orderIds = { 1, 2, 3 };
+		Set<Integer> set = new HashSet<Integer>(Arrays.asList(orderIds));
+		Exception exception = Assertions.assertThrows(MapperException.class, () -> {
+			sjm.findByPropertyValues(Order.class, "x", set);
+		});
+		assertTrue(exception.getMessage().contains("does not have a mapping"));
 	}
 
 }

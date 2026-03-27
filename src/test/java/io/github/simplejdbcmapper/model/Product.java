@@ -20,6 +20,9 @@ public class Product {
 	@Column
 	private Double cost;
 
+	@Column
+	private String description;
+
 	@CreatedOn
 	private LocalDateTime createdOn;
 
@@ -98,4 +101,13 @@ public class Product {
 	public void setVersion(Integer version) {
 		this.version = version;
 	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+
 }

@@ -33,6 +33,7 @@ CREATE TABLE SCHEMA1.product (
 	product_id integer NOT NULL,
 	name varchar(100) NOT NULL,
 	cost NUMBER(10,3) NULL,
+	description varchar(100) NULL,
 	created_on timestamp NULL,
 	created_by varchar(100) NULL,
 	updated_on timestamp NULL,

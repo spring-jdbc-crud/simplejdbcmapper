@@ -1,14 +1,22 @@
 package io.github.simplejdbcmapper.core;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.StringJoiner;
 
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.SqlParameterValue;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.util.Assert;
+import org.springframework.util.ObjectUtils;
+
+import io.github.simplejdbcmapper.exception.MapperException;
 
 class FindOperation {
 	private final SimpleJdbcMapperSupport sjmSupport;
@@ -58,6 +66,63 @@ class FindOperation {
 			findAllSqlCache.put(clazz.getName(), sql);
 		}
 		return sjmSupport.getJdbcTemplate().query(sql, getBeanPropertyRowMapper(clazz));
+	}
+
+	public <T> List<T> findByPropertyValue(Class<T> clazz, String propertyName, Object propertyValue) {
+		Assert.notNull(clazz, "Class must not be null");
+		Assert.notNull(propertyName, "propertyName must not be null");
+		TableMapping tableMapping = sjmSupport.getTableMapping(clazz);
+		PropertyMapping propMapping = tableMapping.getPropertyMappingByPropertyName(propertyName);
+		if (propMapping == null) {
+			throw new MapperException(clazz.getSimpleName() + "." + propertyName + " does not have a mapping.");
+		}
+		String sql = "SELECT " + getBeanFriendlySqlColumns(clazz) + " FROM " + tableMapping.fullyQualifiedTableName()
+				+ " WHERE ";
+		if (propertyValue == null) {
+			sql += propMapping.getColumnName() + " IS NULL";
+		} else {
+			sql += propMapping.getColumnName() + " = ?";
+		}
+		if (propertyValue == null) {
+			return sjmSupport.getJdbcTemplate().query(sql, getBeanPropertyRowMapper(clazz));
+		} else {
+			return sjmSupport.getJdbcTemplate().query(sql, getBeanPropertyRowMapper(clazz),
+					new SqlParameterValue(propMapping.getEffectiveSqlType(), propertyValue));
+		}
+	}
+
+	public <T, U extends Object> List<T> findByPropertyValues(Class<T> clazz, String propertyName,
+			Collection<U> propertyValues) {
+		Assert.notNull(clazz, "Class must not be null");
+		Assert.notNull(propertyName, "propertyName must not be null");
+		Assert.notNull(propertyValues, "propertyValues must not be null");
+		TableMapping tableMapping = sjmSupport.getTableMapping(clazz);
+		PropertyMapping propMapping = tableMapping.getPropertyMappingByPropertyName(propertyName);
+		if (propMapping == null) {
+			throw new MapperException(clazz.getSimpleName() + "." + propertyName + " does not have a mapping.");
+		}
+		if (ObjectUtils.isEmpty(propertyValues)) {
+			return new ArrayList<>();
+		}
+		Set<U> localPropertyValues = new LinkedHashSet<>(propertyValues);
+		boolean hasNullInSet = localPropertyValues.remove(null); // need to handle a null value in the set.
+		String sql = "SELECT " + getBeanFriendlySqlColumns(clazz) + " FROM " + tableMapping.fullyQualifiedTableName()
+				+ " WHERE ";
+		if (ObjectUtils.isEmpty(localPropertyValues)) {
+			sql += propMapping.getColumnName() + " IS NULL";
+		} else {
+			sql += propMapping.getColumnName() + " IN (:propertyValues)";
+			if (hasNullInSet) {
+				sql += " OR " + propMapping.getColumnName() + " IS NULL";
+			}
+		}
+		if (ObjectUtils.isEmpty(localPropertyValues)) {
+			return sjmSupport.getNamedParameterJdbcTemplate().query(sql, getBeanPropertyRowMapper(clazz));
+		} else {
+			MapSqlParameterSource param = new MapSqlParameterSource();
+			param.addValue("propertyValues", localPropertyValues, propMapping.getEffectiveSqlType());
+			return sjmSupport.getNamedParameterJdbcTemplate().query(sql, param, getBeanPropertyRowMapper(clazz));
+		}
 	}
 
 	public String getBeanFriendlySqlColumns(Class<?> clazz) {

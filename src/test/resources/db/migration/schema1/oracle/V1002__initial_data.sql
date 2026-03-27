@@ -44,8 +44,8 @@ INSERT INTO SCHEMA1.customer
 VALUES(null, 'customer 5 last name whose first name is null');
 
 INSERT INTO SCHEMA1.product
-(product_id, name, cost, created_on, created_by, updated_on, updated_by, version)
-VALUES(1, 'shoes', 95.00,to_timestamp('2020-06-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', to_timestamp('2020-06-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', 1);
+(product_id, name, cost, description, created_on, created_by, updated_on, updated_by, version)
+VALUES(1, 'shoes', 95.00,'some description', to_timestamp('2020-06-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', to_timestamp('2020-06-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', 1);
 
 INSERT INTO SCHEMA1.product
 (product_id, name, cost, created_on, created_by, updated_on, updated_by, version)

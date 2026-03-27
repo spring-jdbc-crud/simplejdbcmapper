@@ -13,6 +13,7 @@
  */
 package io.github.simplejdbcmapper.core;
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
@@ -106,6 +107,42 @@ public final class SimpleJdbcMapper {
 	 */
 	public <T> List<T> findAll(Class<T> clazz) {
 		return findOperation.findAll(clazz);
+	}
+
+	/**
+	 * Returns list of objects which match the property value. A null value will use
+	 * 'IS NULL' clause in the sql
+	 *
+	 * @param T             the type
+	 * @param clazz         Class of List of objects returned
+	 * @param propertyName  the property name
+	 * @param propertyValue the property value
+	 * @return a List of objects of type T
+	 */
+	public <T> List<T> findByPropertyValue(Class<T> clazz, String propertyName, Object propertyValue) {
+		return findOperation.findByPropertyValue(clazz, propertyName, propertyValue);
+	}
+
+	/**
+	 * Returns list of objects which match the collection of property values.
+	 * Generates an SQL with 'IN' clause. Some databases have limits for number of
+	 * entries/size so be careful.
+	 * 
+	 * <pre>
+	 * Query is constructed in such a way that if there is a null value in the propertyValues
+	 * the returned records will include records which match 'IS NULL' in the database.
+	 * </pre>
+	 *
+	 * @param T              the type
+	 * @param U              the type of the property values
+	 * @param clazz          Class of List of objects returned
+	 * @param propertyName   the property name
+	 * @param propertyValues the collection of property values
+	 * @return a List of objects of type T
+	 */
+	public <T, U extends Object> List<T> findByPropertyValues(Class<T> clazz, String propertyName,
+			Collection<U> propertyValues) {
+		return findOperation.findByPropertyValues(clazz, propertyName, propertyValues);
 	}
 
 	/**
@@ -284,7 +321,7 @@ public final class SimpleJdbcMapper {
 	/**
 	 * Exposing the conversion service used, so if necessary new converters can be
 	 * added etc. The default conversion service used in SimpleJdbcMapper is
-	 * Spring's DefaultConvertionService.
+	 * Spring's DefaultConversionService.
 	 *
 	 * @return the conversion service.
 	 */

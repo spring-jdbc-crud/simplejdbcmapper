@@ -175,7 +175,7 @@ all the properties. Note in this case the &#x27;name&#x27; property is mapped to
  
  <span class="hljs-comment">// find by multiple property values</span>
  String[] skus = { <span class="hljs-string1">&quot;sku1&quot;</span>, <span class="hljs-string1">&quot;sku2&quot;</span>};
- List&lt;Product&gt; products = sjm.findByPropertyValues(Product.class, <span class="hljs-string1">&quot;sku&quot;</span>, Array.toList(skus));
+ List&lt;Product&gt; products = sjm.findByPropertyValues(Product.class, <span class="hljs-string1">&quot;sku&quot;</span>, Array.asList(skus));
  
  <span class="hljs-comment">// Accessing the underlying JdbcClient, JdbcTemplate and NamedParameterJdbcTemplate. </span>
  JdbcClient jdbcClient = sjm.getJdbcClient();

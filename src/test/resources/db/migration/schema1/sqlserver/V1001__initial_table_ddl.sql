@@ -34,6 +34,7 @@ CREATE TABLE schema1.product (
 	product_id int NOT NULL,
 	name varchar(100) NOT NULL,
 	cost numeric(10,3) NULL,
+	description varchar(100) NULL,
 	created_on datetime NULL,
 	created_by varchar(100) NULL,
 	updated_on datetime NULL,

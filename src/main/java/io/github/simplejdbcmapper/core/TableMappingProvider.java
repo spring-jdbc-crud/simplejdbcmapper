@@ -45,7 +45,7 @@ class TableMappingProvider {
 
 	private final AnnotationProcessor ap;
 
-	private String databaseProductName;
+	private String commonDatabaseName;
 
 	public TableMappingProvider(DataSource dataSource, String schemaName, String catalogName) {
 		this.dataSource = dataSource;
@@ -189,23 +189,25 @@ class TableMappingProvider {
 	}
 
 	private void validateMetaDataConfig(String catalog, String schema) {
-		String commonDatabaseName = JdbcUtils.commonDatabaseName(getDatabaseProductName());
-		if ("mysql".equalsIgnoreCase(commonDatabaseName) && StringUtils.hasText(schema)) {
-			throw new MapperException(commonDatabaseName
+		String databaseName = getCommonDatabaseName();
+		if ("mysql".equalsIgnoreCase(databaseName) && schema != null) {
+			throw new MapperException(databaseName
 					+ ": When creating SimpleJdbcMapper() if you are using 'schema' (argument 2) use 'catalog' (argument 3) instead."
 					+ " If you are using the @Table annotation use the 'catalog' attribue instead of 'schema' attribute");
 		}
-		if ("oracle".equalsIgnoreCase(commonDatabaseName) && StringUtils.hasText(catalog)) {
-			throw new MapperException(commonDatabaseName
+		if ("oracle".equalsIgnoreCase(databaseName) && catalog != null) {
+			throw new MapperException(databaseName
 					+ ": When creating SimpleJdbcMapper() if you are using the 'catalog' (argument 3) use 'schema' (argument 2) instead."
 					+ " If you are using the @Table annotation use the 'schema' attribue instead of 'catalog' attribute");
 		}
 	}
 
-	private String getDatabaseProductName() {
-		if (databaseProductName == null) {
+	private String getCommonDatabaseName() {
+		// Even if there is thread contention and commonDatabaseName gets set more than
+		// once there are no side effects.
+		if (commonDatabaseName == null) {
 			try {
-				databaseProductName = JdbcUtils.extractDatabaseMetaData(dataSource,
+				String dbProductName = JdbcUtils.extractDatabaseMetaData(dataSource,
 						new DatabaseMetaDataCallback<String>() {
 							public String processMetaData(DatabaseMetaData dbMetaData)
 									throws SQLException, MetaDataAccessException {
@@ -213,10 +215,11 @@ class TableMappingProvider {
 										: dbMetaData.getDatabaseProductName();
 							}
 						});
+				commonDatabaseName = JdbcUtils.commonDatabaseName(dbProductName);
 			} catch (Exception e) {
 				throw new MapperException(e);
 			}
 		}
-		return databaseProductName;
+		return commonDatabaseName;
 	}
 }

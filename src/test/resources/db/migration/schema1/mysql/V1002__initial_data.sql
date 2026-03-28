@@ -44,8 +44,8 @@ INSERT INTO schema1.customer
 VALUES(null, 'customer 5 last name whose first name is null');
 
 INSERT INTO schema1.product
-(product_id, name, cost, created_on, created_by, updated_on, updated_by, version)
-VALUES(1, 'shoes', 95.00,'2020-06-20 00:00:00.000', 'system', '2020-06-20 00:00:00.000', 'system', 1);
+(product_id, name, cost, description, created_on, created_by, updated_on, updated_by, version)
+VALUES(1, 'shoes', 95.00,'some description', '2020-06-20 00:00:00.000', 'system', '2020-06-20 00:00:00.000', 'system', 1);
 
 INSERT INTO schema1.product
 (product_id, name, cost, created_on, created_by, updated_on, updated_by, version)

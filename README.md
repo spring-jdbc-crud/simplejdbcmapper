@@ -1,6 +1,6 @@
 # SimpleJdbcMapper #
  
-A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations by making them less verbose.
+A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations by making them less verbose. Its a wrapper around Spring JDBC libraries. Use its api where beneficial and keep using JdbcTemplate/JdbcClient for all other functionality.
   
 [Javadoc](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/index.html) | [Demo Application](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper) | [Dzone Article](https://dzone.com/articles/using-simplejdbcmapper-with-spring)
 

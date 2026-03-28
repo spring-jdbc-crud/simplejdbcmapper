@@ -117,15 +117,14 @@ A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations by maki
  sjm.deleteById(Product.class, 5);
  
  /*
-  For custom queries use the following method to get the columns sql. Will create the needed column aliases 
-  when the column names do not match the corresponding underscore case property names. The Spring row mappers 
-  like  BeanPropertyRowMapper(), SimplePropertyRowMapper() etc. are then able to populate all the properties.
-  Note that in this case the 'name' property is mapped to the 'product_name' column.
+  For custom queries use the following method to get the columns sql.  Works well with Spring row mappers like
+  BeanPropertyRowMapper(), SimplePropertyRowMapper() etc, creating the appropriate column aliases when the column 
+  name does not match the corresponding underscore case property name. This facilitates these row mappers to populate 
+  all the properties.
  */
  String sql = "SELECT " + sjm.getBeanFriendlySqlColumns(Product.class) +  " FROM product WHERE product_name = ?";
  
- // Using Spring's JdbcClient api for the above sql. JdbcClient is using SimplePropertyRowMapper() 
- // internally here.
+ // Using Spring's JdbcClient api for the above sql. JdbcClient is using SimplePropertyRowMapper() internally here.
  List<Product> products = sjm.getJdbcClient().sql(sql).param("someProductName").query(Product.class).list();
  
  // Using Spring's JdbcTemplate api for the above sql

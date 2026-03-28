@@ -80,12 +80,9 @@ class FindOperation {
 				+ " WHERE ";
 		if (propertyValue == null) {
 			sql += propMapping.getColumnName() + " IS NULL";
-		} else {
-			sql += propMapping.getColumnName() + " = ?";
-		}
-		if (propertyValue == null) {
 			return sjmSupport.getJdbcTemplate().query(sql, getBeanPropertyRowMapper(clazz));
 		} else {
+			sql += propMapping.getColumnName() + " = ?";
 			return sjmSupport.getJdbcTemplate().query(sql, getBeanPropertyRowMapper(clazz),
 					new SqlParameterValue(propMapping.getEffectiveSqlType(), propertyValue));
 		}
@@ -110,15 +107,12 @@ class FindOperation {
 				+ " WHERE ";
 		if (ObjectUtils.isEmpty(localPropertyValues)) {
 			sql += propMapping.getColumnName() + " IS NULL";
+			return sjmSupport.getNamedParameterJdbcTemplate().query(sql, getBeanPropertyRowMapper(clazz));
 		} else {
 			sql += propMapping.getColumnName() + " IN (:propertyValues)";
 			if (hasNullInSet) {
 				sql += " OR " + propMapping.getColumnName() + " IS NULL";
 			}
-		}
-		if (ObjectUtils.isEmpty(localPropertyValues)) {
-			return sjmSupport.getNamedParameterJdbcTemplate().query(sql, getBeanPropertyRowMapper(clazz));
-		} else {
 			MapSqlParameterSource param = new MapSqlParameterSource();
 			param.addValue("propertyValues", localPropertyValues, propMapping.getEffectiveSqlType());
 			return sjmSupport.getNamedParameterJdbcTemplate().query(sql, param, getBeanPropertyRowMapper(clazz));
@@ -133,7 +127,7 @@ class FindOperation {
 			StringJoiner sj = new StringJoiner(", ", " ", " ");
 			for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {
 				String underscorePropertyName = InternalUtils.toUnderscoreName(propMapping.getPropertyName());
-				if (underscorePropertyName.equalsIgnoreCase(propMapping.getColumnName())) {
+				if (underscorePropertyName.equals(propMapping.getColumnName())) {
 					sj.add(propMapping.getColumnName());
 				} else {
 					sj.add(propMapping.getColumnName() + " AS " + underscorePropertyName);

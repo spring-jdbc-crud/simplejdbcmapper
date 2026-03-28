@@ -124,9 +124,10 @@ public final class SimpleJdbcMapper {
 	}
 
 	/**
-	 * Returns list of objects which match the collection of property values.
-	 * Generates an SQL with 'IN' clause. Some databases have limits for number of
-	 * entries/size so be careful.
+	 * Returns list of objects which match the collection of property values. Uses
+	 * an SQL with 'IN' clause. Large number of values could cause performance
+	 * degradations and also databases have limits on number of entries/size. Use
+	 * judiciously.
 	 * 
 	 * <pre>
 	 * Query is constructed in such a way that if there is a null value in the propertyValues

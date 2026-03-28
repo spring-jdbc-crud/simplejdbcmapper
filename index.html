@@ -22,6 +22,7 @@
 
 <!-- End SEO tag -->
     <title>Simplify Spring JdbcTemplate/JdbcClient CRUD operations by making them less verbose using SimpleJdbcMapper</title>
+
     <link type="text/css" rel="stylesheet" href="assets/css/bootstrap.css"/>
     <link type="text/css" rel="stylesheet" href="assets/css/bootstrap-responsive.css"/>
     <link type="text/css" rel="stylesheet" href="assets/css/pilcrow.css"/>
@@ -40,6 +41,7 @@
     <div class="row-fluid">
       <div class="span3"><ul class="nav nav-list">
     <li class="sidebar-header-1"><a href="#simplejdbcmapper">SimpleJdbcMapper</a></li>
+    <li class="sidebar-header-2"><a href="#table-of-contents">Table of contents</a></li>
     <li class="sidebar-header-2"><a href="#features">Features</a></li>
     <li class="sidebar-header-2"><a href="#maven-coordinates">Maven coordinates</a></li>
     <li class="sidebar-header-2"><a href="#example-code">Example code</a></li>
@@ -56,7 +58,7 @@
 </ul>
       </div>
       <div class="span9 main"><h1 id="simplejdbcmapper"><a class="header-link" href="#simplejdbcmapper"></a>SimpleJdbcMapper</h1>
-<p>A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations by making them less verbose.</p>
+<p>A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations by making them less verbose. Its a wrapper around Spring JDBC libraries. Use its api where beneficial and keep using JdbcTemplate/JdbcClient for all other functionality.</p>
 <p>
 	<a href="https://github.com/spring-jdbc-crud/simplejdbcmapper">github</a> |
 	<a href="https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/index.html">Javadoc</a> |
@@ -83,7 +85,7 @@
 <pre class="hljs"><code> <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>io.github.spring-jdbc-crud<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>simplejdbcmapper<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
-   <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>1.6.8<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>1.7.0<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre><h2 id="example-code"><a class="header-link" href="#example-code"></a>Example code</h2>
 <pre class="hljs"><code> <span class="hljs-comment">//@Table annotation is required</span>
  <span class="hljs-meta">@Table(name=&quot;product&quot;)</span>
@@ -99,7 +101,11 @@
            
    <span class="hljs-comment">// The &#x27;name&#x27; property will map to &#x27;product_name&#x27; column in database table.</span>
    <span class="hljs-meta">@Column(name=&quot;product_name&quot;)</span>            
-   <span class="hljs-keyword">private</span> String name;                    
+   <span class="hljs-keyword">private</span> String name;
+   
+   <span class="hljs-comment">// will map to column &#x27;sku&#x27;</span>
+   <span class="hljs-meta">@Column</span>
+   <span class="hljs-keyword">private</span> string sku;                 
    
    <span class="hljs-comment">// will map to column &#x27;available_date&#x27; by default using camel case to underscore case naming convention</span>
    <span class="hljs-meta">@Column</span>
@@ -122,6 +128,7 @@
 
  Product product = <span class="hljs-keyword">new</span> Product();
  product.setName(<span class="hljs-string1">&quot;some product name&quot;</span>);
+ product.setSku(<span class="hljs-string1">&quot;sku1&quot;</span>);
  product.setPrice(<span class="hljs-number">10.25</span>);
  product.setAvailableDate(LocalDateTime.now());
  
@@ -147,21 +154,28 @@
  sjm.delete(product);
  
  <span class="hljs-comment">// delete by id</span>
- sjm.delete(Product.class, <span class="hljs-number">5</span>);
+ sjm.deleteById(Product.class, <span class="hljs-number">5</span>);
  
  <span class="hljs-comment">/*
-The following method gets the sql for the columns. Works well with Spring row mappers like 
-BeanPropertyRowMapper(), SimplePropertyRowMapper() etc. Will create the needed column aliases 
-when the column name does not match the corresponding underscore case property name. 
-Note that in this case the &#x27;name&#x27; property is mapped to the &#x27;product_name&#x27; column.
+For custom queries use the following method to get the columns sql.  Works well with Spring row mappers like
+BeanPropertyRowMapper, SimplePropertyRowMapper etc, creating the appropriate column aliases when the column 
+name does not match the corresponding underscore case property name. This facilitates these row mappers to populate 
+all the properties. Note in this case the &#x27;name&#x27; property is mapped to the &#x27;product_name&#x27; column.
  */</span>
  String sql = <span class="hljs-string1">&quot;SELECT &quot;</span> + sjm.getBeanFriendlySqlColumns(Product.class) +  <span class="hljs-string1">&quot; FROM product WHERE product_name = ?&quot;</span>;
  
- <span class="hljs-comment">// Using Spring&#x27;s JdbcClient api for the above sql. </span>
+ <span class="hljs-comment">// Using Spring&#x27;s JdbcClient api for the above sql. JdbcClient is using SimplePropertyRowMapper internally here.</span>
  List&lt;Product&gt; products = sjm.getJdbcClient().sql(sql).param(<span class="hljs-string1">&quot;someProductName&quot;</span>).query(Product.class).list();
  
  <span class="hljs-comment">// Using Spring&#x27;s JdbcTemplate api for the above sql</span>
  List&lt;Product&gt; products = sjm.getJdbcTemplate().query(sql, BeanPropertyRowMapper.newInstance(Product.class), <span class="hljs-string1">&quot;someProductName&quot;</span>);
+ 
+ <span class="hljs-comment">// find by a property value</span>
+ List&lt;Product&gt; products = sjm.findByPropertyValue(Product.class, <span class="hljs-string1">&quot;sku&quot;</span>, <span class="hljs-string1">&quot;some sku#&quot;</span>);
+ 
+ <span class="hljs-comment">// find by multiple property values</span>
+ String[] skus = { <span class="hljs-string1">&quot;sku1&quot;</span>, <span class="hljs-string1">&quot;sku2&quot;</span>};
+ List&lt;Product&gt; products = sjm.findByPropertyValues(Product.class, <span class="hljs-string1">&quot;sku&quot;</span>, Array.toList(skus));
  
  <span class="hljs-comment">// Accessing the underlying JdbcClient, JdbcTemplate and NamedParameterJdbcTemplate. </span>
  JdbcClient jdbcClient = sjm.getJdbcClient();
@@ -177,7 +191,7 @@ Note that in this case the &#x27;name&#x27; property is mapped to the &#x27;prod
 <p>SpringBoot <strong>3.2.3+</strong> or Spring framework <strong>6.1.4+</strong></p>
 <h2 id="spring-bean-configuration-for-simplejdbcmapper"><a class="header-link" href="#spring-bean-configuration-for-simplejdbcmapper"></a>Spring bean configuration for SimpleJdbcMapper</h2>
 <p>SimpleJdbcMapper should always be prepared in a Spring application context and given to services as a bean reference. It maintains state for example it caches insert/update SQL etc.</p>
-<p><strong>Note: An instance of SimpleJdbcMapper is thread safe</strong></p>
+<p><strong>Note: An instance of SimpleJdbcMapper is thread safe once configured.</strong></p>
 <p>Examples for different databases below. Depending on the versions of springboot/database/driver, there could be some differences to the properties. The properties are same as datasource properties used to configure Spring JdbcClient/JdbcTemplate.</p>
 <p><strong>PostgreSQL</strong></p>
 <pre class="hljs"><code># application.properties
@@ -258,7 +272,7 @@ spring.datasource.driver-<span class="hljs-class"><span class="hljs-keyword">cla
   </code></pre><h2 id="annotations"><a class="header-link" href="#annotations"></a>Annotations</h2>
 <p><strong>@Table</strong></p>
 <p>Required class level annotation. The table or view should exist in database. The schema/catalog attributes set with @Table will override corresponding values on the SimpleJdbcMapper() constructor (if any). <strong>Note that table names with spaces are not supported.</strong></p>
-<p>Multiple objects can be mapped to the same table. So for example if you have a wide table you could have 2 objects mapped to it. One with a few commonly used columns and another with all the columns.</p>
+<p>Multiple objects can be mapped to the same table. For example if you have a table with large number of columns you could have 2 objects mapped to it. One with a few commonly used columns and another with all the columns.</p>
 <pre class="hljs"><code>
 <span class="hljs-meta">@Table(name=&quot;product&quot;)</span>
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Product</span> </span>{
@@ -280,7 +294,7 @@ spring.datasource.driver-<span class="hljs-class"><span class="hljs-keyword">cla
   ...
 }
 </code></pre><p><strong>@Id</strong></p>
-<p>The id property can be of any java type. @Id can only be mapped to a single database column.  <strong>Multi-column ids  are not supported.</strong></p>
+<p>The id property can be of any non-primitive java type. @Id can only be mapped to a single database column. <strong>Multi-column ids  are not supported.</strong></p>
 <p>There are 2 forms of usage for this.</p>
 <ul class="list">
 <li><strong>auto generated id usage</strong></li>
@@ -292,7 +306,7 @@ spring.datasource.driver-<span class="hljs-class"><span class="hljs-keyword">cla
  <span class="hljs-keyword">private</span> Integer productId;
   ...
 }
-</code></pre><p>After a successful insert() operation the productId property will be populated with the new id.</p>
+</code></pre><p>After a successful insert() operation the productId property will be populated with the generated id.</p>
 <ul class="list">
 <li><strong>NON auto generated id usage</strong></li>
 </ul>
@@ -304,22 +318,22 @@ spring.datasource.driver-<span class="hljs-class"><span class="hljs-keyword">cla
   ...
 }</code></pre><p>In this case you will have to manually set the id value before invoking insert()  </p>
 <p><strong>@Column</strong></p>
-<p>Properties that need be persisted to the database will need @Column annotation unless the property is already annotated with one of the other annotations (@Id, @Version, @CreatedOn @CreatedBy @UpdatedOn @UpdatedBy). @Column can be used along with the other annotations to map a property to a non default column name. The default column name is camel case property name converted to underscore case name. <strong>Note that column names with spaces are not supported.</strong></p>
+<p>Properties that need be persisted to the database will need @Column annotation unless the property is already annotated with one of the other annotations (@Id, @Version, @CreatedOn @CreatedBy @UpdatedOn @UpdatedBy). @Column can be used along with the other annotations to map a property to a non-default column name. The default column name is camel case property name converted to underscore case name (e.g., property &#39;lastName&#39; maps to column &#39;last_name&#39; by default).</p>
 <p>@Column<br>This will map the property to a column using the default naming convention of camel case to underscore case. For example property &#39;lastName&#39; will map to column &#39;last_name&#39; by default.</p>
-<p>@Column(name=&quot;somecolumnname&quot;)<br>This will map the property to the column specified by the &#39;name&#39; attribute.</p>
+<p>@Column(name=&quot;somecolumnname&quot;)<br>This will map the property to the column specified by the &#39;name&#39; attribute.  <strong>Note that column names with spaces are not supported.</strong></p>
 <p>@Column(sqlType = somesqltype)
 Use this in cases when you need to override the database metadata sqltype. For example some postgres drivers for column definition &#39;TIMESTAMP WITH TIMEZONE&#39; return Types.TIMESTAMP instead of Types.TIMESTAMP_WITH_TIMEZONE, which causes conversion failures when used with java type OffsetDateTime. You can use the above attribute to override the database metadata sqlType.</p>
 <p><strong>@Version</strong></p>
 <p>This annotation is used for optimistic locking. It has to be of type Integer.
-Will be set to 1 when record is created and will incremented on updates. On updates if the version is stale an OptimisticLockingException will be thrown.  @Column annotation can be used with this to map to a different column name.</p>
+Will be set to 1 when record is created and will incremented on updates. On updates if the version is stale an OptimisticLockingException will be thrown.  @Column annotation can be used with the property to map to a non-default column name.</p>
 <p><strong>@CreatedOn</strong></p>
-<p>If a Supplier is configured using simpleJdbcMapper.setRecordAuditedOnSupplier(), it will be used to to set the value for the @CreatedOn property. The type of the Supplier should match the type of the property. @Column annotation can also be used with the property to map to a different column name.</p>
+<p>If a Supplier is configured using simpleJdbcMapper.setRecordAuditedOnSupplier(), it will be used to to set the value for the @CreatedOn property. The type of the Supplier should match the type of the property. @Column annotation can also be used with the property to map to a non-default  column name.</p>
 <p><strong>@UpdatedOn</strong></p>
-<p>If a Supplier is configured using simpleJdbcMapper.setRecordAuditedOnSupplier(), it will be used to to set the value for the @UpdatedOn property. The type of the Supplier should match the type of the property. @Column annotation can also be used with the property to map to a different column name.</p>
+<p>If a Supplier is configured using simpleJdbcMapper.setRecordAuditedOnSupplier(), it will be used to to set the value for the @UpdatedOn property. The type of the Supplier should match the type of the property. @Column annotation can also be used with the property to map to a non-default  column name.</p>
 <p><strong>@CreatedBy</strong></p>
-<p>If a Supplier is configured using simpleJdbcMapper.setRecordAuditedBySupplier(), it will be used to to set the value for the @CreatedBy property. The type of the Supplier should match the type of the property. @Column annotation can also be used with the property to map to a different column name.</p>
+<p>If a Supplier is configured using simpleJdbcMapper.setRecordAuditedBySupplier(), it will be used to to set the value for the @CreatedBy property. The type of the Supplier should match the type of the property. @Column annotation can also be used with the property to map to a non-default column name.</p>
 <p><strong>@UpdatedBy</strong>
-If a Supplier is configured using simpleJdbcMapper.setRecordAuditedBySupplier(), it will be used to to set the value for the @UpdatedBy property. The type of the Supplier should match the type of the property. @Column annotation can also be used with the property to map to a different column name.</p>
+If a Supplier is configured using simpleJdbcMapper.setRecordAuditedBySupplier(), it will be used to to set the value for the @UpdatedBy property. The type of the Supplier should match the type of the property. @Column annotation can also be used with the property to map to a non-default column name.</p>
 <p> Annotation examples:</p>
 <pre class="hljs"><code>
 <span class="hljs-meta">@Table(name=&quot;product&quot;)</span>
@@ -401,8 +415,9 @@ If a Supplier is configured using simpleJdbcMapper.setRecordAuditedBySupplier(),
 </code></pre><h2 id="limitations"><a class="header-link" href="#limitations"></a>Limitations</h2>
 <ol class="list">
 <li>@Id can only be mapped to a single database column.  Multi-column ids are not supported.</li>
-<li>No support for table/column names with spaces in them. </li>
+<li>No support for table/column names with spaces in them.</li>
 </ol>
+<p>Use JdbcTemplate/JdbcClient to handle these cases.</p>
 <h2 id="troubleshooting"><a class="header-link" href="#troubleshooting"></a>TroubleShooting</h2>
 <p>1.<strong>Connection issues:</strong></p>
 <p>Try to connect to the database using Spring JdbcClient or JdbcTemplate without the SimpleJdbcMapper and issue a simple query. The datasource configuration parameters are exactly the same.</p>

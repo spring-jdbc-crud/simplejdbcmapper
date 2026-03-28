@@ -111,9 +111,9 @@ public final class SimpleJdbcMapper {
 
 	/**
 	 * Returns list of objects which match the property value. A null value will use
-	 * 'IS NULL' clause in the sql
+	 * 'IS NULL' clause in the sql.
 	 *
-	 * @param T             the type
+	 * @param <T>           the type
 	 * @param clazz         Class of List of objects returned
 	 * @param propertyName  the property name
 	 * @param propertyValue the property value
@@ -133,8 +133,8 @@ public final class SimpleJdbcMapper {
 	 * the returned records will include records which match 'IS NULL' in the database.
 	 * </pre>
 	 *
-	 * @param T              the type
-	 * @param U              the type of the property values
+	 * @param <T>            the type
+	 * @param <U>            the type of the property values
 	 * @param clazz          Class of List of objects returned
 	 * @param propertyName   the property name
 	 * @param propertyValues the collection of property values

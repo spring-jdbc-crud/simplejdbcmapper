@@ -190,12 +190,12 @@ class TableMappingProvider {
 
 	private void validateMetaDataConfig(String catalog, String schema) {
 		String databaseName = getCommonDatabaseName();
-		if ("mysql".equalsIgnoreCase(databaseName) && StringUtils.hasText(schema)) {
+		if ("mysql".equalsIgnoreCase(databaseName) && schema != null) {
 			throw new MapperException(databaseName
 					+ ": When creating SimpleJdbcMapper() if you are using 'schema' (argument 2) use 'catalog' (argument 3) instead."
 					+ " If you are using the @Table annotation use the 'catalog' attribue instead of 'schema' attribute");
 		}
-		if ("oracle".equalsIgnoreCase(databaseName) && StringUtils.hasText(catalog)) {
+		if ("oracle".equalsIgnoreCase(databaseName) && catalog != null) {
 			throw new MapperException(databaseName
 					+ ": When creating SimpleJdbcMapper() if you are using the 'catalog' (argument 3) use 'schema' (argument 2) instead."
 					+ " If you are using the @Table annotation use the 'schema' attribue instead of 'catalog' attribute");

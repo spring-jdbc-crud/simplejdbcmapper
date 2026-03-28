@@ -118,13 +118,13 @@ A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations by maki
  
  /*
   For custom queries use the following method to get the columns sql.  Works well with Spring row mappers like
-  BeanPropertyRowMapper(), SimplePropertyRowMapper() etc, creating the appropriate column aliases when the column 
+  BeanPropertyRowMapper, SimplePropertyRowMapper etc, creating the appropriate column aliases when the column 
   name does not match the corresponding underscore case property name. This facilitates these row mappers to populate 
-  all the properties.
+  all the properties. Note in this case the 'name' property is mapped to the 'product_name' column.
  */
  String sql = "SELECT " + sjm.getBeanFriendlySqlColumns(Product.class) +  " FROM product WHERE product_name = ?";
  
- // Using Spring's JdbcClient api for the above sql. JdbcClient is using SimplePropertyRowMapper() internally here.
+ // Using Spring's JdbcClient api for the above sql. JdbcClient is using SimplePropertyRowMapper internally here.
  List<Product> products = sjm.getJdbcClient().sql(sql).param("someProductName").query(Product.class).list();
  
  // Using Spring's JdbcTemplate api for the above sql
@@ -264,7 +264,7 @@ spring.datasource.driver-class-name=com.microsoft.sqlserver.jdbc.SQLServerDriver
 
 Required class level annotation. The table or view should exist in database. The schema/catalog attributes set with @Table will override corresponding values on the SimpleJdbcMapper() constructor (if any). **Note that table names with spaces are not supported.**
 
-Multiple objects can be mapped to the same table. So for example if you have a wide table you could have 2 objects mapped to it. One with a few commonly used columns and another with all the columns.
+Multiple objects can be mapped to the same table. For example if you have a table with large number of columns you could have 2 objects mapped to it. One with a few commonly used columns and another with all the columns.
 
 ```java 
 
@@ -292,7 +292,7 @@ class Product {
 
 **@Id**
 
-The id property can be of any java type. @Id can only be mapped to a single database column.  **Multi-column ids  are not supported.**
+The id property can be of any non-primitive java type. @Id can only be mapped to a single database column. **Multi-column ids  are not supported.**
 
 There are 2 forms of usage for this.
 
@@ -308,7 +308,7 @@ class Product {
 }
 
 ```
-After a successful insert() operation the productId property will be populated with the new id.
+After a successful insert() operation the productId property will be populated with the generated id.
 
 * **NON auto generated id usage**
 
@@ -326,13 +326,13 @@ In this case you will have to manually set the id value before invoking insert()
 
 **@Column**
 
-Properties that need be persisted to the database will need @Column annotation unless the property is already annotated with one of the other annotations (@Id, @Version, @CreatedOn @CreatedBy @UpdatedOn @UpdatedBy). @Column can be used along with the other annotations to map a property to a non default column name. The default column name is camel case property name converted to underscore case name. **Note that column names with spaces are not supported.**
+Properties that need be persisted to the database will need @Column annotation unless the property is already annotated with one of the other annotations (@Id, @Version, @CreatedOn @CreatedBy @UpdatedOn @UpdatedBy). @Column can be used along with the other annotations to map a property to a non-default column name. The default column name is camel case property name converted to underscore case name (e.g., property 'lastName' maps to column 'last_name' by default).
 
 @Column  
 This will map the property to a column using the default naming convention of camel case to underscore case. For example property 'lastName' will map to column 'last_name' by default.
 
 @Column(name="somecolumnname")  
-This will map the property to the column specified by the 'name' attribute.
+This will map the property to the column specified by the 'name' attribute.  **Note that column names with spaces are not supported.**
 
 @Column(sqlType = somesqltype)
 Use this in cases when you need to override the database metadata sqltype. For example some postgres drivers for column definition 'TIMESTAMP WITH TIMEZONE' return Types.TIMESTAMP instead of Types.TIMESTAMP_WITH_TIMEZONE, which causes conversion failures when used with java type OffsetDateTime. You can use the above attribute to override the database metadata sqlType.
@@ -340,22 +340,22 @@ Use this in cases when you need to override the database metadata sqltype. For e
 **@Version**
 
 This annotation is used for optimistic locking. It has to be of type Integer.
-Will be set to 1 when record is created and will incremented on updates. On updates if the version is stale an OptimisticLockingException will be thrown.  @Column annotation can be used with this to map to a different column name.
+Will be set to 1 when record is created and will incremented on updates. On updates if the version is stale an OptimisticLockingException will be thrown.  @Column annotation can be used with the property to map to a non-default column name.
 
 **@CreatedOn**
 
-If a Supplier is configured using simpleJdbcMapper.setRecordAuditedOnSupplier(), it will be used to to set the value for the @CreatedOn property. The type of the Supplier should match the type of the property. @Column annotation can also be used with the property to map to a different column name.
+If a Supplier is configured using simpleJdbcMapper.setRecordAuditedOnSupplier(), it will be used to to set the value for the @CreatedOn property. The type of the Supplier should match the type of the property. @Column annotation can also be used with the property to map to a non-default  column name.
 
 **@UpdatedOn**
 
-If a Supplier is configured using simpleJdbcMapper.setRecordAuditedOnSupplier(), it will be used to to set the value for the @UpdatedOn property. The type of the Supplier should match the type of the property. @Column annotation can also be used with the property to map to a different column name.
+If a Supplier is configured using simpleJdbcMapper.setRecordAuditedOnSupplier(), it will be used to to set the value for the @UpdatedOn property. The type of the Supplier should match the type of the property. @Column annotation can also be used with the property to map to a non-default  column name.
 
 **@CreatedBy**
 
-If a Supplier is configured using simpleJdbcMapper.setRecordAuditedBySupplier(), it will be used to to set the value for the @CreatedBy property. The type of the Supplier should match the type of the property. @Column annotation can also be used with the property to map to a different column name.
+If a Supplier is configured using simpleJdbcMapper.setRecordAuditedBySupplier(), it will be used to to set the value for the @CreatedBy property. The type of the Supplier should match the type of the property. @Column annotation can also be used with the property to map to a non-default column name.
 
 **@UpdatedBy**
-If a Supplier is configured using simpleJdbcMapper.setRecordAuditedBySupplier(), it will be used to to set the value for the @UpdatedBy property. The type of the Supplier should match the type of the property. @Column annotation can also be used with the property to map to a different column name.
+If a Supplier is configured using simpleJdbcMapper.setRecordAuditedBySupplier(), it will be used to to set the value for the @UpdatedBy property. The type of the Supplier should match the type of the property. @Column annotation can also be used with the property to map to a non-default column name.
 
 
  Annotation examples:
@@ -467,7 +467,9 @@ Uses the same logging configurations as Spring. In application.properties:
 ## Limitations
 
 1. @Id can only be mapped to a single database column.  Multi-column ids are not supported.
-2. No support for table/column names with spaces in them. 
+2. No support for table/column names with spaces in them.
+
+Use JdbcTemplate/JdbcClient to handle these cases like these.
   
 ## TroubleShooting
 

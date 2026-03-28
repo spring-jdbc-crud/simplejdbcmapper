@@ -110,8 +110,8 @@ public final class SimpleJdbcMapper {
 	}
 
 	/**
-	 * Returns list of objects which match the property value. A null value will use
-	 * 'IS NULL' clause in the sql.
+	 * Returns list of objects which match the property value. 'IS NULL' clause will
+	 * be used in the sql for a null value.
 	 *
 	 * @param <T>           the type
 	 * @param clazz         Class of List of objects returned
@@ -125,8 +125,8 @@ public final class SimpleJdbcMapper {
 
 	/**
 	 * Returns list of objects which match the collection of property values. Uses
-	 * an SQL with 'IN' clause. Large number of values could cause performance
-	 * degradations and also databases have limits on number of entries/size.
+	 * an SQL 'IN' clause. Large number of values could cause query performance
+	 * degradation.
 	 * 
 	 * <pre>
 	 * Query is constructed in such a way that if there is a null value in the propertyValues

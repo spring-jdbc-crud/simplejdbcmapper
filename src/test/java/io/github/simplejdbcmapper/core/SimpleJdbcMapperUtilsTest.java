@@ -32,9 +32,7 @@ class SimpleJdbcMapperUtilsTest {
 		List<OrderLine> lines = sjm.findAll(OrderLine.class);
 		List<Integer> productIdList = lines.stream().map(OrderLine::getProductId).toList();
 
-		String sql = "SELECT " + sjm.getBeanFriendlySqlColumns(Product.class)
-				+ " FROM product WHERE product_id in (:ids)";
-		List<Product> products = sjm.getJdbcClient().sql(sql).param("ids", productIdList).query(Product.class).list();
+		List<Product> products = sjm.findByPropertyValues(Product.class, "productId", productIdList);
 
 		SimpleJdbcMapperUtils.mergeResultsToPopulateHasOne(lines, products, "productId", "productId", "product");
 		assertNotNull(lines.get(0).getProduct());
@@ -93,11 +91,8 @@ class SimpleJdbcMapperUtilsTest {
 		List<Order> orders = sjm.getJdbcClient().sql(sql0).query(Order.class).list();
 
 		List<Long> orderIdList = orders.stream().map(Order::getOrderId).toList();
-		String sql = "SELECT " + sjm.getBeanFriendlySqlColumns(OrderLine.class)
-				+ " from order_line WHERE order_id in (:ids)";
 
-		List<OrderLine> orderLines = sjm.getJdbcClient().sql(sql).param("ids", orderIdList).query(OrderLine.class)
-				.list();
+		List<OrderLine> orderLines = sjm.findByPropertyValues(OrderLine.class, "orderId", orderIdList);
 
 		SimpleJdbcMapperUtils.mergeResultsToPopulateHasMany(orders, orderLines, "orderId", "orderId", "orderLines");
 

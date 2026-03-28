@@ -102,7 +102,7 @@ class FindOperation {
 			return new ArrayList<>();
 		}
 		Set<U> localPropertyValues = new LinkedHashSet<>(propertyValues);
-		boolean hasNullInSet = localPropertyValues.remove(null); // need to handle a null value in the set.
+		boolean hasNullInSet = localPropertyValues.remove(null); // need to handle nulls in the set.
 		String sql = "SELECT " + getBeanFriendlySqlColumns(clazz) + " FROM " + tableMapping.fullyQualifiedTableName()
 				+ " WHERE ";
 		if (ObjectUtils.isEmpty(localPropertyValues)) {

@@ -135,7 +135,7 @@ A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations by maki
  
  // find by multiple property values
  String[] skus = { "sku1", "sku2"};
- List<Product> products = sjm.findByPropertyValues(Product.class, "sku", Array.toList(skus));
+ List<Product> products = sjm.findByPropertyValues(Product.class, "sku", Array.asList(skus));
  
  // Accessing the underlying JdbcClient, JdbcTemplate and NamedParameterJdbcTemplate. 
  JdbcClient jdbcClient = sjm.getJdbcClient();

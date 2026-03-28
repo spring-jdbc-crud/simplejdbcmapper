@@ -160,8 +160,10 @@ class FindTest {
 	@Test
 	void findByPropertyValuesInvalidProperty_Test() {
 		Integer[] orderIds = { 1, 2, 3 };
+
+		List<Integer> list = Arrays.asList(orderIds);
 		Exception exception = Assertions.assertThrows(MapperException.class, () -> {
-			sjm.findByPropertyValues(Order.class, "x", Arrays.asList(orderIds));
+			sjm.findByPropertyValues(Order.class, "x", list);
 		});
 		assertTrue(exception.getMessage().contains("does not have a mapping"));
 	}

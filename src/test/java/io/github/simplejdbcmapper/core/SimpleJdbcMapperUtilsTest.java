@@ -166,7 +166,7 @@ class SimpleJdbcMapperUtilsTest {
 
 	@Test
 	void chunkList_test() {
-		Integer[] arr = new Integer[] { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
+		Integer[] arr = { 1, 2, 3, 4, 5, 6, 7, 8, 9, 10 };
 		@SuppressWarnings("rawtypes")
 		List<List> chunkedList = null;
 		chunkedList = SimpleJdbcMapperUtils.chunkTheList(Arrays.asList(arr), 3);

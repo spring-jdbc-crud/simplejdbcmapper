@@ -40,9 +40,6 @@ import io.github.simplejdbcmapper.exception.MapperException;
  * @author Antony Joseph
  */
 public class SimpleJdbcMapperUtils {
-	private SimpleJdbcMapperUtils() {
-	}
-
 	/**
 	 * Merges the corresponding child object to the 'hasOne' property of the parent.
 	 * 
@@ -235,5 +232,8 @@ public class SimpleJdbcMapperUtils {
 			// do nothing
 		}
 		return null;
+	}
+
+	private SimpleJdbcMapperUtils() {
 	}
 }

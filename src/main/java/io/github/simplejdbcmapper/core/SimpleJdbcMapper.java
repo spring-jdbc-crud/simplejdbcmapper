@@ -140,8 +140,7 @@ public final class SimpleJdbcMapper {
 	 * @param propertyValues the collection of property values
 	 * @return a List of objects of type T
 	 */
-	public <T, U extends Object> List<T> findByPropertyValues(Class<T> clazz, String propertyName,
-			Collection<U> propertyValues) {
+	public <T, U> List<T> findByPropertyValues(Class<T> clazz, String propertyName, Collection<U> propertyValues) {
 		return findOperation.findByPropertyValues(clazz, propertyName, propertyValues);
 	}
 

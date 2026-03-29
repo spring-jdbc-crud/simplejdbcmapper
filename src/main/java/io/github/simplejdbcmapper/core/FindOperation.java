@@ -88,8 +88,7 @@ class FindOperation {
 		}
 	}
 
-	public <T, U extends Object> List<T> findByPropertyValues(Class<T> clazz, String propertyName,
-			Collection<U> propertyValues) {
+	public <T, U> List<T> findByPropertyValues(Class<T> clazz, String propertyName, Collection<U> propertyValues) {
 		Assert.notNull(clazz, "Class must not be null");
 		Assert.notNull(propertyName, "propertyName must not be null");
 		Assert.notNull(propertyValues, "propertyValues must not be null");

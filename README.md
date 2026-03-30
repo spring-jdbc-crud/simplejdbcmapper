@@ -412,7 +412,7 @@ Binary large object database columns should be mapped to java type byte[]. No ot
 
 Character large object database columns should be mapped to java types String or other CharSequence or char[]. No other types are supported.
 
-If there is a need to use InputStream/Reader you will have to use JdbcTemplate directly for that use case.
+If there is a need to use InputStream/Reader use JdbcTemplate.
 
 ## Enum mapping
 Enums can be mapped to a database column which stores strings.

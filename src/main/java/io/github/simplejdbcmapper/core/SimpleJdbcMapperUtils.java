@@ -77,19 +77,23 @@ public class SimpleJdbcMapperUtils {
 		if (CollectionUtils.isEmpty(mainObjList) || CollectionUtils.isEmpty(relatedObjList)) {
 			return;
 		}
-		Map<Object, U> idToObjMap = new HashMap<>();
+		Map<Object, U> idToRelatedObjMap = new HashMap<>();
 		for (U relatedObj : relatedObjList) {
 			if (relatedObj != null) {
 				BeanWrapper bwRelatedObj = PropertyAccessorFactory.forBeanPropertyAccess(relatedObj);
 				Object idPropertyValue = bwRelatedObj.getPropertyValue(relatedObjJoinPropertyNameTheId);
-				idToObjMap.put(idPropertyValue, relatedObj);
+				if (idPropertyValue != null) {
+					idToRelatedObjMap.put(idPropertyValue, relatedObj);
+				}
 			}
 		}
 		for (T mainObj : mainObjList) {
 			if (mainObj != null) {
 				BeanWrapper bwMainObj = PropertyAccessorFactory.forBeanPropertyAccess(mainObj);
 				Object foreignKeyPropertyValue = bwMainObj.getPropertyValue(mainObjJoinPropertyNameTheForeignKey);
-				bwMainObj.setPropertyValue(mainObjHasOnePropertyName, idToObjMap.get(foreignKeyPropertyValue));
+				if (foreignKeyPropertyValue != null) {
+					bwMainObj.setPropertyValue(mainObjHasOnePropertyName, idToRelatedObjMap.get(foreignKeyPropertyValue));
+				}
 			}
 		}
 	}
@@ -138,13 +142,15 @@ public class SimpleJdbcMapperUtils {
 			if (relatedObj != null) {
 				BeanWrapper bwRelatedObj = PropertyAccessorFactory.forBeanPropertyAccess(relatedObj);
 				Object foreignKeyPropertyValue = bwRelatedObj.getPropertyValue(relatedObjJoinPropertyNameTheForeignKey);
-				if (foreignKeyToListMap.containsKey(foreignKeyPropertyValue)) {
+				if (foreignKeyPropertyValue != null) {
 					List<U> list = foreignKeyToListMap.get(foreignKeyPropertyValue);
-					list.add(relatedObj);
-				} else {
-					List<U> list = new ArrayList<>();
-					list.add(relatedObj);
-					foreignKeyToListMap.put(foreignKeyPropertyValue, list);
+					if (list == null) {
+						list = new ArrayList<>();
+						list.add(relatedObj);
+						foreignKeyToListMap.put(foreignKeyPropertyValue, list);
+					} else {
+						list.add(relatedObj);
+					}
 				}
 			}
 		}
@@ -152,7 +158,9 @@ public class SimpleJdbcMapperUtils {
 			if (mainObj != null) {
 				BeanWrapper bwMainObj = PropertyAccessorFactory.forBeanPropertyAccess(mainObj);
 				Object idPropertyValue = bwMainObj.getPropertyValue(mainObjJoinPropertyNameTheId);
-				bwMainObj.setPropertyValue(mainObjHasManyPropertyName, foreignKeyToListMap.get(idPropertyValue));
+				if (idPropertyValue != null) {
+					bwMainObj.setPropertyValue(mainObjHasManyPropertyName, foreignKeyToListMap.get(idPropertyValue));
+				}
 			}
 		}
 	}

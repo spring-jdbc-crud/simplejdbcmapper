@@ -41,8 +41,9 @@ import io.github.simplejdbcmapper.exception.MapperException;
  */
 public class SimpleJdbcMapperUtils {
 	/**
-	 * Assigns the corresponding related object to the 'hasOne' property of the main
-	 * object.
+	 * Assigns the 'hasOne' property of the main object with the related object that
+	 * matches 'relatedObjJoinPropertyNameTheId' and
+	 * 'mainObjJoinPropertyNameTheForeignKey'.
 	 * 
 	 * <pre>
 	 * Example use case: 
@@ -99,8 +100,9 @@ public class SimpleJdbcMapperUtils {
 	}
 
 	/**
-	 * Assigns the corresponding list of related objects to the 'hasMany' property
-	 * of the main object
+	 * Assigns the 'hasMany' property of the main object with the list of related
+	 * objects that match 'relatedObjJoinPropertyNameTheForeignKey' and
+	 * 'mainObjJoinPropertyNameTheId'.
 	 * 
 	 * <pre>
 	 * Example use case could be: 

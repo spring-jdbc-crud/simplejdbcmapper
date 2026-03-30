@@ -41,7 +41,7 @@ import io.github.simplejdbcmapper.exception.MapperException;
  */
 public class SimpleJdbcMapperUtils {
 	/**
-	 * Merges the corresponding child object to the 'hasOne' property of the parent.
+	 * Merges corresponding child objectx to the 'hasOne' property of the parent.
 	 * 
 	 * <pre>
 	 * Example use case: 
@@ -90,8 +90,8 @@ public class SimpleJdbcMapperUtils {
 	}
 
 	/**
-	 * Merges the corresponding list of child objects to the 'hasMany' property of
-	 * the parent
+	 * Merges corresponding list of child objects to the 'hasMany' property of the
+	 * parent
 	 * 
 	 * <pre>
 	 * Example use case could be: 

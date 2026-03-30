@@ -64,17 +64,17 @@ class SimpleJdbcMapperUtilsTest {
 		Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
 			SimpleJdbcMapperUtils.populateHasOne(lines, products, null, "productId", "product");
 		});
-		assertTrue(exception.getMessage().contains("parentJoinPropertyName must not be null"));
+		assertTrue(exception.getMessage().contains("mainObjJoinPropertyNameTheForeignKey must not be null"));
 
 		Exception exception2 = Assertions.assertThrows(IllegalArgumentException.class, () -> {
 			SimpleJdbcMapperUtils.populateHasOne(lines, products, "productId", null, "product");
 		});
-		assertTrue(exception2.getMessage().contains("childJoinPropertyName must not be null"));
+		assertTrue(exception2.getMessage().contains("relatedObjJoinPropertyNameTheId must not be null"));
 
 		Exception exception3 = Assertions.assertThrows(IllegalArgumentException.class, () -> {
 			SimpleJdbcMapperUtils.populateHasOne(lines, products, "productId", "productId", null);
 		});
-		assertTrue(exception3.getMessage().contains("parentHasOnePropertyName must not be null"));
+		assertTrue(exception3.getMessage().contains("mainObjHasOnePropertyName must not be null"));
 
 		Assertions.assertThrows(Exception.class, () -> {
 			SimpleJdbcMapperUtils.populateHasOne(lines, products, "x", "productId", "product");
@@ -139,17 +139,17 @@ class SimpleJdbcMapperUtilsTest {
 		Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
 			SimpleJdbcMapperUtils.populateHasMany(orders, orderLines, null, "orderId", "orderLines");
 		});
-		assertTrue(exception.getMessage().contains("parentJoinPropertyName must not be null"));
+		assertTrue(exception.getMessage().contains("mainObjJoinPropertyNameTheId must not be null"));
 
 		Exception exception2 = Assertions.assertThrows(IllegalArgumentException.class, () -> {
 			SimpleJdbcMapperUtils.populateHasMany(orders, orderLines, "orderId", null, "orderLines");
 		});
-		assertTrue(exception2.getMessage().contains("childJoinPropertyName must not be null"));
+		assertTrue(exception2.getMessage().contains("relatedObjJoinPropertyNameTheForeignKey must not be null"));
 
 		Exception exception3 = Assertions.assertThrows(IllegalArgumentException.class, () -> {
 			SimpleJdbcMapperUtils.populateHasMany(orders, orderLines, "orderId", "orderId", null);
 		});
-		assertTrue(exception3.getMessage().contains("parentHasManyPropertyName must not be null"));
+		assertTrue(exception3.getMessage().contains("mainObjHasManyPropertyName must not be null"));
 
 		Assertions.assertThrows(Exception.class, () -> {
 			SimpleJdbcMapperUtils.populateHasMany(orders, orderLines, "x", "orderId", "orderLines");

@@ -41,7 +41,8 @@ import io.github.simplejdbcmapper.exception.MapperException;
  */
 public class SimpleJdbcMapperUtils {
 	/**
-	 * Merges corresponding child objectx to the 'hasOne' property of the parent.
+	 * Merges corresponding related object to the 'hasOne' property of the main
+	 * object.
 	 * 
 	 * <pre>
 	 * Example use case: 
@@ -50,38 +51,45 @@ public class SimpleJdbcMapperUtils {
 	 * 3) Use populateHasOne() to merge the 2 result sets to populate the user.profile property
 	 * </pre>
 	 * 
-	 * @param <T>                      the type of parent list
-	 * @param <U>                      the type of child list
-	 * @param parentList               The parent list whose 'hasOne' property that
-	 *                                 needs to be populated
-	 * @param childList                the child list
-	 * @param parentJoinPropertyName   The property name on parent used to merge the
-	 *                                 results
-	 * @param childJoinPropertyName    The property name on child used to merge the
-	 *                                 results
-	 * @param parentHasOnePropertyName The parent property to populate
+	 * @param <T>                                  the type of main object list
+	 * @param <U>                                  the type of related object list
+	 * @param mainObjList                          The main object list whose
+	 *                                             'hasOne' property that needs to
+	 *                                             be populated
+	 * @param relatedObjList                       the related object list
+	 * @param mainObjJoinPropertyNameTheForeignKey The property name on main object
+	 *                                             used to merge the results. This
+	 *                                             will be the foreign key property
+	 *                                             name
+	 * @param relatedObjJoinPropertyNameTheId      The property name on related
+	 *                                             object used to merge the results.
+	 *                                             This will be the id of the
+	 *                                             related object.
+	 * @param mainObjHasOnePropertyName            The main object property to
+	 *                                             populate
 	 */
-	public static <T, U> void populateHasOne(List<T> parentList, List<U> childList, String parentJoinPropertyName,
-			String childJoinPropertyName, String parentHasOnePropertyName) {
-		Assert.notNull(parentJoinPropertyName, "parentJoinPropertyName must not be null");
-		Assert.notNull(childJoinPropertyName, "childJoinPropertyName must not be null");
-		Assert.notNull(parentHasOnePropertyName, "parentHasOnePropertyName must not be null");
-		if (CollectionUtils.isEmpty(parentList) || CollectionUtils.isEmpty(childList)) {
+	public static <T, U> void populateHasOne(List<T> mainObjList, List<U> relatedObjList,
+			String mainObjJoinPropertyNameTheForeignKey, String relatedObjJoinPropertyNameTheId,
+			String mainObjHasOnePropertyName) {
+		Assert.notNull(mainObjJoinPropertyNameTheForeignKey, "mainObjJoinPropertyNameTheForeignKey must not be null");
+		Assert.notNull(relatedObjJoinPropertyNameTheId, "relatedObjJoinPropertyNameTheId must not be null");
+		Assert.notNull(mainObjHasOnePropertyName, "mainObjHasOnePropertyName must not be null");
+		if (CollectionUtils.isEmpty(mainObjList) || CollectionUtils.isEmpty(relatedObjList)) {
 			return;
 		}
 		Map<Object, U> idToObjMap = new HashMap<>();
-		for (U child : childList) {
-			if (child != null) {
-				BeanWrapper bwChild = PropertyAccessorFactory.forBeanPropertyAccess(child);
-				Object idPropertyValue = bwChild.getPropertyValue(childJoinPropertyName);
-				idToObjMap.put(idPropertyValue, child);
+		for (U relatedObj : relatedObjList) {
+			if (relatedObj != null) {
+				BeanWrapper bwRelatedObj = PropertyAccessorFactory.forBeanPropertyAccess(relatedObj);
+				Object idPropertyValue = bwRelatedObj.getPropertyValue(relatedObjJoinPropertyNameTheId);
+				idToObjMap.put(idPropertyValue, relatedObj);
 			}
 		}
-		for (T parent : parentList) {
-			if (parent != null) {
-				BeanWrapper bwParent = PropertyAccessorFactory.forBeanPropertyAccess(parent);
-				Object joinPropertyValue = bwParent.getPropertyValue(parentJoinPropertyName);
-				bwParent.setPropertyValue(parentHasOnePropertyName, idToObjMap.get(joinPropertyValue));
+		for (T mainObj : mainObjList) {
+			if (mainObj != null) {
+				BeanWrapper bwMainObj = PropertyAccessorFactory.forBeanPropertyAccess(mainObj);
+				Object foreignKeyPropertyValue = bwMainObj.getPropertyValue(mainObjJoinPropertyNameTheForeignKey);
+				bwMainObj.setPropertyValue(mainObjHasOnePropertyName, idToObjMap.get(foreignKeyPropertyValue));
 			}
 		}
 	}
@@ -97,45 +105,54 @@ public class SimpleJdbcMapperUtils {
 	 * 3) Use populateHasMany() to merge the 2 result sets to populate the employee.skills property
 	 * </pre>
 	 * 
-	 * @param <T>                       the type of parent list
-	 * @param <U>                       the type of child list
-	 * @param parentList                The parent list whose 'hasMany' property
-	 *                                  that needs to be populated
-	 * @param childList                 the child list
-	 * @param parentJoinPropertyName    The property name on parent used to merge
-	 *                                  the results
-	 * @param childJoinPropertyName     The property name on child used to merge the
-	 *                                  results
-	 * @param parentHasManyPropertyName The parent property to populate
+	 * @param <T>                                     the type of main object list
+	 * @param <U>                                     the type of related object
+	 *                                                list
+	 * @param mainObjList                             The main object list whose
+	 *                                                'hasMany' property that needs
+	 *                                                to be populated
+	 * @param relatedObjList                          the related object list
+	 * @param mainObjJoinPropertyNameTheId            The property name on main
+	 *                                                object used to merge the
+	 *                                                results. This will be the id
+	 *                                                of main object.
+	 * @param relatedObjJoinPropertyNameTheForeignKey The property name on related
+	 *                                                object used to merge the
+	 *                                                results. This will be the
+	 *                                                foreign key property name
+	 * @param mainObjHasManyPropertyName              The main object property to
+	 *                                                populate
 	 */
-	public static <T, U> void populateHasMany(List<T> parentList, List<U> childList, String parentJoinPropertyName,
-			String childJoinPropertyName, String parentHasManyPropertyName) {
-		Assert.notNull(parentJoinPropertyName, "parentJoinPropertyName must not be null");
-		Assert.notNull(childJoinPropertyName, "childJoinPropertyName must not be null");
-		Assert.notNull(parentHasManyPropertyName, "parentHasManyPropertyName must not be null");
-		if (CollectionUtils.isEmpty(parentList) || CollectionUtils.isEmpty(childList)) {
+	public static <T, U> void populateHasMany(List<T> mainObjList, List<U> relatedObjList,
+			String mainObjJoinPropertyNameTheId, String relatedObjJoinPropertyNameTheForeignKey,
+			String mainObjHasManyPropertyName) {
+		Assert.notNull(mainObjJoinPropertyNameTheId, "mainObjJoinPropertyNameTheId must not be null");
+		Assert.notNull(relatedObjJoinPropertyNameTheForeignKey,
+				"relatedObjJoinPropertyNameTheForeignKey must not be null");
+		Assert.notNull(mainObjHasManyPropertyName, "mainObjHasManyPropertyName must not be null");
+		if (CollectionUtils.isEmpty(mainObjList) || CollectionUtils.isEmpty(relatedObjList)) {
 			return;
 		}
-		Map<Object, List<U>> propertyToListMap = new HashMap<>();
-		for (U child : childList) {
-			if (child != null) {
-				BeanWrapper bwChild = PropertyAccessorFactory.forBeanPropertyAccess(child);
-				Object joinPropertyValue = bwChild.getPropertyValue(childJoinPropertyName);
-				if (propertyToListMap.containsKey(joinPropertyValue)) {
-					List<U> list = propertyToListMap.get(joinPropertyValue);
-					list.add(child);
+		Map<Object, List<U>> foreignKeyToListMap = new HashMap<>();
+		for (U relatedObj : relatedObjList) {
+			if (relatedObj != null) {
+				BeanWrapper bwRelatedObj = PropertyAccessorFactory.forBeanPropertyAccess(relatedObj);
+				Object foreignKeyPropertyValue = bwRelatedObj.getPropertyValue(relatedObjJoinPropertyNameTheForeignKey);
+				if (foreignKeyToListMap.containsKey(foreignKeyPropertyValue)) {
+					List<U> list = foreignKeyToListMap.get(foreignKeyPropertyValue);
+					list.add(relatedObj);
 				} else {
 					List<U> list = new ArrayList<>();
-					list.add(child);
-					propertyToListMap.put(joinPropertyValue, list);
+					list.add(relatedObj);
+					foreignKeyToListMap.put(foreignKeyPropertyValue, list);
 				}
 			}
 		}
-		for (T parent : parentList) {
-			if (parent != null) {
-				BeanWrapper bwParent = PropertyAccessorFactory.forBeanPropertyAccess(parent);
-				Object idPropertyValue = bwParent.getPropertyValue(parentJoinPropertyName);
-				bwParent.setPropertyValue(parentHasManyPropertyName, propertyToListMap.get(idPropertyValue));
+		for (T mainObj : mainObjList) {
+			if (mainObj != null) {
+				BeanWrapper bwMainObj = PropertyAccessorFactory.forBeanPropertyAccess(mainObj);
+				Object idPropertyValue = bwMainObj.getPropertyValue(mainObjJoinPropertyNameTheId);
+				bwMainObj.setPropertyValue(mainObjHasManyPropertyName, foreignKeyToListMap.get(idPropertyValue));
 			}
 		}
 	}

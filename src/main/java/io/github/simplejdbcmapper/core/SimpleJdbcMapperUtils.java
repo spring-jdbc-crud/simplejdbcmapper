@@ -58,15 +58,14 @@ public class SimpleJdbcMapperUtils {
 	 *                                             be populated
 	 * @param relatedObjList                       the related object list
 	 * @param mainObjJoinPropertyNameTheForeignKey The property name on main object
-	 *                                             used to merge the results. This
-	 *                                             will be the foreign key property
-	 *                                             name
+	 *                                             used to find the match. This will
+	 *                                             be the foreign key property name
 	 * @param relatedObjJoinPropertyNameTheId      The property name on related
-	 *                                             object used to merge the results.
+	 *                                             object used to find the match.
 	 *                                             This will be the id of the
 	 *                                             related object.
-	 * @param mainObjHasOnePropertyName            The main object property to
-	 *                                             populate
+	 * @param mainObjHasOnePropertyName            The main object 'hasOne' property
+	 *                                             to populate
 	 */
 	public static <T, U> void populateHasOne(List<T> mainObjList, List<U> relatedObjList,
 			String mainObjJoinPropertyNameTheForeignKey, String relatedObjJoinPropertyNameTheId,
@@ -92,7 +91,8 @@ public class SimpleJdbcMapperUtils {
 				BeanWrapper bwMainObj = PropertyAccessorFactory.forBeanPropertyAccess(mainObj);
 				Object foreignKeyPropertyValue = bwMainObj.getPropertyValue(mainObjJoinPropertyNameTheForeignKey);
 				if (foreignKeyPropertyValue != null) {
-					bwMainObj.setPropertyValue(mainObjHasOnePropertyName, idToRelatedObjMap.get(foreignKeyPropertyValue));
+					bwMainObj.setPropertyValue(mainObjHasOnePropertyName,
+							idToRelatedObjMap.get(foreignKeyPropertyValue));
 				}
 			}
 		}
@@ -117,14 +117,15 @@ public class SimpleJdbcMapperUtils {
 	 *                                                to be populated
 	 * @param relatedObjList                          the related object list
 	 * @param mainObjJoinPropertyNameTheId            The property name on main
-	 *                                                object used to merge the
-	 *                                                results. This will be the id
-	 *                                                of main object.
+	 *                                                object used to find the match.
+	 *                                                This will be the id of main
+	 *                                                object.
 	 * @param relatedObjJoinPropertyNameTheForeignKey The property name on related
-	 *                                                object used to merge the
-	 *                                                results. This will be the
-	 *                                                foreign key property name
-	 * @param mainObjHasManyPropertyName              The main object property to
+	 *                                                object used to find the match.
+	 *                                                This will be the foreign key
+	 *                                                property name
+	 * @param mainObjHasManyPropertyName              The main object 'hasMany'
+	 *                                                collection property to
 	 *                                                populate
 	 */
 	public static <T, U> void populateHasMany(List<T> mainObjList, List<U> relatedObjList,

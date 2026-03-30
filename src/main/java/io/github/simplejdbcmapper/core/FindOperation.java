@@ -106,7 +106,7 @@ class FindOperation {
 				+ " WHERE ";
 		if (ObjectUtils.isEmpty(localPropertyValues)) {
 			sql += propMapping.getColumnName() + " IS NULL";
-			return sjmSupport.getNamedParameterJdbcTemplate().query(sql, getBeanPropertyRowMapper(clazz));
+			return sjmSupport.getJdbcTemplate().query(sql, getBeanPropertyRowMapper(clazz));
 		} else {
 			sql += propMapping.getColumnName() + " IN (:propertyValues)";
 			if (hasNullInSet) {

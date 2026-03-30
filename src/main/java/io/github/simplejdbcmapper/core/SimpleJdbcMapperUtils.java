@@ -41,14 +41,14 @@ import io.github.simplejdbcmapper.exception.MapperException;
  */
 public class SimpleJdbcMapperUtils {
 	/**
-	 * Merges corresponding related object to the 'hasOne' property of the main
+	 * Assigns the corresponding related object to the 'hasOne' property of the main
 	 * object.
 	 * 
 	 * <pre>
 	 * Example use case: 
-	 * 1) Query for a list of users
-	 * 2) Use an IN/ANY clause query to get the profiles for the users 
-	 * 3) Use populateHasOne() to merge the 2 result sets to populate the user.profile property
+	 * 1) Query for a list of employees
+	 * 2) Use an IN/ANY clause query to get the department for the employees 
+	 * 3) Use populateHasOne() to populate the employee.department property
 	 * </pre>
 	 * 
 	 * @param <T>                                  the type of main object list
@@ -95,14 +95,14 @@ public class SimpleJdbcMapperUtils {
 	}
 
 	/**
-	 * Merges corresponding list of child objects to the 'hasMany' property of the
-	 * parent
+	 * Assigns the corresponding list of related objects to the 'hasMany' property
+	 * of the main object
 	 * 
 	 * <pre>
 	 * Example use case could be: 
 	 * 1) Query to get a list of employees
 	 * 2) Use an IN/ANY clause query to get all the skills for those employees 
-	 * 3) Use populateHasMany() to merge the 2 result sets to populate the employee.skills property
+	 * 3) Use populateHasMany() to populate the employee.skills property
 	 * </pre>
 	 * 
 	 * @param <T>                                     the type of main object list
@@ -164,7 +164,7 @@ public class SimpleJdbcMapperUtils {
 	 *
 	 * @param <T>       the type of list
 	 * @param list      the list to chunk
-	 * @param chunkSize The size of each chunk
+	 * @param chunkSize The size of chunk
 	 * @return Collection of lists broken down by chunkSize
 	 */
 	public static <T> List<List<T>> chunkList(List<T> list, int chunkSize) {

@@ -69,23 +69,20 @@ public class SimpleJdbcMapperUtils {
 		if (CollectionUtils.isEmpty(parentList) || CollectionUtils.isEmpty(childList)) {
 			return;
 		}
-		Set<T> parentSet = new HashSet<>(parentList);
-		Set<U> childSet = new HashSet<>(childList);
-		parentSet.remove(null);
-		childSet.remove(null);
-		if (CollectionUtils.isEmpty(parentSet) || CollectionUtils.isEmpty(childSet)) {
-			return;
-		}
 		Map<Object, U> idToObjMap = new HashMap<>();
-		for (U child : childSet) {
-			BeanWrapper bwChild = PropertyAccessorFactory.forBeanPropertyAccess(child);
-			Object idPropertyValue = bwChild.getPropertyValue(childJoinPropertyName);
-			idToObjMap.put(idPropertyValue, child);
+		for (U child : childList) {
+			if (child != null) {
+				BeanWrapper bwChild = PropertyAccessorFactory.forBeanPropertyAccess(child);
+				Object idPropertyValue = bwChild.getPropertyValue(childJoinPropertyName);
+				idToObjMap.put(idPropertyValue, child);
+			}
 		}
-		for (T parent : parentSet) {
-			BeanWrapper bwParent = PropertyAccessorFactory.forBeanPropertyAccess(parent);
-			Object joinPropertyValue = bwParent.getPropertyValue(parentJoinPropertyName);
-			bwParent.setPropertyValue(parentHasOnePropertyName, idToObjMap.get(joinPropertyValue));
+		for (T parent : parentList) {
+			if (parent != null) {
+				BeanWrapper bwParent = PropertyAccessorFactory.forBeanPropertyAccess(parent);
+				Object joinPropertyValue = bwParent.getPropertyValue(parentJoinPropertyName);
+				bwParent.setPropertyValue(parentHasOnePropertyName, idToObjMap.get(joinPropertyValue));
+			}
 		}
 	}
 
@@ -119,30 +116,27 @@ public class SimpleJdbcMapperUtils {
 		if (CollectionUtils.isEmpty(parentList) || CollectionUtils.isEmpty(childList)) {
 			return;
 		}
-		Set<T> parentSet = new HashSet<>(parentList);
-		Set<U> childSet = new LinkedHashSet<>(childList);
-		parentSet.remove(null);
-		childSet.remove(null);
-		if (CollectionUtils.isEmpty(parentSet) || CollectionUtils.isEmpty(childSet)) {
-			return;
-		}
 		Map<Object, List<U>> propertyToListMap = new HashMap<>();
-		for (U child : childSet) {
-			BeanWrapper bwChild = PropertyAccessorFactory.forBeanPropertyAccess(child);
-			Object joinPropertyValue = bwChild.getPropertyValue(childJoinPropertyName);
-			if (propertyToListMap.containsKey(joinPropertyValue)) {
-				List<U> list = propertyToListMap.get(joinPropertyValue);
-				list.add(child);
-			} else {
-				List<U> list = new ArrayList<>();
-				list.add(child);
-				propertyToListMap.put(joinPropertyValue, list);
+		for (U child : childList) {
+			if (child != null) {
+				BeanWrapper bwChild = PropertyAccessorFactory.forBeanPropertyAccess(child);
+				Object joinPropertyValue = bwChild.getPropertyValue(childJoinPropertyName);
+				if (propertyToListMap.containsKey(joinPropertyValue)) {
+					List<U> list = propertyToListMap.get(joinPropertyValue);
+					list.add(child);
+				} else {
+					List<U> list = new ArrayList<>();
+					list.add(child);
+					propertyToListMap.put(joinPropertyValue, list);
+				}
 			}
 		}
-		for (T parent : parentSet) {
-			BeanWrapper bwParent = PropertyAccessorFactory.forBeanPropertyAccess(parent);
-			Object idPropertyValue = bwParent.getPropertyValue(parentJoinPropertyName);
-			bwParent.setPropertyValue(parentHasManyPropertyName, propertyToListMap.get(idPropertyValue));
+		for (T parent : parentList) {
+			if (parent != null) {
+				BeanWrapper bwParent = PropertyAccessorFactory.forBeanPropertyAccess(parent);
+				Object idPropertyValue = bwParent.getPropertyValue(parentJoinPropertyName);
+				bwParent.setPropertyValue(parentHasManyPropertyName, propertyToListMap.get(idPropertyValue));
+			}
 		}
 	}
 

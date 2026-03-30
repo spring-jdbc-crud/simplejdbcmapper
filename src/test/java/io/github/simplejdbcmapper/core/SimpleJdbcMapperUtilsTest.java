@@ -1,9 +1,11 @@
 package io.github.simplejdbcmapper.core;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.assertj.core.util.Arrays;
@@ -29,11 +31,22 @@ class SimpleJdbcMapperUtilsTest {
 
 	@Test
 	void populateHasOne_success() {
+
+		assertDoesNotThrow(() -> {
+			SimpleJdbcMapperUtils.populateHasOne(new ArrayList<Integer>(), null, "productId", "productId", "product");
+		});
+
+		assertDoesNotThrow(() -> {
+			SimpleJdbcMapperUtils.populateHasOne(null, new ArrayList<Integer>(), "productId", "productId", "product");
+		});
+
 		List<OrderLine> lines = sjm.findAll(OrderLine.class);
 		List<Integer> productIdList = lines.stream().map(OrderLine::getProductId).toList();
-
 		List<Product> products = sjm.findByPropertyValues(Product.class, "productId", productIdList);
 
+		// make sure populateHasOne can handle null entries in lists
+		lines.add(null);
+		products.add(null);
 		SimpleJdbcMapperUtils.populateHasOne(lines, products, "productId", "productId", "product");
 		assertNotNull(lines.get(0).getProduct());
 		assertEquals(lines.get(0).getProduct().getProductId(), lines.get(0).getProductId());
@@ -84,6 +97,15 @@ class SimpleJdbcMapperUtilsTest {
 
 	@Test
 	void populateHasMany_success() {
+
+		assertDoesNotThrow(() -> {
+			SimpleJdbcMapperUtils.populateHasMany(new ArrayList<Integer>(), null, "orderId", "orderId", "orderLines");
+		});
+
+		assertDoesNotThrow(() -> {
+			SimpleJdbcMapperUtils.populateHasMany(null, new ArrayList<Integer>(), "orderId", "orderId", "orderLines");
+		});
+
 		String sql0 = "SELECT " + sjm.getBeanFriendlySqlColumns(Order.class) + " FROM orders order by order_id";
 		List<Order> orders = sjm.getJdbcClient().sql(sql0).query(Order.class).list();
 
@@ -91,6 +113,9 @@ class SimpleJdbcMapperUtilsTest {
 
 		List<OrderLine> orderLines = sjm.findByPropertyValues(OrderLine.class, "orderId", orderIdList);
 
+		// make sure populateHasMany() can handle null entries in lists
+		orders.add(null);
+		orderLines.add(null);
 		SimpleJdbcMapperUtils.populateHasMany(orders, orderLines, "orderId", "orderId", "orderLines");
 
 		assertEquals(2, orders.get(0).getOrderLines().size());

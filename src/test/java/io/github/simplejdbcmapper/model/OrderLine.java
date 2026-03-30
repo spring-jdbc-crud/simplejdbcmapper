@@ -9,7 +9,6 @@ import io.github.simplejdbcmapper.annotation.Table;
 public class OrderLine {
 	@Id(type = IdType.AUTO_GENERATED)
 	private Integer orderLineId;
-
 	@Column
 	private Long orderId;
 	@Column

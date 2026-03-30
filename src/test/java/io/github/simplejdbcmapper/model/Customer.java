@@ -11,7 +11,6 @@ import io.github.simplejdbcmapper.annotation.Table;
 public class Customer {
 	@Id(type = IdType.AUTO_GENERATED)
 	private Integer customerId;
-
 	@Column
 	private String firstName;
 	@Column

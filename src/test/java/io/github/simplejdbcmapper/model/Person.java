@@ -12,7 +12,6 @@ public class Person {
 	private String lastName;
 	@Column
 	private String firstName;
-
 	private String someNonDatabaseProperty;
 
 	public String getPersonId() {

@@ -1,5 +1,5 @@
 # SimpleJdbcMapper #
- 
+
 A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations by making them less verbose. Use its API where beneficial and keep using JdbcTemplate/JdbcClient for all other functionality.
 
 Just by annotating the models you would use with JdbcTemplate/JdbcClient, you get single-line CRUD and will be able to use Spring's row mappers like BeanPropertyRowMapper and SimplePropertyRowMapper etc for certain custom queries, avoiding writing custom row mappers.
@@ -119,10 +119,10 @@ Just by annotating the models you would use with JdbcTemplate/JdbcClient, you ge
  sjm.deleteById(Product.class, 5);
  
  /*
-  For custom queries use the following method to get the columns sql.  Works well with Spring row mappers like
-  BeanPropertyRowMapper, SimplePropertyRowMapper etc, creating the appropriate column aliases when the column 
-  name does not match the corresponding underscore case property name. This facilitates these row mappers to populate 
-  all the properties. Note in this case the 'name' property is mapped to the 'product_name' column.
+  For custom queries use getBeanFriendlySqlColumns() to get the columns sql. It creates the appropriate column aliases 
+  when the column name does not match the corresponding underscore case property name. This allows the usage of 
+  Spring row mappers like BeanPropertyRowMapper, SimplePropertyRowMapper etc instead of writing custom row mappers. 
+  Note in this case the 'name' property is mapped to the 'product_name' column.
  */
  String sql = "SELECT " + sjm.getBeanFriendlySqlColumns(Product.class) +  " FROM product WHERE product_name = ?";
  
@@ -412,7 +412,7 @@ Binary large object database columns should be mapped to java type byte[]. No ot
 
 Character large object database columns should be mapped to java types String or other CharSequence or char[]. No other types are supported.
 
-If there is a need to use InputStream/Reader you will have to use JdbcTemplate directly for that use case.
+If there is a need to use InputStream/Reader use JdbcTemplate directly.
 
 ## Enum mapping
 Enums can be mapped to a database column which stores strings.

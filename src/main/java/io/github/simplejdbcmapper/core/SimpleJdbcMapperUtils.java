@@ -48,7 +48,7 @@ public class SimpleJdbcMapperUtils {
 	 * <pre>
 	 * Example use case: 
 	 * 1) Query for a list of employees
-	 * 2) Use an IN/ANY clause query to get the department for the employees 
+	 * 2) Query the departments for these employees
 	 * 3) Use populateHasOne() to populate the employee.department property
 	 * </pre>
 	 * 
@@ -107,7 +107,7 @@ public class SimpleJdbcMapperUtils {
 	 * <pre>
 	 * Example use case could be: 
 	 * 1) Query to get a list of employees
-	 * 2) Use an IN/ANY clause query to get all the skills for those employees 
+	 * 2) Query the skills of these employees
 	 * 3) Use populateHasMany() to populate the employee.skills property
 	 * </pre>
 	 * 

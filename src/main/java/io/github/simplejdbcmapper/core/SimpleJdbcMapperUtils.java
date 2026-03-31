@@ -101,8 +101,8 @@ public class SimpleJdbcMapperUtils {
 
 	/**
 	 * Assigns the 'hasMany' property of the main object with the list of related
-	 * objects that match 'relatedObjJoinPropertyNameTheForeignKey' and
-	 * 'mainObjJoinPropertyNameTheId'.
+	 * objects that match 'mainObjJoinPropertyNameTheId' and
+	 * 'relatedObjJoinPropertyNameTheForeignKey'.
 	 * 
 	 * <pre>
 	 * Example use case could be: 

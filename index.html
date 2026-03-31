@@ -58,7 +58,8 @@
 </ul>
       </div>
       <div class="span9 main"><h1 id="simplejdbcmapper"><a class="header-link" href="#simplejdbcmapper"></a>SimpleJdbcMapper</h1>
-<p>A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations by making them less verbose. Its a wrapper around Spring JDBC libraries. Use its api where beneficial and keep using JdbcTemplate/JdbcClient for all other functionality.</p>
+<p>A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations by making them less verbose. Use its API where beneficial and keep using JdbcTemplate/JdbcClient for all other functionality.</p>
+<p>Just by annotating the models you would use with JdbcTemplate/JdbcClient, you get single-line CRUD and will be able to use Spring&#39;s row mappers like BeanPropertyRowMapper and SimplePropertyRowMapper etc for certain custom queries, avoiding writing custom row mappers.</p>
 <p>
 	<a href="https://github.com/spring-jdbc-crud/simplejdbcmapper">github</a> |
 	<a href="https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/index.html">Javadoc</a> |
@@ -85,7 +86,7 @@
 <pre class="hljs"><code> <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>io.github.spring-jdbc-crud<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>simplejdbcmapper<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
-   <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>1.7.1<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>1.7.2<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre><h2 id="example-code"><a class="header-link" href="#example-code"></a>Example code</h2>
 <pre class="hljs"><code> <span class="hljs-comment">//@Table annotation is required</span>
  <span class="hljs-meta">@Table(name=&quot;product&quot;)</span>
@@ -157,10 +158,10 @@
  sjm.deleteById(Product.class, <span class="hljs-number">5</span>);
  
  <span class="hljs-comment">/*
-For custom queries use the following method to get the columns sql.  Works well with Spring row mappers like
-BeanPropertyRowMapper, SimplePropertyRowMapper etc, creating the appropriate column aliases when the column 
-name does not match the corresponding underscore case property name. This facilitates these row mappers to populate 
-all the properties. Note in this case the &#x27;name&#x27; property is mapped to the &#x27;product_name&#x27; column.
+For custom queries use getBeanFriendlySqlColumns() to get the columns sql. It creates the appropriate column aliases 
+when the column name does not match the corresponding underscore case property name. This allows the usage of 
+Spring row mappers like BeanPropertyRowMapper, SimplePropertyRowMapper etc instead of writing custom row mappers. 
+Note in this case the &#x27;name&#x27; property is mapped to the &#x27;product_name&#x27; column.
  */</span>
  String sql = <span class="hljs-string1">&quot;SELECT &quot;</span> + sjm.getBeanFriendlySqlColumns(Product.class) +  <span class="hljs-string1">&quot; FROM product WHERE product_name = ?&quot;</span>;
  
@@ -378,7 +379,7 @@ If a Supplier is configured using simpleJdbcMapper.setRecordAuditedBySupplier(),
 }</code></pre><h2 id="blob-clob-mapping"><a class="header-link" href="#blob-clob-mapping"></a>BLOB CLOB mapping</h2>
 <p>Binary large object database columns should be mapped to java type byte[]. No other type is supported.</p>
 <p>Character large object database columns should be mapped to java types String or other CharSequence or char[]. No other types are supported.</p>
-<p>If there is a need to use InputStream/Reader you will have to use JdbcTemplate directly for that use case.</p>
+<p>If there is a need to use InputStream/Reader use JdbcTemplate directly.</p>
 <h2 id="enum-mapping"><a class="header-link" href="#enum-mapping"></a>Enum mapping</h2>
 <p>Enums can be mapped to a database column which stores strings.</p>
 <pre class="hljs"><code><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">enum</span> <span class="hljs-title">StatusEnum</span> </span>{

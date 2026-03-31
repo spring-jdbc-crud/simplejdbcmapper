@@ -27,7 +27,9 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.FIELD)
 public @interface Column {
+	/** column name */
 	String name() default "[DEFAULT]";
 
+	/** column overridden sqlType */
 	int sqlType() default -99999;
 }

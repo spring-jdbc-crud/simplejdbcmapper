@@ -71,10 +71,6 @@ class PropertyMapping {
 		return columnSqlType;
 	}
 
-	public void setColumnSqlType(int columnSqlType) {
-		this.columnSqlType = columnSqlType;
-	}
-
 	public Integer getColumnOverriddenSqlType() {
 		return columnOverriddenSqlType;
 	}

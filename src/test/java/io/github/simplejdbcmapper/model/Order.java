@@ -18,7 +18,6 @@ import io.github.simplejdbcmapper.annotation.Version;
 public class Order {
 	@Id(type = IdType.AUTO_GENERATED)
 	private Long orderId;
-
 	@Column
 	private LocalDateTime orderDate;
 

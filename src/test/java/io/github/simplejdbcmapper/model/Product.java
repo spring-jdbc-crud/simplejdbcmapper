@@ -19,7 +19,6 @@ public class Product {
 	private String name;
 	@Column
 	private Double cost;
-
 	@Column
 	private String description;
 

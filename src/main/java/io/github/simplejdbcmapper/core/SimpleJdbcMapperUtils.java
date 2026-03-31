@@ -41,15 +41,168 @@ import io.github.simplejdbcmapper.exception.MapperException;
  */
 public class SimpleJdbcMapperUtils {
 	/**
-	 * Merges the corresponding child object to the 'hasOne' property of the parent.
+	 * Assigns the 'hasOne' property of the main object with the related object that
+	 * matches 'relatedObjJoinPropertyNameTheId' and
+	 * 'mainObjJoinPropertyNameTheForeignKey'.
 	 * 
 	 * <pre>
+	 * Example use case: 
+	 * 1) Query for a list of employees
+	 * 2) Query the departments for these employees
+	 * 3) Use populateHasOne() to populate the employee.department property
+	 * </pre>
+	 * 
+	 * @param <T>                                  the type of main object list
+	 * @param <U>                                  the type of related object list
+	 * @param mainObjList                          The main object list whose
+	 *                                             'hasOne' property that needs to
+	 *                                             be populated
+	 * @param relatedObjList                       the related object list
+	 * @param mainObjJoinPropertyNameTheForeignKey The property name on main object
+	 *                                             used to find the match. This will
+	 *                                             be the foreign key property name
+	 * @param relatedObjJoinPropertyNameTheId      The property name on related
+	 *                                             object used to find the match.
+	 *                                             This will be the id of the
+	 *                                             related object.
+	 * @param mainObjHasOnePropertyName            The main object 'hasOne' property
+	 *                                             to populate
+	 */
+	public static <T, U> void populateHasOne(List<T> mainObjList, List<U> relatedObjList,
+			String mainObjJoinPropertyNameTheForeignKey, String relatedObjJoinPropertyNameTheId,
+			String mainObjHasOnePropertyName) {
+		Assert.notNull(mainObjJoinPropertyNameTheForeignKey, "mainObjJoinPropertyNameTheForeignKey must not be null");
+		Assert.notNull(relatedObjJoinPropertyNameTheId, "relatedObjJoinPropertyNameTheId must not be null");
+		Assert.notNull(mainObjHasOnePropertyName, "mainObjHasOnePropertyName must not be null");
+		if (CollectionUtils.isEmpty(mainObjList) || CollectionUtils.isEmpty(relatedObjList)) {
+			return;
+		}
+		Map<Object, U> idToRelatedObjMap = new HashMap<>();
+		for (U relatedObj : relatedObjList) {
+			if (relatedObj != null) {
+				BeanWrapper bwRelatedObj = PropertyAccessorFactory.forBeanPropertyAccess(relatedObj);
+				Object idPropertyValue = bwRelatedObj.getPropertyValue(relatedObjJoinPropertyNameTheId);
+				if (idPropertyValue != null) {
+					idToRelatedObjMap.put(idPropertyValue, relatedObj);
+				}
+			}
+		}
+		for (T mainObj : mainObjList) {
+			if (mainObj != null) {
+				BeanWrapper bwMainObj = PropertyAccessorFactory.forBeanPropertyAccess(mainObj);
+				Object foreignKeyPropertyValue = bwMainObj.getPropertyValue(mainObjJoinPropertyNameTheForeignKey);
+				if (foreignKeyPropertyValue != null) {
+					bwMainObj.setPropertyValue(mainObjHasOnePropertyName,
+							idToRelatedObjMap.get(foreignKeyPropertyValue));
+				}
+			}
+		}
+	}
+
+	/**
+	 * Assigns the 'hasMany' property of the main object with the list of related
+	 * objects that match 'mainObjJoinPropertyNameTheId' and
+	 * 'relatedObjJoinPropertyNameTheForeignKey'.
+	 * 
+	 * <pre>
+	 * Example use case could be: 
+	 * 1) Query to get a list of employees
+	 * 2) Query the skills of these employees
+	 * 3) Use populateHasMany() to populate the employee.skills property
+	 * </pre>
+	 * 
+	 * @param <T>                                     the type of main object list
+	 * @param <U>                                     the type of related object
+	 *                                                list
+	 * @param mainObjList                             The main object list whose
+	 *                                                'hasMany' property that needs
+	 *                                                to be populated
+	 * @param relatedObjList                          the related object list
+	 * @param mainObjJoinPropertyNameTheId            The property name on main
+	 *                                                object used to find the match.
+	 *                                                This will be the id of main
+	 *                                                object.
+	 * @param relatedObjJoinPropertyNameTheForeignKey The property name on related
+	 *                                                object used to find the match.
+	 *                                                This will be the foreign key
+	 *                                                property name
+	 * @param mainObjHasManyPropertyName              The main object 'hasMany'
+	 *                                                collection property to
+	 *                                                populate
+	 */
+	public static <T, U> void populateHasMany(List<T> mainObjList, List<U> relatedObjList,
+			String mainObjJoinPropertyNameTheId, String relatedObjJoinPropertyNameTheForeignKey,
+			String mainObjHasManyPropertyName) {
+		Assert.notNull(mainObjJoinPropertyNameTheId, "mainObjJoinPropertyNameTheId must not be null");
+		Assert.notNull(relatedObjJoinPropertyNameTheForeignKey,
+				"relatedObjJoinPropertyNameTheForeignKey must not be null");
+		Assert.notNull(mainObjHasManyPropertyName, "mainObjHasManyPropertyName must not be null");
+		if (CollectionUtils.isEmpty(mainObjList) || CollectionUtils.isEmpty(relatedObjList)) {
+			return;
+		}
+		Map<Object, List<U>> foreignKeyToListMap = new HashMap<>();
+		for (U relatedObj : relatedObjList) {
+			if (relatedObj != null) {
+				BeanWrapper bwRelatedObj = PropertyAccessorFactory.forBeanPropertyAccess(relatedObj);
+				Object foreignKeyPropertyValue = bwRelatedObj.getPropertyValue(relatedObjJoinPropertyNameTheForeignKey);
+				if (foreignKeyPropertyValue != null) {
+					List<U> list = foreignKeyToListMap.get(foreignKeyPropertyValue);
+					if (list == null) {
+						list = new ArrayList<>();
+						list.add(relatedObj);
+						foreignKeyToListMap.put(foreignKeyPropertyValue, list);
+					} else {
+						list.add(relatedObj);
+					}
+				}
+			}
+		}
+		for (T mainObj : mainObjList) {
+			if (mainObj != null) {
+				BeanWrapper bwMainObj = PropertyAccessorFactory.forBeanPropertyAccess(mainObj);
+				Object idPropertyValue = bwMainObj.getPropertyValue(mainObjJoinPropertyNameTheId);
+				if (idPropertyValue != null) {
+					bwMainObj.setPropertyValue(mainObjHasManyPropertyName, foreignKeyToListMap.get(idPropertyValue));
+				}
+			}
+		}
+	}
+
+	/**
+	 * Splits the list into multiple lists by chunk size. Can be used to split the
+	 * sql IN clauses since some databases have a limitation on 'IN' clause entries
+	 * and size
+	 *
+	 * @param <T>       the type of list
+	 * @param list      the list to chunk
+	 * @param chunkSize The size of chunk
+	 * @return Collection of lists broken down by chunkSize
+	 */
+	public static <T> List<List<T>> chunkList(List<T> list, int chunkSize) {
+		List<List<T>> chunks = new ArrayList<>();
+		if (list != null) {
+			for (int i = 0; i < list.size(); i += chunkSize) {
+				chunks.add(list.subList(i, Math.min(i + chunkSize, list.size())));
+			}
+		}
+		return chunks;
+	}
+
+	/**
+	 * @deprecated Use populateHasOne() instead.
+	 * 
+	 *             Merges the corresponding child object to the 'hasOne' property of
+	 *             the parent.
+	 * 
+	 *             <pre>
 	 * Example use case: 
 	 * 1) Query for a list of users
 	 * 2) Use an IN/ANY clause query to get the profiles for the users 
 	 * 3) Use method mergeResultsToPopulateHasOne() to merge the 2 result sets to populate the user.profile property
-	 * </pre>
+	 *             </pre>
 	 * 
+	 * @param <T>                            the type of parent list
+	 * @param <U>                            the type of child list
 	 * @param parentList                     The parent list whose 'hasOne' property
 	 *                                       that needs to be populated
 	 * @param childList                      the child list
@@ -59,6 +212,7 @@ public class SimpleJdbcMapperUtils {
 	 *                                       merge the results
 	 * @param parentHasOnePropertyToPopulate The parent property to populate
 	 */
+	@Deprecated(since = "1.7.2")
 	public static <T, U> void mergeResultsToPopulateHasOne(List<T> parentList, List<U> childList,
 			String parentJoinPropertyName, String childJoinPropertyName, String parentHasOnePropertyToPopulate) {
 		if (CollectionUtils.isEmpty(parentList) || CollectionUtils.isEmpty(childList)) {
@@ -87,16 +241,20 @@ public class SimpleJdbcMapperUtils {
 	}
 
 	/**
-	 * Merges the corresponding list of child objects to the 'hasMany' property of
-	 * the parent
+	 * @deprecated Use populateHasMany() instead.
 	 * 
-	 * <pre>
+	 *             Merges the corresponding list of child objects to the 'hasMany'
+	 *             property of the parent
+	 * 
+	 *             <pre>
 	 * Example use case could be: 
 	 * 1) Query to get a list of employees
 	 * 2) Use an IN/ANY clause query to get all the skills for those employees 
 	 * 3) Use mergeResultsToPopulateHasMany() to merge the 2 result sets to populate the employee.skills property
-	 * </pre>
+	 *             </pre>
 	 * 
+	 * @param <T>                             the type of parent list
+	 * @param <U>                             the type of child list
 	 * @param parentList                      The parent list whose 'hasMany'
 	 *                                        property that needs to be populated
 	 * @param childList                       the child list
@@ -106,6 +264,7 @@ public class SimpleJdbcMapperUtils {
 	 *                                        merge the results
 	 * @param parentHasManyPropertyToPopulate The parent property to populate
 	 */
+	@Deprecated(since = "1.7.2")
 	public static <T, U> void mergeResultsToPopulateHasMany(List<T> parentList, List<U> childList,
 			String parentJoinPropertyName, String childJoinPropertyName, String parentHasManyPropertyToPopulate) {
 		if (CollectionUtils.isEmpty(parentList) || CollectionUtils.isEmpty(childList)) {
@@ -141,14 +300,17 @@ public class SimpleJdbcMapperUtils {
 	}
 
 	/**
-	 * Splits the list into multiple lists by chunk size. Can be used to split the
-	 * sql IN clauses since some databases have a limitation on 'IN' clause entries
-	 * and size
-	 *
+	 * @deprecated Use chunkList() instead.
+	 * 
+	 *             Splits the list into multiple lists by chunk size. Can be used to
+	 *             split the sql IN clauses since some databases have a limitation
+	 *             on 'IN' clause entries and size
+	 * 
 	 * @param list      the list to chunk
 	 * @param chunkSize The size of each chunk
 	 * @return Collection of lists broken down by chunkSize
 	 */
+	@Deprecated(since = "1.7.2")
 	@SuppressWarnings("rawtypes")
 	public static List<List> chunkTheList(List list, Integer chunkSize) {
 		List<List> chunks = new ArrayList<>();
@@ -200,6 +362,7 @@ public class SimpleJdbcMapperUtils {
 		if (!bwParent.isReadableProperty(parentHasManyPropertyName)) {
 			throw new MapperException(parentHasManyPropertyName + " not found in " + bwParent.getWrappedClass());
 		}
+
 		PropertyDescriptor pd = bwParent.getPropertyDescriptor(parentHasManyPropertyName);
 		if (!Collection.class.isAssignableFrom(pd.getPropertyType())) {
 			throw new MapperException(

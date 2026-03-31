@@ -7,7 +7,6 @@ public class TestUtils {
 		try {
 			Field field = sjm.getClass().getDeclaredField("simpleJdbcMapperSupport");
 			field.setAccessible(true);
-
 			return (SimpleJdbcMapperSupport) field.get(sjm);
 		} catch (Exception e) {
 			throw new RuntimeException(e);

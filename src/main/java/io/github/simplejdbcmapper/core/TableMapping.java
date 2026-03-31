@@ -104,16 +104,6 @@ class TableMapping {
 		}
 	}
 
-	public String getColumnName(String propertyName) {
-		PropertyMapping propMapping = propertyNameMap.get(propertyName);
-		return propMapping == null ? null : propMapping.getColumnName();
-	}
-
-	public String getPropertyName(String columnName) {
-		PropertyMapping propMapping = columnNameMap.get(columnName);
-		return propMapping == null ? null : propMapping.getPropertyName();
-	}
-
 	public String getMappedObjClassName() {
 		return mappedObjClassName;
 	}

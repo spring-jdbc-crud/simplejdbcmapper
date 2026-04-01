@@ -17,7 +17,8 @@ jobs:
       mysql:
         image: mysql:8.0
         env:
-          MYSQL_DATABASE: mysql_db
+          MYSQL_DATABASE: schema1
+          MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
         ports:
           - 3306:3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s

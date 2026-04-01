@@ -2,9 +2,9 @@ name: CI with PostgreSQL
 
 on:
   push:
-    branches: [ "devx" ]
+    branches: [ "dev" ]
   pull_request:
-    branches: [ "devx" ]
+    branches: [ "dev" ]
 
 jobs:
   build-and-test:

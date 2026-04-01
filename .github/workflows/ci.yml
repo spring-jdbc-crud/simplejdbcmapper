@@ -41,7 +41,10 @@ jobs:
       # The `ubuntu-latest` runner has psql pre-installed
 
     - name: Display PostgreSQL version
-      run: psql -h localhost -U postgres -c 'SELECT VERSION();'
+      env:
+        POSTGRES_PASSWORD: pass1234
+      run: psql -h localhost -U postgres -c "SELECT 1" 
+
 
     - name: Run application tests
       # Replace with your actual test command (e.g., 'npm test', 'pytest', 'dotnet test')

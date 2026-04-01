@@ -1,4 +1,4 @@
-name: CI with PostgreSQL
+name: CI for SimpleJdbcMapper
 
 on:
   push:
@@ -11,7 +11,7 @@ on:
       - 'README.md'
 
 jobs:
-  build-and-test:
+  tests-against-postgres:
     runs-on: ubuntu-latest
 
     # Define the PostgreSQL service container
@@ -58,4 +58,13 @@ jobs:
 
 
     - name: Run application tests
+      env: 
+        spring.profiles.active: postgres
       run: mvn clean package
+
+  tests-against-mysql:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        run: echo "mysql"

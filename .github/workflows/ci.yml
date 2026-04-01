@@ -42,7 +42,7 @@ jobs:
 
     - name: Display PostgreSQL version
       env:
-        POSTGRES_PASSWORD: pass1234
+        PGPASSWORD: pass1234
       run: psql -h localhost -U postgres -c "SELECT 1" 
 
 

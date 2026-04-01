@@ -58,7 +58,9 @@ jobs:
 
 
     - name: Run application tests
-      run: mvn clean package -Dspring.profiles.active=postgres
+      env:
+          SPRING_PROFILES_ACTIVE: postgres
+      run: mvn clean package
 
 #  tests-against-mysql:
 #    runs-on: ubuntu-latest

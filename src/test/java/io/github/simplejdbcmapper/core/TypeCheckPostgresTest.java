@@ -10,6 +10,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.UUID;
 
@@ -30,6 +31,8 @@ import io.github.simplejdbcmapper.model.UuidTable;
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 class TypeCheckPostgresTest {
+
+	DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd HHmmss");
 
 	@Value("${spring.datasource.driver-class-name}")
 	private String jdbcDriver;
@@ -97,7 +100,7 @@ class TypeCheckPostgresTest {
 
 		assertEquals(fmt.format(dateVal), fmt.format(tc.getJavaUtilDateData()));
 
-		assertEquals(localDateTimeVal, tc.getLocalDateTimeData());
+		assertEquals(localDateTimeVal.format(FORMATTER), tc.getLocalDateTimeData().format(FORMATTER));
 
 		assertEquals(0, tc.getBigDecimalData().compareTo(iObj.getBigDecimalData()));
 
@@ -108,7 +111,6 @@ class TypeCheckPostgresTest {
 		assertTrue(tc.getBooleanVal());
 
 		SimpleDateFormat fmtTs = new SimpleDateFormat("yyyyMMdd HHmmss");
-
 		assertEquals(fmtTs.format(timestampVal), fmtTs.format(tc.getJavaUtilDateTsData()));
 
 		assertEquals(StatusEnum.OPEN, tc.getStatus());
@@ -166,7 +168,7 @@ class TypeCheckPostgresTest {
 
 		assertEquals(fmt.format(dateVal), fmt.format(tc.getJavaUtilDateData()));
 
-		assertEquals(localDateTimeVal, tc.getLocalDateTimeData());
+		assertEquals(localDateTimeVal.format(FORMATTER), tc.getLocalDateTimeData().format(FORMATTER));
 
 		assertEquals(0, tc.getBigDecimalData().compareTo(tc.getBigDecimalData()));
 

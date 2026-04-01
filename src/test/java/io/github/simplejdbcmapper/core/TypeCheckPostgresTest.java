@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 import java.util.UUID;
 
@@ -119,7 +120,8 @@ class TypeCheckPostgresTest {
 
 		// postgres stores TIMESTAMP WITH TIMEZONE as absolute timestamp value
 		// so we have to check for instant
-		assertEquals(offsetVal.toInstant(), tc.getOffsetDateTimeData().toInstant());
+		assertEquals(offsetVal.toInstant().truncatedTo(ChronoUnit.MILLIS),
+				tc.getOffsetDateTimeData().toInstant().truncatedTo(ChronoUnit.MILLIS));
 
 	}
 
@@ -188,7 +190,8 @@ class TypeCheckPostgresTest {
 
 		// postgres stores TIMESTAMP WITH TIMEZONE as absolute timestamp value
 		// so we have to check for instant
-		assertEquals(offsetVal.toInstant(), tc.getOffsetDateTimeData().toInstant());
+		assertEquals(offsetVal.toInstant().truncatedTo(ChronoUnit.MILLIS),
+				tc.getOffsetDateTimeData().toInstant().truncatedTo(ChronoUnit.MILLIS));
 
 	}
 

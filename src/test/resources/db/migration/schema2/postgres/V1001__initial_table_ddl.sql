@@ -1,5 +1,3 @@
-
-
 CREATE TABLE schema2.company (
 	id serial NOT NULL,
 	name varchar(100),

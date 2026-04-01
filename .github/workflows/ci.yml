@@ -58,13 +58,11 @@ jobs:
 
 
     - name: Run application tests
-      env: 
-        spring.profiles.active: postgres
-      run: mvn clean package
+      run: mvn clean package -Dspring.profiles.active=postgres
 
-  tests-against-mysql:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout code
-        run: echo "mysql"
+#  tests-against-mysql:
+#    runs-on: ubuntu-latest
+#
+#    steps:
+#      - name: Checkout code
+#        run: echo "mysql"

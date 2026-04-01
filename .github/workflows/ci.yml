@@ -54,5 +54,4 @@ jobs:
 
 
     - name: Run application tests
-      #run: mvn clean package
-      run: mvn clean test -Dtest=TypeCheckPostgresTest
+      run: mvn clean package

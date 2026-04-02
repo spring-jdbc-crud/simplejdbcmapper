@@ -40,6 +40,8 @@ public class SimpleJdbcMapperConfig {
 		if (jdbcDriver.contains("mysql")) {
 			// schema1 database name for mysql
 			simpleJdbcMapper = new SimpleJdbcMapper(dataSource, null, "schema1");
+		} else if (jdbcDriver.contains("oracle")) {
+			simpleJdbcMapper = new SimpleJdbcMapper(dataSource, "SCHEMA1");
 		} else {
 			simpleJdbcMapper = new SimpleJdbcMapper(dataSource, "schema1");
 		}

@@ -26,8 +26,7 @@ jobs:
           ORACLE_PASSWORD: pass1234
           APP_USER: SCHEMA1
           APP_USER_PASSWORD: app
-          STARTUP-SCRIPTS: ./src/test/resources/db/sqlserver_setup.sql
-
+          STARTUP-SCRIPTS: ./src/test/resources/db/oracle_setup.sql
         # Forward Oracle port
         ports:
           - 1521:1521

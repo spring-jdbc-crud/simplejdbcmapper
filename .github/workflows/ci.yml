@@ -19,7 +19,6 @@ jobs:
       oracle:
         # Docker Hub image (feel free to change the tag "latest" to any other available one)
         image: gvenzl/oracle-free:latest
-        options: --name oracle-db 
 
         # Provide passwords and other environment variables to container
         env:
@@ -32,8 +31,9 @@ jobs:
         ports:
           - 1521:1521
 
-        # Provide healthcheck script options for startup
+        # Provide container name and healthcheck script options for startup
         options: >-
+          --name oracle-db 
           --health-cmd healthcheck.sh
           --health-interval 10s
           --health-timeout 5s

@@ -62,9 +62,29 @@ jobs:
           SPRING_PROFILES_ACTIVE: postgres
       run: mvn clean package
 
-#  tests-against-mysql:
-#    runs-on: ubuntu-latest
-#
-#    steps:
-#      - name: Checkout code
-#        run: echo "mysql"
+jobs:
+  tests-with-mysql:
+    runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8.0
+        env:
+          MYSQL_DATABASE: sjm_mysql
+          MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=10s
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v6
+
+    - name: Set up JDK 21
+      uses: actions/setup-java@v5 # Action to set up the Java environment 
+      with:
+        java-version: '21' # Specify the Java version required for the Spring project
+        distribution: 'corretto' # Choose a JDK distribution (e.g., temurin, corretto, zulu)
+        cache: maven # Enables caching of Maven dependencies to speed up subsequent runs
+
+    - name: Run application tests
+      run: mvn clean package -Dspring.profiles.active=mysql

@@ -43,6 +43,13 @@ jobs:
     steps:
      - name: create SCHEMA2 user
        run: docker exec oracle-db createAppUser SCHEMA2 app
+       
+     - name: Install Oracle SQLcl
+       uses: oracle-actions/setup-sqlcl@v1
+       
+     - name: Run SQL Script
+       run: |
+            sql sys/pass1234@localhost:1521/FREEPDB1 @./src/test/resources/db/oracle_setup.sql
       
      - name: Checkout code
        uses: actions/checkout@v6

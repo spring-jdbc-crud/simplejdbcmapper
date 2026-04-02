@@ -48,6 +48,9 @@ jobs:
            docker exec oracle-db sqlplus sys/pass1234@localhost:1521/MYPDB as sysdba <<EOF
              GRANT ALL PRIVILEGES TO SCHEMA1;
              GRANT ALL PRIVILEGES TO SCHEMA2;
+             
+             GRANT SELECT ANY TABLE ON SCHEMA SCHEMA2 TO SCHEMA1;
+              GRANT SELECT ANY TABLE ON SCHEMA SCHEMA1 TO SCHEMA2;
               EXIT;
            EOF
       

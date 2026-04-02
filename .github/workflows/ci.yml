@@ -30,8 +30,25 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 5
-          
+
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v6
+
+    - name: Wait for PostgreSQL to be ready (optional, but recommended)
+      # The 'services' health check in the 'options' above handles this, 
+      # but this step provides an explicit wait within the main job's execution flow if needed.
+      run: |
+        while ! pg_isready -h localhost -p 5432; do
+          sleep 2
+        done
+      # The `ubuntu-latest` runner has psql pre-installed
+
+    - name: Display PostgreSQL version
+      env:
+        PGPASSWORD: pass1234
+      run: psql -h localhost -U postgres -c "SELECT version()" 
+
     - name: Set up JDK 21
       uses: actions/setup-java@v5 # Action to set up the Java environment 
       with:

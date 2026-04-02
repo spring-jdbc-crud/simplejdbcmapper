@@ -41,7 +41,13 @@ jobs:
 
     steps:
     - name: create SCHEMA2 user
-      run: docker exec oracle-db createAppUser SCHEMA2 app MYPDB
+      run: |
+           docker exec oracle-db sqlplus sys/pass1234@localhost:1521/MYPDB as sysdba <<EOF
+             CREATE USER SCHEMA2 IDENTIFIED BY "app";
+             GRANT DBA TO SCHEMA2;
+             GRANT UNLIMITED TABLESPACE TO SCHEMA2;
+             EXIT;
+           EOF
       
     - name: Checkout code
       uses: actions/checkout@v6
@@ -53,7 +59,7 @@ jobs:
         distribution: 'corretto' # Choose a JDK distribution (e.g., temurin, corretto, zulu)
         cache: maven # Enables caching of Maven dependencies to speed up subsequent runs
 
-    - name: Run tests against postgres
+    - name: Run tests against oracle
       run: mvn clean package -Dspring.profiles.active=oracle
 
   

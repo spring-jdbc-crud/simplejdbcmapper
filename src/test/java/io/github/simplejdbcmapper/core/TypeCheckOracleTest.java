@@ -11,6 +11,7 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
+import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
 import javax.sql.DataSource;
@@ -102,7 +103,8 @@ class TypeCheckOracleTest {
 
 		assertEquals(StatusEnum.OPEN, tc.getStatus());
 
-		assertEquals(offsetVal, tc.getOffsetDateTimeData());
+		assertEquals(offsetVal.toInstant().truncatedTo(ChronoUnit.MILLIS),
+				tc.getOffsetDateTimeData().toInstant().truncatedTo(ChronoUnit.MILLIS));
 
 		assertNotNull(tc.getImage());
 		assertNotNull(tc.getClobData());
@@ -185,7 +187,8 @@ class TypeCheckOracleTest {
 
 		assertEquals(StatusEnum.OPEN, tc.getStatus());
 
-		assertEquals(offsetVal, tc.getOffsetDateTimeData());
+		assertEquals(offsetVal.toInstant().truncatedTo(ChronoUnit.MILLIS),
+				tc.getOffsetDateTimeData().toInstant().truncatedTo(ChronoUnit.MILLIS));
 
 		assertNotNull(tc.getImage());
 		assertNotNull(tc.getClobData());

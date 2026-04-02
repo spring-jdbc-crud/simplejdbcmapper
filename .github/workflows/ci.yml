@@ -43,12 +43,12 @@ jobs:
     - name: create SCHEMA2 user
       run: docker exec oracle-db createAppUser SCHEMA2 app MYPDB
       
-     # run: |
-     #      docker exec oracle-db sqlplus sys/pass1234@localhost:1521/MYPDB as sysdba <<EOF
-     #        CREATE USER SCHEMA2 IDENTIFIED BY "app";
-     #        GRANT ALL PRIVILEGES TO SCHEMA2;
-     #         EXIT;
-     #      EOF
+    - name: give privileges to SCHEMA2
+      run: |
+           docker exec oracle-db sqlplus sys/pass1234@localhost:1521/MYPDB as sysdba <<EOF
+             GRANT ALL PRIVILEGES TO SCHEMA2;
+              EXIT;
+           EOF
       
     - name: Checkout code
       uses: actions/checkout@v6

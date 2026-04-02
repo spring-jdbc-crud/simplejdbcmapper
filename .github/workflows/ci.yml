@@ -43,10 +43,7 @@ jobs:
     steps:
      - name: create SCHEMA2 user
        run: docker exec oracle-db createAppUser SCHEMA2 app
-       
-     - name: Install Oracle SQLcl
-       uses: oracle-actions/setup-sqlcl@v1
-       
+              
      - name: Run SQL Script
        run: |
             sql sys/pass1234@localhost:1521/FREEPDB1 @./src/test/resources/db/oracle_setup.sql
@@ -60,6 +57,9 @@ jobs:
          java-version: '21' # Specify the Java version required for the Spring project
          distribution: 'corretto' # Choose a JDK distribution (e.g., temurin, corretto, zulu)
          cache: maven # Enables caching of Maven dependencies to speed up subsequent runs
+
+     - name: Install Oracle SQLcl
+       uses: oracle-actions/setup-sqlcl@v1
 
      - name: Run tests against oracle
        run: mvn clean package -Dspring.profiles.active=oracle -Dmaven.javadoc.skip=true

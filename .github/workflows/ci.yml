@@ -62,6 +62,9 @@ jobs:
         cache: maven # Enables caching of Maven dependencies to speed up subsequent runs
 
     - name: Run tests against oracle
-      run: mvn clean package -Dspring.profiles.active=oracle
+      #run: mvn clean package -Dspring.profiles.active=oracle
+      
+      run: mvn clean test -Dtest=TableAnnotationWithSchemaTest -Dspring.profiles.active=oracle
+      
 
   

@@ -38,11 +38,11 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 10
-        volumes:  
-          - ./src/test/resources/db/oracle_setup.sql:/container-entrypoint-initdb.d/oracle_setup.sql:ro
+        #volumes:  
+        #  - ./src/test/resources/db/oracle_setup.sql:/container-entrypoint-initdb.d/oracle_setup.sql:ro
     steps:
-     #- name: create SCHEMA2 user
-     #  run: docker exec oracle-db createAppUser SCHEMA2 app
+     - name: create SCHEMA2 user
+       run: docker exec oracle-db createAppUser SCHEMA2 app
       
      - name: Checkout code
        uses: actions/checkout@v6

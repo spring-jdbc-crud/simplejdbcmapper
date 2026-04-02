@@ -38,8 +38,8 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 10
-        #volumes:  
-        #  - ./src/test/resources/db/oracle_setup.sql:/container-entrypoint-initdb.d/oracle_setup.sql:ro
+        volumes:  
+          - ${{ github.workspace }}/src/test/resources/db/oracle_setup.sql:/container-entrypoint-initdb.d/oracle_setup.sql:ro
     steps:
      - name: create SCHEMA2 user
        run: docker exec oracle-db createAppUser SCHEMA2 app
@@ -55,12 +55,12 @@ jobs:
          cache: maven # Enables caching of Maven dependencies to speed up subsequent runs
 
 
-     - name: Install Oracle SQLcl
-       uses: gvenzl/setup-oracle-sqlcl@v1
+     #- name: Install Oracle SQLcl
+     #  uses: gvenzl/setup-oracle-sqlcl@v1
        
-     - name: Run SQL Script
-       run: |
-            sql sys/pass1234 as sysdba@localhost:1521/FREEPDB1 @/home/runner/work/simplejdbcmapper/simplejdbcmapper/src/test/resources/db/oracle_setup.sql
+     #- name: Run SQL Script
+     #  run: |
+     #       sql sys/pass1234 as sysdba@localhost:1521/FREEPDB1 @/home/runner/work/simplejdbcmapper/simplejdbcmapper/src/test/resources/db/oracle_setup.sql
             
             
      - name: Run tests against oracle

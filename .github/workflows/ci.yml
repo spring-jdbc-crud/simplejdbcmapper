@@ -31,15 +31,6 @@ jobs:
           --health-timeout 5s
           --health-retries 5
           
-      mysql:
-        image: mysql:8.0
-        env:
-          MYSQL_DATABASE: sjm_mysql
-          MYSQL_ALLOW_EMPTY_PASSWORD: "yes"
-        ports:
-          - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=10s
-
     steps:
     - name: Set up JDK 21
       uses: actions/setup-java@v5 # Action to set up the Java environment 

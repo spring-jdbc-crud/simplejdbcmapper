@@ -24,8 +24,6 @@ jobs:
         env:
           ORACLE_DATABASE: MYPDB
           ORACLE_PASSWORD: pass1234
-          APP_USER: SCHEMA1
-          APP_USER_PASSWORD: app
 
         # Forward Oracle port
         ports:
@@ -41,13 +39,16 @@ jobs:
 
     steps:
     - name: create SCHEMA2 user
-      run: docker exec oracle-db createAppUser SCHEMA2 app MYPDB
+      #run: docker exec oracle-db createAppUser SCHEMA2 app MYPDB
       
-     # run: |
-     #      docker exec oracle-db sqlplus sys/pass1234@localhost:1521/MYPDB as sysdba <<EOF
-     #        CREATE USER SCHEMA2 IDENTIFIED BY "app";
-     #        GRANT ALL PRIVILEGES TO SCHEMA2;
-     #      EOF
+      run: |
+           docker exec oracle-db sqlplus sys/pass1234@localhost:1521/MYPDB as sysdba <<EOF
+             CREATE USER SCHEMA1 IDENTIFIED BY "app";
+             GRANT ALL PRIVILEGES TO SCHEMA1;
+             CREATE USER SCHEMA2 IDENTIFIED BY "app";
+             GRANT ALL PRIVILEGES TO SCHEMA2;
+             EXIT;
+           EOF
       
     - name: Checkout code
       uses: actions/checkout@v6

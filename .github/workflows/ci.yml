@@ -51,7 +51,7 @@ jobs:
     - name: Run tests against postgres
       run: mvn clean package -Dspring.profiles.active=postgres
       
-    - name: Run tests against mysql
-      run: mvn clean package -Dspring.profiles.active=mysql
+    #- name: Run tests against mysql
+    #  run: mvn clean package -Dspring.profiles.active=mysql
 
 

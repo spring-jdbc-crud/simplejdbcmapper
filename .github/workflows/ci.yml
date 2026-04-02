@@ -43,7 +43,7 @@ jobs:
       
       - name: Initialize SQL Server
         run: |
-          /opt/mssql-tools/bin/sqlcmd -S localhost -U sa -P Mssql123 -i ./src/test/resources/db/sqlserver_setup.sql
+          /opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P Mssql123 -i ./src/test/resources/db/sqlserver_setup.sql
         
         #uses: azure/sql-action@v2.3
         #with:

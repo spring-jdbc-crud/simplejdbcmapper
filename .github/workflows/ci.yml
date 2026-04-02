@@ -40,7 +40,7 @@ jobs:
 
     steps:
     - name: create SCHEMA2 user
-      run: createAppUser SCHEMA2 app MYPDB
+      run: docker exec oracle createAppUser SCHEMA2 app MYPDB
       
     - name: Checkout code
       uses: actions/checkout@v6

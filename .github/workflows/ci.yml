@@ -44,8 +44,7 @@ jobs:
       run: |
            docker exec oracle-db sqlplus sys/pass1234@localhost:1521/MYPDB as sysdba <<EOF
              CREATE USER SCHEMA2 IDENTIFIED BY "app";
-             GRANT DBA TO SCHEMA2;
-             GRANT UNLIMITED TABLESPACE TO SCHEMA2;
+             GRANT ALL PRIVILEGES TO SCHEMA2;
              EXIT;
            EOF
       

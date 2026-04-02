@@ -18,7 +18,7 @@ jobs:
       # Oracle service (label used to access the service container)
       oracle:
         # Docker Hub image (feel free to change the tag "latest" to any other available one)
-        image: gvenzl/oracle-free:21.3.0.0
+        image: gvenzl/oracle-free:latest
 
         # Provide passwords and other environment variables to container
         env:

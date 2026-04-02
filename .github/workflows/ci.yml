@@ -45,15 +45,15 @@ jobs:
       - name: cat $GITHUB_WORKSPACE/src/test/resources/db/sqlserver_setup.sql
         run: cat $GITHUB_WORKSPACE/src/test/resources/db/sqlserver_setup.sql
       
-      - name: cat ./src/test/resources/db/sqlserver_setup.sql
-        run: cat ./src/test/resources/db/sqlserver_setup.sql
+      #- name: cat ./src/test/resources/db/sqlserver_setup.sql
+      #  run: cat ./src/test/resources/db/sqlserver_setup.sql
         
-      - name: cat src/test/resources/db/sqlserver_setup.sql
-        run: cat src/test/resources/db/sqlserver_setup.sql
+      #- name: cat src/test/resources/db/sqlserver_setup.sql
+      #  run: cat src/test/resources/db/sqlserver_setup.sql
       
-      #- name: Initialize SQL Server
-      #  run: |
-      #    /opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P Mssql123 -i ./src/test/resources/db/sqlserver_setup.sql
+      - name: Initialize SQL Server
+        run: |
+           /opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P Mssql123 -i $GITHUB_WORKSPACE/src/test/resources/db/sqlserver_setup.sql
         
         #uses: azure/sql-action@v2.3
         #with:

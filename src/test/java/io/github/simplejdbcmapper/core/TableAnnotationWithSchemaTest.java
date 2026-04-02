@@ -34,6 +34,7 @@ class TableAnnotationWithSchemaTest {
 
 			sjm.insert(customer);
 
+			System.out.println("XXXXX: CustomerSchema1 insert successful. Next step update()");
 			customer.setLastName("xyz");
 			sjm.update(customer);
 
@@ -56,6 +57,8 @@ class TableAnnotationWithSchemaTest {
 			person.setLastName("doe");
 
 			sjm.insert(person);
+
+			System.out.println("XXXXX: PersonSchema1 insert successful. Next step update()");
 
 			person.setLastName("xyz");
 			sjm.update(person);

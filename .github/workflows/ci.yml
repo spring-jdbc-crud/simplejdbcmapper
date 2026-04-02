@@ -60,7 +60,7 @@ jobs:
        
      - name: Run SQL Script
        run: |
-            sql sys/pass1234 as sysdba@localhost:1521/FREEPDB1 @src/test/resources/db/oracle_setup.sql
+            sql sys/pass1234 as sysdba@localhost:1521/FREEPDB1 @/home/runner/work/simplejdbcmapper/simplejdbcmapper/src/test/resources/db/oracle_setup.sql
             
             
      - name: Run tests against oracle

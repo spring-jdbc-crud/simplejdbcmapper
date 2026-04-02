@@ -22,11 +22,11 @@ jobs:
 
         # Provide passwords and other environment variables to container
         env:
-          ORACLE_DATABASE: MYPDB
+          #ORACLE_DATABASE: MYPDB
           ORACLE_PASSWORD: pass1234
           APP_USER: SCHEMA1
           APP_USER_PASSWORD: app
-          #STARTUP-SCRIPTS: ./src/test/resources/db/oracle_setup.sql
+          STARTUP-SCRIPTS: ./src/test/resources/db/oracle_setup.sql
         # Forward Oracle port
         ports:
           - 1521:1521
@@ -40,8 +40,8 @@ jobs:
           --health-retries 10
 
     steps:
-     - name: create SCHEMA2 user
-       run: docker exec oracle-db createAppUser SCHEMA2 app MYPDB
+    # - name: create SCHEMA2 user
+    #   run: docker exec oracle-db createAppUser SCHEMA2 app
       
      - name: Checkout code
        uses: actions/checkout@v6
@@ -54,7 +54,7 @@ jobs:
          cache: maven # Enables caching of Maven dependencies to speed up subsequent runs
 
      - name: Run tests against oracle
-       run: mvn clean package -Dspring.profiles.active=oracle
+       run: mvn clean package -Dspring.profiles.active=oracle -Dmaven.javadoc.skip=true
       
       #run: mvn clean test -Dtest=TableAnnotationWithSchemaTest -Dspring.profiles.active=oracle  
      

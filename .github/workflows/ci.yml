@@ -53,7 +53,7 @@ jobs:
         distribution: 'corretto' # Choose a JDK distribution (e.g., temurin, corretto, zulu)
         cache: maven # Enables caching of Maven dependencies to speed up subsequent runs
 
-   # - name: Run tests against postgres
-   #   run: mvn clean package -Dspring.profiles.active=oracle
+    - name: Run tests against postgres
+      run: mvn clean package -Dspring.profiles.active=oracle
 
   

@@ -19,6 +19,7 @@ jobs:
       oracle:
         # Docker Hub image (feel free to change the tag "latest" to any other available one)
         image: gvenzl/oracle-free:latest
+        options: --name oracle-db 
 
         # Provide passwords and other environment variables to container
         env:
@@ -40,7 +41,7 @@ jobs:
 
     steps:
     - name: create SCHEMA2 user
-      run: docker exec oracle createAppUser SCHEMA2 app MYPDB
+      run: docker exec oracle-db createAppUser SCHEMA2 app MYPDB
       
     - name: Checkout code
       uses: actions/checkout@v6

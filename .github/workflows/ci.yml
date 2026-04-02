@@ -42,8 +42,8 @@ jobs:
           cache: maven # Enables caching of Maven dependencies to speed up subsequent runs
       
       
-      - name: cat $GITHUB_WORKSPACE/src/test/resources/db/sqlserver_setup.sql
-        run: cat $GITHUB_WORKSPACE/src/test/resources/db/sqlserver_setup.sql
+      - name: echo $GITHUB_WORKSPACE
+        run: echo $GITHUB_WORKSPACE
       
       #- name: cat ./src/test/resources/db/sqlserver_setup.sql
       #  run: cat ./src/test/resources/db/sqlserver_setup.sql
@@ -52,13 +52,13 @@ jobs:
       #  run: cat src/test/resources/db/sqlserver_setup.sql
       
       - name: Initialize SQL Server
-        run: |
-           /opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P Mssql123 -i $GITHUB_WORKSPACE/src/test/resources/db/sqlserver_setup.sql
+      #  run: |
+      #     /opt/mssql-tools18/bin/sqlcmd -C -S localhost -U sa -P Mssql123 -i $GITHUB_WORKSPACE/src/test/resources/db/sqlserver_setup.sql
         
-        #uses: azure/sql-action@v2.3
-        #with:
-         #   connection-string: Server=tcp:localhost,1433;Initial Catalog=master;User ID=sa;Password=Mssql123;Encrypt=True;TrustServerCertificate=True;Connection Timeout=30;
-          #  path: ./src/test/resources/db/sqlserver_setup.sql
+        uses: azure/sql-action@v2.3
+        with:
+            connection-string: Server=tcp:localhost,1433;Initial Catalog=master;User ID=sa;Password=Mssql123;Encrypt=True;TrustServerCertificate=True;Connection Timeout=30;
+            path: ./src/test/resources/db/sqlserver_setup.sql
              # required, connection string incl the database and user authentication information
              #Server=tcp:<your-server-name>.database.windows.net,1433;Initial Catalog=<your-database-name>;User ID=<your-username>;Password=<your-password>;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;        
 

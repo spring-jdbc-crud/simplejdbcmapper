@@ -48,7 +48,7 @@ jobs:
        uses: actions/checkout@v6
        
      - name: echo  $GITHUB_WORKSPACE
-       uses: echo $GITHUB_WORKSPACE
+       uses: echo ${{ github.workspace}}
 
      - name: Set up JDK 21
        uses: actions/setup-java@v5 # Action to set up the Java environment 

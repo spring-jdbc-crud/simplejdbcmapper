@@ -38,19 +38,16 @@ jobs:
           --health-interval 10s
           --health-timeout 5s
           --health-retries 10
-        #volumes:  
-        #  - ${{ github.workspace }}/src/test/resources/db/oracle_setup.sql:/container-entrypoint-initdb.d/oracle_setup.sql:ro
+
     steps:
-     #- name: create SCHEMA2 user
-     #  run: docker exec oracle-db createAppUser SCHEMA2 app
           
      - name: Checkout code
        uses: actions/checkout@v6
        
-     - name: copy oracle setup file
+     - name: copy oracle setup script
        run: docker cp src/test/resources/db/oracle_setup.sql oracle-db:/tmp/oracle_setup.sql
        
-     - name: execute setup script
+     - name: execute oracle setup script
        run: docker exec oracle-db sqlplus system/pass1234@FREEPDB1 @/tmp/oracle_setup.sql   
        
      - name: Set up JDK 21
@@ -59,7 +56,6 @@ jobs:
          java-version: '21' # Specify the Java version required for the Spring project
          distribution: 'corretto' # Choose a JDK distribution (e.g., temurin, corretto, zulu)
          cache: maven # Enables caching of Maven dependencies to speed up subsequent runs
-
 
      #- name: Run SQL script
      # run: sql username/password@host:port/service @src/test/resources/db/oracle_setup.sql
@@ -74,11 +70,8 @@ jobs:
             
             
      - name: Run tests against oracle
-       #  run: mvn clean package -Dspring.profiles.active=oracle -Dmaven.javadoc.skip=true
-       run: mvn clean test -Dtest=TableAnnotationWithSchemaTest -Dspring.profiles.active=oracle 
-      
-     - name: echo github.workspace
-       run: echo ${{ github.workspace }} 
+       run: mvn clean package -Dspring.profiles.active=oracle -Dmaven.javadoc.skip=true
+       #run: mvn clean test -Dtest=TableAnnotationWithSchemaTest -Dspring.profiles.active=oracle 
      
       
 

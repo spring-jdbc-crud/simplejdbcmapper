@@ -1,14 +1,7 @@
 name: CI SimpleJdbcMapper
 
 on:
-  push:
-    branches: [ "dev" ]
-    paths-ignore:
-      - 'README.md'
-  pull_request:
-    branches: [ "dev" ]
-    paths-ignore:
-      - 'README.md'
+  workflow_dispatch:
 
 jobs:
   tests-against-postgres:

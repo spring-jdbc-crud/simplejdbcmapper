@@ -47,8 +47,7 @@ jobs:
      - name: Checkout code
        uses: actions/checkout@v6
        
-     - name: echo  $GITHUB_WORKSPACE
-       uses: echo ${{ github.workspace}}
+
 
      - name: Set up JDK 21
        uses: actions/setup-java@v5 # Action to set up the Java environment 
@@ -58,18 +57,25 @@ jobs:
          cache: maven # Enables caching of Maven dependencies to speed up subsequent runs
 
 
+     #- name: Run SQL script
+     # run: sql username/password@host:port/service @src/test/resources/db/oracle_setup.sql
+
+
      #- name: Install Oracle SQLcl
      #  uses: gvenzl/setup-oracle-sqlcl@v1
        
-     #- name: Run SQL Script
-     #  run: |
-     #       sql sys/pass1234 as sysdba@localhost:1521/FREEPDB1 @/home/runner/work/simplejdbcmapper/simplejdbcmapper/src/test/resources/db/oracle_setup.sql
+     - name: Run SQL Script
+       run: |
+            sql system/pass1234@localhost:1521/FREEPDB1 @src/test/resources/db/oracle_setup.sql
             
             
-     - name: Run tests against oracle
-       run: mvn clean package -Dspring.profiles.active=oracle -Dmaven.javadoc.skip=true
+     #- name: Run tests against oracle
+     #  run: mvn clean package -Dspring.profiles.active=oracle -Dmaven.javadoc.skip=true
       
-      #run: mvn clean test -Dtest=TableAnnotationWithSchemaTest -Dspring.profiles.active=oracle  
+      #run: mvn clean test -Dtest=TableAnnotationWithSchemaTest -Dspring.profiles.active=oracle 
+      
+     - name: echo  $GITHUB_WORKSPACE
+       uses: echo ${{ github.workspace}} 
      
       
 

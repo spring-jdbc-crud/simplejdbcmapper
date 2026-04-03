@@ -132,6 +132,10 @@ jobs:
     - name: Generate Jacoco Badge
       id: jacoco
       uses: cicirello/jacoco-badge-generator@v2
+      with:
+        # Example: Green for >= 90%, Yellow for >= 75%, Red for < 75%
+        colors: 'green yellow red'
+        intervals: 90 75
 
     - name: Log coverage percentage
       run: echo "coverage = ${{ steps.jacoco.outputs.coverage }}"

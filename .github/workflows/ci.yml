@@ -47,10 +47,10 @@ jobs:
      - name: Checkout code
        uses: actions/checkout@v6
        
-     - name: copy setup file
+     - name: copy oracle setup file
        run: docker cp src/test/resources/db/oracle_setup.sql oracle-db:/tmp/oracle_setup.sql
        
-     - name: Execute the script
+     - name: execute setup script
        run: docker exec oracle-db sqlplus system/pass1234@FREEPDB1 @/tmp/oracle_setup.sql   
        
      - name: Set up JDK 21
@@ -73,10 +73,9 @@ jobs:
      #       sql system/pass1234@localhost:1521/FREEPDB1 @src/test/resources/db/oracle_setup.sql
             
             
-     #- name: Run tests against oracle
-     #  run: mvn clean package -Dspring.profiles.active=oracle -Dmaven.javadoc.skip=true
-      
-      #run: mvn clean test -Dtest=TableAnnotationWithSchemaTest -Dspring.profiles.active=oracle 
+     - name: Run tests against oracle
+       #  run: mvn clean package -Dspring.profiles.active=oracle -Dmaven.javadoc.skip=true
+       run: mvn clean test -Dtest=TableAnnotationWithSchemaTest -Dspring.profiles.active=oracle 
       
      - name: echo github.workspace
        run: echo ${{ github.workspace }} 

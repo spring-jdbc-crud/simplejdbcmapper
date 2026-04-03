@@ -52,7 +52,7 @@ class AnnotationTest {
 		Exception exception = Assertions.assertThrows(MapperException.class, () -> {
 			sjm.findById(InvalidTableObject.class, 1);
 		});
-		assertTrue(exception.getMessage().contains("Unable to locate meta-data for table"));
+		assertTrue(exception.getMessage().contains("Unable to locate database meta-data for table"));
 	}
 
 	@Test

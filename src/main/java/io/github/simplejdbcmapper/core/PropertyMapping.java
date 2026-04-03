@@ -63,8 +63,7 @@ class PropertyMapping {
 		this.columnName = InternalUtils.toLowerCase(columnName);
 		this.columnSqlType = columnSqlType;
 		this.columnOverriddenSqlType = columnOverriddenSqlType;
-		determineBinaryLargeObject();
-		determineCharacterLargeObject();
+		determineBlobClob();
 	}
 
 	public int getColumnSqlType() {
@@ -147,13 +146,11 @@ class PropertyMapping {
 		return characterLargeObject;
 	}
 
-	private void determineBinaryLargeObject() {
+	private void determineBlobClob() {
 		if (byte[].class.getName().equals(propertyClassName)) {
 			binaryLargeObject = true;
+			return;
 		}
-	}
-
-	private void determineCharacterLargeObject() {
 		if (char[].class.getName().equals(propertyClassName)) {
 			characterLargeObject = true;
 			return;

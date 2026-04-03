@@ -165,7 +165,7 @@ class TableMappingProvider {
 	}
 
 	private String getTableMetaDataNotFoundErrMsg(Class<?> clazz, String tableName, String schema, String catalog) {
-		String errMsg = "Unable to locate meta-data for table '" + tableName + "'";
+		String errMsg = "Unable to locate database meta-data for table '" + tableName + "'";
 		if (schema != null && catalog != null) {
 			errMsg += " in schema " + schema + " and catalog " + catalog;
 		} else {

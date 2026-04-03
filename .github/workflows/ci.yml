@@ -74,8 +74,8 @@ jobs:
       
       #run: mvn clean test -Dtest=TableAnnotationWithSchemaTest -Dspring.profiles.active=oracle 
       
-     - name: echo  $GITHUB_WORKSPACE
-       uses: echo ${{ github.workspace}} 
+     - name: echo github.workspace
+       run: echo ${{ github.workspace }} 
      
       
 

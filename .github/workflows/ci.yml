@@ -51,7 +51,7 @@ jobs:
        run: docker cp src/test/resources/db/oracle_setup.sql oracle-db:/tmp/oracle_setup.sql
        
      - name: Execute the script
-       run: docker exec -T oracle-db sqlplus system/pass1234@FREEPDB1 @/tmp/oracle_setup.sql   
+       run: docker exec oracle-db sqlplus system/pass1234@FREEPDB1 @/tmp/oracle_setup.sql   
        
      - name: Set up JDK 21
        uses: actions/setup-java@v5 # Action to set up the Java environment 

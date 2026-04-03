@@ -1,0 +1,403 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SimpleJdbcMapperUtils.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">simplejdbcmapper</a> &gt; <a href="index.source.html" class="el_package">io.github.simplejdbcmapper.core</a> &gt; <span class="el_source">SimpleJdbcMapperUtils.java</span></div><h1>SimpleJdbcMapperUtils.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2025 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ *
+ * https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
+ */
+package io.github.simplejdbcmapper.core;
+
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Field;
+import java.lang.reflect.ParameterizedType;
+import java.lang.reflect.Type;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.PropertyAccessorFactory;
+import org.springframework.util.Assert;
+import org.springframework.util.CollectionUtils;
+
+import io.github.simplejdbcmapper.exception.MapperException;
+
+/**
+ * 
+ * Some utility methods.
+ * 
+ * @author Antony Joseph
+ */
+public class SimpleJdbcMapperUtils {
+	/**
+	 * Assigns the 'hasOne' property of the main object with the related object that
+	 * matches 'relatedObjJoinPropertyNameTheId' and
+	 * 'mainObjJoinPropertyNameTheForeignKey'.
+	 * 
+	 * &lt;pre&gt;
+	 * Example use case: 
+	 * 1) Query for a list of employees
+	 * 2) Query the departments for these employees
+	 * 3) Use populateHasOne() to populate the employee.department property
+	 * &lt;/pre&gt;
+	 * 
+	 * @param &lt;T&gt;                                  the type of main object list
+	 * @param &lt;U&gt;                                  the type of related object list
+	 * @param mainObjList                          The main object list whose
+	 *                                             'hasOne' property that needs to
+	 *                                             be populated
+	 * @param relatedObjList                       the related object list
+	 * @param mainObjJoinPropertyNameTheForeignKey The property name on main object
+	 *                                             used to find the match. This will
+	 *                                             be the foreign key property name
+	 * @param relatedObjJoinPropertyNameTheId      The property name on related
+	 *                                             object used to find the match.
+	 *                                             This will be the id of the
+	 *                                             related object.
+	 * @param mainObjHasOnePropertyName            The main object 'hasOne' property
+	 *                                             to populate
+	 */
+	public static &lt;T, U&gt; void populateHasOne(List&lt;T&gt; mainObjList, List&lt;U&gt; relatedObjList,
+			String mainObjJoinPropertyNameTheForeignKey, String relatedObjJoinPropertyNameTheId,
+			String mainObjHasOnePropertyName) {
+<span class="fc" id="L74">		Assert.notNull(mainObjJoinPropertyNameTheForeignKey, &quot;mainObjJoinPropertyNameTheForeignKey must not be null&quot;);</span>
+<span class="fc" id="L75">		Assert.notNull(relatedObjJoinPropertyNameTheId, &quot;relatedObjJoinPropertyNameTheId must not be null&quot;);</span>
+<span class="fc" id="L76">		Assert.notNull(mainObjHasOnePropertyName, &quot;mainObjHasOnePropertyName must not be null&quot;);</span>
+<span class="pc bpc" id="L77" title="1 of 4 branches missed.">		if (CollectionUtils.isEmpty(mainObjList) || CollectionUtils.isEmpty(relatedObjList)) {</span>
+<span class="fc" id="L78">			return;</span>
+		}
+<span class="fc" id="L80">		Map&lt;Object, U&gt; idToRelatedObjMap = new HashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L81" title="All 2 branches covered.">		for (U relatedObj : relatedObjList) {</span>
+<span class="fc bfc" id="L82" title="All 2 branches covered.">			if (relatedObj != null) {</span>
+<span class="fc" id="L83">				BeanWrapper bwRelatedObj = PropertyAccessorFactory.forBeanPropertyAccess(relatedObj);</span>
+<span class="fc" id="L84">				Object idPropertyValue = bwRelatedObj.getPropertyValue(relatedObjJoinPropertyNameTheId);</span>
+<span class="pc bpc" id="L85" title="1 of 2 branches missed.">				if (idPropertyValue != null) {</span>
+<span class="fc" id="L86">					idToRelatedObjMap.put(idPropertyValue, relatedObj);</span>
+				}
+			}
+<span class="fc" id="L89">		}</span>
+<span class="fc bfc" id="L90" title="All 2 branches covered.">		for (T mainObj : mainObjList) {</span>
+<span class="fc bfc" id="L91" title="All 2 branches covered.">			if (mainObj != null) {</span>
+<span class="fc" id="L92">				BeanWrapper bwMainObj = PropertyAccessorFactory.forBeanPropertyAccess(mainObj);</span>
+<span class="fc" id="L93">				Object foreignKeyPropertyValue = bwMainObj.getPropertyValue(mainObjJoinPropertyNameTheForeignKey);</span>
+<span class="pc bpc" id="L94" title="1 of 2 branches missed.">				if (foreignKeyPropertyValue != null) {</span>
+<span class="fc" id="L95">					bwMainObj.setPropertyValue(mainObjHasOnePropertyName,</span>
+<span class="fc" id="L96">							idToRelatedObjMap.get(foreignKeyPropertyValue));</span>
+				}
+			}
+<span class="fc" id="L99">		}</span>
+<span class="fc" id="L100">	}</span>
+
+	/**
+	 * Assigns the 'hasMany' property of the main object with the list of related
+	 * objects that match 'mainObjJoinPropertyNameTheId' and
+	 * 'relatedObjJoinPropertyNameTheForeignKey'.
+	 * 
+	 * &lt;pre&gt;
+	 * Example use case could be: 
+	 * 1) Query to get a list of employees
+	 * 2) Query the skills of these employees
+	 * 3) Use populateHasMany() to populate the employee.skills property
+	 * &lt;/pre&gt;
+	 * 
+	 * @param &lt;T&gt;                                     the type of main object list
+	 * @param &lt;U&gt;                                     the type of related object
+	 *                                                list
+	 * @param mainObjList                             The main object list whose
+	 *                                                'hasMany' property that needs
+	 *                                                to be populated
+	 * @param relatedObjList                          the related object list
+	 * @param mainObjJoinPropertyNameTheId            The property name on main
+	 *                                                object used to find the match.
+	 *                                                This will be the id of main
+	 *                                                object.
+	 * @param relatedObjJoinPropertyNameTheForeignKey The property name on related
+	 *                                                object used to find the match.
+	 *                                                This will be the foreign key
+	 *                                                property name
+	 * @param mainObjHasManyPropertyName              The main object 'hasMany'
+	 *                                                collection property to
+	 *                                                populate
+	 */
+	public static &lt;T, U&gt; void populateHasMany(List&lt;T&gt; mainObjList, List&lt;U&gt; relatedObjList,
+			String mainObjJoinPropertyNameTheId, String relatedObjJoinPropertyNameTheForeignKey,
+			String mainObjHasManyPropertyName) {
+<span class="fc" id="L136">		Assert.notNull(mainObjJoinPropertyNameTheId, &quot;mainObjJoinPropertyNameTheId must not be null&quot;);</span>
+<span class="fc" id="L137">		Assert.notNull(relatedObjJoinPropertyNameTheForeignKey,</span>
+				&quot;relatedObjJoinPropertyNameTheForeignKey must not be null&quot;);
+<span class="fc" id="L139">		Assert.notNull(mainObjHasManyPropertyName, &quot;mainObjHasManyPropertyName must not be null&quot;);</span>
+<span class="pc bpc" id="L140" title="1 of 4 branches missed.">		if (CollectionUtils.isEmpty(mainObjList) || CollectionUtils.isEmpty(relatedObjList)) {</span>
+<span class="fc" id="L141">			return;</span>
+		}
+<span class="fc" id="L143">		Map&lt;Object, List&lt;U&gt;&gt; foreignKeyToListMap = new HashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L144" title="All 2 branches covered.">		for (U relatedObj : relatedObjList) {</span>
+<span class="fc bfc" id="L145" title="All 2 branches covered.">			if (relatedObj != null) {</span>
+<span class="fc" id="L146">				BeanWrapper bwRelatedObj = PropertyAccessorFactory.forBeanPropertyAccess(relatedObj);</span>
+<span class="fc" id="L147">				Object foreignKeyPropertyValue = bwRelatedObj.getPropertyValue(relatedObjJoinPropertyNameTheForeignKey);</span>
+<span class="pc bpc" id="L148" title="1 of 2 branches missed.">				if (foreignKeyPropertyValue != null) {</span>
+<span class="fc" id="L149">					List&lt;U&gt; list = foreignKeyToListMap.get(foreignKeyPropertyValue);</span>
+<span class="fc bfc" id="L150" title="All 2 branches covered.">					if (list == null) {</span>
+<span class="fc" id="L151">						list = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L152">						list.add(relatedObj);</span>
+<span class="fc" id="L153">						foreignKeyToListMap.put(foreignKeyPropertyValue, list);</span>
+					} else {
+<span class="fc" id="L155">						list.add(relatedObj);</span>
+					}
+				}
+			}
+<span class="fc" id="L159">		}</span>
+<span class="fc bfc" id="L160" title="All 2 branches covered.">		for (T mainObj : mainObjList) {</span>
+<span class="fc bfc" id="L161" title="All 2 branches covered.">			if (mainObj != null) {</span>
+<span class="fc" id="L162">				BeanWrapper bwMainObj = PropertyAccessorFactory.forBeanPropertyAccess(mainObj);</span>
+<span class="fc" id="L163">				Object idPropertyValue = bwMainObj.getPropertyValue(mainObjJoinPropertyNameTheId);</span>
+<span class="pc bpc" id="L164" title="1 of 2 branches missed.">				if (idPropertyValue != null) {</span>
+<span class="fc" id="L165">					bwMainObj.setPropertyValue(mainObjHasManyPropertyName, foreignKeyToListMap.get(idPropertyValue));</span>
+				}
+			}
+<span class="fc" id="L168">		}</span>
+<span class="fc" id="L169">	}</span>
+
+	/**
+	 * Splits the list into multiple lists by chunk size. Can be used to split the
+	 * sql IN clauses since some databases have a limitation on 'IN' clause entries
+	 * and size
+	 *
+	 * @param &lt;T&gt;       the type of list
+	 * @param list      the list to chunk
+	 * @param chunkSize The size of chunk
+	 * @return Collection of lists broken down by chunkSize
+	 */
+	public static &lt;T&gt; List&lt;List&lt;T&gt;&gt; chunkList(List&lt;T&gt; list, int chunkSize) {
+<span class="fc" id="L182">		List&lt;List&lt;T&gt;&gt; chunks = new ArrayList&lt;&gt;();</span>
+<span class="pc bpc" id="L183" title="1 of 2 branches missed.">		if (list != null) {</span>
+<span class="fc bfc" id="L184" title="All 2 branches covered.">			for (int i = 0; i &lt; list.size(); i += chunkSize) {</span>
+<span class="fc" id="L185">				chunks.add(list.subList(i, Math.min(i + chunkSize, list.size())));</span>
+			}
+		}
+<span class="fc" id="L188">		return chunks;</span>
+	}
+
+	/**
+	 * @deprecated Use populateHasOne() instead.
+	 * 
+	 *             Merges the corresponding child object to the 'hasOne' property of
+	 *             the parent.
+	 * 
+	 *             &lt;pre&gt;
+	 * Example use case: 
+	 * 1) Query for a list of users
+	 * 2) Use an IN/ANY clause query to get the profiles for the users 
+	 * 3) Use method mergeResultsToPopulateHasOne() to merge the 2 result sets to populate the user.profile property
+	 *             &lt;/pre&gt;
+	 * 
+	 * @param &lt;T&gt;                            the type of parent list
+	 * @param &lt;U&gt;                            the type of child list
+	 * @param parentList                     The parent list whose 'hasOne' property
+	 *                                       that needs to be populated
+	 * @param childList                      the child list
+	 * @param parentJoinPropertyName         The property name on parent used to
+	 *                                       merge the results
+	 * @param childJoinPropertyName          The property name on child used to
+	 *                                       merge the results
+	 * @param parentHasOnePropertyToPopulate The parent property to populate
+	 */
+	@Deprecated(since = &quot;1.7.2&quot;)
+	public static &lt;T, U&gt; void mergeResultsToPopulateHasOne(List&lt;T&gt; parentList, List&lt;U&gt; childList,
+			String parentJoinPropertyName, String childJoinPropertyName, String parentHasOnePropertyToPopulate) {
+<span class="pc bpc" id="L218" title="2 of 4 branches missed.">		if (CollectionUtils.isEmpty(parentList) || CollectionUtils.isEmpty(childList)) {</span>
+<span class="nc" id="L219">			return;</span>
+		}
+<span class="fc" id="L221">		Set&lt;T&gt; parentSet = new HashSet&lt;&gt;(parentList);</span>
+<span class="fc" id="L222">		Set&lt;U&gt; childSet = new HashSet&lt;&gt;(childList);</span>
+<span class="fc" id="L223">		parentSet.remove(null);</span>
+<span class="fc" id="L224">		childSet.remove(null);</span>
+<span class="pc bpc" id="L225" title="2 of 4 branches missed.">		if (CollectionUtils.isEmpty(parentSet) || CollectionUtils.isEmpty(childSet)) {</span>
+<span class="nc" id="L226">			return;</span>
+		}
+<span class="fc" id="L228">		validateHasOne(parentSet.iterator().next(), childSet.iterator().next(), parentJoinPropertyName,</span>
+				childJoinPropertyName, parentHasOnePropertyToPopulate);
+<span class="fc" id="L230">		Map&lt;Object, U&gt; idToObjMap = new HashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L231" title="All 2 branches covered.">		for (U child : childSet) {</span>
+<span class="fc" id="L232">			BeanWrapper bwChild = PropertyAccessorFactory.forBeanPropertyAccess(child);</span>
+<span class="fc" id="L233">			Object idPropertyValue = bwChild.getPropertyValue(childJoinPropertyName);</span>
+<span class="fc" id="L234">			idToObjMap.put(idPropertyValue, child);</span>
+<span class="fc" id="L235">		}</span>
+<span class="fc bfc" id="L236" title="All 2 branches covered.">		for (T parent : parentSet) {</span>
+<span class="fc" id="L237">			BeanWrapper bwParent = PropertyAccessorFactory.forBeanPropertyAccess(parent);</span>
+<span class="fc" id="L238">			Object joinPropertyValue = bwParent.getPropertyValue(parentJoinPropertyName);</span>
+<span class="fc" id="L239">			bwParent.setPropertyValue(parentHasOnePropertyToPopulate, idToObjMap.get(joinPropertyValue));</span>
+<span class="fc" id="L240">		}</span>
+<span class="fc" id="L241">	}</span>
+
+	/**
+	 * @deprecated Use populateHasMany() instead.
+	 * 
+	 *             Merges the corresponding list of child objects to the 'hasMany'
+	 *             property of the parent
+	 * 
+	 *             &lt;pre&gt;
+	 * Example use case could be: 
+	 * 1) Query to get a list of employees
+	 * 2) Use an IN/ANY clause query to get all the skills for those employees 
+	 * 3) Use mergeResultsToPopulateHasMany() to merge the 2 result sets to populate the employee.skills property
+	 *             &lt;/pre&gt;
+	 * 
+	 * @param &lt;T&gt;                             the type of parent list
+	 * @param &lt;U&gt;                             the type of child list
+	 * @param parentList                      The parent list whose 'hasMany'
+	 *                                        property that needs to be populated
+	 * @param childList                       the child list
+	 * @param parentJoinPropertyName          The property name on parent used to
+	 *                                        merge the results
+	 * @param childJoinPropertyName           The property name on child used to
+	 *                                        merge the results
+	 * @param parentHasManyPropertyToPopulate The parent property to populate
+	 */
+	@Deprecated(since = &quot;1.7.2&quot;)
+	public static &lt;T, U&gt; void mergeResultsToPopulateHasMany(List&lt;T&gt; parentList, List&lt;U&gt; childList,
+			String parentJoinPropertyName, String childJoinPropertyName, String parentHasManyPropertyToPopulate) {
+<span class="pc bpc" id="L270" title="2 of 4 branches missed.">		if (CollectionUtils.isEmpty(parentList) || CollectionUtils.isEmpty(childList)) {</span>
+<span class="nc" id="L271">			return;</span>
+		}
+<span class="fc" id="L273">		Set&lt;T&gt; parentSet = new HashSet&lt;&gt;(parentList);</span>
+<span class="fc" id="L274">		Set&lt;U&gt; childSet = new LinkedHashSet&lt;&gt;(childList);</span>
+<span class="fc" id="L275">		parentSet.remove(null);</span>
+<span class="fc" id="L276">		childSet.remove(null);</span>
+<span class="pc bpc" id="L277" title="2 of 4 branches missed.">		if (CollectionUtils.isEmpty(parentSet) || CollectionUtils.isEmpty(childSet)) {</span>
+<span class="nc" id="L278">			return;</span>
+		}
+<span class="fc" id="L280">		validateHasMany(parentSet.iterator().next(), childSet.iterator().next(), parentJoinPropertyName,</span>
+				childJoinPropertyName, parentHasManyPropertyToPopulate);
+<span class="fc" id="L282">		Map&lt;Object, List&lt;U&gt;&gt; propertyToListMap = new HashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L283" title="All 2 branches covered.">		for (U child : childSet) {</span>
+<span class="fc" id="L284">			BeanWrapper bwChild = PropertyAccessorFactory.forBeanPropertyAccess(child);</span>
+<span class="fc" id="L285">			Object joinPropertyValue = bwChild.getPropertyValue(childJoinPropertyName);</span>
+<span class="fc bfc" id="L286" title="All 2 branches covered.">			if (propertyToListMap.containsKey(joinPropertyValue)) {</span>
+<span class="fc" id="L287">				List&lt;U&gt; list = propertyToListMap.get(joinPropertyValue);</span>
+<span class="fc" id="L288">				list.add(child);</span>
+<span class="fc" id="L289">			} else {</span>
+<span class="fc" id="L290">				List&lt;U&gt; list = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L291">				list.add(child);</span>
+<span class="fc" id="L292">				propertyToListMap.put(joinPropertyValue, list);</span>
+			}
+<span class="fc" id="L294">		}</span>
+<span class="fc bfc" id="L295" title="All 2 branches covered.">		for (T parent : parentSet) {</span>
+<span class="fc" id="L296">			BeanWrapper bwParent = PropertyAccessorFactory.forBeanPropertyAccess(parent);</span>
+<span class="fc" id="L297">			Object idPropertyValue = bwParent.getPropertyValue(parentJoinPropertyName);</span>
+<span class="fc" id="L298">			bwParent.setPropertyValue(parentHasManyPropertyToPopulate, propertyToListMap.get(idPropertyValue));</span>
+<span class="fc" id="L299">		}</span>
+<span class="fc" id="L300">	}</span>
+
+	/**
+	 * @deprecated Use chunkList() instead.
+	 * 
+	 *             Splits the list into multiple lists by chunk size. Can be used to
+	 *             split the sql IN clauses since some databases have a limitation
+	 *             on 'IN' clause entries and size
+	 * 
+	 * @param list      the list to chunk
+	 * @param chunkSize The size of each chunk
+	 * @return Collection of lists broken down by chunkSize
+	 */
+	@Deprecated(since = &quot;1.7.2&quot;)
+	@SuppressWarnings(&quot;rawtypes&quot;)
+	public static List&lt;List&gt; chunkTheList(List list, Integer chunkSize) {
+<span class="fc" id="L316">		List&lt;List&gt; chunks = new ArrayList&lt;&gt;();</span>
+<span class="pc bpc" id="L317" title="1 of 2 branches missed.">		if (list != null) {</span>
+<span class="fc bfc" id="L318" title="All 2 branches covered.">			for (int i = 0; i &lt; list.size(); i += chunkSize) {</span>
+<span class="fc" id="L319">				chunks.add(list.subList(i, Math.min(i + chunkSize, list.size())));</span>
+			}
+		}
+<span class="fc" id="L322">		return chunks;</span>
+	}
+
+	private static void validateHasOne(Object parentObj, Object childObj, String parentJoinPropertyName,
+			String childJoinPropertyName, String parentHasOnePropertyName) {
+<span class="fc" id="L327">		Assert.notNull(parentJoinPropertyName, &quot;parentJoinPropertyName must not be null&quot;);</span>
+<span class="fc" id="L328">		Assert.notNull(childJoinPropertyName, &quot;childJoinPropertyName must not be null&quot;);</span>
+<span class="fc" id="L329">		Assert.notNull(parentHasOnePropertyName, &quot;parentHasOnePropertyName must not be null&quot;);</span>
+<span class="fc" id="L330">		BeanWrapper bwParent = PropertyAccessorFactory.forBeanPropertyAccess(parentObj);</span>
+<span class="fc" id="L331">		BeanWrapper bwChild = PropertyAccessorFactory.forBeanPropertyAccess(childObj);</span>
+<span class="fc bfc" id="L332" title="All 2 branches covered.">		if (!bwParent.isReadableProperty(parentJoinPropertyName)) {</span>
+<span class="fc" id="L333">			throw new MapperException(parentJoinPropertyName + &quot; not found in &quot; + bwParent.getWrappedClass());</span>
+		}
+<span class="fc bfc" id="L335" title="All 2 branches covered.">		if (!bwParent.isReadableProperty(parentHasOnePropertyName)) {</span>
+<span class="fc" id="L336">			throw new MapperException(parentHasOnePropertyName + &quot; not found in &quot; + bwParent.getWrappedClass());</span>
+		}
+<span class="fc bfc" id="L338" title="All 2 branches covered.">		if (!bwChild.isReadableProperty(childJoinPropertyName)) {</span>
+<span class="fc" id="L339">			throw new MapperException(childJoinPropertyName + &quot; not found in &quot; + bwChild.getWrappedClass());</span>
+		}
+<span class="fc" id="L341">		PropertyDescriptor pd = bwParent.getPropertyDescriptor(parentHasOnePropertyName);</span>
+<span class="fc bfc" id="L342" title="All 2 branches covered.">		if (!pd.getPropertyType().isAssignableFrom(childObj.getClass())) {</span>
+<span class="fc" id="L343">			throw new MapperException(&quot;property type conflict. property &quot; + parentObj.getClass().getSimpleName() + &quot;.&quot;</span>
+<span class="fc" id="L344">					+ parentHasOnePropertyName + &quot; is of type &quot; + pd.getPropertyType().getSimpleName()</span>
+<span class="fc" id="L345">					+ &quot; while type for hasOne relationship is &quot; + childObj.getClass().getSimpleName());</span>
+		}
+<span class="fc" id="L347">	}</span>
+
+	private static void validateHasMany(Object parentObj, Object childObj, String parentJoinPropertyName,
+			String childJoinPropertyName, String parentHasManyPropertyName) {
+<span class="fc" id="L351">		Assert.notNull(parentJoinPropertyName, &quot;parentJoinPropertyName must not be null&quot;);</span>
+<span class="fc" id="L352">		Assert.notNull(childJoinPropertyName, &quot;childJoinPropertyName must not be null&quot;);</span>
+<span class="fc" id="L353">		Assert.notNull(parentHasManyPropertyName, &quot;parentHasManyPropertyName must not be null&quot;);</span>
+<span class="fc" id="L354">		BeanWrapper bwParent = PropertyAccessorFactory.forBeanPropertyAccess(parentObj);</span>
+<span class="fc" id="L355">		BeanWrapper bwChild = PropertyAccessorFactory.forBeanPropertyAccess(childObj);</span>
+<span class="fc bfc" id="L356" title="All 2 branches covered.">		if (!bwParent.isReadableProperty(parentJoinPropertyName)) {</span>
+<span class="fc" id="L357">			throw new MapperException(parentJoinPropertyName + &quot; not found in &quot; + bwParent.getWrappedClass());</span>
+		}
+<span class="fc bfc" id="L359" title="All 2 branches covered.">		if (!bwChild.isReadableProperty(childJoinPropertyName)) {</span>
+<span class="fc" id="L360">			throw new MapperException(childJoinPropertyName + &quot; not found in &quot; + bwChild.getWrappedClass());</span>
+		}
+<span class="fc bfc" id="L362" title="All 2 branches covered.">		if (!bwParent.isReadableProperty(parentHasManyPropertyName)) {</span>
+<span class="fc" id="L363">			throw new MapperException(parentHasManyPropertyName + &quot; not found in &quot; + bwParent.getWrappedClass());</span>
+		}
+
+<span class="fc" id="L366">		PropertyDescriptor pd = bwParent.getPropertyDescriptor(parentHasManyPropertyName);</span>
+<span class="fc bfc" id="L367" title="All 2 branches covered.">		if (!Collection.class.isAssignableFrom(pd.getPropertyType())) {</span>
+<span class="fc" id="L368">			throw new MapperException(</span>
+<span class="fc" id="L369">					&quot;property &quot; + parentObj.getClass().getSimpleName() + &quot;.&quot; + parentHasManyPropertyName</span>
+							+ &quot; is not a collection. Merge for hasMany requires it to be a collection&quot;);
+		}
+<span class="fc" id="L372">		Class&lt;?&gt; collectionGenericType = getGenericTypeOfCollection(parentObj, parentHasManyPropertyName);</span>
+<span class="fc bfc" id="L373" title="All 2 branches covered.">		if (collectionGenericType == null) {</span>
+<span class="fc" id="L374">			throw new MapperException(&quot;Collections without generic types are not supported. Collection &quot;</span>
+<span class="fc" id="L375">					+ parentObj.getClass().getSimpleName() + &quot;.&quot; + parentHasManyPropertyName</span>
+					+ &quot; does not have a generic type.&quot;);
+		}
+<span class="fc bfc" id="L378" title="All 2 branches covered.">		if (!collectionGenericType.isAssignableFrom(childObj.getClass())) {</span>
+<span class="fc" id="L379">			throw new MapperException(&quot;Collection generic type and child class type mismatch. &quot;</span>
+<span class="fc" id="L380">					+ parentObj.getClass().getSimpleName() + &quot;.&quot; + parentHasManyPropertyName + &quot; has generic type &quot;</span>
+<span class="fc" id="L381">					+ collectionGenericType.getSimpleName() + &quot; while the collection is of type &quot;</span>
+<span class="fc" id="L382">					+ childObj.getClass().getSimpleName());</span>
+		}
+<span class="fc" id="L384">	}</span>
+
+	private static Class&lt;?&gt; getGenericTypeOfCollection(Object obj, String propertyName) {
+		try {
+<span class="fc" id="L388">			Field field = obj.getClass().getDeclaredField(propertyName);</span>
+<span class="fc" id="L389">			ParameterizedType pt = (ParameterizedType) field.getGenericType();</span>
+<span class="fc" id="L390">			Type[] genericType = pt.getActualTypeArguments();</span>
+<span class="pc bpc" id="L391" title="2 of 4 branches missed.">			if (genericType != null &amp;&amp; genericType.length &gt; 0) {</span>
+<span class="fc" id="L392">				return Class.forName(genericType[0].getTypeName());</span>
+			}
+<span class="fc" id="L394">		} catch (Exception e) {</span>
+			// do nothing
+<span class="nc" id="L396">		}</span>
+<span class="fc" id="L397">		return null;</span>
+	}
+
+	private SimpleJdbcMapperUtils() {
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

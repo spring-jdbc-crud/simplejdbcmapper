@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SimpleJdbcMapperSupport.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">simplejdbcmapper</a> &gt; <a href="index.source.html" class="el_package">io.github.simplejdbcmapper.core</a> &gt; <span class="el_source">SimpleJdbcMapperSupport.java</span></div><h1>SimpleJdbcMapperSupport.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2025 the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ *
+ * https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
+ */
+package io.github.simplejdbcmapper.core;
+
+import java.util.function.Supplier;
+
+import javax.sql.DataSource;
+
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.PropertyAccessorFactory;
+import org.springframework.core.convert.ConversionService;
+import org.springframework.core.convert.support.DefaultConversionService;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.simple.JdbcClient;
+import org.springframework.util.Assert;
+
+/**
+ * Support class for SimpleJdbcMapper
+ *
+ * @author Antony Joseph
+ */
+class SimpleJdbcMapperSupport {
+	private final DataSource dataSource;
+
+	private final String schemaName;
+
+	private final String catalogName;
+
+	private JdbcClient jdbcClient;
+
+	private final JdbcTemplate jdbcTemplate;
+
+	private final NamedParameterJdbcTemplate npJdbcTemplate;
+
+	private final TableMappingProvider tableMappingProvider;
+
+	// Using Spring's DefaultConversionService as conversionService for
+	// SimpleJdbcMapper
+<span class="fc" id="L51">	private ConversionService conversionService = new DefaultConversionService();</span>
+
+	private Supplier&lt;?&gt; recordAuditedOnSupplier;
+
+	private Supplier&lt;?&gt; recordAuditedBySupplier;
+
+<span class="fc" id="L57">	private boolean conversionServiceManuallySet = false;</span>
+
+	/**
+	 * Constructor.
+	 *
+	 * @param jdbcClient  The jdbcClient
+	 * @param schemaName  database schema name.
+	 * @param catalogName database catalog name.
+	 */
+<span class="fc" id="L66">	public SimpleJdbcMapperSupport(DataSource dataSource, String schemaName, String catalogName) {</span>
+<span class="fc" id="L67">		Assert.notNull(dataSource, &quot;dataSource must not be null&quot;);</span>
+<span class="fc" id="L68">		this.dataSource = dataSource;</span>
+<span class="fc" id="L69">		this.schemaName = schemaName;</span>
+<span class="fc" id="L70">		this.catalogName = catalogName;</span>
+<span class="fc" id="L71">		this.npJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);</span>
+<span class="fc" id="L72">		this.jdbcTemplate = npJdbcTemplate.getJdbcTemplate();</span>
+<span class="fc" id="L73">		this.jdbcClient = JdbcClient.create(npJdbcTemplate, conversionService);</span>
+<span class="fc" id="L74">		this.tableMappingProvider = new TableMappingProvider(dataSource, schemaName, catalogName);</span>
+<span class="fc" id="L75">	}</span>
+
+	public DataSource getDataSource() {
+<span class="nc" id="L78">		return this.dataSource;</span>
+	}
+
+	public JdbcClient getJdbcClient() {
+<span class="fc" id="L82">		return this.jdbcClient;</span>
+	}
+
+	public JdbcTemplate getJdbcTemplate() {
+<span class="fc" id="L86">		return this.jdbcTemplate;</span>
+	}
+
+	public NamedParameterJdbcTemplate getNamedParameterJdbcTemplate() {
+<span class="fc" id="L90">		return this.npJdbcTemplate;</span>
+	}
+
+	public &lt;T&gt; void setRecordAuditedBySupplier(Supplier&lt;T&gt; supplier) {
+<span class="fc bfc" id="L94" title="All 2 branches covered.">		if (recordAuditedBySupplier == null) {</span>
+<span class="fc" id="L95">			recordAuditedBySupplier = supplier;</span>
+		} else {
+<span class="fc" id="L97">			throw new IllegalStateException(&quot;recordAuditedBySupplier was already set and cannot be changed.&quot;);</span>
+		}
+<span class="fc" id="L99">	}</span>
+
+	public &lt;T&gt; void setRecordAuditedOnSupplier(Supplier&lt;T&gt; supplier) {
+<span class="fc bfc" id="L102" title="All 2 branches covered.">		if (recordAuditedOnSupplier == null) {</span>
+<span class="fc" id="L103">			recordAuditedOnSupplier = supplier;</span>
+		} else {
+<span class="fc" id="L105">			throw new IllegalStateException(&quot;recordAuditedOnSupplier was already set and cannot be changed.&quot;);</span>
+		}
+<span class="fc" id="L107">	}</span>
+
+	public ConversionService getConversionService() {
+<span class="fc" id="L110">		return conversionService;</span>
+	}
+
+	public void setConversionService(ConversionService conversionService) {
+<span class="fc bfc" id="L114" title="All 2 branches covered.">		if (conversionServiceManuallySet) {</span>
+<span class="fc" id="L115">			throw new IllegalStateException(&quot;conversionService was already set and cannot be changed.&quot;);</span>
+		} else {
+<span class="fc" id="L117">			this.conversionService = conversionService;</span>
+<span class="fc" id="L118">			this.jdbcClient = JdbcClient.create(npJdbcTemplate, conversionService);</span>
+<span class="fc" id="L119">			conversionServiceManuallySet = true;</span>
+		}
+<span class="fc" id="L121">	}</span>
+
+	public String getSchemaName() {
+<span class="nc" id="L124">		return schemaName;</span>
+	}
+
+	public String getCatalogName() {
+<span class="nc" id="L128">		return catalogName;</span>
+	}
+
+	TableMapping getTableMapping(Class&lt;?&gt; clazz) {
+<span class="fc" id="L132">		return tableMappingProvider.getTableMapping(clazz);</span>
+	}
+
+	BeanWrapper getBeanWrapper(Object obj) {
+<span class="fc" id="L136">		BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(obj);</span>
+<span class="fc" id="L137">		bw.setConversionService(conversionService);</span>
+<span class="fc" id="L138">		return bw;</span>
+	}
+
+	@SuppressWarnings(&quot;rawtypes&quot;)
+	Supplier getRecordAuditedBySupplier() {
+<span class="fc" id="L143">		return recordAuditedBySupplier;</span>
+	}
+
+	@SuppressWarnings(&quot;rawtypes&quot;)
+	Supplier getRecordAuditedOnSupplier() {
+<span class="fc" id="L148">		return recordAuditedOnSupplier;</span>
+	}
+
+	SimpleCache&lt;String, TableMapping&gt; getTableMappingCache() {
+<span class="fc" id="L152">		return tableMappingProvider.getTableMappingCache();</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

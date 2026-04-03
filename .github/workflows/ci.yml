@@ -33,11 +33,10 @@ jobs:
         java-version: '21'
         distribution: 'corretto'
         cache: maven
-
+        
+    # dont want the step of running tests be polluted by dependency downloads
     - name: Download dependencies and plugins
-      run: |
-        mvn dependency:resolve
-        mvn dependency:resolve-plugins
+      run: mvn dependency:go-offline dependency:resolve dependency:resolve-plugins
       
     - name: Run tests against postgres
       run: mvn clean package -Dspring.profiles.active=postgres -Dmaven.javadoc.skip=true
@@ -72,10 +71,9 @@ jobs:
         distribution: 'corretto'
         cache: maven
 
+    # dont want the step of running tests be polluted by dependency downloads
     - name: Download dependencies and plugins
-      run: |
-        mvn dependency:resolve
-        mvn dependency:resolve-plugins
+      run: mvn dependency:go-offline dependency:resolve dependency:resolve-plugins
       
     - name: Run tests against mysql
       run: mvn clean package -Dspring.profiles.active=mysql -Dmaven.javadoc.skip=true
@@ -121,11 +119,10 @@ jobs:
         java-version: '21'
         distribution: 'corretto'
         cache: maven
-                    
+        
+    # dont want the step of running tests be polluted by dependency downloads                
     - name: Download dependencies and plugins
-      run: |
-        mvn dependency:resolve
-        mvn dependency:resolve-plugins
+      run: mvn dependency:go-offline dependency:resolve dependency:resolve-plugins
       
     - name: Run tests against oracle
       run: mvn clean package -Dspring.profiles.active=oracle -Dmaven.javadoc.skip=true
@@ -192,11 +189,10 @@ jobs:
       with:
         connection-string: Server=tcp:localhost,1433;Initial Catalog=master;User ID=sa;Password=Mssql123;Encrypt=True;TrustServerCertificate=True;Connection Timeout=30;
         path: ./src/test/resources/db/sqlserver_setup.sql
-
+        
+    # dont want the step of running tests be polluted by dependency downloads
     - name: Download dependencies and plugins
-      run: |
-        mvn dependency:resolve
-        mvn dependency:resolve-plugins 
+      run: mvn dependency:go-offline dependency:resolve dependency:resolve-plugins
                  
     - name: Run tests against SQLServer
       run: mvn clean package -Dspring.profiles.active=sqlserver -Dmaven.javadoc.skip=true       

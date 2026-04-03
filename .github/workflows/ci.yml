@@ -35,7 +35,7 @@ jobs:
     - name: Checkout code
       uses: actions/checkout@v6
 
-    - name: Wait for PostgreSQL to be ready (optional, but recommended)
+    - name: Wait for PostgreSQL to be ready
       # The 'services' health check in the 'options' above handles this, 
       # but this step provides an explicit wait within the main job's execution flow if needed.
       run: |

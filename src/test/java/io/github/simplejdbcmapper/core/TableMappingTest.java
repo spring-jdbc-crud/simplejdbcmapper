@@ -50,7 +50,7 @@ class TableMappingTest {
 	@Test
 	void schema_name_overriddenby_table_annotation_test() {
 		if (!jdbcDriver.contains("mysql")) {
-			SimpleJdbcMapper sjm = new SimpleJdbcMapper(dataSource, "schema1");
+			SimpleJdbcMapper sjm = new SimpleJdbcMapper(dataSource, "SCHEMA1");
 			SimpleJdbcMapperSupport sjmSupport = TestUtils.getSimpleJdbcMapperSupport(sjm);
 
 			TableMapping tm = sjmSupport.getTableMapping(CompanySchema2.class);

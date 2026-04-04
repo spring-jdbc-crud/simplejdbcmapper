@@ -129,7 +129,7 @@ jobs:
     
     # Running coverage for Oracle only at this time since it goes through most code
     # This will create badge in .github/badges
-    - name: Generate Jacoco Badge
+    - name: Generate jacoco coverage badge
       id: jacoco
       uses: cicirello/jacoco-badge-generator@v2
       with:
@@ -141,7 +141,7 @@ jobs:
     - name: Log the coverage percentage
       run: echo "coverage = ${{ steps.jacoco.outputs.coverage }}"
             
-    - name: Add jococo reports to website branch
+    - name: Add javadoc and jococo reports to website branch
       if: ${{ github.event_name != 'pull_request' }}
       run: |
         # Configure Git user (required for committing)

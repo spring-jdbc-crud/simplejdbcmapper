@@ -44,9 +44,9 @@ import io.github.simplejdbcmapper.exception.AnnotationException;
 <span class="fc" id="L44">						+ field.getDeclaringClass().getSimpleName() + &quot;.&quot; + propertyName);</span>
 			}
 <span class="fc" id="L46">			PropertyMapping propertyMapping = null;</span>
-<span class="pc bpc" id="L47" title="1 of 2 branches missed.">			if (colAnnotation.sqlType() != -99999) {</span>
-<span class="nc" id="L48">				propertyMapping = new PropertyMapping(propertyName, field.getType(), colName,</span>
-<span class="nc" id="L49">						columnNameToTpmd.get(colName).getSqlType(), colAnnotation.sqlType());</span>
+<span class="fc bfc" id="L47" title="All 2 branches covered.">			if (colAnnotation.sqlType() != -99999) {</span>
+<span class="fc" id="L48">				propertyMapping = new PropertyMapping(propertyName, field.getType(), colName,</span>
+<span class="fc" id="L49">						columnNameToTpmd.get(colName).getSqlType(), colAnnotation.sqlType());</span>
 			} else {
 <span class="fc" id="L51">				propertyMapping = new PropertyMapping(propertyName, field.getType(), colName,</span>
 <span class="fc" id="L52">						columnNameToTpmd.get(colName).getSqlType());</span>

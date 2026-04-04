@@ -59,13 +59,13 @@ class InsertOperation {
 			} else {
 				// SimpleJdbcInsert logs extra stuff when its internal sqltype is updated so
 				// keep it to a minimum
-<span class="pc bpc" id="L62" title="1 of 2 branches missed.">				if (propMapping.getColumnOverriddenSqlType() == null) {</span>
+<span class="fc bfc" id="L62" title="All 2 branches covered.">				if (propMapping.getColumnOverriddenSqlType() == null) {</span>
 <span class="fc" id="L63">					mapSqlParameterSource.addValue(propMapping.getColumnName(),</span>
 <span class="fc" id="L64">							bw.getPropertyValue(propMapping.getPropertyName()));</span>
 				} else {
-<span class="nc" id="L66">					mapSqlParameterSource.addValue(propMapping.getColumnName(),</span>
-<span class="nc" id="L67">							bw.getPropertyValue(propMapping.getPropertyName()),</span>
-<span class="nc" id="L68">							propMapping.getColumnOverriddenSqlType());</span>
+<span class="fc" id="L66">					mapSqlParameterSource.addValue(propMapping.getColumnName(),</span>
+<span class="fc" id="L67">							bw.getPropertyValue(propMapping.getPropertyName()),</span>
+<span class="fc" id="L68">							propMapping.getColumnOverriddenSqlType());</span>
 				}
 			}
 <span class="fc" id="L71">		}</span>

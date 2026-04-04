@@ -135,7 +135,7 @@ class PropertyMapping {
 <span class="fc" id="L135">	}</span>
 
 	public int getEffectiveSqlType() {
-<span class="pc bpc" id="L138" title="1 of 2 branches missed.">		return columnOverriddenSqlType == null ? columnSqlType : columnOverriddenSqlType;</span>
+<span class="fc bfc" id="L138" title="All 2 branches covered.">		return columnOverriddenSqlType == null ? columnSqlType : columnOverriddenSqlType;</span>
 	}
 
 	public boolean isBinaryLargeObject() {
@@ -153,7 +153,7 @@ class PropertyMapping {
 <span class="fc" id="L153">			characterLargeObject = true;</span>
 		} else {
 <span class="fc" id="L155">			int effectiveSqlType = getEffectiveSqlType();</span>
-<span class="pc bpc" id="L156" title="3 of 8 branches missed.">			if (effectiveSqlType == Types.CLOB || effectiveSqlType == Types.NCLOB</span>
+<span class="pc bpc" id="L156" title="2 of 8 branches missed.">			if (effectiveSqlType == Types.CLOB || effectiveSqlType == Types.NCLOB</span>
 					|| effectiveSqlType == Types.LONGVARCHAR || effectiveSqlType == Types.LONGNVARCHAR) {
 <span class="fc" id="L158">				characterLargeObject = true;</span>
 			}

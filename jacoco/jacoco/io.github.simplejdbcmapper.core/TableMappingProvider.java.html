@@ -166,14 +166,14 @@ class TableMappingProvider {
 
 	private String getTableMetaDataNotFoundErrMsg(Class&lt;?&gt; clazz, String tableName, String schema, String catalog) {
 <span class="fc" id="L168">		String errMsg = &quot;Unable to locate database meta-data for table '&quot; + tableName + &quot;'&quot;;</span>
-<span class="pc bpc" id="L169" title="2 of 4 branches missed.">		if (schema != null &amp;&amp; catalog != null) {</span>
+<span class="pc bpc" id="L169" title="1 of 4 branches missed.">		if (schema != null &amp;&amp; catalog != null) {</span>
 <span class="nc" id="L170">			errMsg += &quot; in schema &quot; + schema + &quot; and catalog &quot; + catalog;</span>
 		} else {
-<span class="pc bpc" id="L172" title="1 of 2 branches missed.">			if (schema != null) {</span>
+<span class="fc bfc" id="L172" title="All 2 branches covered.">			if (schema != null) {</span>
 <span class="fc" id="L173">				errMsg += &quot; in schema &quot; + schema;</span>
 			}
-<span class="pc bpc" id="L175" title="1 of 2 branches missed.">			if (catalog != null) {</span>
-<span class="nc" id="L176">				errMsg += &quot; in catalog/database &quot; + catalog;</span>
+<span class="fc bfc" id="L175" title="All 2 branches covered.">			if (catalog != null) {</span>
+<span class="fc" id="L176">				errMsg += &quot; in catalog/database &quot; + catalog;</span>
 			}
 		}
 <span class="fc" id="L179">		errMsg += &quot; for class &quot; + clazz.getSimpleName();</span>
@@ -181,7 +181,7 @@ class TableMappingProvider {
 	}
 
 	private String getCatalogForTable(Table tableAnnotation) {
-<span class="pc bpc" id="L184" title="1 of 2 branches missed.">		return StringUtils.hasText(tableAnnotation.catalog()) ? tableAnnotation.catalog() : catalogName;</span>
+<span class="fc bfc" id="L184" title="All 2 branches covered.">		return StringUtils.hasText(tableAnnotation.catalog()) ? tableAnnotation.catalog() : catalogName;</span>
 	}
 
 	private String getSchemaForTable(Table tableAnnotation) {
@@ -190,12 +190,12 @@ class TableMappingProvider {
 
 	private void validateMetaDataConfig(String catalog, String schema) {
 <span class="fc" id="L192">		String databaseName = getCommonDatabaseName();</span>
-<span class="pc bpc" id="L193" title="3 of 4 branches missed.">		if (&quot;mysql&quot;.equalsIgnoreCase(databaseName) &amp;&amp; schema != null) {</span>
-<span class="nc" id="L194">			throw new MapperException(databaseName</span>
+<span class="fc bfc" id="L193" title="All 4 branches covered.">		if (&quot;mysql&quot;.equalsIgnoreCase(databaseName) &amp;&amp; schema != null) {</span>
+<span class="fc" id="L194">			throw new MapperException(databaseName</span>
 					+ &quot;: When creating SimpleJdbcMapper() if you are using 'schema' (argument 2) use 'catalog' (argument 3) instead.&quot;
 					+ &quot; If you are using the @Table annotation use the 'catalog' attribue instead of 'schema' attribute&quot;);
 		}
-<span class="pc bpc" id="L198" title="1 of 4 branches missed.">		if (&quot;oracle&quot;.equalsIgnoreCase(databaseName) &amp;&amp; catalog != null) {</span>
+<span class="fc bfc" id="L198" title="All 4 branches covered.">		if (&quot;oracle&quot;.equalsIgnoreCase(databaseName) &amp;&amp; catalog != null) {</span>
 <span class="fc" id="L199">			throw new MapperException(databaseName</span>
 					+ &quot;: When creating SimpleJdbcMapper() if you are using the 'catalog' (argument 3) use 'schema' (argument 2) instead.&quot;
 					+ &quot; If you are using the @Table annotation use the 'schema' attribue instead of 'catalog' attribute&quot;);

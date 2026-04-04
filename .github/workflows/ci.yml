@@ -77,8 +77,7 @@ jobs:
       
     - name: Run tests against mysql
       run: mvn clean package -Dspring.profiles.active=mysql -Dmaven.javadoc.skip=true
-      
-      
+            
   tests-against-oracle:
     runs-on: ubuntu-latest
     
@@ -126,7 +125,7 @@ jobs:
       run: mvn dependency:go-offline dependency:resolve dependency:resolve-plugins
       
     - name: Run tests against oracle
-      run: mvn clean package -Dspring.profiles.active=oracle -Dmaven.javadoc.skip=true
+      run: mvn clean package -Dspring.profiles.active=oracle
     
     # Running coverage for Oracle only at this time since it goes through most code
     # This will create badge in .github/badges
@@ -142,7 +141,7 @@ jobs:
     - name: Log the coverage percentage
       run: echo "coverage = ${{ steps.jacoco.outputs.coverage }}"
             
-    - name: Add jococo reports website branch
+    - name: Add jococo reports to website branch
       if: ${{ github.event_name != 'pull_request' }}
       run: |
         # Configure Git user (required for committing)
@@ -155,9 +154,12 @@ jobs:
         # copy jacoco reports including svg
         cp -rf ./target/site/jacoco ./jacoco
         
+        #copy javadocs
+        cp -rf ./target/reports/apidocs ./javadoc
+        
         # Commit and push
         git add .
-        git commit -m "Coverage updates from github action"
+        git commit -m "javdoc and coverage reports from github action"
         git push origin website
        
   tests-against-sqlserver:

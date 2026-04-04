@@ -1,13 +1,8 @@
 name: CI SimpleJdbcMapper
 
-#on:
-#  workflow_dispatch:
 on:
-  push:
-    branches: [dev]
-  pull_request:
-    branches: [dev]
-    
+  workflow_dispatch:
+
 jobs:
   tests-against-postgres:
     runs-on: ubuntu-latest

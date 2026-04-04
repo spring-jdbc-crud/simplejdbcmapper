@@ -33,7 +33,7 @@ import io.github.simplejdbcmapper.model.UuidTable;
 @ExtendWith(SpringExtension.class)
 class TypeCheckPostgresTest {
 
-	DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd HHmmss");
+	private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd HHmmss");
 
 	@Value("${spring.datasource.driver-class-name}")
 	private String jdbcDriver;

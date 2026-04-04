@@ -227,9 +227,6 @@ jobs:
       with:
         # all the *.exec files will be in workspace directory
         merge-multiple: true
-    
-    - name: List working directory
-      run: ls -R
       
     - name: merge the jacoco exec files for all the runs
       # the default merged file will be target/jacoco.exec. See pom.xml for merge filesets info
@@ -253,13 +250,13 @@ jobs:
  
     - name: list the files
       run: ls -lR
-      
-    - name: remove now not needed *exec files so they dont get committed
-      run: rm *-jacoco.exec
             
     - name: Add javadoc and jococo reports to website branch
       if: ${{ github.event_name != 'pull_request' }}
       run: |
+        # remove the exec files since they are not needed and committed.
+        rm *-jacoco.exec
+        
         # Configure Git user (required for committing)
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"

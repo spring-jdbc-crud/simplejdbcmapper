@@ -149,16 +149,14 @@ class PropertyMapping {
 	private void determineBlobClob() {
 		if (byte[].class.getName().equals(propertyClassName)) {
 			binaryLargeObject = true;
-			return;
-		}
-		if (char[].class.getName().equals(propertyClassName)) {
+		} else if (char[].class.getName().equals(propertyClassName)) {
 			characterLargeObject = true;
-			return;
-		}
-		int effectiveSqlType = getEffectiveSqlType();
-		if (effectiveSqlType == Types.CLOB || effectiveSqlType == Types.NCLOB || effectiveSqlType == Types.LONGVARCHAR
-				|| effectiveSqlType == Types.LONGNVARCHAR) {
-			characterLargeObject = true;
+		} else {
+			int effectiveSqlType = getEffectiveSqlType();
+			if (effectiveSqlType == Types.CLOB || effectiveSqlType == Types.NCLOB
+					|| effectiveSqlType == Types.LONGVARCHAR || effectiveSqlType == Types.LONGNVARCHAR) {
+				characterLargeObject = true;
+			}
 		}
 	}
 

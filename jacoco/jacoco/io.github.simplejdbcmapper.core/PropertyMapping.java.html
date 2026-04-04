@@ -149,18 +149,16 @@ class PropertyMapping {
 	private void determineBlobClob() {
 <span class="fc bfc" id="L150" title="All 2 branches covered.">		if (byte[].class.getName().equals(propertyClassName)) {</span>
 <span class="fc" id="L151">			binaryLargeObject = true;</span>
-<span class="fc" id="L152">			return;</span>
+<span class="fc bfc" id="L152" title="All 2 branches covered.">		} else if (char[].class.getName().equals(propertyClassName)) {</span>
+<span class="fc" id="L153">			characterLargeObject = true;</span>
+		} else {
+<span class="fc" id="L155">			int effectiveSqlType = getEffectiveSqlType();</span>
+<span class="pc bpc" id="L156" title="3 of 8 branches missed.">			if (effectiveSqlType == Types.CLOB || effectiveSqlType == Types.NCLOB</span>
+					|| effectiveSqlType == Types.LONGVARCHAR || effectiveSqlType == Types.LONGNVARCHAR) {
+<span class="fc" id="L158">				characterLargeObject = true;</span>
+			}
 		}
-<span class="fc bfc" id="L154" title="All 2 branches covered.">		if (char[].class.getName().equals(propertyClassName)) {</span>
-<span class="fc" id="L155">			characterLargeObject = true;</span>
-<span class="fc" id="L156">			return;</span>
-		}
-<span class="fc" id="L158">		int effectiveSqlType = getEffectiveSqlType();</span>
-<span class="pc bpc" id="L159" title="3 of 8 branches missed.">		if (effectiveSqlType == Types.CLOB || effectiveSqlType == Types.NCLOB || effectiveSqlType == Types.LONGVARCHAR</span>
-				|| effectiveSqlType == Types.LONGNVARCHAR) {
-<span class="fc" id="L161">			characterLargeObject = true;</span>
-		}
-<span class="fc" id="L163">	}</span>
+<span class="fc" id="L161">	}</span>
 
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span></div></body></html>

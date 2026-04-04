@@ -125,23 +125,32 @@
 			<artifactId>flyway-sqlserver</artifactId>
 			<scope>test</scope>
 		</dependency>
-
-	</dependencies>
+		
+		<dependency>
+		    <groupId>org.jacoco</groupId>
+		    <artifactId>org.jacoco.cli</artifactId>
+		    <version>0.8.14</version>
+	  </dependency>
+   </dependencies>
 
 	<build>
-	    <pluginManagement>
-            <plugins>
-                <plugin>
-                    <groupId>org.jacoco</groupId>
-                    <artifactId>jacoco-maven-plugin</artifactId>
-                    <version>0.8.14</version>
-                </plugin>
-            </plugins>
-        </pluginManagement>
 		<plugins>
 		    <plugin>
                 <groupId>org.jacoco</groupId>
                 <artifactId>jacoco-maven-plugin</artifactId>
+                <version>0.8.14</version>
+                       
+                <configuration>
+			        <fileSets>
+			          <fileSet>
+			            <directory>${project.basedir}</directory>
+			            <includes>
+			              <include>*.exec</include>
+			            </includes>
+			          </fileSet>
+			        </fileSets>
+                </configuration>
+                
                 <executions>
                     <execution>
                         <goals>
@@ -154,6 +163,14 @@
                         <goals>
                             <goal>report</goal>
                         </goals>
+                    </execution>
+                    
+                    <execution>
+				        <id>merge-results</id>
+				        <phase>verify</phase>
+				        <goals>
+				            <goal>merge</goal>
+				        </goals>    
                     </execution>
                 </executions>
             </plugin>

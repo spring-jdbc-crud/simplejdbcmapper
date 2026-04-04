@@ -1,8 +1,13 @@
 name: CI SimpleJdbcMapper
 
+#on:
+#  workflow_dispatch:
 on:
-  workflow_dispatch:
-
+  push:
+    branches: [dev]
+  pull_request:
+    branches: [dev]
+    
 jobs:
   tests-against-postgres:
     runs-on: ubuntu-latest
@@ -39,7 +44,17 @@ jobs:
       run: mvn dependency:go-offline dependency:resolve dependency:resolve-plugins
       
     - name: Run tests against postgres
-      run: mvn clean package -Dspring.profiles.active=postgres -Dmaven.javadoc.skip=true
+      run: mvn clean package -Dspring.profiles.active=postgres -Djacoco.destFile=${{ github.workspace }}/target/postgres-jacoco.exec
+      
+    - name: List working directory
+      run: ls -R
+
+    - name: upload jacoco exec
+      uses: actions/upload-artifact@v6
+      with:
+        name: postgres_jacoco_exec
+        path: ${{ github.workspace }}/target/postgres-jacoco.exec
+    
 
   tests-against-mysql:
     runs-on: ubuntu-latest
@@ -76,8 +91,14 @@ jobs:
       run: mvn dependency:go-offline dependency:resolve dependency:resolve-plugins
       
     - name: Run tests against mysql
-      run: mvn clean package -Dspring.profiles.active=mysql -Dmaven.javadoc.skip=true
-            
+      run: mvn clean package -Dspring.profiles.active=mysql -Djacoco.destFile=${{ github.workspace }}/target/mysql-jacoco.exec
+      
+    - name: upload jacoco exec
+      uses: actions/upload-artifact@v6
+      with:
+        name: mysql_jacoco_exec
+        path: ${{ github.workspace }}/target/mysql-jacoco.exec
+        
   tests-against-oracle:
     runs-on: ubuntu-latest
     
@@ -125,43 +146,14 @@ jobs:
       run: mvn dependency:go-offline dependency:resolve dependency:resolve-plugins
       
     - name: Run tests against oracle
-      run: mvn clean package -Dspring.profiles.active=oracle
-    
-    # Running coverage for Oracle only at this time since it goes through most code
-    # This will create badge in .github/badges
-    - name: Generate jacoco coverage badge
-      id: jacoco
-      uses: cicirello/jacoco-badge-generator@v2
+      run: mvn clean package -Dspring.profiles.active=oracle -Djacoco.destFile=${{ github.workspace }}/target/oracle-jacoco.exec
+      
+    - name: upload jacoco exec
+      uses: actions/upload-artifact@v6
       with:
-        badges-directory: ./target/site/jacoco
-        # Example: Green for >= 90%, Yellow for >= 75%, Red for < 75%
-        colors: 'green yellow red'
-        intervals: 90 75
-
-    - name: Log the coverage percentage
-      run: echo "coverage = ${{ steps.jacoco.outputs.coverage }}"
-            
-    - name: Add javadoc and jococo reports to website branch
-      if: ${{ github.event_name != 'pull_request' }}
-      run: |
-        # Configure Git user (required for committing)
-        git config user.name "github-actions[bot]"
-        git config user.email "github-actions[bot]@users.noreply.github.com"
-         
-        git fetch origin website
-        git checkout website
-        
-        # copy jacoco reports including svg
-        cp -rf ./target/site/jacoco ./jacoco
-        
-        #copy javadocs
-        cp -rf ./target/reports/apidocs ./javadoc
-        
-        # Commit and push
-        git add .
-        git commit -m "javdoc and coverage reports from github action"
-        git push origin website
-       
+        name: oracle_jacoco_exec
+        path: ${{ github.workspace }}/target/oracle-jacoco.exec
+      
   tests-against-sqlserver:
     runs-on: ubuntu-latest
     
@@ -205,7 +197,93 @@ jobs:
       run: mvn dependency:go-offline dependency:resolve dependency:resolve-plugins
                  
     - name: Run tests against SQLServer
-      run: mvn clean package -Dspring.profiles.active=sqlserver -Dmaven.javadoc.skip=true       
+      run: mvn clean package -Dspring.profiles.active=sqlserver -Djacoco.destFile=${{ github.workspace }}/target/sqlserver-jacoco.exec
+ 
+    - name: upload jacoco exec
+      uses: actions/upload-artifact@v6
+      with:
+        name: sqlserver_jacoco_exec
+        path: ${{ github.workspace }}/target/sqlserver-jacoco.exec
+                   
+  coverage-and-javadoc:
+    needs: [tests-against-postgres, tests-against-mysql, tests-against-oracle, tests-against-sqlserver]
+    
+    runs-on: ubuntu-latest
+   
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v6
 
-  
-  
+    - name: Set up JDK 21
+      uses: actions/setup-java@v5
+      with:
+        java-version: '21'
+        distribution: 'corretto'
+        cache: maven
+       
+    - name: compile
+      run: mvn clean compile
+      
+    - name: generate javadoc
+      run: mvn javadoc:javadoc
+     
+    - name: download all the jacoco artifacts 
+      uses: actions/download-artifact@v8
+      with:
+        # all the *.exec files will be in workspace directory
+        merge-multiple: true
+    
+    - name: List working directory
+      run: ls -R
+      
+    - name: merge the jacoco exec files for all the runs
+      # the default merged file will be target/jacoco.exec. See pom.xml for merge filesets info
+      run: mvn jacoco:merge
+      
+    - name: generate the jacoco report
+      run: mvn jacoco:report
+            
+    # This will create badge in .github/badges
+    - name: Generate jacoco coverage badge
+      id: jacoco
+      uses: cicirello/jacoco-badge-generator@v2
+      with:
+        badges-directory: ./target/site/jacoco
+        # Example: Green for >= 90%, Yellow for >= 75%, Red for < 75%
+        colors: 'green yellow red'
+        intervals: 90 75
+
+    - name: Log the coverage percentage
+      run: echo "coverage = ${{ steps.jacoco.outputs.coverage }}"
+ 
+    - name: list the files
+      run: ls -lR
+      
+    - name: remove now not needed *exec files so they dont get committed
+      run: rm *-jacoco.exec
+            
+    - name: Add javadoc and jococo reports to website branch
+      if: ${{ github.event_name != 'pull_request' }}
+      run: |
+        # Configure Git user (required for committing)
+        git config user.name "github-actions[bot]"
+        git config user.email "github-actions[bot]@users.noreply.github.com"
+         
+        git fetch origin website
+        git checkout website
+        
+        # copy jacoco reports including svg
+        cp -rf ./target/site/jacoco/. ./jacoco
+        
+        #copy javadocs
+        cp -rf ./target/reports/apidocs/. ./javadoc
+        
+        # Commit and push
+        # jacoco.svg is the coverage image and size stays the same. So forcefully add it.
+        git add -f ./jacoco/jacoco.svg
+        git add .
+        git commit -m "javdoc and coverage reports from github action"
+        git push origin website   
+      
+    
+ 

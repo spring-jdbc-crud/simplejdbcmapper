@@ -1,5 +1,5 @@
 # SimpleJdbcMapper #
-[![CI SimpleJdbcMapper](https://github.com/spring-jdbc-crud/simplejdbcmapper/actions/workflows/ci.yml/badge.svg)](https://github.com/spring-jdbc-crud/simplejdbcmapper/actions/workflows/ci.yml)  [![coverage](https://spring-jdbc-crud.github.io/simplejdbcmapper/jacoco/jacoco.svg)](https://spring-jdbc-crud.github.io/simplejdbcmapper/jacoco/jacoco/index.html)
+[![CI SimpleJdbcMapper](https://github.com/spring-jdbc-crud/simplejdbcmapper/actions/workflows/ci.yml/badge.svg)](https://github.com/spring-jdbc-crud/simplejdbcmapper/actions/workflows/ci.yml)  [![coverage](https://spring-jdbc-crud.github.io/simplejdbcmapper/jacoco/jacoco.svg)](https://spring-jdbc-crud.github.io/simplejdbcmapper/jacoco/index.html)
 
 A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations by making them less verbose. Use its API where as needed and keep using JdbcTemplate/JdbcClient for all other functionality.
 

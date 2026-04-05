@@ -1,6 +1,7 @@
 package io.github.simplejdbcmapper.core;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDateTime;
@@ -114,27 +115,27 @@ class SimpleJdbcMapperTest {
 	@Test
 	void getSchemaName_test() {
 		if (jdbcDriver.contains("oracle")) {
-			SimpleJdbcMapper sjm = new SimpleJdbcMapper(dataSource, "schema1");
-			assertEquals("schema1", sjm.getSchemaName());
+			SimpleJdbcMapper sjm1 = new SimpleJdbcMapper(dataSource, "schema1");
+			assertEquals("schema1", sjm1.getSchemaName());
 		}
 	}
 
 	@Test
 	void getCatalogName_test() {
 		if (jdbcDriver.contains("mysql")) {
-			SimpleJdbcMapper sjm = new SimpleJdbcMapper(dataSource, null, "schema1");
-			assertEquals("schema1", sjm.getCatalogName());
+			SimpleJdbcMapper sjm1 = new SimpleJdbcMapper(dataSource, null, "schema1");
+			assertEquals("schema1", sjm1.getCatalogName());
 		}
 	}
 
 	@Test
 	void getConversionService_test() {
-		assertTrue(sjm.getConversionService() != null);
+		assertNotNull(sjm.getConversionService());
 	}
 
 	@Test
 	void getNamedParameterJdbcTemplate_test() {
-		assertTrue(sjm.getNamedParameterJdbcTemplate() != null);
+		assertNotNull(sjm.getNamedParameterJdbcTemplate());
 	}
 
 	@Test

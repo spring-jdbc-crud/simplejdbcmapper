@@ -235,7 +235,6 @@ jobs:
     - name: generate the jacoco report
       run: mvn jacoco:report
             
-    # This will create badge in .github/badges
     - name: Generate jacoco coverage badge
       id: jacoco
       uses: cicirello/jacoco-badge-generator@v2
@@ -254,7 +253,7 @@ jobs:
     - name: Add javadoc and jococo reports to website branch
       if: ${{ github.event_name != 'pull_request' }}
       run: |
-        # remove the exec files since they are not needed and committed.
+        # remove the exec files since they are not needed anymore.
         rm *-jacoco.exec
         
         # Configure Git user (required for committing)
@@ -274,7 +273,7 @@ jobs:
         # jacoco.svg is the coverage image and size stays the same. So forcefully add it.
         git add -f ./jacoco/jacoco.svg
         git add .
-        git commit -m "javdoc and coverage reports from github action"
+        git commit -m "coverage reports and javadocs from github action"
         git push origin website   
       
     

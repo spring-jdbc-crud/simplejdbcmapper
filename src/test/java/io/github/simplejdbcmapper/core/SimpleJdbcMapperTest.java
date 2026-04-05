@@ -1,9 +1,11 @@
 package io.github.simplejdbcmapper.core;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 import java.util.function.Supplier;
 
 import javax.sql.DataSource;
@@ -22,6 +24,7 @@ import io.github.simplejdbcmapper.exception.AnnotationException;
 import io.github.simplejdbcmapper.model.NoTableAnnotationModel;
 import io.github.simplejdbcmapper.model.NonDefaultNamingProduct;
 import io.github.simplejdbcmapper.model.Order;
+import io.github.simplejdbcmapper.model.Product;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -106,6 +109,39 @@ class SimpleJdbcMapperTest {
 		Assertions.assertThrows(IllegalStateException.class, () -> {
 			m.setConversionService(dcs);
 		});
+	}
+
+	@Test
+	void getSchemaName_test() {
+		if (jdbcDriver.contains("oracle")) {
+			SimpleJdbcMapper sjm = new SimpleJdbcMapper(dataSource, "schema1");
+			assertEquals("schema1", sjm.getSchemaName());
+		}
+	}
+
+	@Test
+	void getCatalogName_test() {
+		if (jdbcDriver.contains("mysql")) {
+			SimpleJdbcMapper sjm = new SimpleJdbcMapper(dataSource, null, "schema1");
+			assertEquals("schema1", sjm.getCatalogName());
+		}
+	}
+
+	@Test
+	void getConversionService_test() {
+		assertTrue(sjm.getConversionService() != null);
+	}
+
+	@Test
+	void getNamedParameterJdbcTemplate_test() {
+		assertTrue(sjm.getNamedParameterJdbcTemplate() != null);
+	}
+
+	@Test
+	void getPropertyToColumnMappings_Test() {
+		Map<String, String> map = sjm.getPropertyToColumnMappings(Product.class);
+		assertEquals(9, map.size());
+		assertTrue(map.containsKey("productId"));
 	}
 
 }

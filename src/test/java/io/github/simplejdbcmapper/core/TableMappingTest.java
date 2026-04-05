@@ -1,6 +1,7 @@
 package io.github.simplejdbcmapper.core;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import javax.sql.DataSource;
 
@@ -16,6 +17,7 @@ import io.github.simplejdbcmapper.model.CompanySchema2;
 import io.github.simplejdbcmapper.model.CustomerCatalogSchema1;
 import io.github.simplejdbcmapper.model.CustomerSchema1;
 import io.github.simplejdbcmapper.model.Order;
+import io.github.simplejdbcmapper.model.Product;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -86,6 +88,33 @@ class TableMappingTest {
 			TableMapping tm = sjmSupport.getTableMapping(CompanyCatalogSchema2.class);
 			assertEquals("schema2", tm.getCatalogName());
 		}
+	}
+
+	@Test
+	void getIdColumnSqlType_test() {
+		if (jdbcDriver.contains("mysql")) {
+			SimpleJdbcMapper sjm = new SimpleJdbcMapper(dataSource, null, "schema1");
+			SimpleJdbcMapperSupport sjmSupport = TestUtils.getSimpleJdbcMapperSupport(sjm);
+			TableMapping tm = sjmSupport.getTableMapping(Product.class);
+			assertTrue(tm.getIdColumnSqlType() > 0);
+		}
+	}
+
+	@Test
+	void getPropertyMappingByColumnName_test() {
+		if (jdbcDriver.contains("mysql")) {
+			SimpleJdbcMapper sjm = new SimpleJdbcMapper(dataSource, null, "schema1");
+			SimpleJdbcMapperSupport sjmSupport = TestUtils.getSimpleJdbcMapperSupport(sjm);
+			TableMapping tm = sjmSupport.getTableMapping(Product.class);
+			assertTrue(tm.getPropertyMappingByColumnName("product_id") != null);
+		}
+	}
+
+	@Test
+	void getDataSource_test() {
+		SimpleJdbcMapper sjm = new SimpleJdbcMapper(dataSource, null, "schema1");
+		SimpleJdbcMapperSupport sjmSupport = TestUtils.getSimpleJdbcMapperSupport(sjm);
+		assertTrue(sjmSupport.getDataSource() != null);
 	}
 
 }

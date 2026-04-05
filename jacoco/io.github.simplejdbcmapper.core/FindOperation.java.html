@@ -139,12 +139,12 @@ class FindOperation {
 	}
 
 	public Map&lt;String, String&gt; getPropertyToColumnMappings(Class&lt;?&gt; clazz) {
-<span class="nc" id="L142">		TableMapping tableMapping = sjmSupport.getTableMapping(clazz);</span>
-<span class="nc" id="L143">		Map&lt;String, String&gt; map = new LinkedHashMap&lt;&gt;();</span>
-<span class="nc bnc" id="L144" title="All 2 branches missed.">		for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {</span>
-<span class="nc" id="L145">			map.put(propMapping.getPropertyName(), propMapping.getColumnName());</span>
-<span class="nc" id="L146">		}</span>
-<span class="nc" id="L147">		return map;</span>
+<span class="fc" id="L142">		TableMapping tableMapping = sjmSupport.getTableMapping(clazz);</span>
+<span class="fc" id="L143">		Map&lt;String, String&gt; map = new LinkedHashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L144" title="All 2 branches covered.">		for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {</span>
+<span class="fc" id="L145">			map.put(propMapping.getPropertyName(), propMapping.getColumnName());</span>
+<span class="fc" id="L146">		}</span>
+<span class="fc" id="L147">		return map;</span>
 	}
 
 	SimpleCache&lt;String, String&gt; getFindByIdSqlCache() {

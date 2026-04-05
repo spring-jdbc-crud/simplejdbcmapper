@@ -40,9 +40,6 @@ jobs:
       
     - name: Run tests against postgres
       run: mvn clean package -Dspring.profiles.active=postgres -Djacoco.destFile=${{ github.workspace }}/target/postgres-jacoco.exec
-      
-    - name: List working directory
-      run: ls -R
 
     - name: upload jacoco exec
       uses: actions/upload-artifact@v6
@@ -222,13 +219,15 @@ jobs:
     - name: generate javadoc
       run: mvn javadoc:javadoc
      
-    - name: download all the jacoco artifacts 
+    - name: download all the jacoco exec files from the database test jobs 
       uses: actions/download-artifact@v8
       with:
-        # all the *.exec files will be in workspace directory
+        path: ${{ github.workspace }}/target
+        # all the *.exec files into same directory
         merge-multiple: true
+       
       
-    - name: merge the jacoco exec files for all the runs
+    - name: merge the jacoco exec files
       # the default merged file will be target/jacoco.exec. See pom.xml for merge filesets info
       run: mvn jacoco:merge
       
@@ -253,8 +252,6 @@ jobs:
     - name: Add javadoc and jococo reports to website branch
       if: ${{ github.event_name != 'pull_request' }}
       run: |
-        # remove the exec files since they are not needed anymore.
-        rm *-jacoco.exec
         
         # Configure Git user (required for committing)
         git config user.name "github-actions[bot]"
@@ -263,7 +260,7 @@ jobs:
         git fetch origin website
         git checkout website
         
-        # copy jacoco reports including svg
+        # copy jacoco reports including coverage badge svg
         cp -rf ./target/site/jacoco/. ./jacoco
         
         #copy javadocs

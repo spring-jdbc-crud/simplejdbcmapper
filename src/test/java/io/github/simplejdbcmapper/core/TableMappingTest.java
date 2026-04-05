@@ -2,7 +2,8 @@ package io.github.simplejdbcmapper.core;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.sql.Types;
 
 import javax.sql.DataSource;
 
@@ -97,7 +98,7 @@ class TableMappingTest {
 			SimpleJdbcMapper sjm = new SimpleJdbcMapper(dataSource, null, "schema1");
 			SimpleJdbcMapperSupport sjmSupport = TestUtils.getSimpleJdbcMapperSupport(sjm);
 			TableMapping tm = sjmSupport.getTableMapping(Product.class);
-			assertTrue(tm.getIdColumnSqlType() > 0);
+			assertEquals(Types.INTEGER, tm.getIdColumnSqlType());
 		}
 	}
 

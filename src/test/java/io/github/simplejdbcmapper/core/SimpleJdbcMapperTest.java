@@ -130,7 +130,8 @@ class SimpleJdbcMapperTest {
 
 	@Test
 	void getConversionService_test() {
-		assertNotNull(sjm.getConversionService());
+		SimpleJdbcMapper sjm1 = new SimpleJdbcMapper(dataSource);
+		assertNotNull(sjm1.getConversionService());
 	}
 
 	@Test

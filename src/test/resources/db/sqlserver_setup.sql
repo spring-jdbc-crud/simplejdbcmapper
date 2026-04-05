@@ -1,3 +1,4 @@
+-- Used in CI to setup sqlserver for tests
 GO
 create schema schema1 AUTHORIZATION dbo;
 GO

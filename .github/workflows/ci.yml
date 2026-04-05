@@ -102,8 +102,6 @@ jobs:
         # Provide passwords and other environment variables to container
         env:
           ORACLE_PASSWORD: pass1234
-          APP_USER: SCHEMA1
-          APP_USER_PASSWORD: app
  
         # Maps service port to port on the runner host
         ports:

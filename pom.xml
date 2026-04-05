@@ -44,7 +44,12 @@
 		<developerConnection>scm:git:git@github.com:spring-jdbc-crud/simplejdbcmapper.git</developerConnection>
 		<url>https://github.com/spring-jdbc-crud/simplejdbcmapper</url>
 	</scm>
-
+	
+	<issueManagement>
+        <system>github</system>
+        <url>https://github.com/spring-jdbc-crud/simplejdbcmapper/issues</url>
+    </issueManagement>
+	
 	<dependencies>
 		<!-- This is the only dependency needed for SimpleJdbcMapper -->
 		<dependency>

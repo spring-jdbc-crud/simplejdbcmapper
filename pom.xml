@@ -154,6 +154,8 @@
 			            </includes>
 			          </fileSet>
 			        </fileSets>
+			        
+                <title>${jacoco.title}</title>
                 </configuration>
                 
                 <executions>
@@ -169,10 +171,6 @@
                         <goals>
                             <goal>report</goal>
                         </goals>
-                        <configuration>
-                            <!-- Include project version and timestamp -->
-                            <title>${project.name} (${maven.build.timestamp})</title>
-                        </configuration>
                     </execution>
                     
                     <execution>

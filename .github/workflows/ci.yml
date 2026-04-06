@@ -228,7 +228,7 @@ jobs:
       run: mvn git-commit-id:revision jacoco:merge
       
     - name: Generate the jacoco report
-      run: mvn jacoco:report
+      run: mvn jacoco:report -Djacoco.title="SimpleJdbcMapper ${{ github.ref_name }}"
             
     - name: Generate jacoco coverage badge
       id: jacoco
@@ -254,9 +254,7 @@ jobs:
          
         git fetch origin website
         git checkout website
-        
-        git rm --cached ./jacoco/jacoco.svg
-        
+                
         # copy jacoco reports including coverage badge svg
         cp -rf ./target/site/jacoco/. ./jacoco
         
@@ -266,8 +264,7 @@ jobs:
         ls -l ./jacoco
         
         # Commit and push
-        # jacoco.svg is the coverage image and size sometimes remains the same. So forcefully add it.
-        git add -A
+        git add .
         git commit -m "coverage reports and javadocs from github action"
         git push origin website   
       

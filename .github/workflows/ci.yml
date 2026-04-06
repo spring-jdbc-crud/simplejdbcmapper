@@ -24,16 +24,16 @@ jobs:
           --health-retries 5
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v6
-
     - name: Set up JDK 21
       uses: actions/setup-java@v5
       with:
         java-version: '21'
         distribution: 'corretto'
         cache: maven
-        
+
+    - name: Checkout code
+      uses: actions/checkout@v6
+              
     # dont want the step of running tests be polluted by dependency downloads
     - name: Download dependencies and plugins
       run: mvn dependency:go-offline dependency:resolve dependency:resolve-plugins
@@ -41,7 +41,7 @@ jobs:
     - name: Run tests against postgres
       run: mvn clean package -Dspring.profiles.active=postgres -Djacoco.destFile=${{ github.workspace }}/target/postgres-jacoco.exec
 
-    - name: upload jacoco exec
+    - name: Upload jacoco exec
       uses: actions/upload-artifact@v6
       with:
         name: postgres_jacoco_exec
@@ -68,15 +68,15 @@ jobs:
           --health-retries=3
 
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v6
-
     - name: Set up JDK 21
       uses: actions/setup-java@v5
       with:
         java-version: '21'
         distribution: 'corretto'
         cache: maven
+        
+    - name: Checkout code
+      uses: actions/checkout@v6
 
     # dont want the step of running tests be polluted by dependency downloads
     - name: Download dependencies and plugins
@@ -85,7 +85,7 @@ jobs:
     - name: Run tests against mysql
       run: mvn clean package -Dspring.profiles.active=mysql -Djacoco.destFile=${{ github.workspace }}/target/mysql-jacoco.exec
       
-    - name: upload jacoco exec
+    - name: Upload jacoco exec
       uses: actions/upload-artifact@v6
       with:
         name: mysql_jacoco_exec
@@ -115,21 +115,21 @@ jobs:
           --health-timeout 5s
           --health-retries 10
 
-    steps:       
-    - name: Checkout code
-      uses: actions/checkout@v6
-       
-    - name: initialize oracle setup
+    steps:             
+    - name: Initialize oracle setup
       run: |
         docker cp src/test/resources/db/oracle_setup.sql oracle-db:/tmp/oracle_setup.sql
         docker exec oracle-db sqlplus system/pass1234@FREEPDB1 @/tmp/oracle_setup.sql  
-       
+ 
     - name: Set up JDK 21
       uses: actions/setup-java@v5        
       with:
         java-version: '21'
         distribution: 'corretto'
         cache: maven
+        
+    - name: Checkout code
+      uses: actions/checkout@v6
         
     # dont want the step of running tests be polluted by dependency downloads                
     - name: Download dependencies and plugins
@@ -138,7 +138,7 @@ jobs:
     - name: Run tests against oracle
       run: mvn clean package -Dspring.profiles.active=oracle -Djacoco.destFile=${{ github.workspace }}/target/oracle-jacoco.exec
       
-    - name: upload jacoco exec
+    - name: Upload jacoco exec
       uses: actions/upload-artifact@v6
       with:
         name: oracle_jacoco_exec
@@ -166,9 +166,12 @@ jobs:
           --health-retries 5
     
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v6
-
+    - name: Initialize SQL Server setup
+      uses: azure/sql-action@v2.3
+      with:
+        connection-string: Server=tcp:localhost,1433;Initial Catalog=master;User ID=sa;Password=Mssql123;Encrypt=True;TrustServerCertificate=True;Connection Timeout=30;
+        path: ./src/test/resources/db/sqlserver_setup.sql
+        
     - name: Set up JDK 21
       uses: actions/setup-java@v5
       with:
@@ -176,11 +179,8 @@ jobs:
         distribution: 'corretto'
         cache: maven
       
-    - name: Initialize SQL Server setup
-      uses: azure/sql-action@v2.3
-      with:
-        connection-string: Server=tcp:localhost,1433;Initial Catalog=master;User ID=sa;Password=Mssql123;Encrypt=True;TrustServerCertificate=True;Connection Timeout=30;
-        path: ./src/test/resources/db/sqlserver_setup.sql
+    - name: Checkout code
+      uses: actions/checkout@v6
         
     # dont want the step of running tests be polluted by dependency downloads
     - name: Download dependencies and plugins
@@ -189,7 +189,7 @@ jobs:
     - name: Run tests against SQLServer
       run: mvn clean package -Dspring.profiles.active=sqlserver -Djacoco.destFile=${{ github.workspace }}/target/sqlserver-jacoco.exec
  
-    - name: upload jacoco exec
+    - name: Upload jacoco exec
       uses: actions/upload-artifact@v6
       with:
         name: sqlserver_jacoco_exec
@@ -201,33 +201,33 @@ jobs:
     runs-on: ubuntu-latest
    
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v6
-
     - name: Set up JDK 21
       uses: actions/setup-java@v5
       with:
         java-version: '21'
         distribution: 'corretto'
         cache: maven
-       
-    - name: compile
+        
+    - name: Checkout code
+      uses: actions/checkout@v6  
+           
+    - name: Compile
       run: mvn clean compile
       
-    - name: generate javadoc
+    - name: Generate javadoc
       run: mvn javadoc:javadoc
      
-    - name: download all the jacoco exec files from the database test jobs 
+    - name: Download all the jacoco exec files from the database test jobs 
       uses: actions/download-artifact@v8
       with:
         # all the *.exec files will be in workspace directory
         merge-multiple: true
       
-    - name: merge the jacoco exec files
+    - name: Merge the jacoco exec files
       # the default merged file will be target/jacoco.exec. See pom.xml for merge filesets info
       run: mvn jacoco:merge
       
-    - name: generate the jacoco report
+    - name: Generate the jacoco report
       run: mvn jacoco:report
             
     - name: Generate jacoco coverage badge
@@ -242,7 +242,7 @@ jobs:
     - name: Log the coverage percentage
       run: echo "coverage = ${{ steps.jacoco.outputs.coverage }}"
  
-    - name: list the files
+    - name: List the files
       run: ls -lR
             
     - name: Add javadoc and jococo reports to website branch
@@ -265,11 +265,9 @@ jobs:
         cp -rf ./target/reports/apidocs/. ./javadoc
         
         # Commit and push
-        # jacoco.svg is the coverage image and size stays the same. So forcefully add it.
+        # jacoco.svg is the coverage image and size sometimes remains the same. So forcefully add it.
         git add -f ./jacoco/jacoco.svg
         git add .
         git commit -m "coverage reports and javadocs from github action"
         git push origin website   
       
-    
- 

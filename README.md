@@ -22,6 +22,7 @@ Just by annotating the models that you would use with JdbcTemplate/JdbcClient, y
 [Logging](#logging)  
 [Limitations](#limitations)  
 [Troubleshooting](#troubleshooting)  
+[Bug Report](https://github.com/spring-jdbc-crud/simplejdbcmapper/issues)   
  
 ## Features
 

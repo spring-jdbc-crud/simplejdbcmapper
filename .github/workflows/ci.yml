@@ -24,15 +24,15 @@ jobs:
           --health-retries 5
 
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v6
+      
     - name: Set up JDK 21
       uses: actions/setup-java@v5
       with:
         java-version: '21'
         distribution: 'corretto'
-        cache: maven
-
-    - name: Checkout code
-      uses: actions/checkout@v6
+        cache: maven      
               
     # dont want the step of running tests be polluted by dependency downloads
     - name: Download dependencies and plugins
@@ -68,15 +68,15 @@ jobs:
           --health-retries=3
 
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v6
+      
     - name: Set up JDK 21
       uses: actions/setup-java@v5
       with:
         java-version: '21'
         distribution: 'corretto'
         cache: maven
-        
-    - name: Checkout code
-      uses: actions/checkout@v6
 
     # dont want the step of running tests be polluted by dependency downloads
     - name: Download dependencies and plugins
@@ -121,15 +121,15 @@ jobs:
         docker cp src/test/resources/db/oracle_setup.sql oracle-db:/tmp/oracle_setup.sql
         docker exec oracle-db sqlplus system/pass1234@FREEPDB1 @/tmp/oracle_setup.sql  
  
+    - name: Checkout code
+      uses: actions/checkout@v6
+      
     - name: Set up JDK 21
       uses: actions/setup-java@v5        
       with:
         java-version: '21'
         distribution: 'corretto'
         cache: maven
-        
-    - name: Checkout code
-      uses: actions/checkout@v6
         
     # dont want the step of running tests be polluted by dependency downloads                
     - name: Download dependencies and plugins
@@ -171,16 +171,16 @@ jobs:
       with:
         connection-string: Server=tcp:localhost,1433;Initial Catalog=master;User ID=sa;Password=Mssql123;Encrypt=True;TrustServerCertificate=True;Connection Timeout=30;
         path: ./src/test/resources/db/sqlserver_setup.sql
-        
+
+    - name: Checkout code
+      uses: actions/checkout@v6
+              
     - name: Set up JDK 21
       uses: actions/setup-java@v5
       with:
         java-version: '21'
         distribution: 'corretto'
         cache: maven
-      
-    - name: Checkout code
-      uses: actions/checkout@v6
         
     # dont want the step of running tests be polluted by dependency downloads
     - name: Download dependencies and plugins
@@ -201,15 +201,15 @@ jobs:
     runs-on: ubuntu-latest
    
     steps:
+    - name: Checkout code
+      uses: actions/checkout@v6  
+
     - name: Set up JDK 21
       uses: actions/setup-java@v5
       with:
         java-version: '21'
         distribution: 'corretto'
         cache: maven
-        
-    - name: Checkout code
-      uses: actions/checkout@v6  
            
     - name: Compile
       run: mvn clean compile

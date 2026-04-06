@@ -255,6 +255,8 @@ jobs:
         git fetch origin website
         git checkout website
         
+        git rm --cached ./jacoco/jacoco.svg
+        
         # copy jacoco reports including coverage badge svg
         cp -rf ./target/site/jacoco/. ./jacoco
         
@@ -265,9 +267,7 @@ jobs:
         
         # Commit and push
         # jacoco.svg is the coverage image and size sometimes remains the same. So forcefully add it.
-        git rm --cached ./jacoco/jacoco.svg
-        git rm --cached ./jacoco/index.html
-        git add .
+        git add -A
         git commit -m "coverage reports and javadocs from github action"
         git push origin website   
       

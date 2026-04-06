@@ -31,7 +31,7 @@ jobs:
       uses: actions/setup-java@v5
       with:
         java-version: '21'
-        distribution: 'corretto'
+        distribution: 'temurin'
         cache: maven      
               
     # dont want the step of running tests be polluted by dependency downloads
@@ -75,7 +75,7 @@ jobs:
       uses: actions/setup-java@v5
       with:
         java-version: '21'
-        distribution: 'corretto'
+        distribution: 'temurin'
         cache: maven
 
     # dont want the step of running tests be polluted by dependency downloads
@@ -128,7 +128,7 @@ jobs:
       uses: actions/setup-java@v5        
       with:
         java-version: '21'
-        distribution: 'corretto'
+        distribution: 'temurin'
         cache: maven
         
     # dont want the step of running tests be polluted by dependency downloads                
@@ -179,7 +179,7 @@ jobs:
       uses: actions/setup-java@v5
       with:
         java-version: '21'
-        distribution: 'corretto'
+        distribution: 'temurin'
         cache: maven
         
     # dont want the step of running tests be polluted by dependency downloads
@@ -208,7 +208,7 @@ jobs:
       uses: actions/setup-java@v5
       with:
         java-version: '21'
-        distribution: 'corretto'
+        distribution: 'temurin'
         cache: maven
            
     - name: Compile

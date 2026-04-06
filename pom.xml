@@ -162,12 +162,17 @@
                             <goal>prepare-agent</goal>
                         </goals>
                     </execution>
+                    
                     <execution>
                         <id>report</id>
                         <phase>test</phase>
                         <goals>
                             <goal>report</goal>
                         </goals>
+                        <configuration>
+                            <!-- Include project version and timestamp -->
+                            <title>${project.name} ${git.branch} ${git.commit.id.abbrev} (${maven.build.timestamp})</title>
+                        </configuration>
                     </execution>
                     
                     <execution>
@@ -176,6 +181,17 @@
 				        <goals>
 				            <goal>merge</goal>
 				        </goals>    
+                    </execution>
+                </executions>
+            </plugin>
+            
+            <plugin>
+                <groupId>io.github.git-commit-id</groupId>
+                <artifactId>git-commit-id-maven-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <goals><goal>revision</goal></goals>
+                        <phase>validate</phase>
                     </execution>
                 </executions>
             </plugin>

@@ -225,7 +225,7 @@ jobs:
       
     - name: Merge the jacoco exec files
       # the default merged file will be target/jacoco.exec. See pom.xml for merge filesets info
-      run: mvn jacoco:merge
+      run: mvn git-commit-id:revision jacoco:merge
       
     - name: Generate the jacoco report
       run: mvn jacoco:report
@@ -243,7 +243,7 @@ jobs:
       run: echo "coverage = ${{ steps.jacoco.outputs.coverage }}"
  
     - name: List the files
-      run: ls -lR
+      run: cat ${{ github.workspace }}/target/site/jacoco/index.html
             
     - name: Add javadoc and jococo reports to website branch
       if: ${{ github.event_name != 'pull_request' }}
@@ -266,7 +266,8 @@ jobs:
         
         # Commit and push
         # jacoco.svg is the coverage image and size sometimes remains the same. So forcefully add it.
-        git add -f ./jacoco/jacoco.svg
+        git rm --cached ./jacoco/jacoco.svg
+        git rm --cached ./jacoco/index.html
         git add .
         git commit -m "coverage reports and javadocs from github action"
         git push origin website   

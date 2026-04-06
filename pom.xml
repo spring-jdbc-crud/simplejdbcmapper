@@ -171,7 +171,7 @@
                         </goals>
                         <configuration>
                             <!-- Include project version and timestamp -->
-                            <title>${project.name} ${git.branch} ${git.commit.id.abbrev} (${maven.build.timestamp})</title>
+                            <title>${project.name} (${maven.build.timestamp})</title>
                         </configuration>
                     </execution>
                     
@@ -183,17 +183,7 @@
 				        </goals>    
                     </execution>
                 </executions>
-            </plugin>
-            
-            <plugin>
-                <groupId>io.github.git-commit-id</groupId>
-                <artifactId>git-commit-id-maven-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <goals><goal>revision</goal></goals>
-                        <phase>none</phase>
-                    </execution>
-                </executions>
+                
             </plugin>
             
 			<plugin>

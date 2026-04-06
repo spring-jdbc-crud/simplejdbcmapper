@@ -241,10 +241,7 @@ jobs:
 
     - name: Log the coverage percentage
       run: echo "coverage = ${{ steps.jacoco.outputs.coverage }}"
- 
-    - name: List the files
-      run: cat ${{ github.workspace }}/target/site/jacoco/index.html
-            
+             
     - name: Add javadoc and jococo reports to website branch
       if: ${{ github.event_name != 'pull_request' }}
       run: |
@@ -263,6 +260,8 @@ jobs:
         
         #copy javadocs
         cp -rf ./target/reports/apidocs/. ./javadoc
+        
+        ls -l ./jacoco
         
         # Commit and push
         # jacoco.svg is the coverage image and size sometimes remains the same. So forcefully add it.

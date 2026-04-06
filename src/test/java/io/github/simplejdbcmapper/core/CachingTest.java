@@ -1,6 +1,7 @@
 package io.github.simplejdbcmapper.core;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDateTime;
 
@@ -233,6 +234,17 @@ class CachingTest {
 
 		sjm.findAll(Employee.class);
 		assertEquals(3, cache.getSize());
+
+	}
+
+	@Test
+	void Cache_test() {
+		SimpleCache<String, String> cache = new SimpleCache<>();
+		cache.put("key", "value");
+		assertTrue(cache.containsKey("key"));
+
+		cache.remove("key");
+		assertEquals(0, cache.getSize());
 
 	}
 

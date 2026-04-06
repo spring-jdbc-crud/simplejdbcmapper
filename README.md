@@ -426,7 +426,7 @@ public enum StatusEnum {
 }
 ...
 @Column
-private StatusEnum status;  // Mapped to a String column in the database (e.g., 'OPEN')
+private StatusEnum status;  // Mapped to a String column in the database (e.g., value 'OPEN')
 ...
 ```
 

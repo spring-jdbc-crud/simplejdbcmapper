@@ -230,7 +230,7 @@ jobs:
     - name: Set current datetime
       run: echo "NOW=$(date +'%Y-%m-%dT%H:%M:%S')" >> $GITHUB_ENV
     - name: Generate the jacoco report
-      run: mvn jacoco:report -Djacoco.title="SimpleJdbcMapper ${{ github.ref_name }} ${{ github.sha }} ${GITHUB_SHA::7} ${NOW}"
+      run: mvn jacoco:report -Djacoco.title="SimpleJdbcMapper ${{ github.ref_name }} ${{ github.sha }} $GITHUB_SHA::7 ${{env.NOW}}"
             
     - name: Generate jacoco coverage badge
       id: jacoco

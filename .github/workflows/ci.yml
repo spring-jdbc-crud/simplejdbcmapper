@@ -263,7 +263,7 @@ jobs:
     - name: Log the coverage percentage
       run: echo "coverage = ${{ steps.jacoco.outputs.coverage }}"
              
-    - name: Add javadoc and jococo reports to website branch
+    - name: Add javadoc and jococo reports to gh-pages branch
       if: ${{ github.event_name != 'pull_request' }}
       run: |
         # remove the exec files since they are not needed anymore.
@@ -273,8 +273,8 @@ jobs:
         git config user.name "github-actions[bot]"
         git config user.email "github-actions[bot]@users.noreply.github.com"
          
-        git fetch origin website
-        git checkout website
+        git fetch origin gh-pages
+        git checkout gh-pages
                 
         # copy jacoco reports including coverage badge svg
         cp -rf ./target/site/jacoco/. ./jacoco
@@ -287,5 +287,5 @@ jobs:
         # Commit and push
         git add .
         git commit -m "coverage reports and javadocs from github action"
-        git push origin website   
+        git push origin gh-pages  
       

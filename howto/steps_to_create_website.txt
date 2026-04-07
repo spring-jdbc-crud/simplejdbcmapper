@@ -1,0 +1,28 @@
+The simplejdbcmapper website is published from the 'website' branch.
+'Pages' on the repository is set to trigger on branch 'website' so when pushed the website gets created.
+
+
+1) create javadoc
+   *)git checkout main
+     mvn javadoc:javadoc
+     
+   *)copy javadoc to website branch
+     git checkout website
+     rm -rf javadoc
+     cp -r target/reports/apidocs ./javadoc
+     
+2) create the index.html file from README.md
+   *) README.md file (from main branch) should be in input directory
+      generate-md --layout mixu-gray --input ./input --output ./output
+     
+      
+   *) copy all files/directories (README.html and assets dir)
+   
+   *) rename README.html to index.html
+   
+   *) follow instructions on sjm_head_snippet.txt. DO NOT FORMAT the index.html using eclipse. It creates problems where text shows unaligned
+   *) Fix the links on index.html
+      1) remove @ (and sometimes ',')  on links for @CreatedBy @UpdatedBy @CreatedOn @UpdatedOn
+      2) replace all hljs-string with hljs-string1 to turn of red highlighting of quoted strings
+
+

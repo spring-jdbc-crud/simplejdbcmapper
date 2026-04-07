@@ -1,0 +1,33 @@
+*) Copy to top of index.html between head and title
+*) remove existing title tag also
+
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Begin SEO tag -->
+<meta property="og:title" content="Simplify Spring JdbcTemplate/JdbcClient CRUD operations by making them less verbose using SimpleJdbcMapper" >
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Simplify Spring JdbcTemplate/JdbcClient CRUD operations by making them less verbose using SimpleJdbcMapper" >
+<meta property="og:description" content="Simplify Spring JdbcTemplate/JdbcClient CRUD operations by making them less verbose using SimpleJdbcMapper" >
+<meta property="og:url"
+	content="https://spring-jdbc-crud.github.io/simplejdbcmapper" >
+<meta property="og:site_name" content="Simplify Spring JdbcTemplate/JdbcClient CRUD operations by making them less verbose using SimpleJdbcMapper" >
+<meta property="og:type" content="website" >
+<meta name="twitter:card" content="summary" >
+<meta property="twitter:title" content="Simplify Spring JdbcTemplate/JdbcClient CRUD operations by making them less verbose using SimpleJdbcMapper" >	
+<meta name="keywords" content="CRUD, Spring Framework, Relational database, jdbcclient, jdbctemplate">
+	
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebSite","description":"Simplify Spring JdbcTemplate/JdbcClient CRUD operations by making them less verbose using SimpleJdbcMapper","headline":"Simplify Spring JdbcTemplate/JdbcClient CRUD operations by making them less verbose using SimpleJdbcMapper #","name":"Simplify Spring JdbcTemplate/JdbcClient CRUD operations by making them less verbose using SimpleJdbcMapper","url":"https://spring-jdbc-crud.github.io/simplejdbcmapper"}</script>
+
+<!-- End SEO tag -->
+    <title>Simplify Spring JdbcTemplate/JdbcClient CRUD operations by making them less verbose using SimpleJdbcMapper</title>
+
+*) ADD THIS after the Initial description of project for links
+
+	<a href="https://github.com/spring-jdbc-crud/simplejdbcmapper">github</a> |
+	<a href="https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/index.html">Javadoc</a> |
+	<a href="https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper">Demo Application</a> |
+	<a href="https://dzone.com/articles/using-simplejdbcmapper-with-spring">Dzone Article</a>
+	
+*) Remove the "table of contents paragraph and heading.

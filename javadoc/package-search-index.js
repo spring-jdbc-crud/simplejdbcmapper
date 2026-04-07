@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"All Packages","u":"allpackages-index.html"},{"l":"io.github.simplejdbcmapper.annotation"},{"l":"io.github.simplejdbcmapper.core"},{"l":"io.github.simplejdbcmapper.exception"}];updateSearchResults();

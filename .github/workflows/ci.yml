@@ -54,11 +54,7 @@ jobs:
         java-version: '21'
         distribution: 'temurin'
         cache: maven      
-              
-    # dont want the step of running tests be polluted by dependency downloads
-    - name: Download dependencies and plugins
-      run: mvn dependency:go-offline dependency:resolve dependency:resolve-plugins
-      
+                
     - name: Run tests against postgres
       run: mvn clean package -Dspring.profiles.active=postgres -Djacoco.destFile=${{ github.workspace }}/target/postgres-jacoco.exec
 
@@ -101,10 +97,6 @@ jobs:
         distribution: 'temurin'
         cache: maven
 
-    # dont want the step of running tests be polluted by dependency downloads
-    - name: Download dependencies and plugins
-      run: mvn dependency:go-offline dependency:resolve dependency:resolve-plugins
-      
     - name: Run tests against mysql
       run: mvn clean package -Dspring.profiles.active=mysql -Djacoco.destFile=${{ github.workspace }}/target/mysql-jacoco.exec
       
@@ -156,10 +148,6 @@ jobs:
         distribution: 'temurin'
         cache: maven
         
-    # dont want the step of running tests be polluted by dependency downloads                
-    - name: Download dependencies and plugins
-      run: mvn dependency:go-offline dependency:resolve dependency:resolve-plugins
-      
     - name: Run tests against oracle
       run: mvn clean package -Dspring.profiles.active=oracle -Djacoco.destFile=${{ github.workspace }}/target/oracle-jacoco.exec
       
@@ -209,10 +197,6 @@ jobs:
         distribution: 'temurin'
         cache: maven
         
-    # dont want the step of running tests be polluted by dependency downloads
-    - name: Download dependencies and plugins
-      run: mvn dependency:go-offline dependency:resolve dependency:resolve-plugins
-                 
     - name: Run tests against SQLServer
       run: mvn clean package -Dspring.profiles.active=sqlserver -Djacoco.destFile=${{ github.workspace }}/target/sqlserver-jacoco.exec
  

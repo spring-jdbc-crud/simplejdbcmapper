@@ -155,7 +155,7 @@
 			          </fileSet>
 			        </fileSets>
 			        
-                <title>${jacoco.title}</title>
+                <title>${jacoco.footer}</title>
                 </configuration>
                 
                 <executions>

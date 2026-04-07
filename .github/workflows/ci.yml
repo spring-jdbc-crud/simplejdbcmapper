@@ -13,6 +13,7 @@ on:
 
 jobs:
 
+  # dont want the jobs tests be polluted by dependency downloads
   download-maven-dependencies:
     runs-on: ubuntu-latest
     
@@ -27,7 +28,6 @@ jobs:
         distribution: 'temurin'
         cache: maven      
               
-    # dont want the step of running tests be polluted by dependency downloads
     - name: Download dependencies and plugins
       run: mvn dependency:go-offline dependency:resolve dependency:resolve-plugins
       
@@ -243,11 +243,12 @@ jobs:
         merge-multiple: true
       
     - name: Merge the jacoco exec files
-      # the default merged file will be target/jacoco.exec. See pom.xml for merge filesets info
-      run: mvn git-commit-id:revision jacoco:merge
+      # the merged file will be target/jacoco.exec. See pom.xml for merge filesets info
+      run: mvn jacoco:merge
       
     - name: Set current datetime
       run: echo "NOW=$(date +'%Y-%m-%dT%H:%M:%S')" >> $GITHUB_ENV
+      
     - name: Generate the jacoco report
       run: mvn jacoco:report -Djacoco.footer="SimpleJdbcMapper ${{ github.ref_name }} ${{ github.sha }} ${{env.NOW}}"
             
@@ -263,7 +264,7 @@ jobs:
     - name: Log the coverage percentage
       run: echo "coverage = ${{ steps.jacoco.outputs.coverage }}"
              
-    - name: Add javadoc and jococo reports to gh-pages branch
+    - name: Add jococo reports and javadoc to gh-pages branch
       if: ${{ github.event_name != 'pull_request' }}
       run: |
         # remove the exec files since they are not needed anymore.

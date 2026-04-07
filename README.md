@@ -1,7 +1,7 @@
 # SimpleJdbcMapper #
 [![CI SimpleJdbcMapper](https://github.com/spring-jdbc-crud/simplejdbcmapper/actions/workflows/ci.yml/badge.svg)](https://github.com/spring-jdbc-crud/simplejdbcmapper/actions/workflows/ci.yml)  [![coverage](https://spring-jdbc-crud.github.io/simplejdbcmapper/jacoco/jacoco.svg)](https://spring-jdbc-crud.github.io/simplejdbcmapper/jacoco/index.html) [![License](https://img.shields.io/:license-apache-brightgreen.svg)](https://www.apache.org/licenses/LICENSE-2.0.html)
 
-A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations by making them less verbose. Use its API as needed and keep using JdbcTemplate/JdbcClient for other functionality.
+A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations by making them less verbose. Use it as needed and keep using JdbcTemplate/JdbcClient for other functionality.
 
 Just by annotating the models that you would use with JdbcTemplate/JdbcClient, you get single-line CRUD. Also, you will be able to use Spring row mappers like BeanPropertyRowMapper and SimplePropertyRowMapper etc for certain custom queries, avoiding writing custom row mappers.
   

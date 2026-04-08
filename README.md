@@ -345,7 +345,7 @@ Use this in cases when you need to override the database metadata sqltype. For e
 **@Version**
 
 This annotation is used for optimistic locking. It has to be of type Integer.
-Will be set to 1 when record is created and will incremented on updates. On updates if the version is stale an OptimisticLockingException will be thrown.  @Column annotation can be used with the property to map to a non-default column name.
+Will be set to 1 when record is created and will be incremented on updates. On updates if the version is stale an OptimisticLockingException will be thrown.  @Column annotation can be used with the property to map to a non-default column name.
 
 **@CreatedOn**
 

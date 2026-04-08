@@ -13,7 +13,7 @@ on:
 
 jobs:
 
-  # dont want the jobs tests be polluted by dependency downloads
+  # dont want the database test jobs be polluted by dependency downloads
   download-maven-dependencies:
     runs-on: ubuntu-latest
     

@@ -1,9 +1,28 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-    <title>SimpleJdbcMapper</title>
+<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<!-- Begin SEO tag -->
+<meta property="og:title" content="Simplify Spring CRUD JdbcTemplate/JdbcClient operations by making them less verbose using SimpleJdbcMapper" >
+<meta property="og:locale" content="en_US" />
+<meta name="description" content="Simplify Spring CRUD JdbcTemplate/JdbcClient operations by making them less verbose using SimpleJdbcMapper" >
+<meta property="og:description" content="Simplify Spring CRUD JdbcTemplate/JdbcClient operations by making them less verbose using SimpleJdbcMapper" >
+<meta property="og:url"
+	content="https://spring-jdbc-crud.github.io/simplejdbcmapper" >
+<meta property="og:site_name" content="Simplify Spring CRUD JdbcTemplate/JdbcClient operations by making them less verbose using SimpleJdbcMapper" >
+<meta property="og:type" content="website" >
+<meta name="twitter:card" content="summary" >
+<meta property="twitter:title" content="Simplify Spring CRUD JdbcTemplate/JdbcClient operations by making them less verbose using SimpleJdbcMapper" >	
+<meta name="keywords" content="Spring boot, CRUD operations, database interaction, jdbcclient, jdbctemplate, java persistence">
+	
+<script type="application/ld+json">
+{"@context":"https://schema.org","@type":"WebSite","description":"Simplify Spring CRUD JdbcTemplate/JdbcClient operations by making them less verbose using SimpleJdbcMapper","headline":"Simplify Spring CRUD JdbcTemplate/JdbcClient operations by making them less verbose using SimpleJdbcMapper #","name":"Simplify Spring CRUD JdbcTemplate/JdbcClient operations by making them less verbose using SimpleJdbcMapper","url":"https://spring-jdbc-crud.github.io/simplejdbcmapper"}</script>
+
+<!-- End SEO tag -->
+    <title>Simplify Spring CRUD JdbcTemplate/JdbcClient operations by making them less verbose using SimpleJdbcMapper</title>
+
     <link type="text/css" rel="stylesheet" href="assets/css/bootstrap.css"/>
     <link type="text/css" rel="stylesheet" href="assets/css/bootstrap-responsive.css"/>
     <link type="text/css" rel="stylesheet" href="assets/css/pilcrow.css"/>
@@ -31,7 +50,7 @@
     <li class="sidebar-header-2"><a href="#annotations">Annotations</a></li>
     <li class="sidebar-header-2"><a href="#blob-clob-mapping">BLOB CLOB mapping</a></li>
     <li class="sidebar-header-2"><a href="#enum-mapping">Enum mapping</a></li>
-    <li class="sidebar-header-2"><a href="#configuration-for-auto-assigning-@createdby,-@updateby,-@createdon,-@updatedon">Configuration for auto assigning @CreatedBy, @UpdateBy, @CreatedOn, @UpdatedOn</a></li>
+    <li class="sidebar-header-2"><a href="#configuration-for-auto-assigning-createdby-updateby-createdon-updatedon">Configuration for auto assigning @CreatedBy, @UpdateBy, @CreatedOn, @UpdatedOn</a></li>
     <li class="sidebar-header-2"><a href="#accessing-jdbcclient-jdbctemplate">Accessing JdbcClient JdbcTemplate</a></li>
     <li class="sidebar-header-2"><a href="#logging">Logging</a></li>
     <li class="sidebar-header-2"><a href="#limitations">Limitations</a></li>
@@ -43,12 +62,14 @@
 <p>A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations by making them less verbose. Use it as needed and keep using JdbcTemplate/JdbcClient for other functionality.</p>
 <p>Just by annotating the models that you would use with JdbcTemplate/JdbcClient, you get single-line CRUD. Also, you will be able to use Spring row mappers like BeanPropertyRowMapper and SimplePropertyRowMapper etc for certain custom queries, avoiding writing custom row mappers.</p>
 <!-- START gh-pages replace  --> 
-<p><a href="https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/index.html">Javadoc</a> | <a href="https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper">Demo Application</a> | <a href="https://dzone.com/articles/using-simplejdbcmapper-with-spring">Dzone Article</a></p>
+<p>
+	<a href="https://github.com/spring-jdbc-crud/simplejdbcmapper">github</a> |
+	<a href="https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/index.html">Javadoc</a> |
+	<a href="https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper">Demo Application</a> |
+	<a href="https://dzone.com/articles/using-simplejdbcmapper-with-spring">Dzone Article</a>
+</p>
 <!-- END gh-pages replace  --> 
-<!-- START gh-pages remove  --> 
-<h2 id="table-of-contents"><a class="header-link" href="#table-of-contents"></a>Table of contents</h2>
-<p><a href="#features">Features</a><br><a href="#maven-coordinates">Maven coordinates</a><br><a href="#example-code">Example code</a><br><a href="#jdk-and-spring-version-requirements">JDK and Spring version requirements</a><br><a href="#spring-bean-configuration-for-simplejdbcmapper">Spring bean configuration for SimpleJdbcMapper</a><br><a href="#annotations">Annotations</a><br><a href="#blob-clob-mapping">BLOB CLOB mapping</a><br><a href="#enum-mapping">Enum mapping</a><br><a href="#configuration-for-auto-assigning-createdby-updateby-createdon-updatedon">Configuration for auto assigning @CreatedBy, @UpdateBy, @CreatedOn, @UpdatedOn</a><br><a href="#accessing-jdbcclient-jdbctemplate">Accessing JdbcClient JdbcTemplate</a><br><a href="#logging">Logging</a><br><a href="#limitations">Limitations</a><br><a href="#troubleshooting">Troubleshooting</a><br><a href="https://github.com/spring-jdbc-crud/simplejdbcmapper/issues">Bug Report</a>   </p>
-<!--  END gh-pages remove  --> 
+
 
 <h2 id="features"><a class="header-link" href="#features"></a>Features</h2>
 <ol class="list">
@@ -113,8 +134,8 @@
 ...
 
  Product product = <span class="hljs-keyword">new</span> Product();
- product.setName(<span class="hljs-string">&quot;some product name&quot;</span>);
- product.setSku(<span class="hljs-string">&quot;sku1&quot;</span>);
+ product.setName(<span class="hljs-string1">&quot;some product name&quot;</span>);
+ product.setSku(<span class="hljs-string1">&quot;sku1&quot;</span>);
  product.setPrice(<span class="hljs-number">10.25</span>);
  product.setAvailableDate(LocalDateTime.now());
  
@@ -131,7 +152,7 @@
  <span class="hljs-comment">// updateSpecificProperties() updates only the specified properties passed as arguments.</span>
  <span class="hljs-comment">// Will issue an SQL update only for price.</span>
  product.setPrice(<span class="hljs-number">12.50</span>);
- sjm.updateSpecificProperties(product, <span class="hljs-string">&quot;price&quot;</span>);
+ sjm.updateSpecificProperties(product, <span class="hljs-string1">&quot;price&quot;</span>);
  
  <span class="hljs-comment">// find all</span>
  List&lt;Product&gt; products = sjm.findAll(Product.class);
@@ -148,20 +169,20 @@ when the column name does not match the corresponding underscore case property n
 Spring row mappers like BeanPropertyRowMapper, SimplePropertyRowMapper etc instead of writing custom row mappers. 
 Note in this case the &#x27;name&#x27; property is mapped to the &#x27;product_name&#x27; column.
  */</span>
- String sql = <span class="hljs-string">&quot;SELECT &quot;</span> + sjm.getBeanFriendlySqlColumns(Product.class) +  <span class="hljs-string">&quot; FROM product WHERE product_name = ?&quot;</span>;
+ String sql = <span class="hljs-string1">&quot;SELECT &quot;</span> + sjm.getBeanFriendlySqlColumns(Product.class) +  <span class="hljs-string1">&quot; FROM product WHERE product_name = ?&quot;</span>;
  
  <span class="hljs-comment">// Using Spring&#x27;s JdbcClient api for the above sql. JdbcClient is using SimplePropertyRowMapper internally here.</span>
- List&lt;Product&gt; products = sjm.getJdbcClient().sql(sql).param(<span class="hljs-string">&quot;someProductName&quot;</span>).query(Product.class).list();
+ List&lt;Product&gt; products = sjm.getJdbcClient().sql(sql).param(<span class="hljs-string1">&quot;someProductName&quot;</span>).query(Product.class).list();
  
  <span class="hljs-comment">// Using Spring&#x27;s JdbcTemplate api for the above sql</span>
- List&lt;Product&gt; products = sjm.getJdbcTemplate().query(sql, BeanPropertyRowMapper.newInstance(Product.class), <span class="hljs-string">&quot;someProductName&quot;</span>);
+ List&lt;Product&gt; products = sjm.getJdbcTemplate().query(sql, BeanPropertyRowMapper.newInstance(Product.class), <span class="hljs-string1">&quot;someProductName&quot;</span>);
  
  <span class="hljs-comment">// find by a property value</span>
- List&lt;Product&gt; products = sjm.findByPropertyValue(Product.class, <span class="hljs-string">&quot;sku&quot;</span>, <span class="hljs-string">&quot;some sku#&quot;</span>);
+ List&lt;Product&gt; products = sjm.findByPropertyValue(Product.class, <span class="hljs-string1">&quot;sku&quot;</span>, <span class="hljs-string1">&quot;some sku#&quot;</span>);
  
  <span class="hljs-comment">// find by multiple property values</span>
- String[] skus = { <span class="hljs-string">&quot;sku1&quot;</span>, <span class="hljs-string">&quot;sku2&quot;</span>};
- List&lt;Product&gt; products = sjm.findByPropertyValues(Product.class, <span class="hljs-string">&quot;sku&quot;</span>, Array.asList(skus));
+ String[] skus = { <span class="hljs-string1">&quot;sku1&quot;</span>, <span class="hljs-string1">&quot;sku2&quot;</span>};
+ List&lt;Product&gt; products = sjm.findByPropertyValues(Product.class, <span class="hljs-string1">&quot;sku&quot;</span>, Array.asList(skus));
  
  <span class="hljs-comment">// Accessing the underlying JdbcClient, JdbcTemplate and NamedParameterJdbcTemplate. </span>
  JdbcClient jdbcClient = sjm.getJdbcClient();
@@ -380,7 +401,7 @@ If a Supplier is configured using simpleJdbcMapper.setRecordAuditedBySupplier(),
     <span class="hljs-comment">// Provide your own custom Supplier. Make Sure the type returned by Supplier matches the type </span>
     <span class="hljs-comment">// of the Property you are annotating. Generally &#x27;audited by&#x27; is got from a thread local variable </span>
     <span class="hljs-comment">// for example when using spring security.</span>
-    simpleJdbcMapper.setRecordAuditedBySupplier(() -&gt; <span class="hljs-string">&quot;tester&quot;</span>);
+    simpleJdbcMapper.setRecordAuditedBySupplier(() -&gt; <span class="hljs-string1">&quot;tester&quot;</span>);
     simpleJdbcMapper.setRecordAuditedOnSupplier(() -&gt; LocalDateTime.now());
     <span class="hljs-keyword">return</span> simpleJdbcMapper;
 }</code></pre><h2 id="accessing-jdbcclient-jdbctemplate"><a class="header-link" href="#accessing-jdbcclient-jdbctemplate"></a>Accessing JdbcClient JdbcTemplate</h2>
@@ -410,12 +431,12 @@ If a Supplier is configured using simpleJdbcMapper.setRecordAuditedBySupplier(),
 <p>2.<strong>Table does not exist or a similar exception</strong></p>
 <p>For <strong>MySql</strong> try setting the &#39;catalog&#39; parameter on constructor of SimpleJdbcMapper() (3rd argument) or set the &#39;catalog&#39; attribute on the @Table annotation of the object. Database name is considered the same as catalog name for mysql.</p>
 <p>Example:</p>
-<pre class="hljs"><code>    <span class="hljs-keyword">new</span> <span class="hljs-constructor">SimpleJdbcMapper(<span class="hljs-params">dataSource</span>, <span class="hljs-params">null</span>, <span class="hljs-string">&quot;DATABASE_NAME&quot;</span>)</span>;
+<pre class="hljs"><code>    <span class="hljs-keyword">new</span> <span class="hljs-constructor">SimpleJdbcMapper(<span class="hljs-params">dataSource</span>, <span class="hljs-params">null</span>, <span class="hljs-string1">&quot;DATABASE_NAME&quot;</span>)</span>;
     Or
-    @<span class="hljs-constructor">Table(<span class="hljs-params">name</span>=<span class="hljs-string">&quot;sometablename&quot;</span>, <span class="hljs-params">catalog</span>=<span class="hljs-string">&quot;DATABASE_NAME&quot;</span>)</span>;</code></pre><p>For <strong>Postgres/Oracle/Sqlserver</strong> try setting the &#39;schema&#39; parameter on constructor of SimpleJdbcMapper() (2nd argument) or set the &#39;schema&#39; attribute on the @Table annotation of the object.</p>
-<pre class="hljs"><code>    <span class="hljs-keyword">new</span> <span class="hljs-constructor">SimpleJdbcMapper(<span class="hljs-params">dataSource</span>, <span class="hljs-string">&quot;SCHEMA_NAME&quot;</span>)</span>;
+    @<span class="hljs-constructor">Table(<span class="hljs-params">name</span>=<span class="hljs-string1">&quot;sometablename&quot;</span>, <span class="hljs-params">catalog</span>=<span class="hljs-string1">&quot;DATABASE_NAME&quot;</span>)</span>;</code></pre><p>For <strong>Postgres/Oracle/Sqlserver</strong> try setting the &#39;schema&#39; parameter on constructor of SimpleJdbcMapper() (2nd argument) or set the &#39;schema&#39; attribute on the @Table annotation of the object.</p>
+<pre class="hljs"><code>    <span class="hljs-keyword">new</span> <span class="hljs-constructor">SimpleJdbcMapper(<span class="hljs-params">dataSource</span>, <span class="hljs-string1">&quot;SCHEMA_NAME&quot;</span>)</span>;
     Or
-    @<span class="hljs-constructor">Table(<span class="hljs-params">name</span>=<span class="hljs-string">&quot;sometablename&quot;</span>, <span class="hljs-params">schema</span>=<span class="hljs-string">&quot;SCHEMA_NAME&quot;</span>)</span>;</code></pre><p>3.<strong>Postgres and OffsetDateTime</strong></p>
+    @<span class="hljs-constructor">Table(<span class="hljs-params">name</span>=<span class="hljs-string1">&quot;sometablename&quot;</span>, <span class="hljs-params">schema</span>=<span class="hljs-string1">&quot;SCHEMA_NAME&quot;</span>)</span>;</code></pre><p>3.<strong>Postgres and OffsetDateTime</strong></p>
 <p>Some postgres drivers for column definition &#39;TIMESTAMP WITH TIMEZONE&#39; return java.sql.Types.TIMESTAMP instead of java.sql.Types.TIMESTAMP_WITH_TIMEZONE, which causes conversion failures when used with OffsetDateTime. Do the following to override the database metadata sql type.</p>
 <pre class="hljs"><code><span class="hljs-meta">@Column(sqlType = Types.TIMESTAMP_WITH_TIMEZONE)</span>
 <span class="hljs-keyword">private</span> OffsetDateTime someOffsetDateTime;</code></pre>      </div>

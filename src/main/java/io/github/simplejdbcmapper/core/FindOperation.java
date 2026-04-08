@@ -76,14 +76,15 @@ class FindOperation {
 		if (propMapping == null) {
 			throw new MapperException(clazz.getSimpleName() + "." + propertyName + " does not have a mapping.");
 		}
-		String sql = "SELECT " + getBeanFriendlySqlColumns(clazz) + " FROM " + tableMapping.fullyQualifiedTableName()
-				+ " WHERE ";
+		StringBuilder sql = new StringBuilder(256);
+		sql.append("SELECT ").append(getBeanFriendlySqlColumns(clazz)).append(" FROM ")
+				.append(tableMapping.fullyQualifiedTableName()).append(" WHERE ");
 		if (propertyValue == null) {
-			sql += propMapping.getColumnName() + " IS NULL";
-			return sjmSupport.getJdbcTemplate().query(sql, getBeanPropertyRowMapper(clazz));
+			sql.append(propMapping.getColumnName()).append(" IS NULL");
+			return sjmSupport.getJdbcTemplate().query(sql.toString(), getBeanPropertyRowMapper(clazz));
 		} else {
-			sql += propMapping.getColumnName() + " = ?";
-			return sjmSupport.getJdbcTemplate().query(sql, getBeanPropertyRowMapper(clazz),
+			sql.append(propMapping.getColumnName()).append(" = ?");
+			return sjmSupport.getJdbcTemplate().query(sql.toString(), getBeanPropertyRowMapper(clazz),
 					new SqlParameterValue(propMapping.getEffectiveSqlType(), propertyValue));
 		}
 	}
@@ -102,19 +103,21 @@ class FindOperation {
 		}
 		Set<U> localPropertyValues = new LinkedHashSet<>(propertyValues);
 		boolean hasNullInSet = localPropertyValues.remove(null); // need to handle nulls in the set.
-		String sql = "SELECT " + getBeanFriendlySqlColumns(clazz) + " FROM " + tableMapping.fullyQualifiedTableName()
-				+ " WHERE ";
+		StringBuilder sql = new StringBuilder(256);
+		sql.append("SELECT ").append(getBeanFriendlySqlColumns(clazz)).append(" FROM ")
+				.append(tableMapping.fullyQualifiedTableName()).append(" WHERE ");
 		if (ObjectUtils.isEmpty(localPropertyValues)) {
-			sql += propMapping.getColumnName() + " IS NULL";
-			return sjmSupport.getJdbcTemplate().query(sql, getBeanPropertyRowMapper(clazz));
+			sql.append(propMapping.getColumnName()).append(" IS NULL");
+			return sjmSupport.getJdbcTemplate().query(sql.toString(), getBeanPropertyRowMapper(clazz));
 		} else {
-			sql += propMapping.getColumnName() + " IN (:propertyValues)";
+			sql.append(propMapping.getColumnName()).append(" IN (:propertyValues)");
 			if (hasNullInSet) {
-				sql += " OR " + propMapping.getColumnName() + " IS NULL";
+				sql.append(" OR ").append(propMapping.getColumnName()).append(" IS NULL");
 			}
 			MapSqlParameterSource param = new MapSqlParameterSource();
 			param.addValue("propertyValues", localPropertyValues, propMapping.getEffectiveSqlType());
-			return sjmSupport.getNamedParameterJdbcTemplate().query(sql, param, getBeanPropertyRowMapper(clazz));
+			return sjmSupport.getNamedParameterJdbcTemplate().query(sql.toString(), param,
+					getBeanPropertyRowMapper(clazz));
 		}
 	}
 

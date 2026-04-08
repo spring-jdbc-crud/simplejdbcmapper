@@ -5,11 +5,14 @@ A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations by maki
 
 Just by annotating the models that you would use with JdbcTemplate/JdbcClient, you get single-line CRUD. Also, you will be able to use Spring row mappers like BeanPropertyRowMapper and SimplePropertyRowMapper etc for certain custom queries, avoiding writing custom row mappers.
 
-[//]: # (START gh-pages replace)
-[Javadoc](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/index.html) | [Demo Application](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper) | [Dzone Article](https://dzone.com/articles/using-simplejdbcmapper-with-spring)
-[//]: # (END gh-pages replace)
+<!-- START gh-pages replace  --> 
 
-[//]: # (START gh-pages remove)
+[Javadoc](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/index.html) | [Demo Application](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper) | [Dzone Article](https://dzone.com/articles/using-simplejdbcmapper-with-spring)
+
+<!-- END gh-pages replace  --> 
+
+<!-- START gh-pages remove  --> 
+
 ## Table of contents
 [Features](#features)  
 [Maven coordinates](#maven-coordinates)   
@@ -24,9 +27,10 @@ Just by annotating the models that you would use with JdbcTemplate/JdbcClient, y
 [Logging](#logging)  
 [Limitations](#limitations)  
 [Troubleshooting](#troubleshooting)  
-[Bug Report](https://github.com/spring-jdbc-crud/simplejdbcmapper/issues)   
-[//]: # (START gh-pages remove)
- 
+[Bug Report](https://github.com/spring-jdbc-crud/simplejdbcmapper/issues) 
+  
+<!--  END gh-pages remove  --> 
+
 ## Features
 1. One liners for CRUD
 2. Simple configuration similar to Jdbctemplate/JdbClient configuration.

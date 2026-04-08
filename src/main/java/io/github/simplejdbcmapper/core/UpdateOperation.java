@@ -261,7 +261,8 @@ class UpdateOperation {
 				params.add(propMapping.getPropertyName());
 			}
 		}
-		sql.append(" WHERE " + tableMapping.getIdColumnName() + " = :" + tableMapping.getIdPropertyName());
+		sql.append(" WHERE ").append(tableMapping.getIdColumnName()).append(" = :")
+				.append(tableMapping.getIdPropertyName());
 		params.add(tableMapping.getIdPropertyName());
 		if (versionPropMapping != null) {
 			sql.append(" AND ").append(versionPropMapping.getColumnName()).append(" = :")

@@ -261,43 +261,44 @@ class UpdateOperation {
 <span class="fc" id="L261">				params.add(propMapping.getPropertyName());</span>
 			}
 <span class="fc" id="L263">		}</span>
-<span class="fc" id="L264">		sql.append(&quot; WHERE &quot; + tableMapping.getIdColumnName() + &quot; = :&quot; + tableMapping.getIdPropertyName());</span>
-<span class="fc" id="L265">		params.add(tableMapping.getIdPropertyName());</span>
-<span class="fc bfc" id="L266" title="All 2 branches covered.">		if (versionPropMapping != null) {</span>
-<span class="fc" id="L267">			sql.append(&quot; AND &quot;).append(versionPropMapping.getColumnName()).append(&quot; = :&quot;)</span>
-<span class="fc" id="L268">					.append(versionPropMapping.getPropertyName());</span>
-<span class="fc" id="L269">			params.add(versionPropMapping.getPropertyName());</span>
+<span class="fc" id="L264">		sql.append(&quot; WHERE &quot;).append(tableMapping.getIdColumnName()).append(&quot; = :&quot;)</span>
+<span class="fc" id="L265">				.append(tableMapping.getIdPropertyName());</span>
+<span class="fc" id="L266">		params.add(tableMapping.getIdPropertyName());</span>
+<span class="fc bfc" id="L267" title="All 2 branches covered.">		if (versionPropMapping != null) {</span>
+<span class="fc" id="L268">			sql.append(&quot; AND &quot;).append(versionPropMapping.getColumnName()).append(&quot; = :&quot;)</span>
+<span class="fc" id="L269">					.append(versionPropMapping.getPropertyName());</span>
+<span class="fc" id="L270">			params.add(versionPropMapping.getPropertyName());</span>
 		}
-<span class="fc" id="L271">		return new SqlAndParams(sql.toString(), params);</span>
+<span class="fc" id="L272">		return new SqlAndParams(sql.toString(), params);</span>
 	}
 
 	private void validateUpdateSpecificProperties(TableMapping tableMapping, String... propertyNames) {
-<span class="fc bfc" id="L275" title="All 2 branches covered.">		for (String propertyName : propertyNames) {</span>
-<span class="fc" id="L276">			PropertyMapping propertyMapping = tableMapping.getPropertyMappingByPropertyName(propertyName);</span>
-<span class="fc bfc" id="L277" title="All 2 branches covered.">			if (propertyMapping == null) {</span>
-<span class="fc" id="L278">				throw new MapperException(&quot;No mapping found for property '&quot; + propertyName + &quot;' in class &quot;</span>
-<span class="fc" id="L279">						+ tableMapping.getMappedObjClassName());</span>
+<span class="fc bfc" id="L276" title="All 2 branches covered.">		for (String propertyName : propertyNames) {</span>
+<span class="fc" id="L277">			PropertyMapping propertyMapping = tableMapping.getPropertyMappingByPropertyName(propertyName);</span>
+<span class="fc bfc" id="L278" title="All 2 branches covered.">			if (propertyMapping == null) {</span>
+<span class="fc" id="L279">				throw new MapperException(&quot;No mapping found for property '&quot; + propertyName + &quot;' in class &quot;</span>
+<span class="fc" id="L280">						+ tableMapping.getMappedObjClassName());</span>
 			}
-<span class="fc bfc" id="L281" title="All 2 branches covered.">			if (propertyMapping.isIdAnnotation()) {</span>
-<span class="fc" id="L282">				throw new MapperException(&quot;Id property &quot; + tableMapping.getMappedObjClassName() + &quot;.&quot; + propertyName</span>
+<span class="fc bfc" id="L282" title="All 2 branches covered.">			if (propertyMapping.isIdAnnotation()) {</span>
+<span class="fc" id="L283">				throw new MapperException(&quot;Id property &quot; + tableMapping.getMappedObjClassName() + &quot;.&quot; + propertyName</span>
 						+ &quot; cannot be updated using updateSpecificProperties() method.&quot;);
 			}
-<span class="fc bfc" id="L285" title="All 4 branches covered.">			if (propertyMapping.isCreatedByAnnotation() || propertyMapping.isCreatedOnAnnotation()</span>
-<span class="fc bfc" id="L286" title="All 4 branches covered.">					|| propertyMapping.isUpdatedByAnnotation() || propertyMapping.isUpdatedOnAnnotation()</span>
-<span class="fc bfc" id="L287" title="All 2 branches covered.">					|| propertyMapping.isVersionAnnotation()) {</span>
-<span class="fc" id="L288">				throw new MapperException(&quot;Auto assign property &quot; + tableMapping.getMappedObjClassName() + &quot;.&quot;</span>
+<span class="fc bfc" id="L286" title="All 4 branches covered.">			if (propertyMapping.isCreatedByAnnotation() || propertyMapping.isCreatedOnAnnotation()</span>
+<span class="fc bfc" id="L287" title="All 4 branches covered.">					|| propertyMapping.isUpdatedByAnnotation() || propertyMapping.isUpdatedOnAnnotation()</span>
+<span class="fc bfc" id="L288" title="All 2 branches covered.">					|| propertyMapping.isVersionAnnotation()) {</span>
+<span class="fc" id="L289">				throw new MapperException(&quot;Auto assign property &quot; + tableMapping.getMappedObjClassName() + &quot;.&quot;</span>
 						+ propertyName + &quot; cannot be updated using updateSpecificProperties() method.&quot;);
 			}
 		}
-<span class="fc" id="L292">	}</span>
+<span class="fc" id="L293">	}</span>
 
 	private String getUpdateSpecificPropertiesCacheKey(Object obj, String[] propertyNames) {
-<span class="fc bfc" id="L295" title="All 2 branches covered.">		if (propertyNames.length &gt; CACHEABLE_UPDATE_SPECIFIC_PROPERTIES_COUNT) {</span>
-<span class="fc" id="L296">			return null;</span>
+<span class="fc bfc" id="L296" title="All 2 branches covered.">		if (propertyNames.length &gt; CACHEABLE_UPDATE_SPECIFIC_PROPERTIES_COUNT) {</span>
+<span class="fc" id="L297">			return null;</span>
 		} else {
-<span class="fc" id="L298">			return obj.getClass().getName() + &quot;-&quot; + String.join(&quot;-&quot;, propertyNames);</span>
+<span class="fc" id="L299">			return obj.getClass().getName() + &quot;-&quot; + String.join(&quot;-&quot;, propertyNames);</span>
 		}
 	}
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main f9aebb6f10125d90c6935ccf81852a0bb4ac2f46 2026-04-08T16:39:14</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 7eea46c307175e6b8736a6b5c491760d4648deab 2026-04-08T18:28:54</div></body></html>

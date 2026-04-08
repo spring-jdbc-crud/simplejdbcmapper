@@ -5,23 +5,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <!-- Begin SEO tag -->
-<meta property="og:title" content="Simplify Spring JdbcTemplate/JdbcClient CRUD operations by making them less verbose using SimpleJdbcMapper" >
+<meta property="og:title" content="Simplify Spring CRUD JdbcTemplate/JdbcClient operations by making them less verbose using SimpleJdbcMapper" >
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="Simplify Spring JdbcTemplate/JdbcClient CRUD operations by making them less verbose using SimpleJdbcMapper" >
-<meta property="og:description" content="Simplify Spring JdbcTemplate/JdbcClient CRUD operations by making them less verbose using SimpleJdbcMapper" >
+<meta name="description" content="Simplify Spring CRUD JdbcTemplate/JdbcClient operations by making them less verbose using SimpleJdbcMapper" >
+<meta property="og:description" content="Simplify Spring CRUD JdbcTemplate/JdbcClient operations by making them less verbose using SimpleJdbcMapper" >
 <meta property="og:url"
 	content="https://spring-jdbc-crud.github.io/simplejdbcmapper" >
-<meta property="og:site_name" content="Simplify Spring JdbcTemplate/JdbcClient CRUD operations by making them less verbose using SimpleJdbcMapper" >
+<meta property="og:site_name" content="Simplify Spring CRUD JdbcTemplate/JdbcClient operations by making them less verbose using SimpleJdbcMapper" >
 <meta property="og:type" content="website" >
 <meta name="twitter:card" content="summary" >
-<meta property="twitter:title" content="Simplify Spring JdbcTemplate/JdbcClient CRUD operations by making them less verbose using SimpleJdbcMapper" >	
-<meta name="keywords" content="CRUD, Spring Framework, Relational database, jdbcclient, jdbctemplate">
+<meta property="twitter:title" content="Simplify Spring CRUD JdbcTemplate/JdbcClient operations by making them less verbose using SimpleJdbcMapper" >	
+<meta name="keywords" content="Spring boot, CRUD operations, database interaction, jdbcclient, jdbctemplate, java persistence">
 	
 <script type="application/ld+json">
-{"@context":"https://schema.org","@type":"WebSite","description":"Simplify Spring JdbcTemplate/JdbcClient CRUD operations by making them less verbose using SimpleJdbcMapper","headline":"Simplify Spring JdbcTemplate/JdbcClient CRUD operations by making them less verbose using SimpleJdbcMapper #","name":"Simplify Spring JdbcTemplate/JdbcClient CRUD operations by making them less verbose using SimpleJdbcMapper","url":"https://spring-jdbc-crud.github.io/simplejdbcmapper"}</script>
+{"@context":"https://schema.org","@type":"WebSite","description":"Simplify Spring CRUD JdbcTemplate/JdbcClient operations by making them less verbose using SimpleJdbcMapper","headline":"Simplify Spring CRUD JdbcTemplate/JdbcClient operations by making them less verbose using SimpleJdbcMapper #","name":"Simplify Spring CRUD JdbcTemplate/JdbcClient operations by making them less verbose using SimpleJdbcMapper","url":"https://spring-jdbc-crud.github.io/simplejdbcmapper"}</script>
 
 <!-- End SEO tag -->
-    <title>Simplify Spring JdbcTemplate/JdbcClient CRUD operations by making them less verbose using SimpleJdbcMapper</title>
+    <title>Simplify Spring CRUD JdbcTemplate/JdbcClient operations by making them less verbose using SimpleJdbcMapper</title>
 
 *) ADD THIS after the Initial description of project for links
 

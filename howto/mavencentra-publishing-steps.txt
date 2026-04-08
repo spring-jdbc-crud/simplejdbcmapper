@@ -5,6 +5,8 @@
 *) Make sure the tests pass
 mvn clean package
 
+*) make sure th check sonarqube
+
 *) To deploy
 mvn clean deploy -DskipTests
 

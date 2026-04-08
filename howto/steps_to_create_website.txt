@@ -1,15 +1,6 @@
-The simplejdbcmapper website is published from the 'website' branch.
-'Pages' on the repository is set to trigger on branch 'website' so when pushed the website gets created.
+The simplejdbcmapper website is published from the 'gh-pages' branch.
+'Pages' on the repository is set to trigger on branch 'gh-pages' so when pushed the website gets created.
 
-
-1) create javadoc
-   *)git checkout main
-     mvn javadoc:javadoc
-     
-   *)copy javadoc to website branch
-     git checkout website
-     rm -rf javadoc
-     cp -r target/reports/apidocs ./javadoc
      
 2) create the index.html file from README.md
    *) README.md file (from main branch) should be in input directory

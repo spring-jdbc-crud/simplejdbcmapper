@@ -238,68 +238,66 @@ class UpdateOperation {
 <span class="fc" id="L238">		Assert.notNull(tableMapping, &quot;tableMapping must not be null&quot;);</span>
 <span class="fc" id="L239">		Assert.notNull(propertyList, &quot;propertyList must not be null&quot;);</span>
 <span class="fc" id="L240">		Set&lt;String&gt; params = new HashSet&lt;&gt;();</span>
-<span class="fc" id="L241">		StringBuilder sqlBuilder = new StringBuilder(&quot;UPDATE &quot;);</span>
-<span class="fc" id="L242">		sqlBuilder.append(tableMapping.fullyQualifiedTableName());</span>
-<span class="fc" id="L243">		sqlBuilder.append(&quot; SET &quot;);</span>
-<span class="fc" id="L244">		boolean first = true;</span>
-<span class="fc" id="L245">		PropertyMapping versionPropMapping = null;</span>
-<span class="fc bfc" id="L246" title="All 2 branches covered.">		for (String propertyName : propertyList) {</span>
-<span class="fc" id="L247">			PropertyMapping propMapping = tableMapping.getPropertyMappingByPropertyName(propertyName);</span>
-<span class="fc bfc" id="L248" title="All 2 branches covered.">			if (!first) {</span>
-<span class="fc" id="L249">				sqlBuilder.append(&quot;, &quot;);</span>
+<span class="fc" id="L241">		StringBuilder sql = new StringBuilder(256);</span>
+<span class="fc" id="L242">		sql.append(&quot;UPDATE &quot;).append(tableMapping.fullyQualifiedTableName()).append(&quot; SET &quot;);</span>
+<span class="fc" id="L243">		boolean first = true;</span>
+<span class="fc" id="L244">		PropertyMapping versionPropMapping = null;</span>
+<span class="fc bfc" id="L245" title="All 2 branches covered.">		for (String propertyName : propertyList) {</span>
+<span class="fc" id="L246">			PropertyMapping propMapping = tableMapping.getPropertyMappingByPropertyName(propertyName);</span>
+<span class="fc bfc" id="L247" title="All 2 branches covered.">			if (!first) {</span>
+<span class="fc" id="L248">				sql.append(&quot;, &quot;);</span>
 			} else {
-<span class="fc" id="L251">				first = false;</span>
+<span class="fc" id="L250">				first = false;</span>
 			}
-<span class="fc" id="L253">			sqlBuilder.append(propMapping.getColumnName());</span>
-<span class="fc" id="L254">			sqlBuilder.append(&quot; = :&quot;);</span>
+<span class="fc" id="L252">			sql.append(propMapping.getColumnName());</span>
+<span class="fc" id="L253">			sql.append(&quot; = :&quot;);</span>
 
-<span class="fc bfc" id="L256" title="All 2 branches covered.">			if (propMapping.isVersionAnnotation()) {</span>
-<span class="fc" id="L257">				sqlBuilder.append(INCREMENTED_VERSION);</span>
-<span class="fc" id="L258">				params.add(INCREMENTED_VERSION);</span>
-<span class="fc" id="L259">				versionPropMapping = propMapping;</span>
+<span class="fc bfc" id="L255" title="All 2 branches covered.">			if (propMapping.isVersionAnnotation()) {</span>
+<span class="fc" id="L256">				sql.append(INCREMENTED_VERSION);</span>
+<span class="fc" id="L257">				params.add(INCREMENTED_VERSION);</span>
+<span class="fc" id="L258">				versionPropMapping = propMapping;</span>
 			} else {
-<span class="fc" id="L261">				sqlBuilder.append(propMapping.getPropertyName());</span>
-<span class="fc" id="L262">				params.add(propMapping.getPropertyName());</span>
+<span class="fc" id="L260">				sql.append(propMapping.getPropertyName());</span>
+<span class="fc" id="L261">				params.add(propMapping.getPropertyName());</span>
 			}
-<span class="fc" id="L264">		}</span>
-<span class="fc" id="L265">		sqlBuilder.append(&quot; WHERE &quot; + tableMapping.getIdColumnName() + &quot; = :&quot; + tableMapping.getIdPropertyName());</span>
-<span class="fc" id="L266">		params.add(tableMapping.getIdPropertyName());</span>
-<span class="fc bfc" id="L267" title="All 2 branches covered.">		if (versionPropMapping != null) {</span>
-<span class="fc" id="L268">			sqlBuilder.append(&quot; AND &quot;).append(versionPropMapping.getColumnName()).append(&quot; = :&quot;)</span>
-<span class="fc" id="L269">					.append(versionPropMapping.getPropertyName());</span>
-<span class="fc" id="L270">			params.add(versionPropMapping.getPropertyName());</span>
+<span class="fc" id="L263">		}</span>
+<span class="fc" id="L264">		sql.append(&quot; WHERE &quot; + tableMapping.getIdColumnName() + &quot; = :&quot; + tableMapping.getIdPropertyName());</span>
+<span class="fc" id="L265">		params.add(tableMapping.getIdPropertyName());</span>
+<span class="fc bfc" id="L266" title="All 2 branches covered.">		if (versionPropMapping != null) {</span>
+<span class="fc" id="L267">			sql.append(&quot; AND &quot;).append(versionPropMapping.getColumnName()).append(&quot; = :&quot;)</span>
+<span class="fc" id="L268">					.append(versionPropMapping.getPropertyName());</span>
+<span class="fc" id="L269">			params.add(versionPropMapping.getPropertyName());</span>
 		}
-<span class="fc" id="L272">		String updateSql = sqlBuilder.toString();</span>
-<span class="fc" id="L273">		return new SqlAndParams(updateSql, params);</span>
+<span class="fc" id="L271">		return new SqlAndParams(sql.toString(), params);</span>
 	}
 
 	private void validateUpdateSpecificProperties(TableMapping tableMapping, String... propertyNames) {
-<span class="fc bfc" id="L277" title="All 2 branches covered.">		for (String propertyName : propertyNames) {</span>
-<span class="fc" id="L278">			PropertyMapping propertyMapping = tableMapping.getPropertyMappingByPropertyName(propertyName);</span>
-<span class="fc bfc" id="L279" title="All 2 branches covered.">			if (propertyMapping == null) {</span>
-<span class="fc" id="L280">				throw new MapperException(&quot;No mapping found for property '&quot; + propertyName + &quot;' in class &quot;</span>
-<span class="fc" id="L281">						+ tableMapping.getMappedObjClassName());</span>
+<span class="fc bfc" id="L275" title="All 2 branches covered.">		for (String propertyName : propertyNames) {</span>
+<span class="fc" id="L276">			PropertyMapping propertyMapping = tableMapping.getPropertyMappingByPropertyName(propertyName);</span>
+<span class="fc bfc" id="L277" title="All 2 branches covered.">			if (propertyMapping == null) {</span>
+<span class="fc" id="L278">				throw new MapperException(&quot;No mapping found for property '&quot; + propertyName + &quot;' in class &quot;</span>
+<span class="fc" id="L279">						+ tableMapping.getMappedObjClassName());</span>
 			}
-<span class="fc bfc" id="L283" title="All 2 branches covered.">			if (propertyMapping.isIdAnnotation()) {</span>
-<span class="fc" id="L284">				throw new MapperException(&quot;Id property &quot; + tableMapping.getMappedObjClassName() + &quot;.&quot; + propertyName</span>
+<span class="fc bfc" id="L281" title="All 2 branches covered.">			if (propertyMapping.isIdAnnotation()) {</span>
+<span class="fc" id="L282">				throw new MapperException(&quot;Id property &quot; + tableMapping.getMappedObjClassName() + &quot;.&quot; + propertyName</span>
 						+ &quot; cannot be updated using updateSpecificProperties() method.&quot;);
 			}
-<span class="fc bfc" id="L287" title="All 4 branches covered.">			if (propertyMapping.isCreatedByAnnotation() || propertyMapping.isCreatedOnAnnotation()</span>
-<span class="fc bfc" id="L288" title="All 4 branches covered.">					|| propertyMapping.isUpdatedByAnnotation() || propertyMapping.isUpdatedOnAnnotation()</span>
-<span class="fc bfc" id="L289" title="All 2 branches covered.">					|| propertyMapping.isVersionAnnotation()) {</span>
-<span class="fc" id="L290">				throw new MapperException(&quot;Auto assign property &quot; + tableMapping.getMappedObjClassName() + &quot;.&quot;</span>
+<span class="fc bfc" id="L285" title="All 4 branches covered.">			if (propertyMapping.isCreatedByAnnotation() || propertyMapping.isCreatedOnAnnotation()</span>
+<span class="fc bfc" id="L286" title="All 4 branches covered.">					|| propertyMapping.isUpdatedByAnnotation() || propertyMapping.isUpdatedOnAnnotation()</span>
+<span class="fc bfc" id="L287" title="All 2 branches covered.">					|| propertyMapping.isVersionAnnotation()) {</span>
+<span class="fc" id="L288">				throw new MapperException(&quot;Auto assign property &quot; + tableMapping.getMappedObjClassName() + &quot;.&quot;</span>
 						+ propertyName + &quot; cannot be updated using updateSpecificProperties() method.&quot;);
 			}
 		}
-<span class="fc" id="L294">	}</span>
+<span class="fc" id="L292">	}</span>
 
 	private String getUpdateSpecificPropertiesCacheKey(Object obj, String[] propertyNames) {
-<span class="fc bfc" id="L297" title="All 2 branches covered.">		if (propertyNames.length &gt; CACHEABLE_UPDATE_SPECIFIC_PROPERTIES_COUNT) {</span>
-<span class="fc" id="L298">			return null;</span>
+<span class="fc bfc" id="L295" title="All 2 branches covered.">		if (propertyNames.length &gt; CACHEABLE_UPDATE_SPECIFIC_PROPERTIES_COUNT) {</span>
+<span class="fc" id="L296">			return null;</span>
 		} else {
-<span class="fc" id="L300">			return obj.getClass().getName() + &quot;-&quot; + String.join(&quot;-&quot;, propertyNames);</span>
+<span class="fc" id="L298">			return obj.getClass().getName() + &quot;-&quot; + String.join(&quot;-&quot;, propertyNames);</span>
 		}
 	}
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 4a2182d0504d2073af09751fa052338eb50d6fbc 2026-04-08T10:41:55</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main f9aebb6f10125d90c6935ccf81852a0bb4ac2f46 2026-04-08T16:39:14</div></body></html>

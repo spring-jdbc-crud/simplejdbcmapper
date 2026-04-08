@@ -238,39 +238,37 @@ class UpdateOperation {
 		Assert.notNull(tableMapping, "tableMapping must not be null");
 		Assert.notNull(propertyList, "propertyList must not be null");
 		Set<String> params = new HashSet<>();
-		StringBuilder sqlBuilder = new StringBuilder("UPDATE ");
-		sqlBuilder.append(tableMapping.fullyQualifiedTableName());
-		sqlBuilder.append(" SET ");
+		StringBuilder sql = new StringBuilder(256);
+		sql.append("UPDATE ").append(tableMapping.fullyQualifiedTableName()).append(" SET ");
 		boolean first = true;
 		PropertyMapping versionPropMapping = null;
 		for (String propertyName : propertyList) {
 			PropertyMapping propMapping = tableMapping.getPropertyMappingByPropertyName(propertyName);
 			if (!first) {
-				sqlBuilder.append(", ");
+				sql.append(", ");
 			} else {
 				first = false;
 			}
-			sqlBuilder.append(propMapping.getColumnName());
-			sqlBuilder.append(" = :");
+			sql.append(propMapping.getColumnName());
+			sql.append(" = :");
 
 			if (propMapping.isVersionAnnotation()) {
-				sqlBuilder.append(INCREMENTED_VERSION);
+				sql.append(INCREMENTED_VERSION);
 				params.add(INCREMENTED_VERSION);
 				versionPropMapping = propMapping;
 			} else {
-				sqlBuilder.append(propMapping.getPropertyName());
+				sql.append(propMapping.getPropertyName());
 				params.add(propMapping.getPropertyName());
 			}
 		}
-		sqlBuilder.append(" WHERE " + tableMapping.getIdColumnName() + " = :" + tableMapping.getIdPropertyName());
+		sql.append(" WHERE " + tableMapping.getIdColumnName() + " = :" + tableMapping.getIdPropertyName());
 		params.add(tableMapping.getIdPropertyName());
 		if (versionPropMapping != null) {
-			sqlBuilder.append(" AND ").append(versionPropMapping.getColumnName()).append(" = :")
+			sql.append(" AND ").append(versionPropMapping.getColumnName()).append(" = :")
 					.append(versionPropMapping.getPropertyName());
 			params.add(versionPropMapping.getPropertyName());
 		}
-		String updateSql = sqlBuilder.toString();
-		return new SqlAndParams(updateSql, params);
+		return new SqlAndParams(sql.toString(), params);
 	}
 
 	private void validateUpdateSpecificProperties(TableMapping tableMapping, String... propertyNames) {

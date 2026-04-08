@@ -219,7 +219,7 @@ class UpdateTest {
 
 	@Test
 	void updateSpecificProperties_success() throws Exception {
-		Customer customer = sjm.findById(Customer.class, 5);
+		Customer customer = sjm.findById(Customer.class, 4);
 
 		customer.setLastName("bbb");
 		customer.setFirstName("aaa");

@@ -238,7 +238,7 @@ public final class SimpleJdbcMapper {
 	/**
 	 * Gets the columns SQL. Works well with Spring row mappers like
 	 * BeanPropertyRowMapper(), SimplePropertyRowMapper() etc. Will create the
-	 * needed column aliases when the column name does not match the corresponding
+	 * needed column aliases where the column name does not match the corresponding
 	 * underscore case property name.
 	 *
 	 * <p>
@@ -261,7 +261,7 @@ public final class SimpleJdbcMapper {
 	 * Gets the columns SQL with columns prefixed with the table alias. Works well
 	 * with Spring row mappers like BeanPropertyRowMapper(),
 	 * SimplePropertyRowMapper() etc. Will prefix table column names with the
-	 * 'tableAlias.' and will create the needed column aliases when the column name
+	 * 'tableAlias.' and will create the needed column aliases where the column name
 	 * does not match the corresponding underscore case property name.
 	 * 
 	 * Use it in your custom queries when you are doing joins and need columns

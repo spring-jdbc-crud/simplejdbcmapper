@@ -258,6 +258,33 @@ public final class SimpleJdbcMapper {
 	}
 
 	/**
+	 * Gets the columns SQL. Works well with Spring row mappers like
+	 * BeanPropertyRowMapper(), SimplePropertyRowMapper() etc. Will prefix table
+	 * column names with the 'tableAlias.' and will create the needed column aliases
+	 * when the column name does not match the corresponding underscore case
+	 * property name.
+	 * 
+	 * Use it in your custom queries when you are doing joins and need columns
+	 * corresponding to a table alias.
+	 *
+	 * &lt;p&gt;
+	 * For tableAlias 't1' will return something like below if 'userLastName'
+	 * property is mapped to 'last_name' column in database:
+	 *
+	 * &lt;pre&gt;
+	 * &quot;t1.somecolumn, t1.someothercolumn, t1.last_name AS user_last_name&quot;
+	 * &lt;/pre&gt;
+	 * 
+	 * @param clazz      the class
+	 * @param tableAlias the table alias
+	 * @return comma separated select column string
+	 * 
+	 */
+	public String getBeanFriendlySqlColumns(Class&lt;?&gt; clazz, String tableAlias) {
+<span class="fc" id="L284">		return findOperation.getBeanFriendlySqlColumns(clazz, tableAlias);</span>
+	}
+
+	/**
 	 * returns a map with all the properties of the mapped class and their
 	 * corresponding column names
 	 * 
@@ -266,7 +293,7 @@ public final class SimpleJdbcMapper {
 	 * 
 	 */
 	public Map&lt;String, String&gt; getPropertyToColumnMappings(Class&lt;?&gt; clazz) {
-<span class="fc" id="L269">		return findOperation.getPropertyToColumnMappings(clazz);</span>
+<span class="fc" id="L296">		return findOperation.getPropertyToColumnMappings(clazz);</span>
 	}
 
 	/**
@@ -275,7 +302,7 @@ public final class SimpleJdbcMapper {
 	 * @return the JdbcClient
 	 */
 	public JdbcClient getJdbcClient() {
-<span class="fc" id="L278">		return simpleJdbcMapperSupport.getJdbcClient();</span>
+<span class="fc" id="L305">		return simpleJdbcMapperSupport.getJdbcClient();</span>
 	}
 
 	/**
@@ -284,7 +311,7 @@ public final class SimpleJdbcMapper {
 	 * @return the JdbcTemplate
 	 */
 	public JdbcTemplate getJdbcTemplate() {
-<span class="fc" id="L287">		return simpleJdbcMapperSupport.getJdbcTemplate();</span>
+<span class="fc" id="L314">		return simpleJdbcMapperSupport.getJdbcTemplate();</span>
 	}
 
 	/**
@@ -293,7 +320,7 @@ public final class SimpleJdbcMapper {
 	 * @return the NamedParameterJdbcTemplate
 	 */
 	public NamedParameterJdbcTemplate getNamedParameterJdbcTemplate() {
-<span class="fc" id="L296">		return simpleJdbcMapperSupport.getNamedParameterJdbcTemplate();</span>
+<span class="fc" id="L323">		return simpleJdbcMapperSupport.getNamedParameterJdbcTemplate();</span>
 	}
 
 	/**
@@ -304,8 +331,8 @@ public final class SimpleJdbcMapper {
 	 * @param supplier the Supplier for audited by.
 	 */
 	public &lt;T&gt; void setRecordAuditedBySupplier(Supplier&lt;T&gt; supplier) {
-<span class="fc" id="L307">		simpleJdbcMapperSupport.setRecordAuditedBySupplier(supplier);</span>
-<span class="fc" id="L308">	}</span>
+<span class="fc" id="L334">		simpleJdbcMapperSupport.setRecordAuditedBySupplier(supplier);</span>
+<span class="fc" id="L335">	}</span>
 
 	/**
 	 * Set the Supplier that is used to populate the &amp;#64;CreatedOn and
@@ -315,8 +342,8 @@ public final class SimpleJdbcMapper {
 	 * @param supplier the Supplier for audited on.
 	 */
 	public &lt;T&gt; void setRecordAuditedOnSupplier(Supplier&lt;T&gt; supplier) {
-<span class="fc" id="L318">		simpleJdbcMapperSupport.setRecordAuditedOnSupplier(supplier);</span>
-<span class="fc" id="L319">	}</span>
+<span class="fc" id="L345">		simpleJdbcMapperSupport.setRecordAuditedOnSupplier(supplier);</span>
+<span class="fc" id="L346">	}</span>
 
 	/**
 	 * Exposing the conversion service used, so if necessary new converters can be
@@ -326,7 +353,7 @@ public final class SimpleJdbcMapper {
 	 * @return the conversion service.
 	 */
 	public ConversionService getConversionService() {
-<span class="fc" id="L329">		return simpleJdbcMapperSupport.getConversionService();</span>
+<span class="fc" id="L356">		return simpleJdbcMapperSupport.getConversionService();</span>
 	}
 
 	/**
@@ -335,8 +362,8 @@ public final class SimpleJdbcMapper {
 	 * @param conversionService The conversion service to set
 	 */
 	public void setConversionService(ConversionService conversionService) {
-<span class="fc" id="L338">		simpleJdbcMapperSupport.setConversionService(conversionService);</span>
-<span class="fc" id="L339">	}</span>
+<span class="fc" id="L365">		simpleJdbcMapperSupport.setConversionService(conversionService);</span>
+<span class="fc" id="L366">	}</span>
 
 	/**
 	 * Loads the mapping for a class. Mappings are lazy loaded ie they are loaded
@@ -347,8 +374,8 @@ public final class SimpleJdbcMapper {
 	 * @param clazz the class
 	 */
 	public void loadMapping(Class&lt;?&gt; clazz) {
-<span class="fc" id="L350">		simpleJdbcMapperSupport.getTableMapping(clazz);</span>
-<span class="fc" id="L351">	}</span>
+<span class="fc" id="L377">		simpleJdbcMapperSupport.getTableMapping(clazz);</span>
+<span class="fc" id="L378">	}</span>
 
 	/**
 	 * Get the schema name.
@@ -356,7 +383,7 @@ public final class SimpleJdbcMapper {
 	 * @return the schema name.
 	 */
 	public String getSchemaName() {
-<span class="fc" id="L359">		return simpleJdbcMapperSupport.getSchemaName();</span>
+<span class="fc" id="L386">		return simpleJdbcMapperSupport.getSchemaName();</span>
 	}
 
 	/**
@@ -365,7 +392,7 @@ public final class SimpleJdbcMapper {
 	 * @return the catalog name.
 	 */
 	public String getCatalogName() {
-<span class="fc" id="L368">		return simpleJdbcMapperSupport.getCatalogName();</span>
+<span class="fc" id="L395">		return simpleJdbcMapperSupport.getCatalogName();</span>
 	}
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 7eea46c307175e6b8736a6b5c491760d4648deab 2026-04-08T18:28:54</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 900caafa499f168a6941b3dd92ba7548f296fe83 2026-04-09T13:38:36</div></body></html>

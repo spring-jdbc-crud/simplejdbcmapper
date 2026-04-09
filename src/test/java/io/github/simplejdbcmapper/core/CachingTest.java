@@ -1,7 +1,6 @@
 package io.github.simplejdbcmapper.core;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDateTime;
 
@@ -36,13 +35,13 @@ class CachingTest {
 		cache.clear();
 
 		sjm.findById(Order.class, 1);
-		assertEquals(1, cache.getSize());
+		assertEquals(1, cache.size());
 
 		sjm.findById(Order.class, 2);
-		assertEquals(1, cache.getSize());
+		assertEquals(1, cache.size());
 
 		sjm.findById(Customer.class, 1);
-		assertEquals(2, cache.getSize());
+		assertEquals(2, cache.size());
 	}
 
 	@Test
@@ -52,13 +51,13 @@ class CachingTest {
 		cache.clear();
 
 		sjm.findAll(Order.class);
-		assertEquals(1, cache.getSize());
+		assertEquals(1, cache.size());
 
 		sjm.findAll(Order.class);
-		assertEquals(1, cache.getSize());
+		assertEquals(1, cache.size());
 
 		sjm.findAll(Customer.class);
-		assertEquals(2, cache.getSize());
+		assertEquals(2, cache.size());
 	}
 
 	@Test
@@ -72,7 +71,7 @@ class CachingTest {
 		order.setCustomerId(2);
 
 		sjm.insert(order);
-		assertEquals(1, cache.getSize());
+		assertEquals(1, cache.size());
 
 		sjm.delete(order);
 
@@ -80,7 +79,7 @@ class CachingTest {
 		order.setOrderDate(LocalDateTime.now());
 		order.setCustomerId(2);
 		sjm.insert(order);
-		assertEquals(1, cache.getSize());
+		assertEquals(1, cache.size());
 
 		sjm.delete(order);
 
@@ -88,7 +87,7 @@ class CachingTest {
 		customer.setLastName("xyz");
 		customer.setFirstName("abc");
 		sjm.insert(customer);
-		assertEquals(2, cache.getSize());
+		assertEquals(2, cache.size());
 		sjm.delete(customer);
 	}
 
@@ -105,11 +104,11 @@ class CachingTest {
 
 		customer.setLastName("a");
 		sjm.update(customer);
-		assertEquals(1, cache.getSize());
+		assertEquals(1, cache.size());
 
 		customer.setLastName("b");
 		sjm.update(customer);
-		assertEquals(1, cache.getSize());
+		assertEquals(1, cache.size());
 
 		Product product = new Product();
 		product.setProductId(10022);
@@ -118,11 +117,11 @@ class CachingTest {
 
 		product.setName("abc");
 		sjm.update(product);
-		assertEquals(2, cache.getSize());
+		assertEquals(2, cache.size());
 
 		product.setName("aaa");
 		sjm.update(product);
-		assertEquals(2, cache.getSize());
+		assertEquals(2, cache.size());
 
 		sjm.delete(customer);
 
@@ -143,28 +142,28 @@ class CachingTest {
 		sjm.insert(product);
 
 		sjm.updateSpecificProperties(product, "cost");
-		assertEquals(1, cache.getSize());
+		assertEquals(1, cache.size());
 
 		sjm.updateSpecificProperties(product, "cost");
-		assertEquals(1, cache.getSize());
+		assertEquals(1, cache.size());
 
 		sjm.updateSpecificProperties(product, "name");
-		assertEquals(2, cache.getSize());
+		assertEquals(2, cache.size());
 
 		sjm.updateSpecificProperties(product, "cost", "name");
-		assertEquals(3, cache.getSize());
+		assertEquals(3, cache.size());
 
 		sjm.updateSpecificProperties(product, "cost", "name");
-		assertEquals(3, cache.getSize());
+		assertEquals(3, cache.size());
 
 		product.setVersion(1);
 		sjm.updateSpecificProperties(product, "cost", "name", "version");
-		assertEquals(4, cache.getSize());
+		assertEquals(4, cache.size());
 
 		// larger than CACHEABLE_UPDATE_PROPERTIES_COUNT = 3, so no caching
 		product.setCreatedOn(LocalDateTime.now());
 		sjm.updateSpecificProperties(product, "cost", "name", "version", "createdOn");
-		assertEquals(4, cache.getSize()); // no caching so count remains the same
+		assertEquals(4, cache.size()); // no caching so count remains the same
 
 		sjm.delete(product);
 
@@ -177,16 +176,36 @@ class CachingTest {
 		cache.clear();
 
 		sjm.getBeanFriendlySqlColumns(Customer.class);
-		assertEquals(1, cache.getSize());
+		assertEquals(1, cache.size());
 
 		sjm.getBeanFriendlySqlColumns(Customer.class);
-		assertEquals(1, cache.getSize());
+		assertEquals(1, cache.size());
 
 		sjm.getBeanFriendlySqlColumns(Product.class);
-		assertEquals(2, cache.getSize());
+		assertEquals(2, cache.size());
 
 		sjm.getBeanFriendlySqlColumns(Product.class);
-		assertEquals(2, cache.getSize());
+		assertEquals(2, cache.size());
+
+	}
+
+	@Test
+	void beanColumnsSqlCache_WithTableAlias_test() {
+		FindOperation fo = TestUtils.getFindOperation(sjm);
+		SimpleCache<String, String> cache = fo.getBeanColumnsTableAliasSqlCache();
+		cache.clear();
+
+		sjm.getBeanFriendlySqlColumns(Customer.class, "t1");
+		assertEquals(1, cache.size());
+
+		sjm.getBeanFriendlySqlColumns(Customer.class, "t1");
+		assertEquals(1, cache.size());
+
+		sjm.getBeanFriendlySqlColumns(Product.class, "t1");
+		assertEquals(2, cache.size());
+
+		sjm.getBeanFriendlySqlColumns(Product.class, "t1");
+		assertEquals(2, cache.size());
 
 	}
 
@@ -199,18 +218,18 @@ class CachingTest {
 		Order ord = new Order();
 		ord.setOrderId(801l);
 		sjm.delete(ord);
-		assertEquals(1, cache.getSize());
+		assertEquals(1, cache.size());
 
 		sjm.deleteById(Order.class, 802);
-		assertEquals(1, cache.getSize());
+		assertEquals(1, cache.size());
 
 		Product prod = new Product();
 		prod.setProductId(901);
 		sjm.delete(prod);
-		assertEquals(2, cache.getSize());
+		assertEquals(2, cache.size());
 
 		sjm.deleteById(Product.class, 902);
-		assertEquals(2, cache.getSize());
+		assertEquals(2, cache.size());
 
 	}
 
@@ -221,30 +240,28 @@ class CachingTest {
 		cache.clear();
 
 		sjm.loadMapping(Customer.class);
-		assertEquals(1, cache.getSize());
+		assertEquals(1, cache.size());
 
 		sjm.loadMapping(Employee.class);
-		assertEquals(2, cache.getSize());
+		assertEquals(2, cache.size());
 
 		sjm.findById(Customer.class, 1);
-		assertEquals(2, cache.getSize());
+		assertEquals(2, cache.size());
 
 		sjm.loadMapping(Product.class);
-		assertEquals(3, cache.getSize());
+		assertEquals(3, cache.size());
 
 		sjm.findAll(Employee.class);
-		assertEquals(3, cache.getSize());
+		assertEquals(3, cache.size());
 
 	}
 
 	@Test
-	void Cache_test() {
+	void Cache_common_test() {
 		SimpleCache<String, String> cache = new SimpleCache<>();
 		cache.put("key", "value");
-		assertTrue(cache.containsKey("key"));
-
 		cache.remove("key");
-		assertEquals(0, cache.getSize());
+		assertEquals(0, cache.size());
 
 	}
 

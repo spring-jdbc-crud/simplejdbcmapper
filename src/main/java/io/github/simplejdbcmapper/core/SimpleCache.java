@@ -49,11 +49,7 @@ class SimpleCache<K, V> {
 		return cache.remove(key);
 	}
 
-	public boolean containsKey(K key) {
-		return cache.containsKey(key);
-	}
-
-	public int getSize() {
+	public int size() {
 		return cache.size();
 	}
 

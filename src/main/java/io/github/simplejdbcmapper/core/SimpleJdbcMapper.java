@@ -258,6 +258,33 @@ public final class SimpleJdbcMapper {
 	}
 
 	/**
+	 * Gets the columns SQL. Works well with Spring row mappers like
+	 * BeanPropertyRowMapper(), SimplePropertyRowMapper() etc. Will prefix table
+	 * column names with the 'tableAlias.' and will create the needed column aliases
+	 * when the column name does not match the corresponding underscore case
+	 * property name.
+	 * 
+	 * Use it in your custom queries when you are doing joins and need columns
+	 * corresponding to a table alias.
+	 *
+	 * <p>
+	 * For tableAlias 't1' will return something like below if 'userLastName'
+	 * property is mapped to 'last_name' column in database:
+	 *
+	 * <pre>
+	 * "t1.somecolumn, t1.someothercolumn, t1.last_name AS user_last_name"
+	 * </pre>
+	 * 
+	 * @param clazz      the class
+	 * @param tableAlias the table alias
+	 * @return comma separated select column string
+	 * 
+	 */
+	public String getBeanFriendlySqlColumns(Class<?> clazz, String tableAlias) {
+		return findOperation.getBeanFriendlySqlColumns(clazz, tableAlias);
+	}
+
+	/**
 	 * returns a map with all the properties of the mapped class and their
 	 * corresponding column names
 	 * 

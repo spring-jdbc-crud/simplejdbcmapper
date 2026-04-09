@@ -15,12 +15,12 @@ import org.springframework.jdbc.core.SqlParameterValue;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
+import org.springframework.util.StringUtils;
 
 import io.github.simplejdbcmapper.exception.MapperException;
 
 class FindOperation {
 	private final SimpleJdbcMapperSupport sjmSupport;
-
 	// Map key - class name
 	// value - the sql
 	private final SimpleCache<String, String> findByIdSqlCache = new SimpleCache<>();
@@ -33,6 +33,8 @@ class FindOperation {
 	// Map key - class name
 	// value - the column sql string
 	private final SimpleCache<String, String> beanColumnsSqlCache = new SimpleCache<>();
+
+	private final SimpleCache<String, String> beanColumnsTableAliasSqlCache = new SimpleCache<>(2000);
 
 	public FindOperation(SimpleJdbcMapperSupport sjmSupport) {
 		this.sjmSupport = sjmSupport;
@@ -141,6 +143,31 @@ class FindOperation {
 		return columnsSql;
 	}
 
+	public String getBeanFriendlySqlColumns(Class<?> clazz, String tableAlias) {
+		Assert.notNull(clazz, "clazz must not be null");
+		if (!StringUtils.hasText(tableAlias)) {
+			throw new IllegalArgumentException("tableAlias has no value");
+		}
+		String cacheKey = clazz.getName() + "-" + tableAlias;
+		String columnsSql = beanColumnsTableAliasSqlCache.get(cacheKey);
+		if (columnsSql == null) {
+			String tablePrefix = tableAlias + ".";
+			TableMapping tableMapping = sjmSupport.getTableMapping(clazz);
+			StringJoiner sj = new StringJoiner(", ", " ", " ");
+			for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {
+				String underscorePropertyName = InternalUtils.toUnderscoreName(propMapping.getPropertyName());
+				if (underscorePropertyName.equals(propMapping.getColumnName())) {
+					sj.add(tablePrefix + propMapping.getColumnName());
+				} else {
+					sj.add(tablePrefix + propMapping.getColumnName() + " AS " + underscorePropertyName);
+				}
+			}
+			columnsSql = sj.toString();
+			beanColumnsTableAliasSqlCache.put(cacheKey, columnsSql);
+		}
+		return columnsSql;
+	}
+
 	public Map<String, String> getPropertyToColumnMappings(Class<?> clazz) {
 		TableMapping tableMapping = sjmSupport.getTableMapping(clazz);
 		Map<String, String> map = new LinkedHashMap<>();
@@ -160,6 +187,10 @@ class FindOperation {
 
 	SimpleCache<String, String> getBeanColumnsSqlCache() {
 		return beanColumnsSqlCache;
+	}
+
+	SimpleCache<String, String> getBeanColumnsTableAliasSqlCache() {
+		return beanColumnsTableAliasSqlCache;
 	}
 
 	private <T> BeanPropertyRowMapper<T> getBeanPropertyRowMapper(Class<T> clazz) {

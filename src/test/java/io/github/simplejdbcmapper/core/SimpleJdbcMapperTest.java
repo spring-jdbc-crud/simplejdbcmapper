@@ -58,7 +58,7 @@ class SimpleJdbcMapperTest {
 	void getBeanFriendlySqlColumns_test() {
 		NonDefaultNamingProduct p = new NonDefaultNamingProduct();
 		p.setId(9812);
-		p.setProductName("test");
+		p.setProductName("test9812");
 		p.setCost(10.25);
 		sjm.insert(p);
 
@@ -66,20 +66,66 @@ class SimpleJdbcMapperTest {
 				+ " FROM product WHERE name = ?";
 
 		// Using JdbcClient api for the above sql
-		List<NonDefaultNamingProduct> products = sjm.getJdbcClient().sql(sql).param("test")
+		List<NonDefaultNamingProduct> products = sjm.getJdbcClient().sql(sql).param("test9812")
 				.query(NonDefaultNamingProduct.class).list();
 
 		assertEquals(1, products.size());
 		assertEquals(10.25, products.get(0).getCost());
-		assertEquals("test", products.get(0).getProductName());
+		assertEquals("test9812", products.get(0).getProductName());
 
 		// Using JdbcTemplate api for the above sql
 		List<NonDefaultNamingProduct> products2 = sjm.getJdbcTemplate().query(sql,
-				BeanPropertyRowMapper.newInstance(NonDefaultNamingProduct.class), "test");
+				BeanPropertyRowMapper.newInstance(NonDefaultNamingProduct.class), "test9812");
 
 		assertEquals(1, products2.size());
 		assertEquals(10.25, products2.get(0).getCost());
-		assertEquals("test", products2.get(0).getProductName());
+		assertEquals("test9812", products2.get(0).getProductName());
+	}
+
+	@Test
+	void getBeanFriendlySqlColumns_withTableAlias_test() {
+		NonDefaultNamingProduct p = new NonDefaultNamingProduct();
+		p.setId(9900);
+		p.setProductName("test9900");
+		p.setCost(10.25);
+		sjm.insert(p);
+
+		String sql = "SELECT " + sjm.getBeanFriendlySqlColumns(NonDefaultNamingProduct.class, "t1")
+				+ " FROM product t1 WHERE t1.name = ?";
+
+		// Using JdbcClient api for the above sql
+		List<NonDefaultNamingProduct> products = sjm.getJdbcClient().sql(sql).param("test9900")
+				.query(NonDefaultNamingProduct.class).list();
+
+		assertEquals(1, products.size());
+		assertEquals(10.25, products.get(0).getCost());
+		assertEquals("test9900", products.get(0).getProductName());
+
+		// Using JdbcTemplate api for the above sql
+		List<NonDefaultNamingProduct> products2 = sjm.getJdbcTemplate().query(sql,
+				BeanPropertyRowMapper.newInstance(NonDefaultNamingProduct.class), "test9900");
+
+		assertEquals(1, products2.size());
+		assertEquals(10.25, products2.get(0).getCost());
+		assertEquals("test9900", products2.get(0).getProductName());
+	}
+
+	@Test
+	void getBeanFriendlySqlColumns_IllegalArgs_test() {
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			sjm.getBeanFriendlySqlColumns(null);
+		});
+
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			sjm.getBeanFriendlySqlColumns(null, "t1");
+		});
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			sjm.getBeanFriendlySqlColumns(Product.class, null);
+		});
+
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			sjm.getBeanFriendlySqlColumns(Product.class, "   ");
+		});
 	}
 
 	@Test

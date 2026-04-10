@@ -101,12 +101,14 @@ public final class SimpleJdbcMapper {
 	/**
 	 * Find all objects.
 	 *
-	 * @param <T>   the type
-	 * @param clazz Type of object
+	 * @param <T>         the type
+	 * @param clazz       Type of object
+	 * @param sortByArray optional argument. An array of SortBy objects which is
+	 *                    used to generate the "ORDER BY" clause
 	 * @return List of objects of type T
 	 */
-	public <T> List<T> findAll(Class<T> clazz) {
-		return findOperation.findAll(clazz);
+	public <T> List<T> findAll(Class<T> clazz, SortBy... sortByArray) {
+		return findOperation.findAll(clazz, sortByArray);
 	}
 
 	/**
@@ -117,10 +119,13 @@ public final class SimpleJdbcMapper {
 	 * @param clazz         Class of List of objects returned
 	 * @param propertyName  the property name
 	 * @param propertyValue the property value
+	 * @param sortByArray   optional argument. An array of SortBy objects which is
+	 *                      used to generate the "ORDER BY" clause
 	 * @return a List of objects of type T
 	 */
-	public <T> List<T> findByPropertyValue(Class<T> clazz, String propertyName, Object propertyValue) {
-		return findOperation.findByPropertyValue(clazz, propertyName, propertyValue);
+	public <T> List<T> findByPropertyValue(Class<T> clazz, String propertyName, Object propertyValue,
+			SortBy... sortByArray) {
+		return findOperation.findByPropertyValue(clazz, propertyName, propertyValue, sortByArray);
 	}
 
 	/**
@@ -139,10 +144,13 @@ public final class SimpleJdbcMapper {
 	 * @param clazz          Class of List of objects returned
 	 * @param propertyName   the property name
 	 * @param propertyValues the collection of property values
+	 * @param sortByArray    optional argument. An array of SortBy objects which is
+	 *                       used to generate the "ORDER BY" clause
 	 * @return a List of objects of type T
 	 */
-	public <T, U> List<T> findByPropertyValues(Class<T> clazz, String propertyName, Collection<U> propertyValues) {
-		return findOperation.findByPropertyValues(clazz, propertyName, propertyValues);
+	public <T, U> List<T> findByPropertyValues(Class<T> clazz, String propertyName, Collection<U> propertyValues,
+			SortBy... sortByArray) {
+		return findOperation.findByPropertyValues(clazz, propertyName, propertyValues, sortByArray);
 	}
 
 	/**

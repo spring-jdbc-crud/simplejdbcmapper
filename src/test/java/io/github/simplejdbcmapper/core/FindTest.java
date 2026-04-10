@@ -76,9 +76,81 @@ class FindTest {
 	}
 
 	@Test
-	void findByPropertyValue_Test() {
+	void findAll_WithOrderBy_success_Test() {
+		List<Order> orders = sjm.findAll(Order.class, new SortBy("status"));
+		assertTrue(orders.size() >= 2);
+		for (int idx = 0; idx < orders.size(); idx++) {
+			assertNotNull(orders.get(idx).getOrderId());
+			assertNotNull(orders.get(idx).getOrderDate());
+		}
+
+		orders = sjm.findAll(Order.class, new SortBy("status", "ASC"));
+		assertTrue(orders.size() >= 2);
+		for (int idx = 0; idx < orders.size(); idx++) {
+			assertNotNull(orders.get(idx).getOrderId());
+			assertNotNull(orders.get(idx).getOrderDate());
+		}
+
+		orders = sjm.findAll(Order.class, new SortBy("status", "DESC"));
+		assertTrue(orders.size() >= 2);
+		for (int idx = 0; idx < orders.size(); idx++) {
+			assertNotNull(orders.get(idx).getOrderId());
+			assertNotNull(orders.get(idx).getOrderDate());
+		}
+
+		orders = sjm.findAll(Order.class, new SortBy("status"), new SortBy("orderId"));
+		assertTrue(orders.size() >= 2);
+		for (int idx = 0; idx < orders.size(); idx++) {
+			assertNotNull(orders.get(idx).getOrderId());
+			assertNotNull(orders.get(idx).getOrderDate());
+		}
+
+		orders = sjm.findAll(Order.class, new SortBy("status"), new SortBy("orderId", "DESC"));
+		assertTrue(orders.size() >= 2);
+		for (int idx = 0; idx < orders.size(); idx++) {
+			assertNotNull(orders.get(idx).getOrderId());
+			assertNotNull(orders.get(idx).getOrderDate());
+		}
+
+		orders = sjm.findAll(Order.class, new SortBy("status", "ASC"), new SortBy("orderId", "DESC"));
+		assertTrue(orders.size() >= 2);
+		for (int idx = 0; idx < orders.size(); idx++) {
+			assertNotNull(orders.get(idx).getOrderId());
+			assertNotNull(orders.get(idx).getOrderDate());
+		}
+
+	}
+
+	@Test
+	void findAll_WithOrderBy_failure_Test() {
+		Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			sjm.findAll(Order.class, new SortBy("xyz"));
+		});
+		assertTrue(exception.getMessage().contains("is not a mapped property for class"));
+	}
+
+	@Test
+	void findByPropertyValue_sucess_Test() {
 		List<OrderLine> orderLines = sjm.findByPropertyValue(OrderLine.class, "orderId", 1);
 		assertEquals(2, orderLines.size());
+	}
+
+	@Test
+	void findByPropertyValue_OrderBy_success_Test() {
+		List<OrderLine> orderLines = sjm.findByPropertyValue(OrderLine.class, "orderId", 1, new SortBy("productId"));
+		assertEquals(2, orderLines.size());
+
+		orderLines = sjm.findByPropertyValue(OrderLine.class, "orderId", 1, new SortBy("productId", "asc"),
+				new SortBy("numOfUnits", "deSC"));
+		assertEquals(2, orderLines.size());
+	}
+
+	@Test
+	void findByPropertyValue_WithOrderBy_failure_Test() {
+		Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			sjm.findByPropertyValue(Order.class, "orderId", 1, new SortBy("xyz"));
+		});
+		assertTrue(exception.getMessage().contains("is not a mapped property for class"));
 	}
 
 	@Test
@@ -116,6 +188,28 @@ class FindTest {
 		Integer[] orderIds = { 1, 2, 3 };
 		List<Order> orders = sjm.findByPropertyValues(Order.class, "orderId", Arrays.asList(orderIds));
 		assertEquals(3, orders.size());
+	}
+
+	@Test
+	void findByPropertyValues_withSortBy_success_Test() {
+		Integer[] orderIds = { 1, 2, 3 };
+		List<Order> orders = sjm.findByPropertyValues(Order.class, "orderId", Arrays.asList(orderIds),
+				new SortBy("orderId", "DESC"));
+		assertEquals(3, orders.size());
+
+		orders = sjm.findByPropertyValues(Order.class, "orderId", Arrays.asList(orderIds),
+				new SortBy("orderId", "DESC"), new SortBy("status", "ASC"));
+		assertEquals(3, orders.size());
+	}
+
+	@Test
+	void findByPropertyValues_WithOrderBy_failure_Test() {
+		Integer[] orderIds = { 1, 2, 3 };
+		Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			sjm.findByPropertyValues(Order.class, "orderId", Arrays.asList(orderIds), new SortBy("orderId"),
+					new SortBy("xyz"));
+		});
+		assertTrue(exception.getMessage().contains("is not a mapped property for class"));
 	}
 
 	@Test

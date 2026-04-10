@@ -43,7 +43,7 @@ Just by annotating the models that you would use with JdbcTemplate/JdbcClient, y
   <dependency>
     <groupId>io.github.spring-jdbc-crud</groupId>
     <artifactId>simplejdbcmapper</artifactId>
-    <version>1.7.3</version>
+    <version>1.7.4</version>
  </dependency>
  ```
  

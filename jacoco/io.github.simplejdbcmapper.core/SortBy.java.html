@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SortBy.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">simplejdbcmapper</a> &gt; <a href="index.source.html" class="el_package">io.github.simplejdbcmapper.core</a> &gt; <span class="el_source">SortBy.java</span></div><h1>SortBy.java</h1><pre class="source lang-java linenums">package io.github.simplejdbcmapper.core;
+
+import org.springframework.util.Assert;
+
+/**
+ * The is used to generate the &quot;ORDER BY&quot; clause for the queries.
+ * 
+ * @author Antony Joseph
+ */
+public class SortBy {
+	private final String propertyName;
+	private final String direction;
+
+	/**
+	 * The constructor
+	 * 
+	 * @param propertyName the property name to sort by. (NOT the column name)
+	 */
+	public SortBy(String propertyName) {
+<span class="fc" id="L20">		this(propertyName, null);</span>
+<span class="fc" id="L21">	}</span>
+
+	/**
+	 * The constructor
+	 * 
+	 * @param propertyName the property name to sort by (NOT the column name)
+	 * @param direction    the direction of the sort. Has to be either &quot;ASC&quot; or
+	 *                     &quot;DESC&quot;
+	 */
+<span class="fc" id="L30">	public SortBy(String propertyName, String direction) {</span>
+<span class="fc" id="L31">		Assert.notNull(propertyName, &quot;propertyName must not be null&quot;);</span>
+<span class="fc" id="L32">		this.propertyName = propertyName;</span>
+<span class="fc bfc" id="L33" title="All 2 branches covered.">		if (direction != null) {</span>
+<span class="fc bfc" id="L34" title="All 4 branches covered.">			if (!&quot;ASC&quot;.equalsIgnoreCase(direction) &amp;&amp; !&quot;DESC&quot;.equalsIgnoreCase(direction)) {</span>
+<span class="fc" id="L35">				throw new IllegalArgumentException(&quot;direction should be ASC or DESC&quot;);</span>
+			}
+<span class="fc" id="L37">			this.direction = direction.toUpperCase();</span>
+		} else {
+<span class="fc" id="L39">			this.direction = &quot;&quot;;</span>
+		}
+<span class="fc" id="L41">	}</span>
+
+	public String getPropertyName() {
+<span class="fc" id="L44">		return propertyName;</span>
+	}
+
+	public String getDirection() {
+<span class="fc" id="L48">		return direction;</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main b12a2bee445c6abd6303cc20e0560b2168367e4e 2026-04-10T02:31:20</div></body></html>

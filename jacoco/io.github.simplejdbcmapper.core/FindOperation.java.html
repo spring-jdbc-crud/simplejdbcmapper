@@ -25,178 +25,205 @@ class FindOperation {
 	// value - the sql
 <span class="fc" id="L26">	private final SimpleCache&lt;String, String&gt; findByIdSqlCache = new SimpleCache&lt;&gt;();</span>
 
-	// Map key - class name
-	// value - the sql
-<span class="fc" id="L30">	private final SimpleCache&lt;String, String&gt; findAllSqlCache = new SimpleCache&lt;&gt;();</span>
-
 	// the column sql string with bean friendly column aliases for mapped properties
 	// Map key - class name
 	// value - the column sql string
-<span class="fc" id="L35">	private final SimpleCache&lt;String, String&gt; beanColumnsSqlCache = new SimpleCache&lt;&gt;();</span>
+<span class="fc" id="L31">	private final SimpleCache&lt;String, String&gt; beanColumnsSqlCache = new SimpleCache&lt;&gt;();</span>
 
-<span class="fc" id="L37">	private final SimpleCache&lt;String, String&gt; beanColumnsTableAliasSqlCache = new SimpleCache&lt;&gt;(2000);</span>
+	// the column sql string with bean friendly column aliases for mapped properties
+	// Map key - classname-tableAlias
+	// value - the column sql string
+<span class="fc" id="L36">	private final SimpleCache&lt;String, String&gt; beanColumnsTableAliasSqlCache = new SimpleCache&lt;&gt;(2000);</span>
 
-<span class="fc" id="L39">	public FindOperation(SimpleJdbcMapperSupport sjmSupport) {</span>
-<span class="fc" id="L40">		this.sjmSupport = sjmSupport;</span>
-<span class="fc" id="L41">	}</span>
+<span class="fc" id="L38">	public FindOperation(SimpleJdbcMapperSupport sjmSupport) {</span>
+<span class="fc" id="L39">		this.sjmSupport = sjmSupport;</span>
+<span class="fc" id="L40">	}</span>
 
 	public &lt;T&gt; T findById(Class&lt;T&gt; clazz, Object id) {
-<span class="fc" id="L44">		Assert.notNull(clazz, &quot;Class must not be null&quot;);</span>
-<span class="fc" id="L45">		TableMapping tableMapping = sjmSupport.getTableMapping(clazz);</span>
-<span class="fc" id="L46">		String sql = findByIdSqlCache.get(clazz.getName());</span>
-<span class="fc bfc" id="L47" title="All 2 branches covered.">		if (sql == null) {</span>
-<span class="fc" id="L48">			sql = &quot;SELECT &quot; + getBeanFriendlySqlColumns(clazz) + &quot; FROM &quot; + tableMapping.fullyQualifiedTableName()</span>
-<span class="fc" id="L49">					+ &quot; WHERE &quot; + tableMapping.getIdColumnName() + &quot; = ?&quot;;</span>
-<span class="fc" id="L50">			findByIdSqlCache.put(clazz.getName(), sql);</span>
+<span class="fc" id="L43">		Assert.notNull(clazz, &quot;Class must not be null&quot;);</span>
+<span class="fc" id="L44">		TableMapping tableMapping = sjmSupport.getTableMapping(clazz);</span>
+<span class="fc" id="L45">		String sql = findByIdSqlCache.get(clazz.getName());</span>
+<span class="fc bfc" id="L46" title="All 2 branches covered.">		if (sql == null) {</span>
+<span class="fc" id="L47">			sql = &quot;SELECT &quot; + getBeanFriendlySqlColumns(clazz) + &quot; FROM &quot; + tableMapping.fullyQualifiedTableName()</span>
+<span class="fc" id="L48">					+ &quot; WHERE &quot; + tableMapping.getIdColumnName() + &quot; = ?&quot;;</span>
+<span class="fc" id="L49">			findByIdSqlCache.put(clazz.getName(), sql);</span>
 		}
-<span class="fc" id="L52">		T obj = null;</span>
+<span class="fc" id="L51">		T obj = null;</span>
 		try {
-<span class="fc" id="L54">			obj = sjmSupport.getJdbcTemplate().queryForObject(sql, getBeanPropertyRowMapper(clazz),</span>
-<span class="fc" id="L55">					new SqlParameterValue(tableMapping.getIdPropertyMapping().getEffectiveSqlType(), id));</span>
-<span class="fc" id="L56">		} catch (EmptyResultDataAccessException e) {</span>
+<span class="fc" id="L53">			obj = sjmSupport.getJdbcTemplate().queryForObject(sql, getBeanPropertyRowMapper(clazz),</span>
+<span class="fc" id="L54">					new SqlParameterValue(tableMapping.getIdPropertyMapping().getEffectiveSqlType(), id));</span>
+<span class="fc" id="L55">		} catch (EmptyResultDataAccessException e) {</span>
 			// do nothing
-<span class="fc" id="L58">		}</span>
-<span class="fc" id="L59">		return obj;</span>
+<span class="fc" id="L57">		}</span>
+<span class="fc" id="L58">		return obj;</span>
 	}
 
-	public &lt;T&gt; List&lt;T&gt; findAll(Class&lt;T&gt; clazz) {
-<span class="fc" id="L63">		Assert.notNull(clazz, &quot;Class must not be null&quot;);</span>
-<span class="fc" id="L64">		TableMapping tableMapping = sjmSupport.getTableMapping(clazz);</span>
-<span class="fc" id="L65">		String sql = findAllSqlCache.get(clazz.getName());</span>
-<span class="fc bfc" id="L66" title="All 2 branches covered.">		if (sql == null) {</span>
-<span class="fc" id="L67">			sql = &quot;SELECT &quot; + getBeanFriendlySqlColumns(clazz) + &quot; FROM &quot; + tableMapping.fullyQualifiedTableName();</span>
-<span class="fc" id="L68">			findAllSqlCache.put(clazz.getName(), sql);</span>
-		}
-<span class="fc" id="L70">		return sjmSupport.getJdbcTemplate().query(sql, getBeanPropertyRowMapper(clazz));</span>
+	public &lt;T&gt; List&lt;T&gt; findAll(Class&lt;T&gt; clazz, SortBy... sortByArray) {
+<span class="fc" id="L62">		Assert.notNull(clazz, &quot;Class must not be null&quot;);</span>
+<span class="fc" id="L63">		TableMapping tableMapping = sjmSupport.getTableMapping(clazz);</span>
+<span class="fc" id="L64">		StringBuilder sql = new StringBuilder(256);</span>
+<span class="fc" id="L65">		sql.append(&quot;SELECT &quot;).append(getBeanFriendlySqlColumns(clazz)).append(&quot; FROM &quot;)</span>
+<span class="fc" id="L66">				.append(tableMapping.fullyQualifiedTableName()).append(orderByClause(clazz, sortByArray, tableMapping));</span>
+<span class="fc" id="L67">		return sjmSupport.getJdbcTemplate().query(sql.toString(), getBeanPropertyRowMapper(clazz));</span>
 	}
 
-	public &lt;T&gt; List&lt;T&gt; findByPropertyValue(Class&lt;T&gt; clazz, String propertyName, Object propertyValue) {
-<span class="fc" id="L74">		Assert.notNull(clazz, &quot;Class must not be null&quot;);</span>
-<span class="fc" id="L75">		Assert.notNull(propertyName, &quot;propertyName must not be null&quot;);</span>
-<span class="fc" id="L76">		TableMapping tableMapping = sjmSupport.getTableMapping(clazz);</span>
-<span class="fc" id="L77">		PropertyMapping propMapping = tableMapping.getPropertyMappingByPropertyName(propertyName);</span>
-<span class="fc bfc" id="L78" title="All 2 branches covered.">		if (propMapping == null) {</span>
-<span class="fc" id="L79">			throw new MapperException(clazz.getSimpleName() + &quot;.&quot; + propertyName + &quot; does not have a mapping.&quot;);</span>
+	public &lt;T&gt; List&lt;T&gt; findByPropertyValue(Class&lt;T&gt; clazz, String propertyName, Object propertyValue,
+			SortBy... sortByArray) {
+<span class="fc" id="L72">		Assert.notNull(clazz, &quot;Class must not be null&quot;);</span>
+<span class="fc" id="L73">		Assert.notNull(propertyName, &quot;propertyName must not be null&quot;);</span>
+<span class="fc" id="L74">		TableMapping tableMapping = sjmSupport.getTableMapping(clazz);</span>
+<span class="fc" id="L75">		PropertyMapping propMapping = tableMapping.getPropertyMappingByPropertyName(propertyName);</span>
+<span class="fc bfc" id="L76" title="All 2 branches covered.">		if (propMapping == null) {</span>
+<span class="fc" id="L77">			throw new MapperException(clazz.getSimpleName() + &quot;.&quot; + propertyName + &quot; does not have a mapping.&quot;);</span>
 		}
-<span class="fc" id="L81">		StringBuilder sql = new StringBuilder(256);</span>
-<span class="fc" id="L82">		sql.append(&quot;SELECT &quot;).append(getBeanFriendlySqlColumns(clazz)).append(&quot; FROM &quot;)</span>
-<span class="fc" id="L83">				.append(tableMapping.fullyQualifiedTableName()).append(&quot; WHERE &quot;);</span>
-<span class="fc bfc" id="L84" title="All 2 branches covered.">		if (propertyValue == null) {</span>
-<span class="fc" id="L85">			sql.append(propMapping.getColumnName()).append(&quot; IS NULL&quot;);</span>
-<span class="fc" id="L86">			return sjmSupport.getJdbcTemplate().query(sql.toString(), getBeanPropertyRowMapper(clazz));</span>
+<span class="fc" id="L79">		StringBuilder sql = new StringBuilder(256);</span>
+<span class="fc" id="L80">		sql.append(&quot;SELECT &quot;).append(getBeanFriendlySqlColumns(clazz)).append(&quot; FROM &quot;)</span>
+<span class="fc" id="L81">				.append(tableMapping.fullyQualifiedTableName()).append(&quot; WHERE &quot;);</span>
+<span class="fc bfc" id="L82" title="All 2 branches covered.">		if (propertyValue == null) {</span>
+<span class="fc" id="L83">			sql.append(propMapping.getColumnName()).append(&quot; IS NULL&quot;);</span>
 		} else {
-<span class="fc" id="L88">			sql.append(propMapping.getColumnName()).append(&quot; = ?&quot;);</span>
-<span class="fc" id="L89">			return sjmSupport.getJdbcTemplate().query(sql.toString(), getBeanPropertyRowMapper(clazz),</span>
-<span class="fc" id="L90">					new SqlParameterValue(propMapping.getEffectiveSqlType(), propertyValue));</span>
+<span class="fc" id="L85">			sql.append(propMapping.getColumnName()).append(&quot; = ?&quot;);</span>
+		}
+<span class="fc" id="L87">		sql.append(orderByClause(clazz, sortByArray, tableMapping));</span>
+<span class="fc bfc" id="L88" title="All 2 branches covered.">		if (propertyValue == null) {</span>
+<span class="fc" id="L89">			return sjmSupport.getJdbcTemplate().query(sql.toString(), getBeanPropertyRowMapper(clazz));</span>
+		} else {
+<span class="fc" id="L91">			return sjmSupport.getJdbcTemplate().query(sql.toString(), getBeanPropertyRowMapper(clazz),</span>
+<span class="fc" id="L92">					new SqlParameterValue(propMapping.getEffectiveSqlType(), propertyValue));</span>
 		}
 	}
 
-	public &lt;T, U&gt; List&lt;T&gt; findByPropertyValues(Class&lt;T&gt; clazz, String propertyName, Collection&lt;U&gt; propertyValues) {
-<span class="fc" id="L95">		Assert.notNull(clazz, &quot;Class must not be null&quot;);</span>
-<span class="fc" id="L96">		Assert.notNull(propertyName, &quot;propertyName must not be null&quot;);</span>
-<span class="fc" id="L97">		Assert.notNull(propertyValues, &quot;propertyValues must not be null&quot;);</span>
-<span class="fc" id="L98">		TableMapping tableMapping = sjmSupport.getTableMapping(clazz);</span>
-<span class="fc" id="L99">		PropertyMapping propMapping = tableMapping.getPropertyMappingByPropertyName(propertyName);</span>
-<span class="fc bfc" id="L100" title="All 2 branches covered.">		if (propMapping == null) {</span>
-<span class="fc" id="L101">			throw new MapperException(clazz.getSimpleName() + &quot;.&quot; + propertyName + &quot; does not have a mapping.&quot;);</span>
+	public &lt;T, U&gt; List&lt;T&gt; findByPropertyValues(Class&lt;T&gt; clazz, String propertyName, Collection&lt;U&gt; propertyValues,
+			SortBy... sortByArray) {
+<span class="fc" id="L98">		Assert.notNull(clazz, &quot;Class must not be null&quot;);</span>
+<span class="fc" id="L99">		Assert.notNull(propertyName, &quot;propertyName must not be null&quot;);</span>
+<span class="fc" id="L100">		Assert.notNull(propertyValues, &quot;propertyValues must not be null&quot;);</span>
+<span class="fc" id="L101">		TableMapping tableMapping = sjmSupport.getTableMapping(clazz);</span>
+<span class="fc" id="L102">		PropertyMapping propMapping = tableMapping.getPropertyMappingByPropertyName(propertyName);</span>
+<span class="fc bfc" id="L103" title="All 2 branches covered.">		if (propMapping == null) {</span>
+<span class="fc" id="L104">			throw new MapperException(clazz.getSimpleName() + &quot;.&quot; + propertyName + &quot; does not have a mapping.&quot;);</span>
 		}
-<span class="fc bfc" id="L103" title="All 2 branches covered.">		if (ObjectUtils.isEmpty(propertyValues)) {</span>
-<span class="fc" id="L104">			return new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L106" title="All 2 branches covered.">		if (ObjectUtils.isEmpty(propertyValues)) {</span>
+<span class="fc" id="L107">			return new ArrayList&lt;&gt;();</span>
 		}
-<span class="fc" id="L106">		Set&lt;U&gt; localPropertyValues = new LinkedHashSet&lt;&gt;(propertyValues);</span>
-<span class="fc" id="L107">		boolean hasNullInSet = localPropertyValues.remove(null); // need to handle nulls in the set.</span>
-<span class="fc" id="L108">		StringBuilder sql = new StringBuilder(256);</span>
-<span class="fc" id="L109">		sql.append(&quot;SELECT &quot;).append(getBeanFriendlySqlColumns(clazz)).append(&quot; FROM &quot;)</span>
-<span class="fc" id="L110">				.append(tableMapping.fullyQualifiedTableName()).append(&quot; WHERE &quot;);</span>
-<span class="fc bfc" id="L111" title="All 2 branches covered.">		if (ObjectUtils.isEmpty(localPropertyValues)) {</span>
-<span class="fc" id="L112">			sql.append(propMapping.getColumnName()).append(&quot; IS NULL&quot;);</span>
-<span class="fc" id="L113">			return sjmSupport.getJdbcTemplate().query(sql.toString(), getBeanPropertyRowMapper(clazz));</span>
+<span class="fc" id="L109">		Set&lt;U&gt; localPropertyValues = new LinkedHashSet&lt;&gt;(propertyValues);</span>
+<span class="fc" id="L110">		boolean hasNullInSet = localPropertyValues.remove(null); // need to handle nulls in the set.</span>
+<span class="fc" id="L111">		StringBuilder sql = new StringBuilder(256);</span>
+<span class="fc" id="L112">		sql.append(&quot;SELECT &quot;).append(getBeanFriendlySqlColumns(clazz)).append(&quot; FROM &quot;)</span>
+<span class="fc" id="L113">				.append(tableMapping.fullyQualifiedTableName()).append(&quot; WHERE &quot;);</span>
+<span class="fc bfc" id="L114" title="All 2 branches covered.">		if (ObjectUtils.isEmpty(localPropertyValues)) {</span>
+<span class="fc" id="L115">			sql.append(propMapping.getColumnName()).append(&quot; IS NULL&quot;);</span>
 		} else {
-<span class="fc" id="L115">			sql.append(propMapping.getColumnName()).append(&quot; IN (:propertyValues)&quot;);</span>
-<span class="fc bfc" id="L116" title="All 2 branches covered.">			if (hasNullInSet) {</span>
-<span class="fc" id="L117">				sql.append(&quot; OR &quot;).append(propMapping.getColumnName()).append(&quot; IS NULL&quot;);</span>
+<span class="fc" id="L117">			sql.append(propMapping.getColumnName()).append(&quot; IN (:propertyValues)&quot;);</span>
+<span class="fc bfc" id="L118" title="All 2 branches covered.">			if (hasNullInSet) {</span>
+<span class="fc" id="L119">				sql.append(&quot; OR &quot;).append(propMapping.getColumnName()).append(&quot; IS NULL&quot;);</span>
 			}
-<span class="fc" id="L119">			MapSqlParameterSource param = new MapSqlParameterSource();</span>
-<span class="fc" id="L120">			param.addValue(&quot;propertyValues&quot;, localPropertyValues, propMapping.getEffectiveSqlType());</span>
-<span class="fc" id="L121">			return sjmSupport.getNamedParameterJdbcTemplate().query(sql.toString(), param,</span>
-<span class="fc" id="L122">					getBeanPropertyRowMapper(clazz));</span>
 		}
+<span class="fc" id="L122">		sql.append(orderByClause(clazz, sortByArray, tableMapping));</span>
+<span class="fc bfc" id="L123" title="All 2 branches covered.">		if (ObjectUtils.isEmpty(localPropertyValues)) {</span>
+<span class="fc" id="L124">			return sjmSupport.getJdbcTemplate().query(sql.toString(), getBeanPropertyRowMapper(clazz));</span>
+		} else {
+<span class="fc" id="L126">			MapSqlParameterSource param = new MapSqlParameterSource();</span>
+<span class="fc" id="L127">			param.addValue(&quot;propertyValues&quot;, localPropertyValues, propMapping.getEffectiveSqlType());</span>
+<span class="fc" id="L128">			return sjmSupport.getNamedParameterJdbcTemplate().query(sql.toString(), param,</span>
+<span class="fc" id="L129">					getBeanPropertyRowMapper(clazz));</span>
+		}
+
 	}
 
 	public String getBeanFriendlySqlColumns(Class&lt;?&gt; clazz) {
-<span class="fc" id="L127">		Assert.notNull(clazz, &quot;Class must not be null&quot;);</span>
-<span class="fc" id="L128">		String columnsSql = beanColumnsSqlCache.get(clazz.getName());</span>
-<span class="fc bfc" id="L129" title="All 2 branches covered.">		if (columnsSql == null) {</span>
-<span class="fc" id="L130">			TableMapping tableMapping = sjmSupport.getTableMapping(clazz);</span>
-<span class="fc" id="L131">			StringJoiner sj = new StringJoiner(&quot;, &quot;, &quot; &quot;, &quot; &quot;);</span>
-<span class="fc bfc" id="L132" title="All 2 branches covered.">			for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {</span>
-<span class="fc" id="L133">				String underscorePropertyName = InternalUtils.toUnderscoreName(propMapping.getPropertyName());</span>
-<span class="fc bfc" id="L134" title="All 2 branches covered.">				if (underscorePropertyName.equals(propMapping.getColumnName())) {</span>
-<span class="fc" id="L135">					sj.add(propMapping.getColumnName());</span>
+<span class="fc" id="L135">		Assert.notNull(clazz, &quot;Class must not be null&quot;);</span>
+<span class="fc" id="L136">		String columnsSql = beanColumnsSqlCache.get(clazz.getName());</span>
+<span class="fc bfc" id="L137" title="All 2 branches covered.">		if (columnsSql == null) {</span>
+<span class="fc" id="L138">			TableMapping tableMapping = sjmSupport.getTableMapping(clazz);</span>
+<span class="fc" id="L139">			StringJoiner sj = new StringJoiner(&quot;, &quot;, &quot; &quot;, &quot; &quot;);</span>
+<span class="fc bfc" id="L140" title="All 2 branches covered.">			for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {</span>
+<span class="fc" id="L141">				String underscorePropertyName = InternalUtils.toUnderscoreName(propMapping.getPropertyName());</span>
+<span class="fc bfc" id="L142" title="All 2 branches covered.">				if (underscorePropertyName.equals(propMapping.getColumnName())) {</span>
+<span class="fc" id="L143">					sj.add(propMapping.getColumnName());</span>
 				} else {
-<span class="fc" id="L137">					sj.add(propMapping.getColumnName() + &quot; AS &quot; + underscorePropertyName);</span>
+<span class="fc" id="L145">					sj.add(propMapping.getColumnName() + &quot; AS &quot; + underscorePropertyName);</span>
 				}
-<span class="fc" id="L139">			}</span>
-<span class="fc" id="L140">			columnsSql = sj.toString();</span>
-<span class="fc" id="L141">			beanColumnsSqlCache.put(clazz.getName(), columnsSql);</span>
+<span class="fc" id="L147">			}</span>
+<span class="fc" id="L148">			columnsSql = sj.toString();</span>
+<span class="fc" id="L149">			beanColumnsSqlCache.put(clazz.getName(), columnsSql);</span>
 		}
-<span class="fc" id="L143">		return columnsSql;</span>
+<span class="fc" id="L151">		return columnsSql;</span>
 	}
 
 	public String getBeanFriendlySqlColumns(Class&lt;?&gt; clazz, String tableAlias) {
-<span class="fc" id="L147">		Assert.notNull(clazz, &quot;clazz must not be null&quot;);</span>
-<span class="fc bfc" id="L148" title="All 2 branches covered.">		if (!StringUtils.hasText(tableAlias)) {</span>
-<span class="fc" id="L149">			throw new IllegalArgumentException(&quot;tableAlias has no value&quot;);</span>
+<span class="fc" id="L155">		Assert.notNull(clazz, &quot;clazz must not be null&quot;);</span>
+<span class="fc bfc" id="L156" title="All 2 branches covered.">		if (!StringUtils.hasText(tableAlias)) {</span>
+<span class="fc" id="L157">			throw new IllegalArgumentException(&quot;tableAlias has no value&quot;);</span>
 		}
-<span class="fc" id="L151">		String cacheKey = clazz.getName() + &quot;-&quot; + tableAlias;</span>
-<span class="fc" id="L152">		String columnsSql = beanColumnsTableAliasSqlCache.get(cacheKey);</span>
-<span class="fc bfc" id="L153" title="All 2 branches covered.">		if (columnsSql == null) {</span>
-<span class="fc" id="L154">			String tablePrefix = tableAlias + &quot;.&quot;;</span>
-<span class="fc" id="L155">			TableMapping tableMapping = sjmSupport.getTableMapping(clazz);</span>
-<span class="fc" id="L156">			StringJoiner sj = new StringJoiner(&quot;, &quot;, &quot; &quot;, &quot; &quot;);</span>
-<span class="fc bfc" id="L157" title="All 2 branches covered.">			for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {</span>
-<span class="fc" id="L158">				String underscorePropertyName = InternalUtils.toUnderscoreName(propMapping.getPropertyName());</span>
-<span class="fc bfc" id="L159" title="All 2 branches covered.">				if (underscorePropertyName.equals(propMapping.getColumnName())) {</span>
-<span class="fc" id="L160">					sj.add(tablePrefix + propMapping.getColumnName());</span>
+<span class="fc" id="L159">		String cacheKey = clazz.getName() + &quot;-&quot; + tableAlias;</span>
+<span class="fc" id="L160">		String columnsSql = beanColumnsTableAliasSqlCache.get(cacheKey);</span>
+<span class="fc bfc" id="L161" title="All 2 branches covered.">		if (columnsSql == null) {</span>
+<span class="fc" id="L162">			String tablePrefix = tableAlias + &quot;.&quot;;</span>
+<span class="fc" id="L163">			TableMapping tableMapping = sjmSupport.getTableMapping(clazz);</span>
+<span class="fc" id="L164">			StringJoiner sj = new StringJoiner(&quot;, &quot;, &quot; &quot;, &quot; &quot;);</span>
+<span class="fc bfc" id="L165" title="All 2 branches covered.">			for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {</span>
+<span class="fc" id="L166">				String underscorePropertyName = InternalUtils.toUnderscoreName(propMapping.getPropertyName());</span>
+<span class="fc bfc" id="L167" title="All 2 branches covered.">				if (underscorePropertyName.equals(propMapping.getColumnName())) {</span>
+<span class="fc" id="L168">					sj.add(tablePrefix + propMapping.getColumnName());</span>
 				} else {
-<span class="fc" id="L162">					sj.add(tablePrefix + propMapping.getColumnName() + &quot; AS &quot; + underscorePropertyName);</span>
+<span class="fc" id="L170">					sj.add(tablePrefix + propMapping.getColumnName() + &quot; AS &quot; + underscorePropertyName);</span>
 				}
-<span class="fc" id="L164">			}</span>
-<span class="fc" id="L165">			columnsSql = sj.toString();</span>
-<span class="fc" id="L166">			beanColumnsTableAliasSqlCache.put(cacheKey, columnsSql);</span>
+<span class="fc" id="L172">			}</span>
+<span class="fc" id="L173">			columnsSql = sj.toString();</span>
+<span class="fc" id="L174">			beanColumnsTableAliasSqlCache.put(cacheKey, columnsSql);</span>
 		}
-<span class="fc" id="L168">		return columnsSql;</span>
+<span class="fc" id="L176">		return columnsSql;</span>
 	}
 
 	public Map&lt;String, String&gt; getPropertyToColumnMappings(Class&lt;?&gt; clazz) {
-<span class="fc" id="L172">		TableMapping tableMapping = sjmSupport.getTableMapping(clazz);</span>
-<span class="fc" id="L173">		Map&lt;String, String&gt; map = new LinkedHashMap&lt;&gt;();</span>
-<span class="fc bfc" id="L174" title="All 2 branches covered.">		for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {</span>
-<span class="fc" id="L175">			map.put(propMapping.getPropertyName(), propMapping.getColumnName());</span>
-<span class="fc" id="L176">		}</span>
-<span class="fc" id="L177">		return map;</span>
+<span class="fc" id="L180">		TableMapping tableMapping = sjmSupport.getTableMapping(clazz);</span>
+<span class="fc" id="L181">		Map&lt;String, String&gt; map = new LinkedHashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L182" title="All 2 branches covered.">		for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {</span>
+<span class="fc" id="L183">			map.put(propMapping.getPropertyName(), propMapping.getColumnName());</span>
+<span class="fc" id="L184">		}</span>
+<span class="fc" id="L185">		return map;</span>
 	}
 
 	SimpleCache&lt;String, String&gt; getFindByIdSqlCache() {
-<span class="fc" id="L181">		return findByIdSqlCache;</span>
-	}
-
-	SimpleCache&lt;String, String&gt; getFindAllSqlCache() {
-<span class="fc" id="L185">		return findAllSqlCache;</span>
+<span class="fc" id="L189">		return findByIdSqlCache;</span>
 	}
 
 	SimpleCache&lt;String, String&gt; getBeanColumnsSqlCache() {
-<span class="fc" id="L189">		return beanColumnsSqlCache;</span>
+<span class="fc" id="L193">		return beanColumnsSqlCache;</span>
 	}
 
 	SimpleCache&lt;String, String&gt; getBeanColumnsTableAliasSqlCache() {
-<span class="fc" id="L193">		return beanColumnsTableAliasSqlCache;</span>
+<span class="fc" id="L197">		return beanColumnsTableAliasSqlCache;</span>
 	}
 
 	private &lt;T&gt; BeanPropertyRowMapper&lt;T&gt; getBeanPropertyRowMapper(Class&lt;T&gt; clazz) {
-<span class="fc" id="L197">		BeanPropertyRowMapper&lt;T&gt; rowMapper = BeanPropertyRowMapper.newInstance(clazz);</span>
-<span class="fc" id="L198">		rowMapper.setConversionService(sjmSupport.getConversionService());</span>
-<span class="fc" id="L199">		return rowMapper;</span>
+<span class="fc" id="L201">		BeanPropertyRowMapper&lt;T&gt; rowMapper = BeanPropertyRowMapper.newInstance(clazz);</span>
+<span class="fc" id="L202">		rowMapper.setConversionService(sjmSupport.getConversionService());</span>
+<span class="fc" id="L203">		return rowMapper;</span>
+	}
+
+	private String orderByClause(Class&lt;?&gt; clazz, SortBy[] sortByArray, TableMapping tableMapping) {
+<span class="fc bfc" id="L207" title="All 2 branches covered.">		if (sortByArray.length &gt; 0) {</span>
+<span class="fc" id="L208">			StringBuilder clause = new StringBuilder(64);</span>
+<span class="fc" id="L209">			clause.append(&quot; ORDER BY &quot;);</span>
+<span class="fc" id="L210">			int cnt = 0;</span>
+<span class="fc bfc" id="L211" title="All 2 branches covered.">			for (SortBy sortBy : sortByArray) {</span>
+<span class="fc" id="L212">				PropertyMapping propMapping = tableMapping.getPropertyMappingByPropertyName(sortBy.getPropertyName());</span>
+<span class="fc bfc" id="L213" title="All 2 branches covered.">				if (propMapping == null) {</span>
+<span class="fc" id="L214">					throw new IllegalArgumentException(</span>
+<span class="fc" id="L215">							sortBy.getPropertyName() + &quot; is not a mapped property for class &quot; + clazz.getName());</span>
+				}
+<span class="fc bfc" id="L217" title="All 2 branches covered.">				if (cnt &gt; 0) {</span>
+<span class="fc" id="L218">					clause.append(&quot;, &quot;);</span>
+				}
+<span class="fc" id="L220">				clause.append(propMapping.getColumnName()).append(&quot; &quot;).append(sortBy.getDirection());</span>
+<span class="fc" id="L221">				cnt++;</span>
+			}
+<span class="fc" id="L223">			return clause.toString();</span>
+		} else {
+<span class="fc" id="L225">			return &quot;&quot;;</span>
+		}
 	}
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 19387ab3e858d633632c21f3b48579caf8f13df8 2026-04-09T15:53:22</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main b12a2bee445c6abd6303cc20e0560b2168367e4e 2026-04-10T02:31:20</div></body></html>

@@ -3,7 +3,7 @@ package io.github.simplejdbcmapper.core;
 import org.springframework.util.Assert;
 
 /**
- * The is used to generate the "ORDER BY" clause for the queries.
+ * This is used to generate the "ORDER BY" clause for the queries.
  * 
  * @author Antony Joseph
  */

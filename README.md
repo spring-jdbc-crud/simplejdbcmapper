@@ -113,6 +113,9 @@ Just by annotating the models that you would use with JdbcTemplate/JdbcClient, y
  // find all
  List<Product> products = sjm.findAll(Product.class);
  
+ // find all with sort (ORDER BY clause)
+  List<Product> products = sjm.findAll(Product.class, new SortBy("availabeDate"), new SortBy("price", "DESC"));
+ 
  // delete by object
  sjm.delete(product);
  

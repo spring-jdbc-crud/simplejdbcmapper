@@ -143,9 +143,9 @@ class CachingTest {
 		sjm.updateSpecificProperties(product, "cost", "name", "version");
 		assertEquals(4, cache.size());
 
-		// larger than CACHEABLE_UPDATE_PROPERTIES_COUNT = 3, so no caching
+		// larger than CACHEABLE_UPDATE_PROPERTIES_COUNT = 6, so no caching
 		product.setCreatedOn(LocalDateTime.now());
-		sjm.updateSpecificProperties(product, "cost", "name", "version", "createdOn");
+		sjm.updateSpecificProperties(product, "cost", "name", "version", "createdOn", "createdBy", "updatedOn");
 		assertEquals(4, cache.size()); // no caching so count remains the same
 
 		sjm.delete(product);

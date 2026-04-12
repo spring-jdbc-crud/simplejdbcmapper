@@ -16,7 +16,7 @@ import io.github.simplejdbcmapper.exception.MapperException;
 import io.github.simplejdbcmapper.exception.OptimisticLockingException;
 
 class UpdateOperation {
-	private static final int CACHEABLE_UPDATE_SPECIFIC_PROPERTIES_COUNT = 3;
+	private static final int CACHEABLE_UPDATE_SPECIFIC_PROPERTIES_COUNT = 5;
 
 	private static final String INCREMENTED_VERSION = "[incrementedVersion]";
 

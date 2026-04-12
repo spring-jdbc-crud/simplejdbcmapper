@@ -24,8 +24,6 @@ import org.springframework.jdbc.core.support.SqlCharacterValue;
 import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.util.StringUtils;
 
-import io.github.simplejdbcmapper.exception.MapperException;
-
 /**
  * Utility methods used by mapper.
  *
@@ -51,8 +49,11 @@ class InternalUtils {
 		}
 		if (val == null) {
 			mapSqlParameterSource.addValue(param, null, columnSqlType);
+		} else if (val instanceof byte[] byteArray) {
+			mapSqlParameterSource.addValue(param, new SqlBinaryValue(byteArray), columnSqlType);
 		} else {
-			mapSqlParameterSource.addValue(param, new SqlBinaryValue((byte[]) val), columnSqlType);
+			throw new RuntimeException(bw.getWrappedClass().getSimpleName() + "." + propMapping.getPropertyName()
+					+ " : java type has to be byte[] for a BLOB mapping. No other type is supported.");
 		}
 	}
 
@@ -71,8 +72,8 @@ class InternalUtils {
 			} else if (val instanceof char[] charArray) {
 				mapSqlParameterSource.addValue(param, new SqlCharacterValue(charArray), columnSqlType);
 			} else {
-				throw new MapperException(bw.getWrappedClass().getSimpleName() + "." + propMapping.getPropertyName()
-						+ " : java type should be String or other CharSequence or char[]");
+				throw new RuntimeException(bw.getWrappedClass().getSimpleName() + "." + propMapping.getPropertyName()
+						+ " : java type has to be String or other CharSequence or char[] for a CLOB mapping. No other type is supported");
 			}
 		}
 	}

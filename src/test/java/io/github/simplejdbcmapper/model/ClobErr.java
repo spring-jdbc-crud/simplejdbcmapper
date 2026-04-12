@@ -1,5 +1,7 @@
 package io.github.simplejdbcmapper.model;
 
+import java.sql.Types;
+
 import io.github.simplejdbcmapper.annotation.Column;
 import io.github.simplejdbcmapper.annotation.Id;
 import io.github.simplejdbcmapper.annotation.IdType;
@@ -11,7 +13,7 @@ public class ClobErr {
 	private Integer id;
 
 	// CLOB being mapped to invalid type
-	@Column
+	@Column(sqlType = Types.CLOB)
 	private String[] clobData;
 
 	public Integer getId() {

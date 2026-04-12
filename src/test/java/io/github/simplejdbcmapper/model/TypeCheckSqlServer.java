@@ -1,6 +1,7 @@
 package io.github.simplejdbcmapper.model;
 
 import java.math.BigDecimal;
+import java.sql.Types;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 
@@ -36,13 +37,13 @@ public class TypeCheckSqlServer {
 	@Column
 	private Boolean booleanVal;
 
-	@Column
+	@Column(sqlType = Types.BLOB)
 	private byte[] image;
 
-	@Column
+	@Column(sqlType = Types.CLOB)
 	private char[] clobData;
 
-	@Column
+	@Column(sqlType = microsoft.sql.Types.DATETIMEOFFSET)
 	DateTimeOffset offsetDateTimeData;
 
 	public Integer getId() {

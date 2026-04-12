@@ -31,7 +31,7 @@ public class TypeCheckOracle {
 	@Column
 	private BigDecimal bigDecimalData;
 
-	@Column(sqlType = -101)
+	@Column(sqlType = oracle.jdbc.OracleTypes.TIMESTAMPTZ)
 	private OffsetDateTime offsetDateTimeData;
 
 	@Column(name = "string_enum")

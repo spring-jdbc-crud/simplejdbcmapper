@@ -8,7 +8,6 @@ import java.util.Map;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.jdbc.core.StatementCreatorUtils;
 import org.springframework.jdbc.core.metadata.TableParameterMetaData;
 import org.springframework.util.StringUtils;
 
@@ -44,7 +43,7 @@ class AnnotationProcessor {
 				throw new AnnotationException(colName + " column not found in table " + tableName + " for property "
 						+ field.getDeclaringClass().getSimpleName() + "." + propertyName);
 			}
-			Integer sqlType = StatementCreatorUtils.javaTypeToSqlParameterType(field.getType());
+			Integer sqlType = InternalUtils.javaTypeToSqlParameterType(field.getType());
 			// System.out.println("fieldName:" + field.getName() + " type: " +
 			// field.getType() + " TypeHandler JDBCType:"
 			// + typeHandler.getJDBCType(field.getType()));
@@ -119,7 +118,7 @@ class AnnotationProcessor {
 					throw new AnnotationException(colName + " column not found in table " + tableName + " for property "
 							+ field.getDeclaringClass().getSimpleName() + "." + propertyName);
 				}
-				Integer sqlType = StatementCreatorUtils.javaTypeToSqlParameterType(field.getType());
+				Integer sqlType = InternalUtils.javaTypeToSqlParameterType(field.getType());
 				if (columnNameToTpmd != null) {
 					sqlType = columnNameToTpmd.get(colName).getSqlType();
 				}

@@ -13,9 +13,11 @@
  */
 package io.github.simplejdbcmapper.core;
 
+import java.sql.Types;
 import java.util.Locale;
 
 import org.springframework.beans.BeanWrapper;
+import org.springframework.jdbc.core.StatementCreatorUtils;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.support.SqlBinaryValue;
 import org.springframework.jdbc.core.support.SqlCharacterValue;
@@ -30,6 +32,14 @@ import io.github.simplejdbcmapper.exception.MapperException;
  * @author Antony Joseph
  */
 class InternalUtils {
+
+	public static Integer javaTypeToSqlParameterType(Class<?> type) {
+		if (type.isEnum()) {
+			return Types.VARCHAR;
+		} else {
+			return StatementCreatorUtils.javaTypeToSqlParameterType(type);
+		}
+	}
 
 	public static void assignBlobMapSqlParameterSource(BeanWrapper bw, MapSqlParameterSource mapSqlParameterSource,
 			PropertyMapping propMapping, Integer columnSqlType, boolean forInsert) {
@@ -68,15 +78,16 @@ class InternalUtils {
 
 	public static void assignEnumMapSqlParameterSource(BeanWrapper bw, MapSqlParameterSource mapSqlParameterSource,
 			PropertyMapping propMapping, Integer columnSqlType, boolean forInsert) {
-		Object val = bw.getPropertyValue(propMapping.getPropertyName());
+		Object enumObj = bw.getPropertyValue(propMapping.getPropertyName());
 		String param = propMapping.getPropertyName();
 		if (forInsert) {
 			param = propMapping.getColumnName();
 		}
-		if (val != null) {
-			val = val.toString();
+		if (enumObj != null) {
+			mapSqlParameterSource.addValue(param, ((Enum<?>) enumObj).name(), columnSqlType);
+		} else {
+			mapSqlParameterSource.addValue(param, null, columnSqlType);
 		}
-		mapSqlParameterSource.addValue(param, val, columnSqlType);
 	}
 
 	/**

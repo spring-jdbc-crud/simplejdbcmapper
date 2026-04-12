@@ -64,11 +64,8 @@ class PropertyMapping {
 		// table column names or column names with spaces in them
 		this.columnName = InternalUtils.toLowerCase(columnName);
 		this.columnSqlType = columnSqlType;
-		isEnum = propertyType.isEnum();
-		if (isEnum) {
-			this.columnSqlType = Types.VARCHAR;
-		}
 		this.columnOverriddenSqlType = columnOverriddenSqlType;
+		isEnum = propertyType.isEnum();
 		determineBlobClob();
 	}
 

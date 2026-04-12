@@ -37,7 +37,7 @@ class UpdateOperation {
 	}
 
 	public Integer update(Object obj) {
-		Assert.notNull(obj, "Object must not be null");
+		Assert.notNull(obj, "obj must not be null");
 		TableMapping tableMapping = sjmSupport.getTableMapping(obj.getClass());
 		SqlAndParams sqlAndParams = updateSqlCache.get(obj.getClass().getName());
 		if (sqlAndParams == null) {
@@ -48,7 +48,7 @@ class UpdateOperation {
 	}
 
 	public Integer updateSpecificProperties(Object obj, String... propertyNames) {
-		Assert.notNull(obj, "Object must not be null");
+		Assert.notNull(obj, "obj must not be null");
 		Assert.notNull(propertyNames, "propertyNames must not be null");
 		TableMapping tableMapping = sjmSupport.getTableMapping(obj.getClass());
 		SqlAndParams sqlAndParams = null;

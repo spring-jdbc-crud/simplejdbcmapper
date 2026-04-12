@@ -21,7 +21,7 @@ class InsertOperation {
 	}
 
 	public void insert(Object obj) {
-		Assert.notNull(obj, "Object must not be null");
+		Assert.notNull(obj, "obj must not be null");
 		TableMapping tableMapping = sjmSupport.getTableMapping(obj.getClass());
 		BeanWrapper bw = sjmSupport.getBeanWrapper(obj);
 		validateId(tableMapping, bw);

@@ -166,7 +166,7 @@ class FindTest {
 		Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
 			sjm.findByPropertyValue(null, "orderId", 1);
 		});
-		assertTrue(exception.getMessage().contains("Class must not be null"));
+		assertTrue(exception.getMessage().contains("type must not be null"));
 	}
 
 	@Test

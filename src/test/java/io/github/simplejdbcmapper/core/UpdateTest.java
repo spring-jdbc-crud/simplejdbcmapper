@@ -140,7 +140,7 @@ class UpdateTest {
 		Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
 			sjm.update(null);
 		});
-		assertTrue(exception.getMessage().contains("Object must not be null"));
+		assertTrue(exception.getMessage().contains("obj must not be null"));
 	}
 
 	@Test

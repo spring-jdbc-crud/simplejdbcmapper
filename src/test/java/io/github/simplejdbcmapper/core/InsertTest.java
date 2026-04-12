@@ -155,7 +155,7 @@ class InsertTest {
 		Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
 			sjm.insert(null);
 		});
-		assertTrue(exception.getMessage().contains("Object must not be null"));
+		assertTrue(exception.getMessage().contains("obj must not be null"));
 	}
 
 	@Test

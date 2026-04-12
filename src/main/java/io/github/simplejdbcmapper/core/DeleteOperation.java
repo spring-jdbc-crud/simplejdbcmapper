@@ -16,20 +16,20 @@ class DeleteOperation {
 	}
 
 	public Integer delete(Object obj) {
-		Assert.notNull(obj, "Object must not be null");
+		Assert.notNull(obj, "obj must not be null");
 		TableMapping tableMapping = sjmSupport.getTableMapping(obj.getClass());
 		BeanWrapper bw = sjmSupport.getBeanWrapper(obj);
 		return deleteById(obj.getClass(), bw.getPropertyValue(tableMapping.getIdPropertyName()));
 	}
 
-	public Integer deleteById(Class<?> clazz, Object id) {
-		Assert.notNull(clazz, "Class must not be null");
-		TableMapping tableMapping = sjmSupport.getTableMapping(clazz);
-		String sql = deleteSqlCache.get(clazz.getName());
+	public Integer deleteById(Class<?> type, Object id) {
+		Assert.notNull(type, "type must not be null");
+		TableMapping tableMapping = sjmSupport.getTableMapping(type);
+		String sql = deleteSqlCache.get(type.getName());
 		if (sql == null) {
 			sql = "DELETE FROM " + tableMapping.fullyQualifiedTableName() + " WHERE " + tableMapping.getIdColumnName()
 					+ " = ?";
-			deleteSqlCache.put(clazz.getName(), sql);
+			deleteSqlCache.put(type.getName(), sql);
 		}
 		return sjmSupport.getJdbcTemplate().update(sql,
 				new SqlParameterValue(tableMapping.getIdPropertyMapping().getEffectiveSqlType(), id));

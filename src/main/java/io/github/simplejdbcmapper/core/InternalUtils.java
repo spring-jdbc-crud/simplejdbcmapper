@@ -15,8 +15,14 @@ package io.github.simplejdbcmapper.core;
 
 import java.util.Locale;
 
+import org.springframework.beans.BeanWrapper;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.support.SqlBinaryValue;
+import org.springframework.jdbc.core.support.SqlCharacterValue;
 import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.util.StringUtils;
+
+import io.github.simplejdbcmapper.exception.MapperException;
 
 /**
  * Utility methods used by mapper.
@@ -24,6 +30,55 @@ import org.springframework.util.StringUtils;
  * @author Antony Joseph
  */
 class InternalUtils {
+
+	public static void assignBlobMapSqlParameterSource(BeanWrapper bw, MapSqlParameterSource mapSqlParameterSource,
+			PropertyMapping propMapping, Integer columnSqlType, boolean forInsert) {
+		Object val = bw.getPropertyValue(propMapping.getPropertyName());
+		String param = propMapping.getPropertyName();
+		if (forInsert) {
+			param = propMapping.getColumnName();
+		}
+		if (val == null) {
+			mapSqlParameterSource.addValue(param, null, columnSqlType);
+		} else {
+			mapSqlParameterSource.addValue(param, new SqlBinaryValue((byte[]) val), columnSqlType);
+		}
+	}
+
+	public static void assignClobMapSqlParameterSource(BeanWrapper bw, MapSqlParameterSource mapSqlParameterSource,
+			PropertyMapping propMapping, Integer columnSqlType, boolean forInsert) {
+		Object val = bw.getPropertyValue(propMapping.getPropertyName());
+		String param = propMapping.getPropertyName();
+		if (forInsert) {
+			param = propMapping.getColumnName();
+		}
+		if (val == null) {
+			mapSqlParameterSource.addValue(param, null, columnSqlType);
+		} else {
+			if (val instanceof CharSequence charSequence) {
+				mapSqlParameterSource.addValue(param, new SqlCharacterValue(charSequence), columnSqlType);
+			} else if (val instanceof char[] charArray) {
+				mapSqlParameterSource.addValue(param, new SqlCharacterValue(charArray), columnSqlType);
+			} else {
+				throw new MapperException(bw.getWrappedClass().getSimpleName() + "." + propMapping.getPropertyName()
+						+ " : java type should be String or other CharSequence or char[]");
+			}
+		}
+	}
+
+	public static void assignEnumMapSqlParameterSource(BeanWrapper bw, MapSqlParameterSource mapSqlParameterSource,
+			PropertyMapping propMapping, Integer columnSqlType, boolean forInsert) {
+		Object val = bw.getPropertyValue(propMapping.getPropertyName());
+		String param = propMapping.getPropertyName();
+		if (forInsert) {
+			param = propMapping.getColumnName();
+		}
+		if (val != null) {
+			val = val.toString();
+		}
+		mapSqlParameterSource.addValue(param, val, columnSqlType);
+	}
+
 	/**
 	 * Converts underscore case to camel case. Ex: user_last_name gets converted to
 	 * userLastName.

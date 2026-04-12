@@ -45,6 +45,8 @@ class TableMappingProvider {
 
 	private final AnnotationProcessor ap;
 
+	private boolean accessTableColumnMetaData = true;
+
 	private String commonDatabaseName;
 
 	public TableMappingProvider(DataSource dataSource, String schemaName, String catalogName) {
@@ -72,21 +74,33 @@ class TableMappingProvider {
 		return tableMapping;
 	}
 
+	void setAccessTableColumnMetaData(boolean val) {
+		accessTableColumnMetaData = val;
+	}
+
+	boolean getAccessTableColumnMetaData() {
+		return accessTableColumnMetaData;
+	}
+
 	SimpleCache<String, TableMapping> getTableMappingCache() {
 		return tableMappingCache;
 	}
 
 	private List<PropertyMapping> getPropertyMappings(Class<?> clazz, String tableName, String catalog, String schema,
 			List<Field> fields) {
-		List<TableParameterMetaData> tpmdList = getTableParameterMetaDataList(tableName, schema, catalog);
-		if (ObjectUtils.isEmpty(tpmdList)) {
-			throw new MapperException(getTableMetaDataNotFoundErrMsg(clazz, tableName, schema, catalog));
+		Map<String, TableParameterMetaData> columnNameToTpmd = null;
+		if (accessTableColumnMetaData) {
+			List<TableParameterMetaData> tpmdList = getTableParameterMetaDataList(tableName, schema, catalog);
+			if (ObjectUtils.isEmpty(tpmdList)) {
+				throw new MapperException(getTableMetaDataNotFoundErrMsg(clazz, tableName, schema, catalog));
+			}
+			// key:column name, value: TableParameterMetaData
+			columnNameToTpmd = new HashMap<>();
+			for (TableParameterMetaData tpmd : tpmdList) {
+				columnNameToTpmd.put(InternalUtils.toLowerCase(tpmd.getParameterName()), tpmd);
+			}
 		}
-		// key:column name, value: TableParameterMetaData
-		Map<String, TableParameterMetaData> columnNameToTpmd = new HashMap<>();
-		for (TableParameterMetaData tpmd : tpmdList) {
-			columnNameToTpmd.put(InternalUtils.toLowerCase(tpmd.getParameterName()), tpmd);
-		}
+
 		// key:propertyName, value:PropertyMapping. LinkedHashMap to maintain order of
 		// properties
 		Map<String, PropertyMapping> propNameToPropertyMapping = new LinkedHashMap<>();
@@ -159,7 +173,7 @@ class TableMappingProvider {
 		tableMetaDataContext.setTableName(table);
 		tableMetaDataContext.setSchemaName(schema);
 		tableMetaDataContext.setCatalogName(catalog);
-		tableMetaDataContext.setAccessTableColumnMetaData(true);
+		tableMetaDataContext.setAccessTableColumnMetaData(accessTableColumnMetaData);
 		tableMetaDataContext.setOverrideIncludeSynonymsDefault(true);
 		return tableMetaDataContext;
 	}

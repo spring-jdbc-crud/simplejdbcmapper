@@ -40,8 +40,10 @@ public class SimpleJdbcMapperConfig {
 		if (jdbcDriver.contains("mysql")) {
 			// schema1 database name for mysql
 			simpleJdbcMapper = new SimpleJdbcMapper(dataSource, null, "schema1");
+			// simpleJdbcMapper.setAccessTableColumnMetaData(false);
 		} else {
 			simpleJdbcMapper = new SimpleJdbcMapper(dataSource, "schema1");
+			simpleJdbcMapper.setAccessTableColumnMetaData(false);
 		}
 
 		// for testing with record auditing

@@ -50,8 +50,13 @@ class FindOperation {
 		}
 		T obj = null;
 		try {
-			obj = sjmSupport.getJdbcTemplate().queryForObject(sql, getBeanPropertyRowMapper(clazz),
-					new SqlParameterValue(tableMapping.getIdPropertyMapping().getEffectiveSqlType(), id));
+			Integer effectiveSqlType = tableMapping.getIdPropertyMapping().getEffectiveSqlType();
+			if (effectiveSqlType != null) {
+				obj = sjmSupport.getJdbcTemplate().queryForObject(sql, getBeanPropertyRowMapper(clazz),
+						new SqlParameterValue(tableMapping.getIdPropertyMapping().getEffectiveSqlType(), id));
+			} else {
+				obj = sjmSupport.getJdbcTemplate().queryForObject(sql, getBeanPropertyRowMapper(clazz), id);
+			}
 		} catch (EmptyResultDataAccessException e) {
 			// do nothing
 		}

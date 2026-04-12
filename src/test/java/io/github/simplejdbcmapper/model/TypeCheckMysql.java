@@ -1,6 +1,7 @@
 package io.github.simplejdbcmapper.model;
 
 import java.math.BigDecimal;
+import java.sql.Types;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -39,7 +40,7 @@ public class TypeCheckMysql {
 	@Column
 	private byte[] image;
 
-	@Column(name = "string_enum")
+	@Column(name = "string_enum", sqlType = Types.VARCHAR)
 	private StatusEnum status;
 
 	@Column

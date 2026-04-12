@@ -56,6 +56,8 @@ class SimpleJdbcMapperSupport {
 
 	private boolean conversionServiceManuallySet = false;
 
+	public boolean accessTableColumnMetaData = true;
+
 	/**
 	 * Constructor.
 	 *
@@ -126,6 +128,14 @@ class SimpleJdbcMapperSupport {
 
 	public String getCatalogName() {
 		return catalogName;
+	}
+
+	public void setAccessTableColumnMetaData(boolean val) {
+		tableMappingProvider.setAccessTableColumnMetaData(val);
+	}
+
+	public boolean getAccessTableColumnMetaData() {
+		return tableMappingProvider.getAccessTableColumnMetaData();
 	}
 
 	TableMapping getTableMapping(Class<?> clazz) {

@@ -114,6 +114,13 @@ class TypeCheckOracleTest {
 	}
 
 	@Test
+	void insert_TypeCheckWithNulls_Test() {
+		TypeCheckOracle iObj = new TypeCheckOracle();
+		sjm.insert(iObj);
+		assertNotNull(iObj.getId());
+	}
+
+	@Test
 	void insert_TypeCheckWithBlobAndClob_AsNull_Test() {
 		TypeCheckOracle obj = new TypeCheckOracle();
 		obj.setImage(null);

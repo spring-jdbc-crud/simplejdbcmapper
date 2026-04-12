@@ -402,4 +402,8 @@ public final class SimpleJdbcMapper {
 	public String getCatalogName() {
 		return simpleJdbcMapperSupport.getCatalogName();
 	}
+
+	public void setAccessTableColumnMetaData(boolean val) {
+		simpleJdbcMapperSupport.setAccessTableColumnMetaData(val);
+	}
 }

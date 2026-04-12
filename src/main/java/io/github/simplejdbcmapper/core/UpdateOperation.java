@@ -10,8 +10,6 @@ import java.util.stream.Collectors;
 
 import org.springframework.beans.BeanWrapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import org.springframework.jdbc.core.support.SqlBinaryValue;
-import org.springframework.jdbc.core.support.SqlCharacterValue;
 import org.springframework.util.Assert;
 
 import io.github.simplejdbcmapper.exception.MapperException;
@@ -133,44 +131,22 @@ class UpdateOperation {
 				mapSqlParameterSource.addValue(INCREMENTED_VERSION, incrementedVersionVal, Types.INTEGER);
 			} else {
 				PropertyMapping propMapping = tableMapping.getPropertyMappingByPropertyName(paramName);
-				int columnSqlType = propMapping.getEffectiveSqlType();
+				Integer columnSqlType = propMapping.getEffectiveSqlType();
 				if (propMapping.isBinaryLargeObject()) {
-					assignBlobMapSqlParameterSource(bw, mapSqlParameterSource, paramName, columnSqlType);
+					InternalUtils.assignBlobMapSqlParameterSource(bw, mapSqlParameterSource, propMapping, columnSqlType,
+							false);
 				} else if (propMapping.isCharacterLargeObject()) {
-					assignClobMapSqlParameterSource(bw, mapSqlParameterSource, paramName, columnSqlType);
+					InternalUtils.assignClobMapSqlParameterSource(bw, mapSqlParameterSource, propMapping, columnSqlType,
+							false);
+				} else if (propMapping.isEnum()) {
+					InternalUtils.assignEnumMapSqlParameterSource(bw, mapSqlParameterSource, propMapping, columnSqlType,
+							false);
 				} else {
 					mapSqlParameterSource.addValue(paramName, bw.getPropertyValue(paramName), columnSqlType);
 				}
 			}
 		}
 		return mapSqlParameterSource;
-	}
-
-	private void assignBlobMapSqlParameterSource(BeanWrapper bw, MapSqlParameterSource mapSqlParameterSource,
-			String paramName, int columnSqlType) {
-		Object val = bw.getPropertyValue(paramName);
-		if (val == null) {
-			mapSqlParameterSource.addValue(paramName, null, columnSqlType);
-		} else {
-			mapSqlParameterSource.addValue(paramName, new SqlBinaryValue((byte[]) val), columnSqlType);
-		}
-	}
-
-	private void assignClobMapSqlParameterSource(BeanWrapper bw, MapSqlParameterSource mapSqlParameterSource,
-			String paramName, int columnSqlType) {
-		Object val = bw.getPropertyValue(paramName);
-		if (val == null) {
-			mapSqlParameterSource.addValue(paramName, null, columnSqlType);
-		} else {
-			if (val instanceof CharSequence charSequence) {
-				mapSqlParameterSource.addValue(paramName, new SqlCharacterValue(charSequence), columnSqlType);
-			} else if (val instanceof char[] charArray) {
-				mapSqlParameterSource.addValue(paramName, new SqlCharacterValue(charArray), columnSqlType);
-			} else {
-				throw new MapperException(bw.getWrappedClass().getSimpleName() + "." + paramName
-						+ " : java type should be String or other CharSequence or char[]");
-			}
-		}
 	}
 
 	private Integer getIncrementedVersionValue(TableMapping tableMapping, BeanWrapper bw) {

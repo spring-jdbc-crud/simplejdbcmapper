@@ -27,9 +27,11 @@ class PropertyMapping {
 
 	private String columnName;
 
-	private int columnSqlType; // java.sql.Types from database meta data.
+	private Integer columnSqlType; // java.sql.Types from database meta data.
 
 	private Integer columnOverriddenSqlType;
+
+	private boolean isEnum = false;
 
 	private boolean idAnnotation = false;
 
@@ -47,11 +49,11 @@ class PropertyMapping {
 
 	private boolean characterLargeObject = false;
 
-	public PropertyMapping(String propertyName, Class<?> propertyType, String columnName, int columnSqlType) {
+	public PropertyMapping(String propertyName, Class<?> propertyType, String columnName, Integer columnSqlType) {
 		this(propertyName, propertyType, columnName, columnSqlType, null);
 	}
 
-	public PropertyMapping(String propertyName, Class<?> propertyType, String columnName, int columnSqlType,
+	public PropertyMapping(String propertyName, Class<?> propertyType, String columnName, Integer columnSqlType,
 			Integer columnOverriddenSqlType) {
 		if (propertyName == null || propertyType == null || columnName == null) {
 			throw new IllegalArgumentException("propertyName, propertyType, columnName must not be null");
@@ -62,6 +64,10 @@ class PropertyMapping {
 		// table column names or column names with spaces in them
 		this.columnName = InternalUtils.toLowerCase(columnName);
 		this.columnSqlType = columnSqlType;
+		isEnum = propertyType.isEnum();
+		if (isEnum) {
+			this.columnSqlType = Types.VARCHAR;
+		}
 		this.columnOverriddenSqlType = columnOverriddenSqlType;
 		determineBlobClob();
 	}
@@ -134,7 +140,7 @@ class PropertyMapping {
 		this.updatedByAnnotation = updatedByAnnotation;
 	}
 
-	public int getEffectiveSqlType() {
+	public Integer getEffectiveSqlType() {
 		return columnOverriddenSqlType == null ? columnSqlType : columnOverriddenSqlType;
 	}
 
@@ -146,18 +152,17 @@ class PropertyMapping {
 		return characterLargeObject;
 	}
 
-	private void determineBlobClob() {
-		if (byte[].class.getName().equals(propertyClassName)) {
-			binaryLargeObject = true;
-		} else if (char[].class.getName().equals(propertyClassName)) {
-			characterLargeObject = true;
-		} else {
-			int effectiveSqlType = getEffectiveSqlType();
-			if (effectiveSqlType == Types.CLOB || effectiveSqlType == Types.NCLOB
-					|| effectiveSqlType == Types.LONGVARCHAR || effectiveSqlType == Types.LONGNVARCHAR) {
-				characterLargeObject = true;
-			}
-		}
+	public boolean isEnum() {
+		return isEnum;
 	}
 
+	private void determineBlobClob() {
+		Integer effectiveSqlType = getEffectiveSqlType();
+		if (effectiveSqlType == Types.BLOB || effectiveSqlType == Types.ARRAY) {
+			binaryLargeObject = true;
+		} else if (effectiveSqlType != null && (effectiveSqlType == Types.CLOB || effectiveSqlType == Types.NCLOB
+				|| effectiveSqlType == Types.LONGVARCHAR || effectiveSqlType == Types.LONGNVARCHAR)) {
+			characterLargeObject = true;
+		}
+	}
 }

@@ -1,6 +1,7 @@
 package io.github.simplejdbcmapper.model;
 
 import java.math.BigDecimal;
+import java.sql.Types;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
@@ -30,22 +31,22 @@ public class TypeCheckOracle {
 	@Column
 	private BigDecimal bigDecimalData;
 
-	@Column
+	@Column(sqlType = -101)
 	private OffsetDateTime offsetDateTimeData;
 
 	@Column(name = "string_enum")
 	private StatusEnum status;
 
-	@Column
+	@Column(sqlType = Types.BLOB)
 	private byte[] image;
 
-	@Column
+	@Column(sqlType = Types.CLOB)
 	private char[] clobData;
 
-	@Column
+	@Column(sqlType = Types.CLOB)
 	private String clobDataStr;
 
-	@Column
+	@Column(sqlType = Types.NCLOB)
 	private char[] nclobData;
 
 	public StatusEnum getStatus() {

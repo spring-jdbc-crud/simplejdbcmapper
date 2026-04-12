@@ -13,7 +13,9 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import io.github.simplejdbcmapper.model.Customer;
+import io.github.simplejdbcmapper.model.Employee;
 import io.github.simplejdbcmapper.model.Order;
+import io.github.simplejdbcmapper.model.Person;
 import io.github.simplejdbcmapper.model.Product;
 import io.github.simplejdbcmapper.model.ProductWithNoAuditFields;
 
@@ -241,6 +243,18 @@ class CachingTest {
 
 		sjm.delete(prod);
 		assertEquals(2, cache.size());
+
+		Employee emp = new Employee();
+		emp.setId(Integer.valueOf(1));
+		emp.setLastName("xyz");
+		sjm.update(emp);
+		assertEquals(3, cache.size());
+
+		Person person = new Person();
+		person.setPersonId("person101");
+		person.setFirstName("mike");
+		sjm.updateSpecificProperties(person, "firstName");
+		assertEquals(4, cache.size());
 
 	}
 

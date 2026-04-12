@@ -198,8 +198,8 @@ class FindOperation {
 		return beanColumnsTableAliasSqlCache;
 	}
 
-	private <T> BeanPropertyRowMapper<T> getBeanPropertyRowMapper(Class<T> clazz) {
-		BeanPropertyRowMapper<T> rowMapper = BeanPropertyRowMapper.newInstance(clazz);
+	private <T> BeanPropertyRowMapper<T> getBeanPropertyRowMapper(Class<T> type) {
+		BeanPropertyRowMapper<T> rowMapper = BeanPropertyRowMapper.newInstance(type);
 		rowMapper.setConversionService(sjmSupport.getConversionService());
 		return rowMapper;
 	}

@@ -50,6 +50,7 @@ public class SimpleJdbcMapperConfig {
 		if (runWithConversionServiceNull) {
 			simpleJdbcMapper.setConversionService(null);
 		}
+
 		return simpleJdbcMapper;
 	}
 

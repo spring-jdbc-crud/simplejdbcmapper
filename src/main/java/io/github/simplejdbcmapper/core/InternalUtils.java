@@ -37,7 +37,7 @@ class InternalUtils {
 		if (type.isEnum()) {
 			return Types.VARCHAR;
 		} else {
-			// spring already has some default mappings.
+			// use springs default mappings.
 			return StatementCreatorUtils.javaTypeToSqlParameterType(type);
 		}
 	}

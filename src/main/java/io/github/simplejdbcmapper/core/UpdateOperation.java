@@ -39,16 +39,12 @@ class UpdateOperation {
 	public Integer update(Object obj) {
 		Assert.notNull(obj, "Object must not be null");
 		TableMapping tableMapping = sjmSupport.getTableMapping(obj.getClass());
-		boolean cached = false;
 		SqlAndParams sqlAndParams = updateSqlCache.get(obj.getClass().getName());
 		if (sqlAndParams == null) {
 			sqlAndParams = buildSqlAndParamsForUpdate(tableMapping);
-		}
-		Integer cnt = updateInternal(obj, sqlAndParams, tableMapping);
-		if (!cached) {
 			updateSqlCache.put(obj.getClass().getName(), sqlAndParams);
 		}
-		return cnt;
+		return updateInternal(obj, sqlAndParams, tableMapping);
 	}
 
 	public Integer updateSpecificProperties(Object obj, String... propertyNames) {
@@ -56,19 +52,17 @@ class UpdateOperation {
 		Assert.notNull(propertyNames, "propertyNames must not be null");
 		TableMapping tableMapping = sjmSupport.getTableMapping(obj.getClass());
 		SqlAndParams sqlAndParams = null;
-		boolean cached = false;
 		String cacheKey = getUpdateSpecificPropertiesCacheKey(obj, propertyNames);
 		if (cacheKey != null) {
 			sqlAndParams = updateSpecificPropertiesSqlCache.get(cacheKey);
 		}
 		if (sqlAndParams == null) {
 			sqlAndParams = buildSqlAndParamsForUpdateSpecificProperties(tableMapping, propertyNames);
+			if (cacheKey != null) {
+				updateSpecificPropertiesSqlCache.put(cacheKey, sqlAndParams);
+			}
 		}
-		Integer cnt = updateInternal(obj, sqlAndParams, tableMapping);
-		if (!cached && cacheKey != null) {
-			updateSpecificPropertiesSqlCache.put(cacheKey, sqlAndParams);
-		}
-		return cnt;
+		return updateInternal(obj, sqlAndParams, tableMapping);
 	}
 
 	SimpleCache<String, SqlAndParams> getUpdateSqlCache() {

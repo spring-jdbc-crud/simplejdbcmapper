@@ -25,18 +25,14 @@ class DeleteOperation {
 	public Integer deleteById(Class<?> clazz, Object id) {
 		Assert.notNull(clazz, "Class must not be null");
 		TableMapping tableMapping = sjmSupport.getTableMapping(clazz);
-		boolean cached = false;
 		String sql = deleteSqlCache.get(clazz.getName());
 		if (sql == null) {
 			sql = "DELETE FROM " + tableMapping.fullyQualifiedTableName() + " WHERE " + tableMapping.getIdColumnName()
 					+ " = ?";
-		}
-		Integer cnt = sjmSupport.getJdbcTemplate().update(sql,
-				new SqlParameterValue(tableMapping.getIdPropertyMapping().getEffectiveSqlType(), id));
-		if (!cached) {
 			deleteSqlCache.put(clazz.getName(), sql);
 		}
-		return cnt;
+		return sjmSupport.getJdbcTemplate().update(sql,
+				new SqlParameterValue(tableMapping.getIdPropertyMapping().getEffectiveSqlType(), id));
 	}
 
 	SimpleCache<String, String> getDeleteSqlCache() {

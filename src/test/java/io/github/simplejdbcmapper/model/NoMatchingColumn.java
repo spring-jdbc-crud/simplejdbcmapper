@@ -11,4 +11,21 @@ public class NoMatchingColumn {
 
 	@Column
 	private Double cost;
+
+	public Integer getIdSomething() {
+		return idSomething;
+	}
+
+	public void setIdSomething(Integer idSomething) {
+		this.idSomething = idSomething;
+	}
+
+	public Double getCost() {
+		return cost;
+	}
+
+	public void setCost(Double cost) {
+		this.cost = cost;
+	}
+
 }

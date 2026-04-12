@@ -8,6 +8,7 @@ import java.util.Map;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.jdbc.core.SqlTypeValue;
 import org.springframework.jdbc.core.metadata.TableParameterMetaData;
 import org.springframework.util.StringUtils;
 
@@ -39,19 +40,13 @@ class AnnotationProcessor {
 				colName = InternalUtils.toUnderscoreName(propertyName);
 			}
 			colName = InternalUtils.toLowerCase(colName);
-			if (columnNameToTpmd != null && !columnNameToTpmd.containsKey(colName)) {
-				throw new AnnotationException(colName + " column not found in table " + tableName + " for property "
-						+ field.getDeclaringClass().getSimpleName() + "." + propertyName);
-			}
 			Integer sqlType = InternalUtils.javaTypeToSqlParameterType(field.getType());
-			// System.out.println("fieldName:" + field.getName() + " type: " +
-			// field.getType() + " TypeHandler JDBCType:"
-			// + typeHandler.getJDBCType(field.getType()));
-			if (columnNameToTpmd != null) {
+			if (sqlType == SqlTypeValue.TYPE_UNKNOWN) {
+				System.out.println(
+						"sqlType Unknown:" + field.getDeclaringClass().getSimpleName() + "." + field.getName());
+			}
+			if (columnNameToTpmd != null && columnNameToTpmd.get(colName) != null) {
 				sqlType = columnNameToTpmd.get(colName).getSqlType();
-				System.out.println("Database metadata sqlType:" + sqlType);
-				// System.out.println("Database metadata JDBCType:" +
-				// JDBCType.valueOf(sqlType));
 			}
 
 			PropertyMapping propertyMapping = null;
@@ -114,12 +109,12 @@ class AnnotationProcessor {
 			PropertyMapping propMapping = propNameToPropertyMapping.get(propertyName);
 			if (propMapping == null) { // it means there is no @Column annotation for the property
 				String colName = InternalUtils.toUnderscoreName(propertyName); // the default column name
-				if (columnNameToTpmd != null && !columnNameToTpmd.containsKey(colName)) {
-					throw new AnnotationException(colName + " column not found in table " + tableName + " for property "
-							+ field.getDeclaringClass().getSimpleName() + "." + propertyName);
-				}
 				Integer sqlType = InternalUtils.javaTypeToSqlParameterType(field.getType());
-				if (columnNameToTpmd != null) {
+				if (sqlType == SqlTypeValue.TYPE_UNKNOWN) {
+					System.out.println(
+							"sqlType Unknown:" + field.getDeclaringClass().getSimpleName() + "." + field.getName());
+				}
+				if (columnNameToTpmd != null && columnNameToTpmd.get(colName) != null) {
 					sqlType = columnNameToTpmd.get(colName).getSqlType();
 				}
 				propMapping = new PropertyMapping(propertyName, field.getType(), colName, sqlType);

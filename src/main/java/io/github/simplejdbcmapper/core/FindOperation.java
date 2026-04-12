@@ -46,22 +46,14 @@ class FindOperation {
 		if (sql == null) {
 			sql = "SELECT " + getBeanFriendlySqlColumns(clazz) + " FROM " + tableMapping.fullyQualifiedTableName()
 					+ " WHERE " + tableMapping.getIdColumnName() + " = ?";
+			findByIdSqlCache.put(clazz.getName(), sql);
 		}
-		boolean cached = false;
 		T obj = null;
 		try {
-			Integer effectiveSqlType = tableMapping.getIdPropertyMapping().getEffectiveSqlType();
-			if (effectiveSqlType != null) {
-				obj = sjmSupport.getJdbcTemplate().queryForObject(sql, getBeanPropertyRowMapper(clazz),
-						new SqlParameterValue(tableMapping.getIdPropertyMapping().getEffectiveSqlType(), id));
-			} else {
-				obj = sjmSupport.getJdbcTemplate().queryForObject(sql, getBeanPropertyRowMapper(clazz), id);
-			}
+			obj = sjmSupport.getJdbcTemplate().queryForObject(sql, getBeanPropertyRowMapper(clazz),
+					new SqlParameterValue(tableMapping.getIdPropertyMapping().getEffectiveSqlType(), id));
 		} catch (EmptyResultDataAccessException e) {
 			// do nothing
-		}
-		if (!cached) {
-			findByIdSqlCache.put(clazz.getName(), sql);
 		}
 		return obj;
 	}
@@ -141,7 +133,6 @@ class FindOperation {
 
 	public String getBeanFriendlySqlColumns(Class<?> clazz) {
 		Assert.notNull(clazz, "Class must not be null");
-		boolean cached = false;
 		String columnsSql = beanColumnsSqlCache.get(clazz.getName());
 		if (columnsSql == null) {
 			TableMapping tableMapping = sjmSupport.getTableMapping(clazz);
@@ -155,11 +146,6 @@ class FindOperation {
 				}
 			}
 			columnsSql = sj.toString();
-		} else {
-			cached = true;
-		}
-		if (!cached && findByIdSqlCache.get(clazz.getName()) != null) {
-			// mapping is valid since there has been a successful findById, so cache it
 			beanColumnsSqlCache.put(clazz.getName(), columnsSql);
 		}
 		return columnsSql;
@@ -170,7 +156,6 @@ class FindOperation {
 		if (!StringUtils.hasText(tableAlias)) {
 			throw new IllegalArgumentException("tableAlias has no value");
 		}
-		boolean cached = false;
 		String cacheKey = clazz.getName() + "-" + tableAlias;
 		String columnsSql = beanColumnsTableAliasSqlCache.get(cacheKey);
 		if (columnsSql == null) {
@@ -186,11 +171,6 @@ class FindOperation {
 				}
 			}
 			columnsSql = sj.toString();
-		} else {
-			cached = true;
-		}
-		if (!cached && findByIdSqlCache.get(clazz.getName()) != null) {
-			// mapping is valid since there has been a successful findById, so cache it
 			beanColumnsTableAliasSqlCache.put(cacheKey, columnsSql);
 		}
 		return columnsSql;

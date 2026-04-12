@@ -13,8 +13,14 @@
  */
 package io.github.simplejdbcmapper.core;
 
+import java.sql.Types;
 import java.util.Locale;
 
+import org.springframework.beans.BeanWrapper;
+import org.springframework.jdbc.core.StatementCreatorUtils;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
+import org.springframework.jdbc.core.support.SqlBinaryValue;
+import org.springframework.jdbc.core.support.SqlCharacterValue;
 import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.util.StringUtils;
 
@@ -24,6 +30,68 @@ import org.springframework.util.StringUtils;
  * @author Antony Joseph
  */
 class InternalUtils {
+
+	public static Integer javaTypeToSqlParameterType(Class&lt;?&gt; type) {
+<span class="fc bfc" id="L35" title="All 2 branches covered.">		if (type.isEnum()) {</span>
+<span class="fc" id="L36">			return Types.VARCHAR;</span>
+		} else {
+			// use springs default mappings.
+<span class="fc" id="L39">			return StatementCreatorUtils.javaTypeToSqlParameterType(type);</span>
+		}
+	}
+
+	public static void assignBlobMapSqlParameterSource(BeanWrapper bw, MapSqlParameterSource mapSqlParameterSource,
+			PropertyMapping propMapping, Integer columnSqlType, boolean forInsert) {
+<span class="fc" id="L45">		Object val = bw.getPropertyValue(propMapping.getPropertyName());</span>
+<span class="fc" id="L46">		String param = propMapping.getPropertyName();</span>
+<span class="fc bfc" id="L47" title="All 2 branches covered.">		if (forInsert) {</span>
+<span class="fc" id="L48">			param = propMapping.getColumnName();</span>
+		}
+<span class="fc bfc" id="L50" title="All 2 branches covered.">		if (val == null) {</span>
+<span class="fc" id="L51">			mapSqlParameterSource.addValue(param, null, columnSqlType);</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">		} else if (val instanceof byte[] byteArray) {</span>
+<span class="fc" id="L53">			mapSqlParameterSource.addValue(param, new SqlBinaryValue(byteArray), columnSqlType);</span>
+		} else {
+<span class="fc" id="L55">			throw new RuntimeException(bw.getWrappedClass().getSimpleName() + &quot;.&quot; + propMapping.getPropertyName()</span>
+					+ &quot; : java type has to be byte[] for a BLOB mapping. No other type is supported.&quot;);
+		}
+<span class="fc" id="L58">	}</span>
+
+	public static void assignClobMapSqlParameterSource(BeanWrapper bw, MapSqlParameterSource mapSqlParameterSource,
+			PropertyMapping propMapping, Integer columnSqlType, boolean forInsert) {
+<span class="fc" id="L62">		Object val = bw.getPropertyValue(propMapping.getPropertyName());</span>
+<span class="fc" id="L63">		String param = propMapping.getPropertyName();</span>
+<span class="fc bfc" id="L64" title="All 2 branches covered.">		if (forInsert) {</span>
+<span class="fc" id="L65">			param = propMapping.getColumnName();</span>
+		}
+<span class="fc bfc" id="L67" title="All 2 branches covered.">		if (val == null) {</span>
+<span class="fc" id="L68">			mapSqlParameterSource.addValue(param, null, columnSqlType);</span>
+		} else {
+<span class="fc bfc" id="L70" title="All 2 branches covered.">			if (val instanceof CharSequence charSequence) {</span>
+<span class="fc" id="L71">				mapSqlParameterSource.addValue(param, new SqlCharacterValue(charSequence), columnSqlType);</span>
+<span class="fc bfc" id="L72" title="All 2 branches covered.">			} else if (val instanceof char[] charArray) {</span>
+<span class="fc" id="L73">				mapSqlParameterSource.addValue(param, new SqlCharacterValue(charArray), columnSqlType);</span>
+			} else {
+<span class="fc" id="L75">				throw new RuntimeException(bw.getWrappedClass().getSimpleName() + &quot;.&quot; + propMapping.getPropertyName()</span>
+						+ &quot; : java type has to be String or other CharSequence or char[] for a CLOB mapping. No other type is supported&quot;);
+			}
+		}
+<span class="fc" id="L79">	}</span>
+
+	public static void assignEnumMapSqlParameterSource(BeanWrapper bw, MapSqlParameterSource mapSqlParameterSource,
+			PropertyMapping propMapping, Integer columnSqlType, boolean forInsert) {
+<span class="fc" id="L83">		Object enumObj = bw.getPropertyValue(propMapping.getPropertyName());</span>
+<span class="fc" id="L84">		String param = propMapping.getPropertyName();</span>
+<span class="fc bfc" id="L85" title="All 2 branches covered.">		if (forInsert) {</span>
+<span class="fc" id="L86">			param = propMapping.getColumnName();</span>
+		}
+<span class="fc bfc" id="L88" title="All 2 branches covered.">		if (enumObj != null) {</span>
+<span class="fc" id="L89">			mapSqlParameterSource.addValue(param, ((Enum&lt;?&gt;) enumObj).name(), columnSqlType);</span>
+		} else {
+<span class="fc" id="L91">			mapSqlParameterSource.addValue(param, null, columnSqlType);</span>
+		}
+<span class="fc" id="L93">	}</span>
+
 	/**
 	 * Converts underscore case to camel case. Ex: user_last_name gets converted to
 	 * userLastName.
@@ -32,7 +100,7 @@ class InternalUtils {
 	 * @return the camel case string
 	 */
 	public static String toCamelCaseName(String str) {
-<span class="nc" id="L35">		return JdbcUtils.convertUnderscoreNameToPropertyName(str);</span>
+<span class="nc" id="L103">		return JdbcUtils.convertUnderscoreNameToPropertyName(str);</span>
 	}
 
 	/**
@@ -43,27 +111,27 @@ class InternalUtils {
 	 * @return the underscore case string
 	 */
 	public static String toUnderscoreName(String str) {
-<span class="pc bpc" id="L46" title="1 of 2 branches missed.">		if (!StringUtils.hasText(str)) {</span>
-<span class="nc" id="L47">			return &quot;&quot;;</span>
+<span class="pc bpc" id="L114" title="1 of 2 branches missed.">		if (!StringUtils.hasText(str)) {</span>
+<span class="nc" id="L115">			return &quot;&quot;;</span>
 		}
-<span class="fc" id="L49">		StringBuilder result = new StringBuilder();</span>
-<span class="fc" id="L50">		result.append(Character.toLowerCase(str.charAt(0)));</span>
-<span class="fc bfc" id="L51" title="All 2 branches covered.">		for (int i = 1; i &lt; str.length(); i++) {</span>
-<span class="fc" id="L52">			char c = str.charAt(i);</span>
-<span class="fc bfc" id="L53" title="All 2 branches covered.">			if (Character.isUpperCase(c)) {</span>
-<span class="fc" id="L54">				result.append('_').append(Character.toLowerCase(c));</span>
+<span class="fc" id="L117">		StringBuilder result = new StringBuilder();</span>
+<span class="fc" id="L118">		result.append(Character.toLowerCase(str.charAt(0)));</span>
+<span class="fc bfc" id="L119" title="All 2 branches covered.">		for (int i = 1; i &lt; str.length(); i++) {</span>
+<span class="fc" id="L120">			char c = str.charAt(i);</span>
+<span class="fc bfc" id="L121" title="All 2 branches covered.">			if (Character.isUpperCase(c)) {</span>
+<span class="fc" id="L122">				result.append('_').append(Character.toLowerCase(c));</span>
 			} else {
-<span class="fc" id="L56">				result.append(c);</span>
+<span class="fc" id="L124">				result.append(c);</span>
 			}
 		}
-<span class="fc" id="L59">		return result.toString();</span>
+<span class="fc" id="L127">		return result.toString();</span>
 	}
 
 	public static String toLowerCase(String str) {
-<span class="pc bpc" id="L63" title="1 of 2 branches missed.">		return str != null ? str.toLowerCase(Locale.US) : null;</span>
+<span class="pc bpc" id="L131" title="1 of 2 branches missed.">		return str != null ? str.toLowerCase(Locale.US) : null;</span>
 	}
 
 	private InternalUtils() {
 	}
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main b6758bc7ac554d735846354667bbddac6b6a792e 2026-04-10T11:21:03</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper v2.0.0a ae3d5de56940a668ec4f788dde3ee0b04809acb0 2026-04-12T23:24:55</div></body></html>

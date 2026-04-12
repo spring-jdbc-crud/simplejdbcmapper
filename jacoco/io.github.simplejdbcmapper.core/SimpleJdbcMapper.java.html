@@ -89,26 +89,26 @@ public final class SimpleJdbcMapper {
 	/**
 	 * finds the object by Id. Returns null if not found
 	 *
-	 * @param &lt;T&gt;   the type
-	 * @param clazz Class of object
-	 * @param id    Id of object
+	 * @param &lt;T&gt;  the type
+	 * @param type Class of object
+	 * @param id   Id of object
 	 * @return the object of type T
 	 */
-	public &lt;T&gt; T findById(Class&lt;T&gt; clazz, Object id) {
-<span class="fc" id="L98">		return findOperation.findById(clazz, id);</span>
+	public &lt;T&gt; T findById(Class&lt;T&gt; type, Object id) {
+<span class="fc" id="L98">		return findOperation.findById(type, id);</span>
 	}
 
 	/**
 	 * Find all objects.
 	 *
 	 * @param &lt;T&gt;         the type
-	 * @param clazz       Type of object
+	 * @param type        Type of object
 	 * @param sortByArray optional argument. An array of SortBy objects which is
 	 *                    used to generate the &quot;ORDER BY&quot; clause
 	 * @return List of objects of type T
 	 */
-	public &lt;T&gt; List&lt;T&gt; findAll(Class&lt;T&gt; clazz, SortBy... sortByArray) {
-<span class="fc" id="L111">		return findOperation.findAll(clazz, sortByArray);</span>
+	public &lt;T&gt; List&lt;T&gt; findAll(Class&lt;T&gt; type, SortBy... sortByArray) {
+<span class="fc" id="L111">		return findOperation.findAll(type, sortByArray);</span>
 	}
 
 	/**
@@ -116,16 +116,16 @@ public final class SimpleJdbcMapper {
 	 * be used in the sql for a null value.
 	 *
 	 * @param &lt;T&gt;           the type
-	 * @param clazz         Class of List of objects returned
+	 * @param type          Class of List of objects returned
 	 * @param propertyName  the property name
 	 * @param propertyValue the property value
 	 * @param sortByArray   optional argument. An array of SortBy objects which is
 	 *                      used to generate the &quot;ORDER BY&quot; clause
 	 * @return a List of objects of type T
 	 */
-	public &lt;T&gt; List&lt;T&gt; findByPropertyValue(Class&lt;T&gt; clazz, String propertyName, Object propertyValue,
+	public &lt;T&gt; List&lt;T&gt; findByPropertyValue(Class&lt;T&gt; type, String propertyName, Object propertyValue,
 			SortBy... sortByArray) {
-<span class="fc" id="L128">		return findOperation.findByPropertyValue(clazz, propertyName, propertyValue, sortByArray);</span>
+<span class="fc" id="L128">		return findOperation.findByPropertyValue(type, propertyName, propertyValue, sortByArray);</span>
 	}
 
 	/**
@@ -141,16 +141,16 @@ public final class SimpleJdbcMapper {
 	 *
 	 * @param &lt;T&gt;            the type
 	 * @param &lt;U&gt;            the type of the property values
-	 * @param clazz          Class of List of objects returned
+	 * @param type           Class of List of objects returned
 	 * @param propertyName   the property name
 	 * @param propertyValues the collection of property values
 	 * @param sortByArray    optional argument. An array of SortBy objects which is
 	 *                       used to generate the &quot;ORDER BY&quot; clause
 	 * @return a List of objects of type T
 	 */
-	public &lt;T, U&gt; List&lt;T&gt; findByPropertyValues(Class&lt;T&gt; clazz, String propertyName, Collection&lt;U&gt; propertyValues,
+	public &lt;T, U&gt; List&lt;T&gt; findByPropertyValues(Class&lt;T&gt; type, String propertyName, Collection&lt;U&gt; propertyValues,
 			SortBy... sortByArray) {
-<span class="fc" id="L153">		return findOperation.findByPropertyValues(clazz, propertyName, propertyValues, sortByArray);</span>
+<span class="fc" id="L153">		return findOperation.findByPropertyValues(type, propertyName, propertyValues, sortByArray);</span>
 	}
 
 	/**
@@ -235,12 +235,12 @@ public final class SimpleJdbcMapper {
 	/**
 	 * Deletes the object from the database by id.
 	 *
-	 * @param clazz Type of object to be deleted.
-	 * @param id    Id of object to be deleted
+	 * @param type Type of object to be deleted.
+	 * @param id   Id of object to be deleted
 	 * @return number records were deleted (1 or 0)
 	 */
-	public Integer deleteById(Class&lt;?&gt; clazz, Object id) {
-<span class="fc" id="L243">		return deleteOperation.deleteById(clazz, id);</span>
+	public Integer deleteById(Class&lt;?&gt; type, Object id) {
+<span class="fc" id="L243">		return deleteOperation.deleteById(type, id);</span>
 	}
 
 	/**
@@ -374,24 +374,12 @@ public final class SimpleJdbcMapper {
 <span class="fc" id="L374">	}</span>
 
 	/**
-	 * Loads the mapping for a class. Mappings are lazy loaded ie they are loaded
-	 * when the mapped object is used in a database operation for the first time.
-	 * This method is provided so that the mappings can be loaded during application
-	 * startup throwing any mapping errors early.
-	 *
-	 * @param clazz the class
-	 */
-	public void loadMapping(Class&lt;?&gt; clazz) {
-<span class="fc" id="L385">		simpleJdbcMapperSupport.getTableMapping(clazz);</span>
-<span class="fc" id="L386">	}</span>
-
-	/**
 	 * Get the schema name.
 	 *
 	 * @return the schema name.
 	 */
 	public String getSchemaName() {
-<span class="fc" id="L394">		return simpleJdbcMapperSupport.getSchemaName();</span>
+<span class="fc" id="L382">		return simpleJdbcMapperSupport.getSchemaName();</span>
 	}
 
 	/**
@@ -400,7 +388,8 @@ public final class SimpleJdbcMapper {
 	 * @return the catalog name.
 	 */
 	public String getCatalogName() {
-<span class="fc" id="L403">		return simpleJdbcMapperSupport.getCatalogName();</span>
+<span class="fc" id="L391">		return simpleJdbcMapperSupport.getCatalogName();</span>
 	}
+
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main b6758bc7ac554d735846354667bbddac6b6a792e 2026-04-10T11:21:03</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper v2.0.0a ae3d5de56940a668ec4f788dde3ee0b04809acb0 2026-04-12T23:24:55</div></body></html>

@@ -374,18 +374,6 @@ public final class SimpleJdbcMapper {
 	}
 
 	/**
-	 * Loads the mapping for a class. Mappings are lazy loaded ie they are loaded
-	 * when the mapped object is used in a database operation for the first time.
-	 * This method is provided so that the mappings can be loaded during application
-	 * startup throwing any mapping errors early.
-	 *
-	 * @param clazz the class
-	 */
-	public void loadMapping(Class<?> clazz) {
-		simpleJdbcMapperSupport.getTableMapping(clazz);
-	}
-
-	/**
 	 * Get the schema name.
 	 *
 	 * @return the schema name.

@@ -13,7 +13,6 @@ import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import io.github.simplejdbcmapper.model.Customer;
-import io.github.simplejdbcmapper.model.Employee;
 import io.github.simplejdbcmapper.model.Order;
 import io.github.simplejdbcmapper.model.Product;
 import io.github.simplejdbcmapper.model.ProductWithNoAuditFields;
@@ -223,20 +222,25 @@ class CachingTest {
 		SimpleCache<String, TableMapping> cache = sjms.getTableMappingCache();
 		cache.clear();
 
-		sjm.loadMapping(Customer.class);
+		sjm.findById(Customer.class, 1);
 		assertEquals(1, cache.size());
 
-		sjm.loadMapping(Employee.class);
+		Product prod = new Product();
+		prod.setProductId(3121);
+		prod.setName("xyz");
+		sjm.insert(prod);
 		assertEquals(2, cache.size());
 
-		sjm.findById(Customer.class, 1);
+		prod.setCost(10.25);
+		sjm.update(prod);
 		assertEquals(2, cache.size());
 
-		sjm.loadMapping(Product.class);
-		assertEquals(3, cache.size());
+		prod.setCost(20.22);
+		sjm.updateSpecificProperties(prod, "cost");
+		assertEquals(2, cache.size());
 
-		sjm.findAll(Employee.class);
-		assertEquals(3, cache.size());
+		sjm.delete(prod);
+		assertEquals(2, cache.size());
 
 	}
 

@@ -21,10 +21,7 @@ import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import io.github.simplejdbcmapper.exception.AnnotationException;
-import io.github.simplejdbcmapper.model.NoTableAnnotationModel;
 import io.github.simplejdbcmapper.model.NonDefaultNamingProduct;
-import io.github.simplejdbcmapper.model.Order;
 import io.github.simplejdbcmapper.model.Product;
 
 @SpringBootTest
@@ -39,20 +36,6 @@ class SimpleJdbcMapperTest {
 
 	@Autowired
 	private SimpleJdbcMapper sjm;
-
-	@Test
-	void loadMapping_success_Test() {
-		Assertions.assertDoesNotThrow(() -> {
-			sjm.loadMapping(Order.class);
-		});
-	}
-
-	@Test
-	void loadMapping_failure_Test() {
-		Assertions.assertThrows(AnnotationException.class, () -> {
-			sjm.loadMapping(NoTableAnnotationModel.class);
-		});
-	}
 
 	@Test
 	void getBeanFriendlySqlColumns_test() {

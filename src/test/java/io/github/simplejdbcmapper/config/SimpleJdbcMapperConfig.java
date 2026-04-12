@@ -4,12 +4,10 @@ import java.time.LocalDateTime;
 
 import javax.sql.DataSource;
 
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.boot.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Component;
 
 import io.github.simplejdbcmapper.core.SimpleJdbcMapper;
@@ -26,16 +24,13 @@ public class SimpleJdbcMapperConfig {
 	@Value("${sjm.runWithRecordAuditing:false}")
 	private boolean runWithRecordAuditing;
 
-	@Primary
-	@Bean(name = "ds1")
 	@ConfigurationProperties(prefix = "spring.datasource")
-	public DataSource dataSourceDs1() {
+	public DataSource dataSource() {
 		return DataSourceBuilder.create().build();
 	}
 
-	@Primary
-	@Bean(name = "ds1SimpleJdbcMapper")
-	public SimpleJdbcMapper ds1SimpleJdbcMapper(@Qualifier("ds1") DataSource dataSource) {
+	@Bean
+	public SimpleJdbcMapper simpleJdbcMapper(DataSource dataSource) {
 		SimpleJdbcMapper simpleJdbcMapper = null;
 		if (jdbcDriver.contains("mysql")) {
 			// schema1 database name for mysql
@@ -57,17 +52,4 @@ public class SimpleJdbcMapperConfig {
 		return simpleJdbcMapper;
 	}
 
-	@Bean(name = "dsAll")
-	@ConfigurationProperties(prefix = "all.spring.datasource")
-	public DataSource dataSourceAll() {
-		return DataSourceBuilder.create().build();
-	}
-
-	@Bean
-	@Qualifier("allSimpleJdbcMapper")
-	public SimpleJdbcMapper allSimpleJdbcMapper(@Qualifier("dsAll") DataSource dataSource) {
-		SimpleJdbcMapper simpleJdbcMapper = new SimpleJdbcMapper(dataSource);
-		simpleJdbcMapper.setRecordAuditedBySupplier(() -> "tester");
-		return simpleJdbcMapper;
-	}
 }

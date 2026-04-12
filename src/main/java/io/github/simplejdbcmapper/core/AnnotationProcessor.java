@@ -9,7 +9,6 @@ import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.jdbc.core.SqlTypeValue;
-import org.springframework.jdbc.core.metadata.TableParameterMetaData;
 import org.springframework.util.StringUtils;
 
 import io.github.simplejdbcmapper.annotation.Column;
@@ -30,8 +29,8 @@ class AnnotationProcessor {
 		return tableAnnotation;
 	}
 
-	void processColumnAnnotation(Field field, String tableName, Map<String, PropertyMapping> propNameToPropertyMapping,
-			Map<String, TableParameterMetaData> columnNameToTpmd) {
+	void processColumnAnnotation(Field field, String tableName,
+			Map<String, PropertyMapping> propNameToPropertyMapping) {
 		Column colAnnotation = AnnotationUtils.findAnnotation(field, Column.class);
 		if (colAnnotation != null) {
 			String propertyName = field.getName();
@@ -45,9 +44,6 @@ class AnnotationProcessor {
 				System.out.println(
 						"sqlType Unknown:" + field.getDeclaringClass().getSimpleName() + "." + field.getName());
 			}
-			if (columnNameToTpmd != null && columnNameToTpmd.get(colName) != null) {
-				sqlType = columnNameToTpmd.get(colName).getSqlType();
-			}
 
 			PropertyMapping propertyMapping = null;
 			if (colAnnotation.sqlType() != -99999) {
@@ -60,38 +56,33 @@ class AnnotationProcessor {
 		}
 	}
 
-	void processIdAnnotation(Field field, String tableName, Map<String, PropertyMapping> propNameToPropertyMapping,
-			Map<String, TableParameterMetaData> columnNameToTpmd) {
-		processAnnotation(Id.class, field, tableName, propNameToPropertyMapping, columnNameToTpmd);
+	void processIdAnnotation(Field field, String tableName, Map<String, PropertyMapping> propNameToPropertyMapping) {
+		processAnnotation(Id.class, field, tableName, propNameToPropertyMapping);
 	}
 
-	void processVersionAnnotation(Field field, String tableName, Map<String, PropertyMapping> propNameToPropertyMapping,
-			Map<String, TableParameterMetaData> columnNameToTpmd) {
-		processAnnotation(Version.class, field, tableName, propNameToPropertyMapping, columnNameToTpmd);
+	void processVersionAnnotation(Field field, String tableName,
+			Map<String, PropertyMapping> propNameToPropertyMapping) {
+		processAnnotation(Version.class, field, tableName, propNameToPropertyMapping);
 	}
 
 	void processCreatedOnAnnotation(Field field, String tableName,
-			Map<String, PropertyMapping> propNameToPropertyMapping,
-			Map<String, TableParameterMetaData> columnNameToTpmd) {
-		processAnnotation(CreatedOn.class, field, tableName, propNameToPropertyMapping, columnNameToTpmd);
+			Map<String, PropertyMapping> propNameToPropertyMapping) {
+		processAnnotation(CreatedOn.class, field, tableName, propNameToPropertyMapping);
 	}
 
 	void processUpdatedOnAnnotation(Field field, String tableName,
-			Map<String, PropertyMapping> propNameToPropertyMapping,
-			Map<String, TableParameterMetaData> columnNameToTpmd) {
-		processAnnotation(UpdatedOn.class, field, tableName, propNameToPropertyMapping, columnNameToTpmd);
+			Map<String, PropertyMapping> propNameToPropertyMapping) {
+		processAnnotation(UpdatedOn.class, field, tableName, propNameToPropertyMapping);
 	}
 
 	void processCreatedByAnnotation(Field field, String tableName,
-			Map<String, PropertyMapping> propNameToPropertyMapping,
-			Map<String, TableParameterMetaData> columnNameToTpmd) {
-		processAnnotation(CreatedBy.class, field, tableName, propNameToPropertyMapping, columnNameToTpmd);
+			Map<String, PropertyMapping> propNameToPropertyMapping) {
+		processAnnotation(CreatedBy.class, field, tableName, propNameToPropertyMapping);
 	}
 
 	void processUpdatedByAnnotation(Field field, String tableName,
-			Map<String, PropertyMapping> propNameToPropertyMapping,
-			Map<String, TableParameterMetaData> columnNameToTpmd) {
-		processAnnotation(UpdatedBy.class, field, tableName, propNameToPropertyMapping, columnNameToTpmd);
+			Map<String, PropertyMapping> propNameToPropertyMapping) {
+		processAnnotation(UpdatedBy.class, field, tableName, propNameToPropertyMapping);
 	}
 
 	void validateAnnotations(List<PropertyMapping> propertyMappings, Class<?> clazz) {
@@ -101,8 +92,7 @@ class AnnotationProcessor {
 	}
 
 	private <T extends Annotation> void processAnnotation(Class<T> annotationClazz, Field field, String tableName,
-			Map<String, PropertyMapping> propNameToPropertyMapping,
-			Map<String, TableParameterMetaData> columnNameToTpmd) {
+			Map<String, PropertyMapping> propNameToPropertyMapping) {
 		Annotation annotation = AnnotationUtils.findAnnotation(field, annotationClazz);
 		if (annotation != null) {
 			String propertyName = field.getName();
@@ -113,9 +103,6 @@ class AnnotationProcessor {
 				if (sqlType == SqlTypeValue.TYPE_UNKNOWN) {
 					System.out.println(
 							"sqlType Unknown:" + field.getDeclaringClass().getSimpleName() + "." + field.getName());
-				}
-				if (columnNameToTpmd != null && columnNameToTpmd.get(colName) != null) {
-					sqlType = columnNameToTpmd.get(colName).getSqlType();
 				}
 				propMapping = new PropertyMapping(propertyName, field.getType(), colName, sqlType);
 				propNameToPropertyMapping.put(propertyName, propMapping);

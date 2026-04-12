@@ -4,7 +4,6 @@ import javax.sql.DataSource;
 
 import org.flywaydb.core.Flyway;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.flyway.autoconfigure.FlywayMigrationStrategy;
 import org.springframework.context.annotation.Bean;
@@ -21,15 +20,14 @@ import jakarta.annotation.PostConstruct;
 @Component
 public class FlywayMigrationConfig {
 
-	@Value("${all.spring.flyway.locations}")
+	@Value("${spring.flyway.locations}")
 	private String locations;
 
 	@Value("${spring.datasource.driver-class-name}")
 	private String jdbcDriver;
 
 	@Autowired
-	@Qualifier("dsAll")
-	private DataSource dsAll;
+	private DataSource dataSource;
 
 	@Bean
 	public static FlywayMigrationStrategy cleanMigrateStrategy() {
@@ -43,12 +41,8 @@ public class FlywayMigrationConfig {
 	}
 
 	@PostConstruct
-	public void flyWayDsAll() {
-		if (jdbcDriver.contains("postgres")) {
-			Flyway.configure().dataSource(dsAll).defaultSchema("schema2").locations(locations).load().migrate();
-
-		} else {
-			Flyway.configure().dataSource(dsAll).locations(locations).load().migrate();
-		}
+	public void flyWay() {
+		System.out.println("XXXXXXXXXXXXXXXXXXXX Datasource:" + dataSource);
+		Flyway.configure().dataSource(dataSource).locations(locations).load().migrate();
 	}
 }

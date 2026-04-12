@@ -24,6 +24,7 @@ public class SimpleJdbcMapperConfig {
 	@Value("${sjm.runWithRecordAuditing:false}")
 	private boolean runWithRecordAuditing;
 
+	@Bean
 	@ConfigurationProperties(prefix = "spring.datasource")
 	public DataSource dataSource() {
 		return DataSourceBuilder.create().build();

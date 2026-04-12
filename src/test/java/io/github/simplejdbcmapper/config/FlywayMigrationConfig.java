@@ -42,7 +42,6 @@ public class FlywayMigrationConfig {
 
 	@PostConstruct
 	public void flyWay() {
-		System.out.println("XXXXXXXXXXXXXXXXXXXX Datasource:" + dataSource);
 		Flyway.configure().dataSource(dataSource).locations(locations).load().migrate();
 	}
 }

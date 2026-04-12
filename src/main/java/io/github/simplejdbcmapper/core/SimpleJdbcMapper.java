@@ -90,25 +90,25 @@ public final class SimpleJdbcMapper {
 	 * finds the object by Id. Returns null if not found
 	 *
 	 * @param <T>   the type
-	 * @param clazz Class of object
+	 * @param type Class of object
 	 * @param id    Id of object
 	 * @return the object of type T
 	 */
-	public <T> T findById(Class<T> clazz, Object id) {
-		return findOperation.findById(clazz, id);
+	public <T> T findById(Class<T> type, Object id) {
+		return findOperation.findById(type, id);
 	}
 
 	/**
 	 * Find all objects.
 	 *
 	 * @param <T>         the type
-	 * @param clazz       Type of object
+	 * @param type       Type of object
 	 * @param sortByArray optional argument. An array of SortBy objects which is
 	 *                    used to generate the "ORDER BY" clause
 	 * @return List of objects of type T
 	 */
-	public <T> List<T> findAll(Class<T> clazz, SortBy... sortByArray) {
-		return findOperation.findAll(clazz, sortByArray);
+	public <T> List<T> findAll(Class<T> type, SortBy... sortByArray) {
+		return findOperation.findAll(type, sortByArray);
 	}
 
 	/**
@@ -116,16 +116,16 @@ public final class SimpleJdbcMapper {
 	 * be used in the sql for a null value.
 	 *
 	 * @param <T>           the type
-	 * @param clazz         Class of List of objects returned
+	 * @param type         Class of List of objects returned
 	 * @param propertyName  the property name
 	 * @param propertyValue the property value
 	 * @param sortByArray   optional argument. An array of SortBy objects which is
 	 *                      used to generate the "ORDER BY" clause
 	 * @return a List of objects of type T
 	 */
-	public <T> List<T> findByPropertyValue(Class<T> clazz, String propertyName, Object propertyValue,
+	public <T> List<T> findByPropertyValue(Class<T> type, String propertyName, Object propertyValue,
 			SortBy... sortByArray) {
-		return findOperation.findByPropertyValue(clazz, propertyName, propertyValue, sortByArray);
+		return findOperation.findByPropertyValue(type, propertyName, propertyValue, sortByArray);
 	}
 
 	/**
@@ -141,16 +141,16 @@ public final class SimpleJdbcMapper {
 	 *
 	 * @param <T>            the type
 	 * @param <U>            the type of the property values
-	 * @param clazz          Class of List of objects returned
+	 * @param type          Class of List of objects returned
 	 * @param propertyName   the property name
 	 * @param propertyValues the collection of property values
 	 * @param sortByArray    optional argument. An array of SortBy objects which is
 	 *                       used to generate the "ORDER BY" clause
 	 * @return a List of objects of type T
 	 */
-	public <T, U> List<T> findByPropertyValues(Class<T> clazz, String propertyName, Collection<U> propertyValues,
+	public <T, U> List<T> findByPropertyValues(Class<T> type, String propertyName, Collection<U> propertyValues,
 			SortBy... sortByArray) {
-		return findOperation.findByPropertyValues(clazz, propertyName, propertyValues, sortByArray);
+		return findOperation.findByPropertyValues(type, propertyName, propertyValues, sortByArray);
 	}
 
 	/**

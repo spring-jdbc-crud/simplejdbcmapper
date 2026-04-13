@@ -124,7 +124,7 @@ class SimpleJdbcMapperTest {
 	@Test
 	void setRecordAuditedOnSupplier_resetting_failure() {
 		SimpleJdbcMapper m = new SimpleJdbcMapper(dataSource);
-		Supplier<LocalDateTime> supplier = () -> LocalDateTime.now();
+		Supplier<LocalDateTime> supplier = LocalDateTime::now;
 		m.setRecordAuditedOnSupplier(supplier);
 		Assertions.assertThrows(IllegalStateException.class, () -> {
 			m.setRecordAuditedOnSupplier(supplier);

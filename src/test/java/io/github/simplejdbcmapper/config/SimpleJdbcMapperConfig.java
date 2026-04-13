@@ -43,7 +43,7 @@ public class SimpleJdbcMapperConfig {
 		// for testing with record auditing
 		if (runWithRecordAuditing) {
 			simpleJdbcMapper.setRecordAuditedBySupplier(() -> "tester");
-			simpleJdbcMapper.setRecordAuditedOnSupplier(() -> LocalDateTime.now());
+			simpleJdbcMapper.setRecordAuditedOnSupplier(LocalDateTime::now);
 		}
 
 		// just for testing purposes running without a conversionSevice

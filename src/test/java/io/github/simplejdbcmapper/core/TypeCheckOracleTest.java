@@ -17,7 +17,6 @@ import java.util.Date;
 
 import javax.sql.DataSource;
 import javax.sql.rowset.serial.SerialBlob;
-import javax.sql.rowset.serial.SerialException;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
@@ -241,7 +240,7 @@ class TypeCheckOracleTest {
 	}
 
 	@Test
-	void update_BlobErrTest() throws SerialException, SQLException {
+	void update_BlobErrTest() throws SQLException {
 		BlobErr obj = new BlobErr();
 		obj.setId(1);
 		byte[] byteArray = new byte[] { 10, 20, 30 };

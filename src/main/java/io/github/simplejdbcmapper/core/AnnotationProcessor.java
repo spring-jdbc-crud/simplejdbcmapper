@@ -40,13 +40,9 @@ class AnnotationProcessor {
 			}
 			colName = InternalUtils.toLowerCase(colName);
 			Integer sqlType = InternalUtils.javaTypeToSqlParameterType(field.getType());
-			if (sqlType == SqlTypeValue.TYPE_UNKNOWN) {
-				System.out.println(
-						"sqlType Unknown:" + field.getDeclaringClass().getSimpleName() + "." + field.getName());
-			}
-
 			PropertyMapping propertyMapping = null;
 			if (colAnnotation.sqlType() != Integer.MIN_VALUE) {
+				// sqlType has been configured in @Column
 				propertyMapping = new PropertyMapping(propertyName, field.getType(), colName, sqlType,
 						colAnnotation.sqlType());
 			} else {
@@ -120,7 +116,8 @@ class AnnotationProcessor {
 					entityType.getSimpleName() + " does not have the @Table annotation. It is required");
 		}
 		if (!StringUtils.hasText(tableAnnotation.name())) {
-			throw new AnnotationException("For " + entityType.getSimpleName() + " the @Table annotation has a blank name");
+			throw new AnnotationException(
+					"For " + entityType.getSimpleName() + " the @Table annotation has a blank name");
 		}
 	}
 
@@ -203,8 +200,8 @@ class AnnotationProcessor {
 		for (PropertyMapping propMapping : propertyMappings) {
 			if (propMapping.isVersionAnnotation()
 					&& !(Integer.class.getName().equals(propMapping.getPropertyClassName()))) {
-				throw new AnnotationException("@Version requires the type of property " + entityType.getSimpleName() + "."
-						+ propMapping.getPropertyName() + " to be Integer");
+				throw new AnnotationException("@Version requires the type of property " + entityType.getSimpleName()
+						+ "." + propMapping.getPropertyName() + " to be Integer");
 			}
 		}
 	}

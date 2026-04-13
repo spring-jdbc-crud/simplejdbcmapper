@@ -413,11 +413,11 @@ class Product {
 
 ## BLOB CLOB mapping
 
-1. Binary large object database columns should be mapped to java type byte[]. No other java type is supported. The 'sqlType' attribute of the @Column annotation with the following values are considered to be Binary Large Objects; Types.BLOB, Types.ARRAY, Types.LONGVARBINARY, Types.VARBINARY. Use the pertinent sql type for your database. 
+1. Binary large object database columns should be mapped to java type byte[]. No other java type is supported. The 'sqlType' attribute of the @Column annotation with the following values are considered are considered as Binary Large Objects by SimpleJdbcMapper: Types.BLOB, Types.ARRAY, Types.LONGVARBINARY, Types.VARBINARY. Use the pertinent sql type for your database. 
 
-2. Character large object database columns should be mapped to java types String or other CharSequence or char[]. No other java types are supported. The 'sqlType' attribute of the @Column annotation with the following values are considered to be Character Large Objects. Types.CLOB, Types.NCLOB,, Types.LONGVARCHAR, Types.LONGNVARCHAR.
+2. Character large object database columns should be mapped to java types String or other CharSequence or char[]. No other java types are supported. The 'sqlType' attribute of the @Column annotation with the following values are considered as Character Large Objects by SimpeJdbcMapper. Types.CLOB, Types.NCLOB,, Types.LONGVARCHAR, Types.LONGNVARCHAR.
 
-In both the cases above the whole object (image files etc) will be read into memory. For very large objects this could create problems and you may want to use InputStream/Reader. To use InputStream/Reader you will have to use JdbcTemplate directly.
+In both the cases above the whole object (image files etc) will be read into memory. For very large objects this could create memory issues and you may want to use InputStream/Reader. To use InputStream/Reader use JdbcTemplate directly.
 
 Some BLOB/CLOB examples below. Keep in mind depending on the versions of the databases these could be different.
 
@@ -523,7 +523,7 @@ Uses the same logging configurations as Spring. In application.properties:
 Use JdbcTemplate/JdbcClient to handle these cases.
 
 ## Upgrading to 2.x from 1.x
-SimpleJdbcMapper 1.x versions needed access to the database table meta-data for it to do the mapping. This creates problems where access to database table meta data is restricted due to security reasons. SimpleJdbcMapper 2.x removes this dependency. It uses Spring's default java type to sql type information for mapping. Even though this covers most cases, for things like BLOB/CLOB and database specific column types, the sql type information will need to be provided using the @Column(sqlType = "somesqltype") mapping. Generally the upgrade should be straight forward since API remains the same.
+The main change in SimpleJdbcMapper 2.x from 1.x is that it does not use database table meta data for its mapping. SimpleJdbcMapper 1.x versions needed access to the database table meta-data so could not be used where access to database table meta data is restricted due to security reasons. SimpleJdbcMapper 2.x uses Spring's default java type to sql type information for mapping. Even though this covers most cases, for things like BLOB/CLOB and other database specific column types, the sql type information will need to be provided using @Column(sqlType = "somesqltype"). Generally the upgrade should be straight forward since API remains the same.
 
 Some examples of the mapping changes you may need to make are below. Keep in mind depending on the versions of the databases these could be different.
 

@@ -523,7 +523,7 @@ Uses the same logging configurations as Spring. In application.properties:
 Use JdbcTemplate/JdbcClient to handle these cases.
 
 ## Upgrading to 2.x from 1.x
-The main change in SimpleJdbcMapper 2.x from 1.x is that it does not use database table meta data for its mapping. SimpleJdbcMapper 1.x versions needed access to the database table meta-data so could not be used where access to database table meta data is restricted due to security reasons. SimpleJdbcMapper 2.x uses Spring's default java type to sql type information for mapping. Even though this covers most cases, for things like BLOB/CLOB and other database specific column types, the sql type information will need to be provided using @Column(sqlType = "somesqltype"). Generally the upgrade should be straight forward since API remains the same.
+The main change in SimpleJdbcMapper 2.x from 1.x is that it does not use database table meta data for its mapping. SimpleJdbcMapper 1.x versions needed access to the database table meta-data so could not be used where access to database table meta data is restricted due to security reasons. SimpleJdbcMapper 2.x uses Spring's default java type to sql type information for mapping. Even though this covers most cases, for  BLOB/CLOB and other database specific column types, the sql type information will need to be provided using @Column(sqlType = "somesqltype"). Generally the upgrade should be straight forward since API remains the same.
 
 Some examples of the mapping changes you may need to make are below. Keep in mind depending on the versions of the databases these could be different.
 

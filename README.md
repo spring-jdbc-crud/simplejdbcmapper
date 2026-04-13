@@ -424,7 +424,7 @@ Some BLOB/CLOB examples below. Keep in mind depending on the versions of the dat
 Postgres:
 
 ```
-@Column(sqlType = Types.ARRAY)
+@Column(sqlType = Types.ARRAY) //mapped to a bytea database column
 private byte[] image;
 
 @Column(sqlType = Types.LONGVARCHAR)
@@ -523,14 +523,20 @@ Uses the same logging configurations as Spring. In application.properties:
 Use JdbcTemplate/JdbcClient to handle these cases.
 
 ## Upgrading to 2.x from 1.x
-The main change in SimpleJdbcMapper 2.x from 1.x is that it does not use database table meta data for its mapping. SimpleJdbcMapper 1.x versions needed access to the database table meta-data so could not be used where access to database table meta data is restricted due to security reasons. SimpleJdbcMapper 2.x uses Spring's default java type to sql type information for mapping. Even though this covers most cases, for  BLOB/CLOB and other database specific column types, the sql type information will need to be provided using @Column(sqlType = "somesqltype"). Generally the upgrade should be straight forward since API remains the same.
+The main change in SimpleJdbcMapper 2.x from 1.x is that it does not use database table meta data for its mapping. The 1.x versions needed access to the database table meta-data to create the mappings and so could not be used where that access is restricted due to security reasons. SimpleJdbcMapper 2.x uses Spring's default java type to sql type information for mapping. 
 
-Some examples of the mapping changes you may need to make are below. Keep in mind depending on the versions of the databases these could be different.
+Difference from 1.x:
+1. Even though Spring's default java type to sql type information covers most cases, for  BLOB/CLOB and other database specific column types, the sql type information will need to be provided using @Column(sqlType = "somesqltype"). 
+2. Since 2.x does not use the database table meta data, it cannot provide  detailed messages on what went wrong with the mapping. Mapping issues will surface through sql errors thrown, which is similar to what happens when JdbcTemplate/JdbcClient are used directly.
+
+Generally the upgrade should be straight forward since API remains the same.
+
+Some examples of the mapping changes you may need to make are below. Keep in mind depending on the versions of the databases these could be different. Refer to each databases jdbc sql type to database column type information.
 
 Postgres:
 
 ```
-@Column(sqlType = Types.ARRAY)
+@Column(sqlType = Types.ARRAY) // mapped to a bytea database column type
 private byte[] image;
 
 @Column(sqlType = Types.LONGVARCHAR)
@@ -558,7 +564,7 @@ private byte[] image;
 @Column(sqlType = Types.CLOB)
 private String clobData;
 	
-@Column(sqlType = oracle.jdbc.OracleTypes.TIMESTAMPTZ)
+@Column(sqlType = oracle.jdbc.OracleTypes.TIMESTAMPTZ) // 'timestamp with time zone' database column type
 private OffsetDateTime offsetDateTimeData;
 	
 ```
@@ -572,7 +578,7 @@ private byte[] image;
 @Column(sqlType = Types.CLOB)
 private String clobData;
 
-@Column(sqlType = microsoft.sql.Types.DATETIMEOFFSET)
+@Column(sqlType = microsoft.sql.Types.DATETIMEOFFSET) // datetimeoffset database column type
 microsoft.sql.DateTimeOffset  offsetDateTimeData;
 
 ```

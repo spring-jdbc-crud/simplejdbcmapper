@@ -24,6 +24,8 @@ import org.springframework.jdbc.core.support.SqlCharacterValue;
 import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.util.StringUtils;
 
+import io.github.simplejdbcmapper.exception.MapperException;
+
 /**
  * Utility methods used by mapper.
  *
@@ -45,6 +47,7 @@ class InternalUtils {
 		Object val = bw.getPropertyValue(propMapping.getPropertyName());
 		String param = propMapping.getPropertyName();
 		if (forInsert) {
+			// for inserts parameters are column name
 			param = propMapping.getColumnName();
 		}
 		if (val == null) {
@@ -52,7 +55,7 @@ class InternalUtils {
 		} else if (val instanceof byte[] byteArray) {
 			mapSqlParameterSource.addValue(param, new SqlBinaryValue(byteArray), columnSqlType);
 		} else {
-			throw new RuntimeException(bw.getWrappedClass().getSimpleName() + "." + propMapping.getPropertyName()
+			throw new MapperException(bw.getWrappedClass().getSimpleName() + "." + propMapping.getPropertyName()
 					+ " : java type has to be byte[] for a BLOB mapping. No other type is supported.");
 		}
 	}
@@ -62,6 +65,7 @@ class InternalUtils {
 		Object val = bw.getPropertyValue(propMapping.getPropertyName());
 		String param = propMapping.getPropertyName();
 		if (forInsert) {
+			// for inserts parameters are column name
 			param = propMapping.getColumnName();
 		}
 		if (val == null) {
@@ -72,7 +76,7 @@ class InternalUtils {
 			} else if (val instanceof char[] charArray) {
 				mapSqlParameterSource.addValue(param, new SqlCharacterValue(charArray), columnSqlType);
 			} else {
-				throw new RuntimeException(bw.getWrappedClass().getSimpleName() + "." + propMapping.getPropertyName()
+				throw new MapperException(bw.getWrappedClass().getSimpleName() + "." + propMapping.getPropertyName()
 						+ " : java type has to be String or other CharSequence or char[] for a CLOB mapping. No other type is supported");
 			}
 		}

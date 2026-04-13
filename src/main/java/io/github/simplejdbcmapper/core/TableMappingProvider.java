@@ -73,7 +73,6 @@ class TableMappingProvider {
 
 	private List<PropertyMapping> getPropertyMappings(Class<?> entityType, String tableName, String catalog,
 			String schema, List<Field> fields) {
-
 		// key:propertyName, value:PropertyMapping. LinkedHashMap to maintain order of
 		// properties
 		Map<String, PropertyMapping> propNameToPropertyMapping = new LinkedHashMap<>();

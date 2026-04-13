@@ -40,6 +40,10 @@ class AnnotationProcessor {
 			}
 			colName = InternalUtils.toLowerCase(colName);
 			Integer sqlType = InternalUtils.javaTypeToSqlParameterType(field.getType());
+			if (sqlType == SqlTypeValue.TYPE_UNKNOWN) {
+				System.out.println("columnAnnotation sqlType Unknown:" + field.getDeclaringClass().getSimpleName() + "."
+						+ field.getName());
+			}
 			PropertyMapping propertyMapping = null;
 			if (colAnnotation.sqlType() != Integer.MIN_VALUE) {
 				// sqlType has been configured in @Column
@@ -97,8 +101,8 @@ class AnnotationProcessor {
 				String colName = InternalUtils.toUnderscoreName(propertyName); // the default column name
 				Integer sqlType = InternalUtils.javaTypeToSqlParameterType(field.getType());
 				if (sqlType == SqlTypeValue.TYPE_UNKNOWN) {
-					System.out.println(
-							"sqlType Unknown:" + field.getDeclaringClass().getSimpleName() + "." + field.getName());
+					System.out.println("other annotations: sqlType Unknown:" + field.getDeclaringClass().getSimpleName()
+							+ "." + field.getName());
 				}
 				propMapping = new PropertyMapping(propertyName, field.getType(), colName, sqlType);
 				propNameToPropertyMapping.put(propertyName, propMapping);

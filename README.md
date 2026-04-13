@@ -19,7 +19,7 @@ Just by annotating the models that you would use with JdbcTemplate/JdbcClient, y
 [Configuration for auto assigning @CreatedBy, @UpdateBy, @CreatedOn, @UpdatedOn](#configuration-for-auto-assigning-createdby-updateby-createdon-updatedon)  
 [Accessing JdbcClient JdbcTemplate](#accessing-jdbcclient-jdbctemplate)  
 [Logging](#logging)  
-[Limitations](#limitations) 
+[Limitations](#limitations)  
 [Upgrading to 2.x from 1.x](#upgrading-to-2-x-from-1-x)  
 [Troubleshooting](#troubleshooting)  
 [Bug Report](https://github.com/spring-jdbc-crud/simplejdbcmapper/issues) 
@@ -413,7 +413,7 @@ class Product {
 
 ## BLOB CLOB mapping
 
-1. Binary large object database columns should be mapped to java type byte[]. No other java type is supported. The 'sqlType' attribute of the @Column annotation with the following values are considered are considered as Binary Large Objects by SimpleJdbcMapper: Types.BLOB, Types.ARRAY, Types.LONGVARBINARY, Types.VARBINARY. Use the pertinent sql type for your database. 
+1. Binary large object database columns should be mapped to java type byte[]. No other java type is supported. The 'sqlType' attribute of the @Column annotation with the following values are considered as Binary Large Objects by SimpleJdbcMapper: Types.BLOB, Types.ARRAY, Types.LONGVARBINARY, Types.VARBINARY. Use the pertinent sql type for your database. 
 
 2. Character large object database columns should be mapped to java types String or other CharSequence or char[]. No other java types are supported. The 'sqlType' attribute of the @Column annotation with the following values are considered as Character Large Objects by SimpeJdbcMapper. Types.CLOB, Types.NCLOB,, Types.LONGVARCHAR, Types.LONGNVARCHAR.
 
@@ -523,7 +523,7 @@ Uses the same logging configurations as Spring. In application.properties:
 Use JdbcTemplate/JdbcClient to handle these cases.
 
 ## Upgrading to 2.x from 1.x
-The main change in SimpleJdbcMapper 2.x from 1.x is that it does not use database table column meta data for its mapping. The 1.x versions needed access to the database table column meta-data to create the mappings and so could not be used where that access was restricted due to security reasons. SimpleJdbcMapper 2.x uses Spring's default java type to sql type information for mapping. 
+The main change in SimpleJdbcMapper 2.x from 1.x is that it does not use database table column meta data for its mapping. The 1.x versions needed access to the database table column meta-data to create the mappings and hence could not be used where that access was restricted due to security reasons. SimpleJdbcMapper 2.x uses Spring's default java type to sql type information for mapping. 
 
 Difference from 1.x:
 1. Even though Spring's default java type to sql type information covers most cases, for  BLOB/CLOB and other database specific column types, the sql type information will need to be provided using @Column(sqlType = "somesqltype"). 

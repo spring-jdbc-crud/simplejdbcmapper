@@ -155,8 +155,8 @@ class PropertyMapping {
 
 	private void determineBlobClob() {
 <span class="fc" id="L157">		Integer effectiveSqlType = getEffectiveSqlType();</span>
-<span class="pc bpc" id="L158" title="1 of 6 branches missed.">		if (effectiveSqlType != null &amp;&amp; effectiveSqlType == Types.BLOB || effectiveSqlType == Types.ARRAY</span>
-<span class="pc bpc" id="L159" title="2 of 4 branches missed.">				|| effectiveSqlType == Types.LONGVARBINARY || effectiveSqlType == Types.VARBINARY) {</span>
+<span class="pc bpc" id="L158" title="1 of 6 branches missed.">		if (effectiveSqlType != null &amp;&amp; (effectiveSqlType == Types.BLOB || effectiveSqlType == Types.ARRAY</span>
+<span class="pc bpc" id="L159" title="2 of 4 branches missed.">				|| effectiveSqlType == Types.LONGVARBINARY || effectiveSqlType == Types.VARBINARY)) {</span>
 <span class="fc" id="L160">			binaryLargeObject = true;</span>
 <span class="pc bpc" id="L161" title="1 of 6 branches missed.">		} else if (effectiveSqlType != null &amp;&amp; (effectiveSqlType == Types.CLOB || effectiveSqlType == Types.NCLOB</span>
 <span class="pc bpc" id="L162" title="1 of 4 branches missed.">				|| effectiveSqlType == Types.LONGVARCHAR || effectiveSqlType == Types.LONGNVARCHAR)) {</span>
@@ -164,4 +164,4 @@ class PropertyMapping {
 		}
 <span class="fc" id="L165">	}</span>
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper v2.0.0a b1f9ec90b1f5285351728773153d06e1d73fae16 2026-04-13T02:18:44</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper v2.0.0a c422d9b1f673eb47392442c8f4e8c38e5d7cbcbf 2026-04-13T18:10:31</div></body></html>

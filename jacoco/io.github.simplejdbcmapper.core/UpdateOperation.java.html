@@ -36,23 +36,23 @@ class UpdateOperation {
 <span class="fc" id="L36">		this.sjmSupport = sjmSupport;</span>
 <span class="fc" id="L37">	}</span>
 
-	public Integer update(Object obj) {
-<span class="fc" id="L40">		Assert.notNull(obj, &quot;obj must not be null&quot;);</span>
-<span class="fc" id="L41">		TableMapping tableMapping = sjmSupport.getTableMapping(obj.getClass());</span>
-<span class="fc" id="L42">		SqlAndParams sqlAndParams = updateSqlCache.get(obj.getClass().getName());</span>
+	public Integer update(Object object) {
+<span class="fc" id="L40">		Assert.notNull(object, &quot;object must not be null&quot;);</span>
+<span class="fc" id="L41">		TableMapping tableMapping = sjmSupport.getTableMapping(object.getClass());</span>
+<span class="fc" id="L42">		SqlAndParams sqlAndParams = updateSqlCache.get(object.getClass().getName());</span>
 <span class="fc bfc" id="L43" title="All 2 branches covered.">		if (sqlAndParams == null) {</span>
 <span class="fc" id="L44">			sqlAndParams = buildSqlAndParamsForUpdate(tableMapping);</span>
-<span class="fc" id="L45">			updateSqlCache.put(obj.getClass().getName(), sqlAndParams);</span>
+<span class="fc" id="L45">			updateSqlCache.put(object.getClass().getName(), sqlAndParams);</span>
 		}
-<span class="fc" id="L47">		return updateInternal(obj, sqlAndParams, tableMapping);</span>
+<span class="fc" id="L47">		return updateInternal(object, sqlAndParams, tableMapping);</span>
 	}
 
-	public Integer updateSpecificProperties(Object obj, String... propertyNames) {
-<span class="fc" id="L51">		Assert.notNull(obj, &quot;obj must not be null&quot;);</span>
+	public Integer updateSpecificProperties(Object object, String... propertyNames) {
+<span class="fc" id="L51">		Assert.notNull(object, &quot;object must not be null&quot;);</span>
 <span class="fc" id="L52">		Assert.notNull(propertyNames, &quot;propertyNames must not be null&quot;);</span>
-<span class="fc" id="L53">		TableMapping tableMapping = sjmSupport.getTableMapping(obj.getClass());</span>
+<span class="fc" id="L53">		TableMapping tableMapping = sjmSupport.getTableMapping(object.getClass());</span>
 <span class="fc" id="L54">		SqlAndParams sqlAndParams = null;</span>
-<span class="fc" id="L55">		String cacheKey = getUpdateSpecificPropertiesCacheKey(obj, propertyNames);</span>
+<span class="fc" id="L55">		String cacheKey = getUpdateSpecificPropertiesCacheKey(object, propertyNames);</span>
 <span class="fc bfc" id="L56" title="All 2 branches covered.">		if (cacheKey != null) {</span>
 <span class="fc" id="L57">			sqlAndParams = updateSpecificPropertiesSqlCache.get(cacheKey);</span>
 		}
@@ -62,7 +62,7 @@ class UpdateOperation {
 <span class="fc" id="L62">				updateSpecificPropertiesSqlCache.put(cacheKey, sqlAndParams);</span>
 			}
 		}
-<span class="fc" id="L65">		return updateInternal(obj, sqlAndParams, tableMapping);</span>
+<span class="fc" id="L65">		return updateInternal(object, sqlAndParams, tableMapping);</span>
 	}
 
 	SimpleCache&lt;String, SqlAndParams&gt; getUpdateSqlCache() {
@@ -73,10 +73,10 @@ class UpdateOperation {
 <span class="fc" id="L73">		return updateSpecificPropertiesSqlCache;</span>
 	}
 
-	private Integer updateInternal(Object obj, SqlAndParams sqlAndParams, TableMapping tableMapping) {
-<span class="fc" id="L77">		Assert.notNull(obj, &quot;Object must not be null&quot;);</span>
+	private Integer updateInternal(Object object, SqlAndParams sqlAndParams, TableMapping tableMapping) {
+<span class="fc" id="L77">		Assert.notNull(object, &quot;object must not be null&quot;);</span>
 <span class="fc" id="L78">		Assert.notNull(sqlAndParams, &quot;sqlAndParams must not be null&quot;);</span>
-<span class="fc" id="L79">		BeanWrapper bw = sjmSupport.getBeanWrapper(obj);</span>
+<span class="fc" id="L79">		BeanWrapper bw = sjmSupport.getBeanWrapper(object);</span>
 <span class="fc bfc" id="L80" title="All 2 branches covered.">		if (bw.getPropertyValue(tableMapping.getIdPropertyName()) == null) {</span>
 <span class="fc" id="L81">			throw new IllegalArgumentException(&quot;Property &quot; + tableMapping.getMappedObjClassName() + &quot;.&quot;</span>
 <span class="fc" id="L82">					+ tableMapping.getIdPropertyName() + &quot; is the id and must not be null.&quot;);</span>
@@ -90,7 +90,7 @@ class UpdateOperation {
 <span class="fc bfc" id="L90" title="All 2 branches covered.">		if (sqlAndParams.getParams().contains(INCREMENTED_VERSION)) {</span>
 <span class="fc" id="L91">			cnt = sjmSupport.getNamedParameterJdbcTemplate().update(sqlAndParams.getSql(), mapSqlParameterSource);</span>
 <span class="fc bfc" id="L92" title="All 2 branches covered.">			if (cnt == 0) {</span>
-<span class="fc" id="L93">				throw new OptimisticLockingException(obj.getClass().getSimpleName()</span>
+<span class="fc" id="L93">				throw new OptimisticLockingException(object.getClass().getSimpleName()</span>
 <span class="fc" id="L94">						+ &quot; update failed due to stale data. Failed for &quot; + tableMapping.getIdColumnName() + &quot; = &quot;</span>
 <span class="fc" id="L95">						+ bw.getPropertyValue(tableMapping.getIdPropertyName()) + &quot; and &quot;</span>
 <span class="fc" id="L96">						+ tableMapping.getVersionPropertyMapping().getColumnName() + &quot; = &quot;</span>
@@ -268,13 +268,13 @@ class UpdateOperation {
 		}
 <span class="fc" id="L269">	}</span>
 
-	private String getUpdateSpecificPropertiesCacheKey(Object obj, String[] propertyNames) {
+	private String getUpdateSpecificPropertiesCacheKey(Object object, String[] propertyNames) {
 <span class="fc bfc" id="L272" title="All 2 branches covered.">		if (propertyNames.length &gt; CACHEABLE_UPDATE_SPECIFIC_PROPERTIES_COUNT) {</span>
 <span class="fc" id="L273">			return null;</span>
 		} else {
-<span class="fc" id="L275">			return obj.getClass().getName() + &quot;-&quot; + String.join(&quot;-&quot;, propertyNames);</span>
+<span class="fc" id="L275">			return object.getClass().getName() + &quot;-&quot; + String.join(&quot;-&quot;, propertyNames);</span>
 		}
 	}
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper v2.0.0a b1f9ec90b1f5285351728773153d06e1d73fae16 2026-04-13T02:18:44</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper v2.0.0a c422d9b1f673eb47392442c8f4e8c38e5d7cbcbf 2026-04-13T18:10:31</div></body></html>

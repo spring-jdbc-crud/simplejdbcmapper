@@ -89,26 +89,26 @@ public final class SimpleJdbcMapper {
 	/**
 	 * finds the object by Id. Returns null if not found
 	 *
-	 * @param &lt;T&gt;  the type
-	 * @param type Class of object
-	 * @param id   Id of object
+	 * @param &lt;T&gt;        the type
+	 * @param entityType the type of object
+	 * @param id         id of object
 	 * @return the object of type T
 	 */
-	public &lt;T&gt; T findById(Class&lt;T&gt; type, Object id) {
-<span class="fc" id="L98">		return findOperation.findById(type, id);</span>
+	public &lt;T&gt; T findById(Class&lt;T&gt; entityType, Object id) {
+<span class="fc" id="L98">		return findOperation.findById(entityType, id);</span>
 	}
 
 	/**
 	 * Find all objects.
 	 *
 	 * @param &lt;T&gt;         the type
-	 * @param type        Type of object
-	 * @param sortByArray optional argument. An array of SortBy objects which is
+	 * @param entityType  type of object
+	 * @param sortByArray optional argument. An array of SortBy objects that are
 	 *                    used to generate the &quot;ORDER BY&quot; clause
 	 * @return List of objects of type T
 	 */
-	public &lt;T&gt; List&lt;T&gt; findAll(Class&lt;T&gt; type, SortBy... sortByArray) {
-<span class="fc" id="L111">		return findOperation.findAll(type, sortByArray);</span>
+	public &lt;T&gt; List&lt;T&gt; findAll(Class&lt;T&gt; entityType, SortBy... sortByArray) {
+<span class="fc" id="L111">		return findOperation.findAll(entityType, sortByArray);</span>
 	}
 
 	/**
@@ -116,16 +116,16 @@ public final class SimpleJdbcMapper {
 	 * be used in the sql for a null value.
 	 *
 	 * @param &lt;T&gt;           the type
-	 * @param type          Class of List of objects returned
+	 * @param entityType    type of objects to be returned
 	 * @param propertyName  the property name
 	 * @param propertyValue the property value
-	 * @param sortByArray   optional argument. An array of SortBy objects which is
+	 * @param sortByArray   optional argument. An array of SortBy objects that are
 	 *                      used to generate the &quot;ORDER BY&quot; clause
 	 * @return a List of objects of type T
 	 */
-	public &lt;T&gt; List&lt;T&gt; findByPropertyValue(Class&lt;T&gt; type, String propertyName, Object propertyValue,
+	public &lt;T&gt; List&lt;T&gt; findByPropertyValue(Class&lt;T&gt; entityType, String propertyName, Object propertyValue,
 			SortBy... sortByArray) {
-<span class="fc" id="L128">		return findOperation.findByPropertyValue(type, propertyName, propertyValue, sortByArray);</span>
+<span class="fc" id="L128">		return findOperation.findByPropertyValue(entityType, propertyName, propertyValue, sortByArray);</span>
 	}
 
 	/**
@@ -141,16 +141,16 @@ public final class SimpleJdbcMapper {
 	 *
 	 * @param &lt;T&gt;            the type
 	 * @param &lt;U&gt;            the type of the property values
-	 * @param type           Class of List of objects returned
+	 * @param entityType     the type of objects to be returned
 	 * @param propertyName   the property name
 	 * @param propertyValues the collection of property values
-	 * @param sortByArray    optional argument. An array of SortBy objects which is
+	 * @param sortByArray    optional argument. An array of SortBy objects that are
 	 *                       used to generate the &quot;ORDER BY&quot; clause
 	 * @return a List of objects of type T
 	 */
-	public &lt;T, U&gt; List&lt;T&gt; findByPropertyValues(Class&lt;T&gt; type, String propertyName, Collection&lt;U&gt; propertyValues,
+	public &lt;T, U&gt; List&lt;T&gt; findByPropertyValues(Class&lt;T&gt; entityType, String propertyName, Collection&lt;U&gt; propertyValues,
 			SortBy... sortByArray) {
-<span class="fc" id="L153">		return findOperation.findByPropertyValues(type, propertyName, propertyValues, sortByArray);</span>
+<span class="fc" id="L153">		return findOperation.findByPropertyValues(entityType, propertyName, propertyValues, sortByArray);</span>
 	}
 
 	/**
@@ -171,11 +171,11 @@ public final class SimpleJdbcMapper {
 	 * &amp;#64;Version property will be set to 1. Used for optimistic locking.
 	 * &lt;/pre&gt;
 	 *
-	 * @param obj The object to be saved
+	 * @param object The object to be saved
 	 */
 
-	public void insert(Object obj) {
-<span class="fc" id="L178">		insertOperation.insert(obj);</span>
+	public void insert(Object object) {
+<span class="fc" id="L178">		insertOperation.insert(object);</span>
 <span class="fc" id="L179">	}</span>
 
 	/**
@@ -191,11 +191,11 @@ public final class SimpleJdbcMapper {
 	 *                will be thrown if object is stale.
 	 * &lt;/pre&gt;
 	 *
-	 * @param obj object to be updated
+	 * @param object object to be updated
 	 * @return number of records updated
 	 */
-	public Integer update(Object obj) {
-<span class="fc" id="L198">		return updateOperation.update(obj);</span>
+	public Integer update(Object object) {
+<span class="fc" id="L198">		return updateOperation.update(object);</span>
 	}
 
 	/**
@@ -214,33 +214,33 @@ public final class SimpleJdbcMapper {
 	 *                will be thrown if object is stale.
 	 * &lt;/pre&gt;
 	 *
-	 * @param obj           object to be updated
+	 * @param object        object to be updated
 	 * @param propertyNames the specific property names that need to be updated.
 	 * @return number of records updated
 	 */
-	public Integer updateSpecificProperties(Object obj, String... propertyNames) {
-<span class="fc" id="L222">		return updateOperation.updateSpecificProperties(obj, propertyNames);</span>
+	public Integer updateSpecificProperties(Object object, String... propertyNames) {
+<span class="fc" id="L222">		return updateOperation.updateSpecificProperties(object, propertyNames);</span>
 	}
 
 	/**
 	 * Deletes the object from the database.
 	 *
-	 * @param obj Object to be deleted
+	 * @param object Object to be deleted
 	 * @return number of records were deleted (1 or 0)
 	 */
-	public Integer delete(Object obj) {
-<span class="fc" id="L232">		return deleteOperation.delete(obj);</span>
+	public Integer delete(Object object) {
+<span class="fc" id="L232">		return deleteOperation.delete(object);</span>
 	}
 
 	/**
 	 * Deletes the object from the database by id.
 	 *
-	 * @param type Type of object to be deleted.
-	 * @param id   Id of object to be deleted
+	 * @param entityType type of object to be deleted.
+	 * @param id         id of object to be deleted
 	 * @return number records were deleted (1 or 0)
 	 */
-	public Integer deleteById(Class&lt;?&gt; type, Object id) {
-<span class="fc" id="L243">		return deleteOperation.deleteById(type, id);</span>
+	public Integer deleteById(Class&lt;?&gt; entityType, Object id) {
+<span class="fc" id="L243">		return deleteOperation.deleteById(entityType, id);</span>
 	}
 
 	/**
@@ -257,12 +257,12 @@ public final class SimpleJdbcMapper {
 	 * &quot;somecolumn, someothercolumn, last_name AS user_last_name&quot;
 	 * &lt;/pre&gt;
 	 * 
-	 * @param clazz the class
+	 * @param entityType the type
 	 * @return comma separated select column string
 	 * 
 	 */
-	public String getBeanFriendlySqlColumns(Class&lt;?&gt; clazz) {
-<span class="fc" id="L265">		return findOperation.getBeanFriendlySqlColumns(clazz);</span>
+	public String getBeanFriendlySqlColumns(Class&lt;?&gt; entityType) {
+<span class="fc" id="L265">		return findOperation.getBeanFriendlySqlColumns(entityType);</span>
 	}
 
 	/**
@@ -283,25 +283,25 @@ public final class SimpleJdbcMapper {
 	 * &quot;t1.somecolumn, t1.someothercolumn, t1.last_name AS user_last_name&quot;
 	 * &lt;/pre&gt;
 	 * 
-	 * @param clazz      the class
+	 * @param entityType the type
 	 * @param tableAlias the table alias
 	 * @return comma separated select column string
 	 * 
 	 */
-	public String getBeanFriendlySqlColumns(Class&lt;?&gt; clazz, String tableAlias) {
-<span class="fc" id="L292">		return findOperation.getBeanFriendlySqlColumns(clazz, tableAlias);</span>
+	public String getBeanFriendlySqlColumns(Class&lt;?&gt; entityType, String tableAlias) {
+<span class="fc" id="L292">		return findOperation.getBeanFriendlySqlColumns(entityType, tableAlias);</span>
 	}
 
 	/**
 	 * returns a map with all the properties of the mapped class and their
 	 * corresponding column names
 	 * 
-	 * @param clazz the class
+	 * @param entityType the class
 	 * @return map of property and their corresponding columns
 	 * 
 	 */
-	public Map&lt;String, String&gt; getPropertyToColumnMappings(Class&lt;?&gt; clazz) {
-<span class="fc" id="L304">		return findOperation.getPropertyToColumnMappings(clazz);</span>
+	public Map&lt;String, String&gt; getPropertyToColumnMappings(Class&lt;?&gt; entityType) {
+<span class="fc" id="L304">		return findOperation.getPropertyToColumnMappings(entityType);</span>
 	}
 
 	/**
@@ -392,4 +392,4 @@ public final class SimpleJdbcMapper {
 	}
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper v2.0.0a b1f9ec90b1f5285351728773153d06e1d73fae16 2026-04-13T02:18:44</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper v2.0.0a c422d9b1f673eb47392442c8f4e8c38e5d7cbcbf 2026-04-13T18:10:31</div></body></html>

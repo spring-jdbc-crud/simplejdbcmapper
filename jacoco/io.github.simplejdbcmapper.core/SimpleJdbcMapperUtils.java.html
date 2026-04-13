@@ -29,7 +29,7 @@ import org.springframework.util.CollectionUtils;
  * 
  * @author Antony Joseph
  */
-<span class="nc" id="L32">public class SimpleJdbcMapperUtils {</span>
+public class SimpleJdbcMapperUtils {
 	/**
 	 * Assigns the 'hasOne' property of the main object with the related object that
 	 * matches 'relatedObjJoinPropertyNameTheId' and
@@ -38,7 +38,7 @@ import org.springframework.util.CollectionUtils;
 	 * &lt;pre&gt;
 	 * Example use case: 
 	 * 1) Query for a list of employees
-	 * 2) Query the departments for these employees
+	 * 2) Query the departments for these employees. (Could use sjm.findByPropertyValues() for this)
 	 * 3) Use populateHasOne() to populate the employee.department property
 	 * &lt;/pre&gt;
 	 * 
@@ -97,7 +97,7 @@ import org.springframework.util.CollectionUtils;
 	 * &lt;pre&gt;
 	 * Example use case could be: 
 	 * 1) Query to get a list of employees
-	 * 2) Query the skills of these employees
+	 * 2) Query the skills of these employees. (Could use sjm.findByPropertyValues() for this)
 	 * 3) Use populateHasMany() to populate the employee.skills property
 	 * &lt;/pre&gt;
 	 * 
@@ -178,5 +178,7 @@ import org.springframework.util.CollectionUtils;
 <span class="fc" id="L178">		return chunks;</span>
 	}
 
+	private SimpleJdbcMapperUtils() {
+	}
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper v2.0.0a b1f9ec90b1f5285351728773153d06e1d73fae16 2026-04-13T02:18:44</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper v2.0.0a c422d9b1f673eb47392442c8f4e8c38e5d7cbcbf 2026-04-13T18:10:31</div></body></html>

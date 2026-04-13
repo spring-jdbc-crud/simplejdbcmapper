@@ -56,8 +56,6 @@ class SimpleJdbcMapperSupport {
 
 <span class="fc" id="L57">	private boolean conversionServiceManuallySet = false;</span>
 
-<span class="fc" id="L59">	public boolean accessTableColumnMetaData = true;</span>
-
 	/**
 	 * Constructor.
 	 *
@@ -65,94 +63,94 @@ class SimpleJdbcMapperSupport {
 	 * @param schemaName  database schema name.
 	 * @param catalogName database catalog name.
 	 */
-<span class="fc" id="L68">	public SimpleJdbcMapperSupport(DataSource dataSource, String schemaName, String catalogName) {</span>
-<span class="fc" id="L69">		Assert.notNull(dataSource, &quot;dataSource must not be null&quot;);</span>
-<span class="fc" id="L70">		this.dataSource = dataSource;</span>
-<span class="fc" id="L71">		this.schemaName = schemaName;</span>
-<span class="fc" id="L72">		this.catalogName = catalogName;</span>
-<span class="fc" id="L73">		this.npJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);</span>
-<span class="fc" id="L74">		this.jdbcTemplate = npJdbcTemplate.getJdbcTemplate();</span>
-<span class="fc" id="L75">		this.jdbcClient = JdbcClient.create(npJdbcTemplate, conversionService);</span>
-<span class="fc" id="L76">		this.tableMappingProvider = new TableMappingProvider(dataSource, schemaName, catalogName);</span>
-<span class="fc" id="L77">	}</span>
+<span class="fc" id="L66">	public SimpleJdbcMapperSupport(DataSource dataSource, String schemaName, String catalogName) {</span>
+<span class="fc" id="L67">		Assert.notNull(dataSource, &quot;dataSource must not be null&quot;);</span>
+<span class="fc" id="L68">		this.dataSource = dataSource;</span>
+<span class="fc" id="L69">		this.schemaName = schemaName;</span>
+<span class="fc" id="L70">		this.catalogName = catalogName;</span>
+<span class="fc" id="L71">		this.npJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);</span>
+<span class="fc" id="L72">		this.jdbcTemplate = npJdbcTemplate.getJdbcTemplate();</span>
+<span class="fc" id="L73">		this.jdbcClient = JdbcClient.create(npJdbcTemplate, conversionService);</span>
+<span class="fc" id="L74">		this.tableMappingProvider = new TableMappingProvider(dataSource, schemaName, catalogName);</span>
+<span class="fc" id="L75">	}</span>
 
 	public DataSource getDataSource() {
-<span class="fc" id="L80">		return this.dataSource;</span>
+<span class="fc" id="L78">		return this.dataSource;</span>
 	}
 
 	public JdbcClient getJdbcClient() {
-<span class="fc" id="L84">		return this.jdbcClient;</span>
+<span class="fc" id="L82">		return this.jdbcClient;</span>
 	}
 
 	public JdbcTemplate getJdbcTemplate() {
-<span class="fc" id="L88">		return this.jdbcTemplate;</span>
+<span class="fc" id="L86">		return this.jdbcTemplate;</span>
 	}
 
 	public NamedParameterJdbcTemplate getNamedParameterJdbcTemplate() {
-<span class="fc" id="L92">		return this.npJdbcTemplate;</span>
+<span class="fc" id="L90">		return this.npJdbcTemplate;</span>
 	}
 
 	public &lt;T&gt; void setRecordAuditedBySupplier(Supplier&lt;T&gt; supplier) {
-<span class="fc bfc" id="L96" title="All 2 branches covered.">		if (recordAuditedBySupplier == null) {</span>
-<span class="fc" id="L97">			recordAuditedBySupplier = supplier;</span>
+<span class="fc bfc" id="L94" title="All 2 branches covered.">		if (recordAuditedBySupplier == null) {</span>
+<span class="fc" id="L95">			recordAuditedBySupplier = supplier;</span>
 		} else {
-<span class="fc" id="L99">			throw new IllegalStateException(&quot;recordAuditedBySupplier was already set and cannot be changed.&quot;);</span>
+<span class="fc" id="L97">			throw new IllegalStateException(&quot;recordAuditedBySupplier was already set and cannot be changed.&quot;);</span>
 		}
-<span class="fc" id="L101">	}</span>
+<span class="fc" id="L99">	}</span>
 
 	public &lt;T&gt; void setRecordAuditedOnSupplier(Supplier&lt;T&gt; supplier) {
-<span class="fc bfc" id="L104" title="All 2 branches covered.">		if (recordAuditedOnSupplier == null) {</span>
-<span class="fc" id="L105">			recordAuditedOnSupplier = supplier;</span>
+<span class="fc bfc" id="L102" title="All 2 branches covered.">		if (recordAuditedOnSupplier == null) {</span>
+<span class="fc" id="L103">			recordAuditedOnSupplier = supplier;</span>
 		} else {
-<span class="fc" id="L107">			throw new IllegalStateException(&quot;recordAuditedOnSupplier was already set and cannot be changed.&quot;);</span>
+<span class="fc" id="L105">			throw new IllegalStateException(&quot;recordAuditedOnSupplier was already set and cannot be changed.&quot;);</span>
 		}
-<span class="fc" id="L109">	}</span>
+<span class="fc" id="L107">	}</span>
 
 	public ConversionService getConversionService() {
-<span class="fc" id="L112">		return conversionService;</span>
+<span class="fc" id="L110">		return conversionService;</span>
 	}
 
 	public void setConversionService(ConversionService conversionService) {
-<span class="fc bfc" id="L116" title="All 2 branches covered.">		if (conversionServiceManuallySet) {</span>
-<span class="fc" id="L117">			throw new IllegalStateException(&quot;conversionService was already set and cannot be changed.&quot;);</span>
+<span class="fc bfc" id="L114" title="All 2 branches covered.">		if (conversionServiceManuallySet) {</span>
+<span class="fc" id="L115">			throw new IllegalStateException(&quot;conversionService was already set and cannot be changed.&quot;);</span>
 		} else {
-<span class="fc" id="L119">			this.conversionService = conversionService;</span>
-<span class="fc" id="L120">			this.jdbcClient = JdbcClient.create(npJdbcTemplate, conversionService);</span>
-<span class="fc" id="L121">			conversionServiceManuallySet = true;</span>
+<span class="fc" id="L117">			this.conversionService = conversionService;</span>
+<span class="fc" id="L118">			this.jdbcClient = JdbcClient.create(npJdbcTemplate, conversionService);</span>
+<span class="fc" id="L119">			conversionServiceManuallySet = true;</span>
 		}
-<span class="fc" id="L123">	}</span>
+<span class="fc" id="L121">	}</span>
 
 	public String getSchemaName() {
-<span class="fc" id="L126">		return schemaName;</span>
+<span class="fc" id="L124">		return schemaName;</span>
 	}
 
 	public String getCatalogName() {
-<span class="fc" id="L130">		return catalogName;</span>
+<span class="fc" id="L128">		return catalogName;</span>
 	}
 
-	TableMapping getTableMapping(Class&lt;?&gt; clazz) {
-<span class="fc" id="L134">		return tableMappingProvider.getTableMapping(clazz);</span>
+	TableMapping getTableMapping(Class&lt;?&gt; entityType) {
+<span class="fc" id="L132">		return tableMappingProvider.getTableMapping(entityType);</span>
 	}
 
-	BeanWrapper getBeanWrapper(Object obj) {
-<span class="fc" id="L138">		BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(obj);</span>
-<span class="fc" id="L139">		bw.setConversionService(conversionService);</span>
-<span class="fc" id="L140">		return bw;</span>
+	BeanWrapper getBeanWrapper(Object object) {
+<span class="fc" id="L136">		BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(object);</span>
+<span class="fc" id="L137">		bw.setConversionService(conversionService);</span>
+<span class="fc" id="L138">		return bw;</span>
 	}
 
 	@SuppressWarnings(&quot;rawtypes&quot;)
 	Supplier getRecordAuditedBySupplier() {
-<span class="fc" id="L145">		return recordAuditedBySupplier;</span>
+<span class="fc" id="L143">		return recordAuditedBySupplier;</span>
 	}
 
 	@SuppressWarnings(&quot;rawtypes&quot;)
 	Supplier getRecordAuditedOnSupplier() {
-<span class="fc" id="L150">		return recordAuditedOnSupplier;</span>
+<span class="fc" id="L148">		return recordAuditedOnSupplier;</span>
 	}
 
 	SimpleCache&lt;String, TableMapping&gt; getTableMappingCache() {
-<span class="fc" id="L154">		return tableMappingProvider.getTableMappingCache();</span>
+<span class="fc" id="L152">		return tableMappingProvider.getTableMappingCache();</span>
 	}
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper v2.0.0a b1f9ec90b1f5285351728773153d06e1d73fae16 2026-04-13T02:18:44</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper v2.0.0a c422d9b1f673eb47392442c8f4e8c38e5d7cbcbf 2026-04-13T18:10:31</div></body></html>

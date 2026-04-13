@@ -20,6 +20,7 @@ Just by annotating the models that you would use with JdbcTemplate/JdbcClient, y
 [Accessing JdbcClient JdbcTemplate](#accessing-jdbcclient-jdbctemplate)  
 [Logging](#logging)  
 [Limitations](#limitations)  
+[Upgrading](#upgrading-to-2-x-from-1-x)  
 [Troubleshooting](#troubleshooting)  
 [Bug Report](https://github.com/spring-jdbc-crud/simplejdbcmapper/issues) 
 
@@ -341,7 +342,7 @@ This will map the property to a column using the default naming convention of ca
 This will map the property to the column specified by the 'name' attribute.  **Note that column names with spaces are not supported.**
 
 @Column(sqlType = somesqltype)
-Use this in cases when you need to override the database metadata sqltype. For example some postgres drivers for column definition 'TIMESTAMP WITH TIMEZONE' return Types.TIMESTAMP instead of Types.TIMESTAMP_WITH_TIMEZONE, which causes conversion failures when used with java type OffsetDateTime. You can use the above attribute to override the database metadata sqlType.
+SimpleJdbcMapper 2.x uses Spring's default java type to sql type information for mapping. Even though this covers most cases, for things like BLOB/CLOB and database specific column types the sql type information will need to be provided using the 'sqlType' attribute.
 
 **@Version**
 
@@ -412,14 +413,58 @@ class Product {
 
 ## BLOB CLOB mapping
 
-Binary large object database columns should be mapped to java type byte[]. No other type is supported.
+1. Binary large object database columns should be mapped to java type byte[]. No other java type is supported. The 'sqlType' attribute of the @Column annotation with the following values are considered to be Binary Large Objects; Types.BLOB, Types.ARRAY, Types.LONGVARBINARY, Types.VARBINARY. Use the pertinent sql type for your database. 
 
-Character large object database columns should be mapped to java types String or other CharSequence or char[]. No other types are supported.
+2. Character large object database columns should be mapped to java types String or other CharSequence or char[]. No other java types are supported. The 'sqlType' attribute of the @Column annotation with the following values are considered to be Character Large Objects. Types.CLOB, Types.NCLOB,, Types.LONGVARCHAR, Types.LONGNVARCHAR.
 
-If there is a need to use InputStream/Reader use JdbcTemplate directly.
+In both the cases above the whole object (image files etc) will be read into memory. For very large objects this could create problems and you may want to use InputStream/Reader. To use InputStream/Reader you will have to use JdbcTemplate directly.
+
+Some BLOB/CLOB examples below. Keep in mind depending on the versions of the databases these could be different.
+
+Postgres:
+
+```
+@Column(sqlType = Types.ARRAY)
+private byte[] image;
+
+@Column(sqlType = Types.LONGVARCHAR)
+private String clobData;	
+
+```
+
+MySql:
+
+``` 
+@Column(sqlType = Types.BLOB)
+private byte[] image;
+
+@Column(sqlType = Types.LONGVARCHAR)
+private String textData;
+	
+```
+Oracle:
+
+```
+@Column(sqlType = Types.BLOB)
+private byte[] image;
+
+@Column(sqlType = Types.CLOB)
+private String clobData;
+	
+```
+SQL Server:
+
+```
+@Column(sqlType = Types.BLOB)
+private byte[] image;
+
+@Column(sqlType = Types.CLOB)
+private String clobData;
+
+```
 
 ## Enum mapping
-Enums can be mapped to a database column which stores strings.
+Enums should be mapped to a database column which stores strings. It uses the enum.name() to get the value.
 
 ```
 public enum StatusEnum {
@@ -476,6 +521,61 @@ Uses the same logging configurations as Spring. In application.properties:
 2. No support for table/column names with spaces in them.
 
 Use JdbcTemplate/JdbcClient to handle these cases.
+
+## Upgrading to 2.x from 1.x
+SimpleJdbcMapper 1.x versions needed access to the database table meta-data for it to the mapping. This creates problems where access to meta data tables is restricted due to security reasons. SimpleJdbcMapper 2.x has no dependency on database table metadata. It uses Spring's default java type to sql type information for mapping. Even though this covers most cases; for things like BLOB/CLOB and database specific column types, the sql type information will need to be provided using the @Column(sqlType = "somesqltype") mapping. In most cases the upgrade should be straight forward since API remains the same.
+
+Some examples of the mapping changes you may need to make. Keep in mind depending on the versions of the databases these could be different.
+
+Postgres:
+
+```
+@Column(sqlType = Types.ARRAY)
+private byte[] image;
+
+@Column(sqlType = Types.LONGVARCHAR)
+private String clobData;
+
+```
+
+MySql:
+
+``` 
+@Column(sqlType = Types.BLOB)
+private byte[] image;
+
+@Column(sqlType = Types.LONGVARCHAR)
+private String textData;
+	
+```
+
+Oracle:
+
+```
+@Column(sqlType = Types.BLOB)
+private byte[] image;
+
+@Column(sqlType = Types.CLOB)
+private String clobData;
+	
+@Column(sqlType = oracle.jdbc.OracleTypes.TIMESTAMPTZ)
+private OffsetDateTime offsetDateTimeData;
+	
+```
+
+SQL Server:
+
+```
+@Column(sqlType = Types.BLOB)
+private byte[] image;
+
+@Column(sqlType = Types.CLOB)
+private String clobData;
+
+@Column(sqlType = microsoft.sql.Types.DATETIMEOFFSET)
+microsoft.sql.DateTimeOffset  offsetDateTimeData;
+
+```
   
 ## TroubleShooting
 
@@ -501,14 +601,5 @@ For **Postgres/Oracle/Sqlserver** try setting the 'schema' parameter on construc
     new SimpleJdbcMapper(dataSource, "SCHEMA_NAME");
     Or
     @Table(name="sometablename", schema="SCHEMA_NAME");
-```
-
-3.**Postgres and OffsetDateTime**
-
-Some postgres drivers for column definition 'TIMESTAMP WITH TIMEZONE' return java.sql.Types.TIMESTAMP instead of java.sql.Types.TIMESTAMP_WITH_TIMEZONE, which causes conversion failures when used with OffsetDateTime. Do the following to override the database metadata sql type.
-  
-```
-@Column(sqlType = Types.TIMESTAMP_WITH_TIMEZONE)
-private OffsetDateTime someOffsetDateTime;
 ```
 

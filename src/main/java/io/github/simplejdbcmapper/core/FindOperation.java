@@ -129,7 +129,6 @@ class FindOperation {
 			return sjmSupport.getNamedParameterJdbcTemplate().query(sql.toString(), param,
 					getBeanPropertyRowMapper(entityType));
 		}
-
 	}
 
 	public String getBeanFriendlySqlColumns(Class<?> entityType) {

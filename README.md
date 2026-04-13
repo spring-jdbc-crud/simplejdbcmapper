@@ -20,7 +20,7 @@ Just by annotating the models that you would use with JdbcTemplate/JdbcClient, y
 [Accessing JdbcClient JdbcTemplate](#accessing-jdbcclient-jdbctemplate)  
 [Logging](#logging)  
 [Limitations](#limitations)  
-[Upgrading](#upgrading-to-2-x-from-1-x)  
+[Upgrading to 2.x from 1.x](#upgrading-to-2-x-from-1-x)  
 [Troubleshooting](#troubleshooting)  
 [Bug Report](https://github.com/spring-jdbc-crud/simplejdbcmapper/issues) 
 
@@ -464,7 +464,7 @@ private String clobData;
 ```
 
 ## Enum mapping
-Enums should be mapped to a database column which stores strings. It uses the enum.name() to get the value.
+Enums should be mapped to a database column which stores strings. It uses the enum.name() to get the string value.
 
 ```
 public enum StatusEnum {
@@ -523,9 +523,9 @@ Uses the same logging configurations as Spring. In application.properties:
 Use JdbcTemplate/JdbcClient to handle these cases.
 
 ## Upgrading to 2.x from 1.x
-SimpleJdbcMapper 1.x versions needed access to the database table meta-data for it to the mapping. This creates problems where access to meta data tables is restricted due to security reasons. SimpleJdbcMapper 2.x has no dependency on database table metadata. It uses Spring's default java type to sql type information for mapping. Even though this covers most cases; for things like BLOB/CLOB and database specific column types, the sql type information will need to be provided using the @Column(sqlType = "somesqltype") mapping. In most cases the upgrade should be straight forward since API remains the same.
+SimpleJdbcMapper 1.x versions needed access to the database table meta-data for it to do the mapping. This creates problems where access to database table meta data is restricted due to security reasons. SimpleJdbcMapper 2.x removes this dependency. It uses Spring's default java type to sql type information for mapping. Even though this covers most cases, for things like BLOB/CLOB and database specific column types, the sql type information will need to be provided using the @Column(sqlType = "somesqltype") mapping. Generally the upgrade should be straight forward since API remains the same.
 
-Some examples of the mapping changes you may need to make. Keep in mind depending on the versions of the databases these could be different.
+Some examples of the mapping changes you may need to make are below. Keep in mind depending on the versions of the databases these could be different.
 
 Postgres:
 
@@ -583,23 +583,6 @@ microsoft.sql.DateTimeOffset  offsetDateTimeData;
 
 Try to connect to the database using Spring JdbcClient or JdbcTemplate without the SimpleJdbcMapper and issue a simple query. The datasource configuration parameters are exactly the same.
 
-2.**Table does not exist or a similar exception**
 
-For **MySql** try setting the 'catalog' parameter on constructor of SimpleJdbcMapper() (3rd argument) or set the 'catalog' attribute on the @Table annotation of the object. Database name is considered the same as catalog name for mysql.
-
-Example:
-
-```
-    new SimpleJdbcMapper(dataSource, null, "DATABASE_NAME");
-    Or
-    @Table(name="sometablename", catalog="DATABASE_NAME");
-```
-    
-For **Postgres/Oracle/Sqlserver** try setting the 'schema' parameter on constructor of SimpleJdbcMapper() (2nd argument) or set the 'schema' attribute on the @Table annotation of the object.
-
-```
-    new SimpleJdbcMapper(dataSource, "SCHEMA_NAME");
-    Or
-    @Table(name="sometablename", schema="SCHEMA_NAME");
 ```
 

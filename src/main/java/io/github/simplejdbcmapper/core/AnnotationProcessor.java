@@ -46,7 +46,7 @@ class AnnotationProcessor {
 			}
 
 			PropertyMapping propertyMapping = null;
-			if (colAnnotation.sqlType() != -99999) {
+			if (colAnnotation.sqlType() != Integer.MIN_VALUE) {
 				propertyMapping = new PropertyMapping(propertyName, field.getType(), colName, sqlType,
 						colAnnotation.sqlType());
 			} else {

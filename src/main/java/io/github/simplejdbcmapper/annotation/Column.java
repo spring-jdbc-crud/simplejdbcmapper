@@ -31,5 +31,5 @@ public @interface Column {
 	String name() default "[DEFAULT]";
 
 	/** column overridden sqlType */
-	int sqlType() default -99999;
+	int sqlType() default Integer.MIN_VALUE;
 }

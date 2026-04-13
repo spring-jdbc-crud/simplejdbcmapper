@@ -19,7 +19,7 @@ public class TypeCheckMysql {
 	@Column
 	private LocalDate localDateData;
 
-	@Column
+	@Column(sqlType = Types.DATE)
 	private java.util.Date javaUtilDateData;
 
 	@Column
@@ -37,13 +37,13 @@ public class TypeCheckMysql {
 	@Column
 	private Boolean booleanVal;
 
-	@Column
+	@Column(sqlType = Types.BLOB)
 	private byte[] image;
 
-	@Column(name = "string_enum", sqlType = Types.VARCHAR)
+	@Column(name = "string_enum")
 	private StatusEnum status;
 
-	@Column
+	@Column(sqlType = Types.LONGVARCHAR)
 	private String textData;
 
 	public Integer getId() {

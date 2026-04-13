@@ -35,10 +35,10 @@ public class TypeCheckPostgres {
 	@Column
 	private Boolean booleanVal;
 
-	@Column
+	@Column(sqlType = Types.ARRAY)
 	private byte[] image;
 
-	@Column
+	@Column(sqlType = Types.LONGVARCHAR)
 	private String clobData;
 
 	@Column

@@ -90,8 +90,8 @@ public final class SimpleJdbcMapper {
 	 * finds the object by Id. Returns null if not found
 	 *
 	 * @param <T>        the type
-	 * @param entityType Class of object
-	 * @param id         Id of object
+	 * @param entityType the type of object
+	 * @param id         id of object
 	 * @return the object of type T
 	 */
 	public <T> T findById(Class<T> entityType, Object id) {
@@ -102,7 +102,7 @@ public final class SimpleJdbcMapper {
 	 * Find all objects.
 	 *
 	 * @param <T>         the type
-	 * @param entityType  Type of object
+	 * @param entityType  type of object
 	 * @param sortByArray optional argument. An array of SortBy objects that are
 	 *                    used to generate the "ORDER BY" clause
 	 * @return List of objects of type T
@@ -116,7 +116,7 @@ public final class SimpleJdbcMapper {
 	 * be used in the sql for a null value.
 	 *
 	 * @param <T>           the type
-	 * @param entityType    Class of List of objects returned
+	 * @param entityType    type of objects to be returned
 	 * @param propertyName  the property name
 	 * @param propertyValue the property value
 	 * @param sortByArray   optional argument. An array of SortBy objects that are
@@ -141,7 +141,7 @@ public final class SimpleJdbcMapper {
 	 *
 	 * @param <T>            the type
 	 * @param <U>            the type of the property values
-	 * @param entityType     Class of List of objects returned
+	 * @param entityType     the type of objects to be returned
 	 * @param propertyName   the property name
 	 * @param propertyValues the collection of property values
 	 * @param sortByArray    optional argument. An array of SortBy objects that are
@@ -235,8 +235,8 @@ public final class SimpleJdbcMapper {
 	/**
 	 * Deletes the object from the database by id.
 	 *
-	 * @param entityType Type of object to be deleted.
-	 * @param id         Id of object to be deleted
+	 * @param entityType type of object to be deleted.
+	 * @param id         id of object to be deleted
 	 * @return number records were deleted (1 or 0)
 	 */
 	public Integer deleteById(Class<?> entityType, Object id) {
@@ -257,7 +257,7 @@ public final class SimpleJdbcMapper {
 	 * "somecolumn, someothercolumn, last_name AS user_last_name"
 	 * </pre>
 	 * 
-	 * @param entityType the class
+	 * @param entityType the type
 	 * @return comma separated select column string
 	 * 
 	 */
@@ -283,7 +283,7 @@ public final class SimpleJdbcMapper {
 	 * "t1.somecolumn, t1.someothercolumn, t1.last_name AS user_last_name"
 	 * </pre>
 	 * 
-	 * @param entityType the class
+	 * @param entityType the type
 	 * @param tableAlias the table alias
 	 * @return comma separated select column string
 	 * 

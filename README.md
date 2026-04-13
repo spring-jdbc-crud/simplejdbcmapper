@@ -19,7 +19,7 @@ Just by annotating the models that you would use with JdbcTemplate/JdbcClient, y
 [Configuration for auto assigning @CreatedBy, @UpdateBy, @CreatedOn, @UpdatedOn](#configuration-for-auto-assigning-createdby-updateby-createdon-updatedon)  
 [Accessing JdbcClient JdbcTemplate](#accessing-jdbcclient-jdbctemplate)  
 [Logging](#logging)  
-[Limitations](#limitations)  
+[Limitations](#limitations) 
 [Upgrading to 2.x from 1.x](#upgrading-to-2-x-from-1-x)  
 [Troubleshooting](#troubleshooting)  
 [Bug Report](https://github.com/spring-jdbc-crud/simplejdbcmapper/issues) 

@@ -155,8 +155,8 @@ class PropertyMapping {
 
 	private void determineBlobClob() {
 		Integer effectiveSqlType = getEffectiveSqlType();
-		if (effectiveSqlType != null && effectiveSqlType == Types.BLOB || effectiveSqlType == Types.ARRAY
-				|| effectiveSqlType == Types.LONGVARBINARY || effectiveSqlType == Types.VARBINARY) {
+		if (effectiveSqlType != null && (effectiveSqlType == Types.BLOB || effectiveSqlType == Types.ARRAY
+				|| effectiveSqlType == Types.LONGVARBINARY || effectiveSqlType == Types.VARBINARY)) {
 			binaryLargeObject = true;
 		} else if (effectiveSqlType != null && (effectiveSqlType == Types.CLOB || effectiveSqlType == Types.NCLOB
 				|| effectiveSqlType == Types.LONGVARCHAR || effectiveSqlType == Types.LONGNVARCHAR)) {

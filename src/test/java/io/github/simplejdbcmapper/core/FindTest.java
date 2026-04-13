@@ -123,8 +123,9 @@ class FindTest {
 
 	@Test
 	void findAll_WithOrderBy_failure_Test() {
+		SortBy sb = new SortBy("xyz");
 		Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
-			sjm.findAll(Order.class, new SortBy("xyz"));
+			sjm.findAll(Order.class, sb);
 		});
 		assertTrue(exception.getMessage().contains("is not a mapped property for class"));
 	}
@@ -147,8 +148,9 @@ class FindTest {
 
 	@Test
 	void findByPropertyValue_WithOrderBy_failure_Test() {
+		SortBy sortBy = new SortBy("xyz");
 		Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
-			sjm.findByPropertyValue(Order.class, "orderId", 1, new SortBy("xyz"));
+			sjm.findByPropertyValue(Order.class, "orderId", 1, sortBy);
 		});
 		assertTrue(exception.getMessage().contains("is not a mapped property for class"));
 	}
@@ -205,9 +207,11 @@ class FindTest {
 	@Test
 	void findByPropertyValues_WithOrderBy_failure_Test() {
 		Integer[] orderIds = { 1, 2, 3 };
+		SortBy sb1 = new SortBy("orderId");
+		SortBy sb2 = new SortBy("xyz");
+		List<Integer> list = Arrays.asList(orderIds);
 		Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
-			sjm.findByPropertyValues(Order.class, "orderId", Arrays.asList(orderIds), new SortBy("orderId"),
-					new SortBy("xyz"));
+			sjm.findByPropertyValues(Order.class, "orderId", list, sb1, sb2);
 		});
 		assertTrue(exception.getMessage().contains("is not a mapped property for class"));
 	}

@@ -178,4 +178,6 @@ public class SimpleJdbcMapperUtils {
 		return chunks;
 	}
 
+	private SimpleJdbcMapperUtils() {
+	}
 }

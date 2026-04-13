@@ -59,7 +59,7 @@ class TableMappingProvider {
 			validateMetaDataConfig(catalog, schema);
 			List<Field> fields = getAllFields(entityType);
 			IdPropertyInfo idPropertyInfo = getIdPropertyInfo(entityType, fields);
-			List<PropertyMapping> propertyMappings = getPropertyMappings(entityType, catalog, schema, fields);
+			List<PropertyMapping> propertyMappings = getPropertyMappings(entityType, fields);
 			tableMapping = new TableMapping(entityType, tableName, schema, catalog, idPropertyInfo, propertyMappings);
 			tableMappingCache.put(entityType.getName(), tableMapping);
 		}
@@ -70,8 +70,7 @@ class TableMappingProvider {
 		return tableMappingCache;
 	}
 
-	private List<PropertyMapping> getPropertyMappings(Class<?> entityType, String catalog, String schema,
-			List<Field> fields) {
+	private List<PropertyMapping> getPropertyMappings(Class<?> entityType, List<Field> fields) {
 		// key:propertyName, value:PropertyMapping. LinkedHashMap to maintain order of
 		// properties
 		Map<String, PropertyMapping> propNameToPropertyMapping = new LinkedHashMap<>();

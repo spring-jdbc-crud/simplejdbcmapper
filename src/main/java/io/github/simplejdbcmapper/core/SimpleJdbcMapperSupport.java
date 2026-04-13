@@ -56,8 +56,6 @@ class SimpleJdbcMapperSupport {
 
 	private boolean conversionServiceManuallySet = false;
 
-	public boolean accessTableColumnMetaData = true;
-
 	/**
 	 * Constructor.
 	 *

@@ -15,21 +15,21 @@ class DeleteOperation {
 		this.sjmSupport = sjmSupport;
 	}
 
-	public Integer delete(Object obj) {
-		Assert.notNull(obj, "obj must not be null");
-		TableMapping tableMapping = sjmSupport.getTableMapping(obj.getClass());
-		BeanWrapper bw = sjmSupport.getBeanWrapper(obj);
-		return deleteById(obj.getClass(), bw.getPropertyValue(tableMapping.getIdPropertyName()));
+	public Integer delete(Object object) {
+		Assert.notNull(object, "object must not be null");
+		TableMapping tableMapping = sjmSupport.getTableMapping(object.getClass());
+		BeanWrapper bw = sjmSupport.getBeanWrapper(object);
+		return deleteById(object.getClass(), bw.getPropertyValue(tableMapping.getIdPropertyName()));
 	}
 
-	public Integer deleteById(Class<?> type, Object id) {
-		Assert.notNull(type, "type must not be null");
-		TableMapping tableMapping = sjmSupport.getTableMapping(type);
-		String sql = deleteSqlCache.get(type.getName());
+	public Integer deleteById(Class<?> entityType, Object id) {
+		Assert.notNull(entityType, "entityType must not be null");
+		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
+		String sql = deleteSqlCache.get(entityType.getName());
 		if (sql == null) {
 			sql = "DELETE FROM " + tableMapping.fullyQualifiedTableName() + " WHERE " + tableMapping.getIdColumnName()
 					+ " = ?";
-			deleteSqlCache.put(type.getName(), sql);
+			deleteSqlCache.put(entityType.getName(), sql);
 		}
 		return sjmSupport.getJdbcTemplate().update(sql,
 				new SqlParameterValue(tableMapping.getIdPropertyMapping().getEffectiveSqlType(), id));

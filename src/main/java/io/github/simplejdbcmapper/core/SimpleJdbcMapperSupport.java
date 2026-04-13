@@ -130,12 +130,12 @@ class SimpleJdbcMapperSupport {
 		return catalogName;
 	}
 
-	TableMapping getTableMapping(Class<?> clazz) {
-		return tableMappingProvider.getTableMapping(clazz);
+	TableMapping getTableMapping(Class<?> entityType) {
+		return tableMappingProvider.getTableMapping(entityType);
 	}
 
-	BeanWrapper getBeanWrapper(Object obj) {
-		BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(obj);
+	BeanWrapper getBeanWrapper(Object object) {
+		BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(object);
 		bw.setConversionService(conversionService);
 		return bw;
 	}

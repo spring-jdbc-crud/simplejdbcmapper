@@ -39,18 +39,18 @@ class FindOperation {
 		this.sjmSupport = sjmSupport;
 	}
 
-	public <T> T findById(Class<T> type, Object id) {
-		Assert.notNull(type, "type must not be null");
-		TableMapping tableMapping = sjmSupport.getTableMapping(type);
-		String sql = findByIdSqlCache.get(type.getName());
+	public <T> T findById(Class<T> entityType, Object id) {
+		Assert.notNull(entityType, "entityType must not be null");
+		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
+		String sql = findByIdSqlCache.get(entityType.getName());
 		if (sql == null) {
-			sql = "SELECT " + getBeanFriendlySqlColumns(type) + " FROM " + tableMapping.fullyQualifiedTableName()
+			sql = "SELECT " + getBeanFriendlySqlColumns(entityType) + " FROM " + tableMapping.fullyQualifiedTableName()
 					+ " WHERE " + tableMapping.getIdColumnName() + " = ?";
-			findByIdSqlCache.put(type.getName(), sql);
+			findByIdSqlCache.put(entityType.getName(), sql);
 		}
 		T obj = null;
 		try {
-			obj = sjmSupport.getJdbcTemplate().queryForObject(sql, getBeanPropertyRowMapper(type),
+			obj = sjmSupport.getJdbcTemplate().queryForObject(sql, getBeanPropertyRowMapper(entityType),
 					new SqlParameterValue(tableMapping.getIdPropertyMapping().getEffectiveSqlType(), id));
 		} catch (EmptyResultDataAccessException e) {
 			// do nothing
@@ -58,50 +58,51 @@ class FindOperation {
 		return obj;
 	}
 
-	public <T> List<T> findAll(Class<T> type, SortBy... sortByArray) {
-		Assert.notNull(type, "type must not be null");
-		TableMapping tableMapping = sjmSupport.getTableMapping(type);
+	public <T> List<T> findAll(Class<T> entityType, SortBy... sortByArray) {
+		Assert.notNull(entityType, "entityType must not be null");
+		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
 		StringBuilder sql = new StringBuilder(256);
-		sql.append("SELECT ").append(getBeanFriendlySqlColumns(type)).append(" FROM ")
-				.append(tableMapping.fullyQualifiedTableName()).append(orderByClause(type, sortByArray, tableMapping));
-		return sjmSupport.getJdbcTemplate().query(sql.toString(), getBeanPropertyRowMapper(type));
+		sql.append("SELECT ").append(getBeanFriendlySqlColumns(entityType)).append(" FROM ")
+				.append(tableMapping.fullyQualifiedTableName())
+				.append(orderByClause(entityType, sortByArray, tableMapping));
+		return sjmSupport.getJdbcTemplate().query(sql.toString(), getBeanPropertyRowMapper(entityType));
 	}
 
-	public <T> List<T> findByPropertyValue(Class<T> type, String propertyName, Object propertyValue,
+	public <T> List<T> findByPropertyValue(Class<T> entityType, String propertyName, Object propertyValue,
 			SortBy... sortByArray) {
-		Assert.notNull(type, "type must not be null");
+		Assert.notNull(entityType, "entityType must not be null");
 		Assert.notNull(propertyName, "propertyName must not be null");
-		TableMapping tableMapping = sjmSupport.getTableMapping(type);
+		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
 		PropertyMapping propMapping = tableMapping.getPropertyMappingByPropertyName(propertyName);
 		if (propMapping == null) {
-			throw new MapperException(type.getSimpleName() + "." + propertyName + " does not have a mapping.");
+			throw new MapperException(entityType.getSimpleName() + "." + propertyName + " does not have a mapping.");
 		}
 		StringBuilder sql = new StringBuilder(256);
-		sql.append("SELECT ").append(getBeanFriendlySqlColumns(type)).append(" FROM ")
+		sql.append("SELECT ").append(getBeanFriendlySqlColumns(entityType)).append(" FROM ")
 				.append(tableMapping.fullyQualifiedTableName()).append(" WHERE ");
 		if (propertyValue == null) {
 			sql.append(propMapping.getColumnName()).append(" IS NULL");
 		} else {
 			sql.append(propMapping.getColumnName()).append(" = ?");
 		}
-		sql.append(orderByClause(type, sortByArray, tableMapping));
+		sql.append(orderByClause(entityType, sortByArray, tableMapping));
 		if (propertyValue == null) {
-			return sjmSupport.getJdbcTemplate().query(sql.toString(), getBeanPropertyRowMapper(type));
+			return sjmSupport.getJdbcTemplate().query(sql.toString(), getBeanPropertyRowMapper(entityType));
 		} else {
-			return sjmSupport.getJdbcTemplate().query(sql.toString(), getBeanPropertyRowMapper(type),
+			return sjmSupport.getJdbcTemplate().query(sql.toString(), getBeanPropertyRowMapper(entityType),
 					new SqlParameterValue(propMapping.getEffectiveSqlType(), propertyValue));
 		}
 	}
 
-	public <T, U> List<T> findByPropertyValues(Class<T> type, String propertyName, Collection<U> propertyValues,
+	public <T, U> List<T> findByPropertyValues(Class<T> entityType, String propertyName, Collection<U> propertyValues,
 			SortBy... sortByArray) {
-		Assert.notNull(type, "type must not be null");
+		Assert.notNull(entityType, "entityType must not be null");
 		Assert.notNull(propertyName, "propertyName must not be null");
 		Assert.notNull(propertyValues, "propertyValues must not be null");
-		TableMapping tableMapping = sjmSupport.getTableMapping(type);
+		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
 		PropertyMapping propMapping = tableMapping.getPropertyMappingByPropertyName(propertyName);
 		if (propMapping == null) {
-			throw new MapperException(type.getSimpleName() + "." + propertyName + " does not have a mapping.");
+			throw new MapperException(entityType.getSimpleName() + "." + propertyName + " does not have a mapping.");
 		}
 		if (ObjectUtils.isEmpty(propertyValues)) {
 			return new ArrayList<>();
@@ -109,7 +110,7 @@ class FindOperation {
 		Set<U> localPropertyValues = new LinkedHashSet<>(propertyValues);
 		boolean hasNullInSet = localPropertyValues.remove(null); // need to handle nulls in the set.
 		StringBuilder sql = new StringBuilder(256);
-		sql.append("SELECT ").append(getBeanFriendlySqlColumns(type)).append(" FROM ")
+		sql.append("SELECT ").append(getBeanFriendlySqlColumns(entityType)).append(" FROM ")
 				.append(tableMapping.fullyQualifiedTableName()).append(" WHERE ");
 		if (ObjectUtils.isEmpty(localPropertyValues)) {
 			sql.append(propMapping.getColumnName()).append(" IS NULL");
@@ -119,23 +120,23 @@ class FindOperation {
 				sql.append(" OR ").append(propMapping.getColumnName()).append(" IS NULL");
 			}
 		}
-		sql.append(orderByClause(type, sortByArray, tableMapping));
+		sql.append(orderByClause(entityType, sortByArray, tableMapping));
 		if (ObjectUtils.isEmpty(localPropertyValues)) {
-			return sjmSupport.getJdbcTemplate().query(sql.toString(), getBeanPropertyRowMapper(type));
+			return sjmSupport.getJdbcTemplate().query(sql.toString(), getBeanPropertyRowMapper(entityType));
 		} else {
 			MapSqlParameterSource param = new MapSqlParameterSource();
 			param.addValue("propertyValues", localPropertyValues, propMapping.getEffectiveSqlType());
 			return sjmSupport.getNamedParameterJdbcTemplate().query(sql.toString(), param,
-					getBeanPropertyRowMapper(type));
+					getBeanPropertyRowMapper(entityType));
 		}
 
 	}
 
-	public String getBeanFriendlySqlColumns(Class<?> type) {
-		Assert.notNull(type, "type must not be null");
-		String columnsSql = beanColumnsSqlCache.get(type.getName());
+	public String getBeanFriendlySqlColumns(Class<?> entityType) {
+		Assert.notNull(entityType, "entityType must not be null");
+		String columnsSql = beanColumnsSqlCache.get(entityType.getName());
 		if (columnsSql == null) {
-			TableMapping tableMapping = sjmSupport.getTableMapping(type);
+			TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
 			StringJoiner sj = new StringJoiner(", ", " ", " ");
 			for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {
 				String underscorePropertyName = InternalUtils.toUnderscoreName(propMapping.getPropertyName());
@@ -146,21 +147,21 @@ class FindOperation {
 				}
 			}
 			columnsSql = sj.toString();
-			beanColumnsSqlCache.put(type.getName(), columnsSql);
+			beanColumnsSqlCache.put(entityType.getName(), columnsSql);
 		}
 		return columnsSql;
 	}
 
-	public String getBeanFriendlySqlColumns(Class<?> type, String tableAlias) {
-		Assert.notNull(type, "type must not be null");
+	public String getBeanFriendlySqlColumns(Class<?> entityType, String tableAlias) {
+		Assert.notNull(entityType, "entityType must not be null");
 		if (!StringUtils.hasText(tableAlias)) {
 			throw new IllegalArgumentException("tableAlias has no value");
 		}
-		String cacheKey = type.getName() + "-" + tableAlias;
+		String cacheKey = entityType.getName() + "-" + tableAlias;
 		String columnsSql = beanColumnsTableAliasSqlCache.get(cacheKey);
 		if (columnsSql == null) {
 			String tablePrefix = tableAlias + ".";
-			TableMapping tableMapping = sjmSupport.getTableMapping(type);
+			TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
 			StringJoiner sj = new StringJoiner(", ", " ", " ");
 			for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {
 				String underscorePropertyName = InternalUtils.toUnderscoreName(propMapping.getPropertyName());
@@ -176,9 +177,9 @@ class FindOperation {
 		return columnsSql;
 	}
 
-	public Map<String, String> getPropertyToColumnMappings(Class<?> type) {
-		Assert.notNull(type, "type must not be null");
-		TableMapping tableMapping = sjmSupport.getTableMapping(type);
+	public Map<String, String> getPropertyToColumnMappings(Class<?> entityType) {
+		Assert.notNull(entityType, "entityType must not be null");
+		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
 		Map<String, String> map = new LinkedHashMap<>();
 		for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {
 			map.put(propMapping.getPropertyName(), propMapping.getColumnName());
@@ -204,7 +205,7 @@ class FindOperation {
 		return rowMapper;
 	}
 
-	private String orderByClause(Class<?> clazz, SortBy[] sortByArray, TableMapping tableMapping) {
+	private String orderByClause(Class<?> entityType, SortBy[] sortByArray, TableMapping tableMapping) {
 		if (sortByArray.length > 0) {
 			StringBuilder clause = new StringBuilder(64);
 			clause.append(" ORDER BY ");
@@ -213,7 +214,7 @@ class FindOperation {
 				PropertyMapping propMapping = tableMapping.getPropertyMappingByPropertyName(sortBy.getPropertyName());
 				if (propMapping == null) {
 					throw new IllegalArgumentException(
-							sortBy.getPropertyName() + " is not a mapped property for class " + clazz.getName());
+							sortBy.getPropertyName() + " is not a mapped property for class " + entityType.getName());
 				}
 				if (cnt > 0) {
 					clause.append(", ");

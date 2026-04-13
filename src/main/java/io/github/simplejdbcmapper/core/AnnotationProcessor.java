@@ -23,9 +23,9 @@ import io.github.simplejdbcmapper.exception.AnnotationException;
 
 class AnnotationProcessor {
 
-	Table getTableAnnotation(Class<?> clazz) {
-		Table tableAnnotation = AnnotationUtils.findAnnotation(clazz, Table.class);
-		validateTableAnnotation(tableAnnotation, clazz);
+	Table getTableAnnotation(Class<?> entityType) {
+		Table tableAnnotation = AnnotationUtils.findAnnotation(entityType, Table.class);
+		validateTableAnnotation(tableAnnotation, entityType);
 		return tableAnnotation;
 	}
 
@@ -85,15 +85,15 @@ class AnnotationProcessor {
 		processAnnotation(UpdatedBy.class, field, tableName, propNameToPropertyMapping);
 	}
 
-	void validateAnnotations(List<PropertyMapping> propertyMappings, Class<?> clazz) {
-		annotationDuplicateCheck(propertyMappings, clazz);
-		annotationConflictCheck(propertyMappings, clazz);
-		annotationVersionTypeCheck(propertyMappings, clazz);
+	void validateAnnotations(List<PropertyMapping> propertyMappings, Class<?> type) {
+		annotationDuplicateCheck(propertyMappings, type);
+		annotationConflictCheck(propertyMappings, type);
+		annotationVersionTypeCheck(propertyMappings, type);
 	}
 
-	private <T extends Annotation> void processAnnotation(Class<T> annotationClazz, Field field, String tableName,
+	private <T extends Annotation> void processAnnotation(Class<T> annotationType, Field field, String tableName,
 			Map<String, PropertyMapping> propNameToPropertyMapping) {
-		Annotation annotation = AnnotationUtils.findAnnotation(field, annotationClazz);
+		Annotation annotation = AnnotationUtils.findAnnotation(field, annotationType);
 		if (annotation != null) {
 			String propertyName = field.getName();
 			PropertyMapping propMapping = propNameToPropertyMapping.get(propertyName);
@@ -110,21 +110,21 @@ class AnnotationProcessor {
 			BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(propMapping);
 			// set idAnnotation, versionAnnotation, createdOnAnnotation etc on
 			// PropertyMapping object
-			bw.setPropertyValue(StringUtils.uncapitalize(annotationClazz.getSimpleName()) + "Annotation", true);
+			bw.setPropertyValue(StringUtils.uncapitalize(annotationType.getSimpleName()) + "Annotation", true);
 		}
 	}
 
-	private void validateTableAnnotation(Table tableAnnotation, Class<?> clazz) {
+	private void validateTableAnnotation(Table tableAnnotation, Class<?> entityType) {
 		if (tableAnnotation == null) {
 			throw new AnnotationException(
-					clazz.getSimpleName() + " does not have the @Table annotation. It is required");
+					entityType.getSimpleName() + " does not have the @Table annotation. It is required");
 		}
 		if (!StringUtils.hasText(tableAnnotation.name())) {
-			throw new AnnotationException("For " + clazz.getSimpleName() + " the @Table annotation has a blank name");
+			throw new AnnotationException("For " + entityType.getSimpleName() + " the @Table annotation has a blank name");
 		}
 	}
 
-	private void annotationDuplicateCheck(List<PropertyMapping> propertyMappings, Class<?> clazz) {
+	private void annotationDuplicateCheck(List<PropertyMapping> propertyMappings, Class<?> entityType) {
 		int idCnt = 0;
 		int versionCnt = 0;
 		int createdByCnt = 0;
@@ -152,26 +152,26 @@ class AnnotationProcessor {
 			}
 		}
 		if (idCnt > 1) {
-			throw new AnnotationException(clazz.getSimpleName() + " has multiple @Id annotations");
+			throw new AnnotationException(entityType.getSimpleName() + " has multiple @Id annotations");
 		}
 		if (versionCnt > 1) {
-			throw new AnnotationException(clazz.getSimpleName() + " has multiple @Version annotations");
+			throw new AnnotationException(entityType.getSimpleName() + " has multiple @Version annotations");
 		}
 		if (createdOnCnt > 1) {
-			throw new AnnotationException(clazz.getSimpleName() + " has multiple @CreatedOn annotations");
+			throw new AnnotationException(entityType.getSimpleName() + " has multiple @CreatedOn annotations");
 		}
 		if (createdByCnt > 1) {
-			throw new AnnotationException(clazz.getSimpleName() + " has multiple @CreatedBy annotations");
+			throw new AnnotationException(entityType.getSimpleName() + " has multiple @CreatedBy annotations");
 		}
 		if (updatedOnCnt > 1) {
-			throw new AnnotationException(clazz.getSimpleName() + " has multiple @UpdatedOn annotations");
+			throw new AnnotationException(entityType.getSimpleName() + " has multiple @UpdatedOn annotations");
 		}
 		if (updatedByCnt > 1) {
-			throw new AnnotationException(clazz.getSimpleName() + " has multiple @UpdatedBy annotations");
+			throw new AnnotationException(entityType.getSimpleName() + " has multiple @UpdatedBy annotations");
 		}
 	}
 
-	private void annotationConflictCheck(List<PropertyMapping> propertyMappings, Class<?> clazz) {
+	private void annotationConflictCheck(List<PropertyMapping> propertyMappings, Class<?> entityType) {
 		for (PropertyMapping propMapping : propertyMappings) {
 			int conflictCnt = 0;
 			if (propMapping.isIdAnnotation()) {
@@ -193,17 +193,17 @@ class AnnotationProcessor {
 				conflictCnt++;
 			}
 			if (conflictCnt > 1) {
-				throw new AnnotationException(clazz.getSimpleName() + "." + propMapping.getPropertyName()
+				throw new AnnotationException(entityType.getSimpleName() + "." + propMapping.getPropertyName()
 						+ " has multiple annotations that conflict");
 			}
 		}
 	}
 
-	private void annotationVersionTypeCheck(List<PropertyMapping> propertyMappings, Class<?> clazz) {
+	private void annotationVersionTypeCheck(List<PropertyMapping> propertyMappings, Class<?> entityType) {
 		for (PropertyMapping propMapping : propertyMappings) {
 			if (propMapping.isVersionAnnotation()
 					&& !(Integer.class.getName().equals(propMapping.getPropertyClassName()))) {
-				throw new AnnotationException("@Version requires the type of property " + clazz.getSimpleName() + "."
+				throw new AnnotationException("@Version requires the type of property " + entityType.getSimpleName() + "."
 						+ propMapping.getPropertyName() + " to be Integer");
 			}
 		}

@@ -31,12 +31,12 @@ import org.springframework.util.StringUtils;
  */
 class InternalUtils {
 
-	public static Integer javaTypeToSqlParameterType(Class<?> type) {
-		if (type.isEnum()) {
+	public static Integer javaTypeToSqlParameterType(Class<?> entityType) {
+		if (entityType.isEnum()) {
 			return Types.VARCHAR;
 		} else {
 			// use springs default mappings.
-			return StatementCreatorUtils.javaTypeToSqlParameterType(type);
+			return StatementCreatorUtils.javaTypeToSqlParameterType(entityType);
 		}
 	}
 

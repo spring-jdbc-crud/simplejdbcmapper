@@ -35,7 +35,7 @@ class DeleteTest {
 		Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
 			sjm.delete(null);
 		});
-		assertTrue(exception.getMessage().contains("obj must not be null"));
+		assertTrue(exception.getMessage().contains("object must not be null"));
 	}
 
 	@Test

@@ -8,7 +8,6 @@ import java.util.Map;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.jdbc.core.SqlTypeValue;
 import org.springframework.util.StringUtils;
 
 import io.github.simplejdbcmapper.annotation.Column;
@@ -39,10 +38,6 @@ class AnnotationProcessor {
 			}
 			colName = InternalUtils.toLowerCase(colName);
 			Integer sqlType = InternalUtils.javaTypeToSqlParameterType(field.getType());
-			if (sqlType == SqlTypeValue.TYPE_UNKNOWN) {
-				System.out.println("columnAnnotation sqlType Unknown:" + field.getDeclaringClass().getSimpleName() + "."
-						+ field.getName());
-			}
 			PropertyMapping propertyMapping = null;
 			if (colAnnotation.sqlType() != Integer.MIN_VALUE) {
 				// sqlType has been configured in @Column
@@ -94,10 +89,6 @@ class AnnotationProcessor {
 			if (propMapping == null) { // it means there is no @Column annotation for the property
 				String colName = InternalUtils.toUnderscoreName(propertyName); // the default column name
 				Integer sqlType = InternalUtils.javaTypeToSqlParameterType(field.getType());
-				if (sqlType == SqlTypeValue.TYPE_UNKNOWN) {
-					System.out.println("other annotations: sqlType Unknown:" + field.getDeclaringClass().getSimpleName()
-							+ "." + field.getName());
-				}
 				propMapping = new PropertyMapping(propertyName, field.getType(), colName, sqlType);
 				propNameToPropertyMapping.put(propertyName, propMapping);
 			}

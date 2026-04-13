@@ -199,9 +199,7 @@ class FindOperation {
 	}
 
 	private <T> BeanPropertyRowMapper<T> getBeanPropertyRowMapper(Class<T> type) {
-		BeanPropertyRowMapper<T> rowMapper = BeanPropertyRowMapper.newInstance(type);
-		rowMapper.setConversionService(sjmSupport.getConversionService());
-		return rowMapper;
+		return BeanPropertyRowMapper.newInstance(type, sjmSupport.getConversionService());
 	}
 
 	private String orderByClause(Class<?> entityType, SortBy[] sortByArray, TableMapping tableMapping) {

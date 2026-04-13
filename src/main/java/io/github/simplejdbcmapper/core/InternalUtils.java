@@ -128,7 +128,10 @@ class InternalUtils {
 	}
 
 	public static String toLowerCase(String str) {
-		return str != null ? str.toLowerCase(Locale.US) : null;
+		if (!StringUtils.hasLength(str)) {
+			return "";
+		}
+		return str.toLowerCase(Locale.US);
 	}
 
 	private InternalUtils() {

@@ -29,8 +29,7 @@ class AnnotationProcessor {
 		return tableAnnotation;
 	}
 
-	void processColumnAnnotation(Field field, String tableName,
-			Map<String, PropertyMapping> propNameToPropertyMapping) {
+	void processColumnAnnotation(Field field, Map<String, PropertyMapping> propNameToPropertyMapping) {
 		Column colAnnotation = AnnotationUtils.findAnnotation(field, Column.class);
 		if (colAnnotation != null) {
 			String propertyName = field.getName();
@@ -56,33 +55,28 @@ class AnnotationProcessor {
 		}
 	}
 
-	void processIdAnnotation(Field field, String tableName, Map<String, PropertyMapping> propNameToPropertyMapping) {
-		processAnnotation(Id.class, field, tableName, propNameToPropertyMapping);
+	void processIdAnnotation(Field field, Map<String, PropertyMapping> propNameToPropertyMapping) {
+		processAnnotation(Id.class, field, propNameToPropertyMapping);
 	}
 
-	void processVersionAnnotation(Field field, String tableName,
-			Map<String, PropertyMapping> propNameToPropertyMapping) {
-		processAnnotation(Version.class, field, tableName, propNameToPropertyMapping);
+	void processVersionAnnotation(Field field, Map<String, PropertyMapping> propNameToPropertyMapping) {
+		processAnnotation(Version.class, field, propNameToPropertyMapping);
 	}
 
-	void processCreatedOnAnnotation(Field field, String tableName,
-			Map<String, PropertyMapping> propNameToPropertyMapping) {
-		processAnnotation(CreatedOn.class, field, tableName, propNameToPropertyMapping);
+	void processCreatedOnAnnotation(Field field, Map<String, PropertyMapping> propNameToPropertyMapping) {
+		processAnnotation(CreatedOn.class, field, propNameToPropertyMapping);
 	}
 
-	void processUpdatedOnAnnotation(Field field, String tableName,
-			Map<String, PropertyMapping> propNameToPropertyMapping) {
-		processAnnotation(UpdatedOn.class, field, tableName, propNameToPropertyMapping);
+	void processUpdatedOnAnnotation(Field field, Map<String, PropertyMapping> propNameToPropertyMapping) {
+		processAnnotation(UpdatedOn.class, field, propNameToPropertyMapping);
 	}
 
-	void processCreatedByAnnotation(Field field, String tableName,
-			Map<String, PropertyMapping> propNameToPropertyMapping) {
-		processAnnotation(CreatedBy.class, field, tableName, propNameToPropertyMapping);
+	void processCreatedByAnnotation(Field field, Map<String, PropertyMapping> propNameToPropertyMapping) {
+		processAnnotation(CreatedBy.class, field, propNameToPropertyMapping);
 	}
 
-	void processUpdatedByAnnotation(Field field, String tableName,
-			Map<String, PropertyMapping> propNameToPropertyMapping) {
-		processAnnotation(UpdatedBy.class, field, tableName, propNameToPropertyMapping);
+	void processUpdatedByAnnotation(Field field, Map<String, PropertyMapping> propNameToPropertyMapping) {
+		processAnnotation(UpdatedBy.class, field, propNameToPropertyMapping);
 	}
 
 	void validateAnnotations(List<PropertyMapping> propertyMappings, Class<?> type) {
@@ -91,7 +85,7 @@ class AnnotationProcessor {
 		annotationVersionTypeCheck(propertyMappings, type);
 	}
 
-	private <T extends Annotation> void processAnnotation(Class<T> annotationType, Field field, String tableName,
+	private <T extends Annotation> void processAnnotation(Class<T> annotationType, Field field,
 			Map<String, PropertyMapping> propNameToPropertyMapping) {
 		Annotation annotation = AnnotationUtils.findAnnotation(field, annotationType);
 		if (annotation != null) {

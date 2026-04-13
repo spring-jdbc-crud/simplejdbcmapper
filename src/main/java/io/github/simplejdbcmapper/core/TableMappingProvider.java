@@ -59,8 +59,7 @@ class TableMappingProvider {
 			validateMetaDataConfig(catalog, schema);
 			List<Field> fields = getAllFields(entityType);
 			IdPropertyInfo idPropertyInfo = getIdPropertyInfo(entityType, fields);
-			List<PropertyMapping> propertyMappings = getPropertyMappings(entityType, tableName, catalog, schema,
-					fields);
+			List<PropertyMapping> propertyMappings = getPropertyMappings(entityType, catalog, schema, fields);
 			tableMapping = new TableMapping(entityType, tableName, schema, catalog, idPropertyInfo, propertyMappings);
 			tableMappingCache.put(entityType.getName(), tableMapping);
 		}
@@ -71,20 +70,20 @@ class TableMappingProvider {
 		return tableMappingCache;
 	}
 
-	private List<PropertyMapping> getPropertyMappings(Class<?> entityType, String tableName, String catalog,
-			String schema, List<Field> fields) {
+	private List<PropertyMapping> getPropertyMappings(Class<?> entityType, String catalog, String schema,
+			List<Field> fields) {
 		// key:propertyName, value:PropertyMapping. LinkedHashMap to maintain order of
 		// properties
 		Map<String, PropertyMapping> propNameToPropertyMapping = new LinkedHashMap<>();
 		for (Field field : fields) {
 			// process column annotation always first
-			ap.processColumnAnnotation(field, tableName, propNameToPropertyMapping);
-			ap.processIdAnnotation(field, tableName, propNameToPropertyMapping);
-			ap.processVersionAnnotation(field, tableName, propNameToPropertyMapping);
-			ap.processCreatedOnAnnotation(field, tableName, propNameToPropertyMapping);
-			ap.processUpdatedOnAnnotation(field, tableName, propNameToPropertyMapping);
-			ap.processCreatedByAnnotation(field, tableName, propNameToPropertyMapping);
-			ap.processUpdatedByAnnotation(field, tableName, propNameToPropertyMapping);
+			ap.processColumnAnnotation(field, propNameToPropertyMapping);
+			ap.processIdAnnotation(field, propNameToPropertyMapping);
+			ap.processVersionAnnotation(field, propNameToPropertyMapping);
+			ap.processCreatedOnAnnotation(field, propNameToPropertyMapping);
+			ap.processUpdatedOnAnnotation(field, propNameToPropertyMapping);
+			ap.processCreatedByAnnotation(field, propNameToPropertyMapping);
+			ap.processUpdatedByAnnotation(field, propNameToPropertyMapping);
 		}
 		List<PropertyMapping> propertyMappings = new ArrayList<>(propNameToPropertyMapping.values());
 		ap.validateAnnotations(propertyMappings, entityType);

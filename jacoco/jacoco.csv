@@ -5,7 +5,7 @@ simplejdbcmapper,io.github.simplejdbcmapper.core,DeleteOperation,0,86,0,2,0,17,0
 simplejdbcmapper,io.github.simplejdbcmapper.core,InsertOperation,0,343,9,35,0,77,9,25,0,12
 simplejdbcmapper,io.github.simplejdbcmapper.core,SortBy,0,43,0,6,0,13,0,7,0,4
 simplejdbcmapper,io.github.simplejdbcmapper.core,TableMappingProvider,6,318,1,31,2,71,1,26,0,11
-simplejdbcmapper,io.github.simplejdbcmapper.core,AnnotationProcessor,0,406,0,66,0,118,0,48,0,15
+simplejdbcmapper,io.github.simplejdbcmapper.core,AnnotationProcessor,0,382,0,62,0,112,0,46,0,15
 simplejdbcmapper,io.github.simplejdbcmapper.core,PropertyMapping,8,187,8,20,2,55,9,29,1,23
 simplejdbcmapper,io.github.simplejdbcmapper.core,TableMappingProvider.new DatabaseMetaDataCallback() {...},2,9,1,1,0,3,1,2,0,2
 simplejdbcmapper,io.github.simplejdbcmapper.core,TableMapping,14,296,2,32,2,67,2,35,0,20

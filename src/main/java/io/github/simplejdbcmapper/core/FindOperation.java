@@ -59,7 +59,6 @@ class FindOperation {
 				.append(tableMapping.fullyQualifiedTableName())
 				.append(orderByClause(entityType, sortByArray, tableMapping));
 		return sjmSupport.getJdbcTemplate().query(sql.toString(), getEntityRowMapper(entityType, tableMapping));
-
 	}
 
 	public <T> List<T> findByPropertyValue(Class<T> entityType, String propertyName, Object propertyValue,

@@ -37,10 +37,8 @@ class EntityRowMapper<T> implements RowMapper<T> {
 		}
 		BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(obj);
 		bw.setConversionService(conversionService);
-
 		ResultSetMetaData rsmd = rs.getMetaData();
 		int columnCount = rsmd.getColumnCount();
-
 		for (int index = 1; index <= columnCount; index++) {
 			String column = JdbcUtils.lookupColumnName(rsmd, index);
 			column = InternalUtils.toLowerCase(column);

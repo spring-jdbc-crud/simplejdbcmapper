@@ -11,9 +11,8 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.JdbcUtils;
 
 /**
- * A lighter row mapper than Springs BeanPropertyRowMapper because column to
- * propertyName/PropertyType relationship is already available through
- * TableMapping.
+ * A lighter row mapper than Spring's BeanPropertyRowMapper since column to
+ * property relationship is already available through TableMapping.
  * 
  * @param <T> the entityType
  */

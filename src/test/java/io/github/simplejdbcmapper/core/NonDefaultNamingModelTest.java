@@ -33,6 +33,7 @@ class NonDefaultNamingModelTest {
 		assertEquals("shoes", prod.getProductName());
 		assertEquals("system", prod.getWhoCreated());
 		assertEquals("system", prod.getWhoUpdated());
+		assertEquals(95.00, prod.getCost());
 		assertEquals(1, prod.getOptiLock());
 		assertNotNull(prod.getCreatedAt());
 		assertNotNull(prod.getUpdatedAt());

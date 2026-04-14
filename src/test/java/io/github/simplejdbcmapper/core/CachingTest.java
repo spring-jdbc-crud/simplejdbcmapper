@@ -155,6 +155,26 @@ class CachingTest {
 	}
 
 	@Test
+	void rawColumnsSqlCache_test() {
+		FindOperation fo = TestUtils.getFindOperation(sjm);
+		SimpleCache<String, String> cache = fo.getRawColumnsSqlCache();
+		cache.clear();
+
+		fo.getRawSqlColumns(Customer.class);
+		assertEquals(1, cache.size());
+
+		fo.getRawSqlColumns(Customer.class);
+		assertEquals(1, cache.size());
+
+		fo.getRawSqlColumns(Product.class);
+		assertEquals(2, cache.size());
+
+		fo.getRawSqlColumns(Product.class);
+		assertEquals(2, cache.size());
+
+	}
+
+	@Test
 	void beanColumnsSqlCache_test() {
 		FindOperation fo = TestUtils.getFindOperation(sjm);
 		SimpleCache<String, String> cache = fo.getBeanColumnsSqlCache();

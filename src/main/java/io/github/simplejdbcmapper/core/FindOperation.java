@@ -193,6 +193,10 @@ class FindOperation {
 		return findByIdSqlCache;
 	}
 
+	SimpleCache<String, String> getRawColumnsSqlCache() {
+		return rawColumnsSqlCache;
+	}
+
 	SimpleCache<String, String> getBeanColumnsSqlCache() {
 		return beanColumnsSqlCache;
 	}
@@ -201,7 +205,7 @@ class FindOperation {
 		return beanColumnsTableAliasSqlCache;
 	}
 
-	private String getRawSqlColumns(Class<?> entityType) {
+	String getRawSqlColumns(Class<?> entityType) {
 		Assert.notNull(entityType, "entityType must not be null");
 		String columnsSql = rawColumnsSqlCache.get(entityType.getName());
 		if (columnsSql == null) {

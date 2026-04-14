@@ -175,46 +175,6 @@ class CachingTest {
 	}
 
 	@Test
-	void beanColumnsSqlCache_test() {
-		FindOperation fo = TestUtils.getFindOperation(sjm);
-		SimpleCache<String, String> cache = fo.getBeanColumnsSqlCache();
-		cache.clear();
-
-		sjm.getBeanFriendlySqlColumns(Customer.class);
-		assertEquals(1, cache.size());
-
-		sjm.getBeanFriendlySqlColumns(Customer.class);
-		assertEquals(1, cache.size());
-
-		sjm.getBeanFriendlySqlColumns(Product.class);
-		assertEquals(2, cache.size());
-
-		sjm.getBeanFriendlySqlColumns(Product.class);
-		assertEquals(2, cache.size());
-
-	}
-
-	@Test
-	void beanColumnsSqlCache_WithTableAlias_test() {
-		FindOperation fo = TestUtils.getFindOperation(sjm);
-		SimpleCache<String, String> cache = fo.getBeanColumnsTableAliasSqlCache();
-		cache.clear();
-
-		sjm.getBeanFriendlySqlColumns(Customer.class, "t1");
-		assertEquals(1, cache.size());
-
-		sjm.getBeanFriendlySqlColumns(Customer.class, "t1");
-		assertEquals(1, cache.size());
-
-		sjm.getBeanFriendlySqlColumns(Product.class, "t1");
-		assertEquals(2, cache.size());
-
-		sjm.getBeanFriendlySqlColumns(Product.class, "t1");
-		assertEquals(2, cache.size());
-
-	}
-
-	@Test
 	void deleteSqlCache_test() {
 		DeleteOperation op = TestUtils.getDeleteOperation(sjm);
 		SimpleCache<String, String> cache = op.getDeleteSqlCache();

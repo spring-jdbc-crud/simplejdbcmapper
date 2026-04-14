@@ -28,15 +28,6 @@ class FindOperation {
 	// value - the column sql string
 	private final SimpleCache<String, String> rawColumnsSqlCache = new SimpleCache<>();
 
-	// Map key - class name
-	// value - the column sql string with bean friendly column aliases for mapped
-	// properties
-	private final SimpleCache<String, String> beanColumnsSqlCache = new SimpleCache<>();
-
-	// Map key - classname-tableAlias
-	// value - the column sql string where columns are prefixed with table aliases
-	private final SimpleCache<String, String> beanColumnsTableAliasSqlCache = new SimpleCache<>(2000);
-
 	public FindOperation(SimpleJdbcMapperSupport sjmSupport) {
 		this.sjmSupport = sjmSupport;
 	}
@@ -136,22 +127,17 @@ class FindOperation {
 
 	public String getBeanFriendlySqlColumns(Class<?> entityType) {
 		Assert.notNull(entityType, "entityType must not be null");
-		String columnsSql = beanColumnsSqlCache.get(entityType.getName());
-		if (columnsSql == null) {
-			TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
-			StringJoiner sj = new StringJoiner(", ", " ", " ");
-			for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {
-				String underscorePropertyName = InternalUtils.toUnderscoreName(propMapping.getPropertyName());
-				if (underscorePropertyName.equals(propMapping.getColumnName())) {
-					sj.add(propMapping.getColumnName());
-				} else {
-					sj.add(propMapping.getColumnName() + " AS " + underscorePropertyName);
-				}
+		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
+		StringJoiner sj = new StringJoiner(", ", " ", " ");
+		for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {
+			String underscorePropertyName = InternalUtils.toUnderscoreName(propMapping.getPropertyName());
+			if (underscorePropertyName.equals(propMapping.getColumnName())) {
+				sj.add(propMapping.getColumnName());
+			} else {
+				sj.add(propMapping.getColumnName() + " AS " + underscorePropertyName);
 			}
-			columnsSql = sj.toString();
-			beanColumnsSqlCache.put(entityType.getName(), columnsSql);
 		}
-		return columnsSql;
+		return sj.toString();
 	}
 
 	public String getBeanFriendlySqlColumns(Class<?> entityType, String tableAlias) {
@@ -159,24 +145,18 @@ class FindOperation {
 		if (!StringUtils.hasText(tableAlias)) {
 			throw new IllegalArgumentException("tableAlias has no value");
 		}
-		String cacheKey = entityType.getName() + "-" + tableAlias;
-		String columnsSql = beanColumnsTableAliasSqlCache.get(cacheKey);
-		if (columnsSql == null) {
-			String tablePrefix = tableAlias + ".";
-			TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
-			StringJoiner sj = new StringJoiner(", ", " ", " ");
-			for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {
-				String underscorePropertyName = InternalUtils.toUnderscoreName(propMapping.getPropertyName());
-				if (underscorePropertyName.equals(propMapping.getColumnName())) {
-					sj.add(tablePrefix + propMapping.getColumnName());
-				} else {
-					sj.add(tablePrefix + propMapping.getColumnName() + " AS " + underscorePropertyName);
-				}
+		String tablePrefix = tableAlias + ".";
+		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
+		StringJoiner sj = new StringJoiner(", ", " ", " ");
+		for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {
+			String underscorePropertyName = InternalUtils.toUnderscoreName(propMapping.getPropertyName());
+			if (underscorePropertyName.equals(propMapping.getColumnName())) {
+				sj.add(tablePrefix + propMapping.getColumnName());
+			} else {
+				sj.add(tablePrefix + propMapping.getColumnName() + " AS " + underscorePropertyName);
 			}
-			columnsSql = sj.toString();
-			beanColumnsTableAliasSqlCache.put(cacheKey, columnsSql);
 		}
-		return columnsSql;
+		return sj.toString();
 	}
 
 	public Map<String, String> getPropertyToColumnMappings(Class<?> entityType) {
@@ -195,14 +175,6 @@ class FindOperation {
 
 	SimpleCache<String, String> getRawColumnsSqlCache() {
 		return rawColumnsSqlCache;
-	}
-
-	SimpleCache<String, String> getBeanColumnsSqlCache() {
-		return beanColumnsSqlCache;
-	}
-
-	SimpleCache<String, String> getBeanColumnsTableAliasSqlCache() {
-		return beanColumnsTableAliasSqlCache;
 	}
 
 	String getRawSqlColumns(Class<?> entityType) {

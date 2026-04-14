@@ -248,6 +248,9 @@ public final class SimpleJdbcMapper {
 	 * BeanPropertyRowMapper(), SimplePropertyRowMapper() etc. Will create the
 	 * needed column aliases where the column name does not match the corresponding
 	 * underscore case property name.
+	 * 
+	 * You may want to store the string away since every time this method is invoked
+	 * the columns have to be concatenated.
 	 *
 	 * <p>
 	 * Will return something like below if 'userLastName' property is mapped to
@@ -275,6 +278,9 @@ public final class SimpleJdbcMapper {
 	 * Use it in your custom queries when you are doing joins and need columns
 	 * corresponding to a table alias.
 	 *
+	 * You may want to store the string away, since every time this method is
+	 * invoked the columns have to be concatenated.
+	 * 
 	 * <p>
 	 * For tableAlias argument 't1' will return something like below if
 	 * 'userLastName' property is mapped to 'last_name' column in database:

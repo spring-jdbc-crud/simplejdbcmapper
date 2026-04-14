@@ -20,7 +20,7 @@ Just by annotating the models that you would use with JdbcTemplate/JdbcClient, y
 [Accessing JdbcClient JdbcTemplate](#accessing-jdbcclient-jdbctemplate)  
 [Logging](#logging)  
 [Limitations](#limitations)  
-[Upgrading to 2.x from 1.x](#upgrading-to-2x-from-1x)  
+[Upgrading to 2.x from 1.x](#upgrading-to-2-x-from-1-x)  
 [Troubleshooting](#troubleshooting)  
 [Bug Report](https://github.com/spring-jdbc-crud/simplejdbcmapper/issues) 
 
@@ -417,7 +417,7 @@ class Product {
 
 2. Character large object database columns should be mapped to java types String or other CharSequence or char[]. No other java types are supported. The 'sqlType' attribute of the @Column annotation with the following values are considered as Character Large Objects by SimpeJdbcMapper. Types.CLOB, Types.NCLOB,, Types.LONGVARCHAR, Types.LONGNVARCHAR.
 
-In both the cases above the whole object (image files etc) will be read into memory. For very large objects this could create memory issues and you may want to use InputStream/Reader. To use InputStream/Reader use JdbcTemplate directly.
+In both the cases above the whole object (image files etc) will be read into memory. For very large objects this could create memory issues and you may want to use InputStream/Reader. To use InputStream/Reader you will have to use  JdbcTemplate directly.
 
 Some BLOB/CLOB examples below. Keep in mind depending on the versions of the databases these could be different.
 

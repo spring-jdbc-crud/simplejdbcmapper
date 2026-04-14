@@ -10,7 +10,6 @@ import java.util.Set;
 import java.util.StringJoiner;
 
 import org.springframework.dao.EmptyResultDataAccessException;
-import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.SqlParameterValue;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.util.Assert;
@@ -25,14 +24,17 @@ class FindOperation {
 	// value - the sql
 	private final SimpleCache<String, String> findByIdSqlCache = new SimpleCache<>();
 
-	// the column sql string with bean friendly column aliases for mapped properties
-	// Map key - class name
+	// Map key - classname
 	// value - the column sql string
+	private final SimpleCache<String, String> rawColumnsSqlCache = new SimpleCache<>();
+
+	// Map key - class name
+	// value - the column sql string with bean friendly column aliases for mapped
+	// properties
 	private final SimpleCache<String, String> beanColumnsSqlCache = new SimpleCache<>();
 
-	// the column sql string with bean friendly column aliases for mapped properties
 	// Map key - classname-tableAlias
-	// value - the column sql string
+	// value - the column sql string where columns are prefixed with table aliases
 	private final SimpleCache<String, String> beanColumnsTableAliasSqlCache = new SimpleCache<>(2000);
 
 	public FindOperation(SimpleJdbcMapperSupport sjmSupport) {
@@ -44,13 +46,13 @@ class FindOperation {
 		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
 		String sql = findByIdSqlCache.get(entityType.getName());
 		if (sql == null) {
-			sql = "SELECT " + getBeanFriendlySqlColumns(entityType) + " FROM " + tableMapping.fullyQualifiedTableName()
+			sql = "SELECT " + getRawSqlColumns(entityType) + " FROM " + tableMapping.fullyQualifiedTableName()
 					+ " WHERE " + tableMapping.getIdColumnName() + " = ?";
 			findByIdSqlCache.put(entityType.getName(), sql);
 		}
 		T obj = null;
 		try {
-			obj = sjmSupport.getJdbcTemplate().queryForObject(sql, getBeanPropertyRowMapper(entityType),
+			obj = sjmSupport.getJdbcTemplate().queryForObject(sql, getEntityRowMapper(entityType, tableMapping),
 					new SqlParameterValue(tableMapping.getIdPropertyMapping().getEffectiveSqlType(), id));
 		} catch (EmptyResultDataAccessException e) {
 			// do nothing
@@ -62,10 +64,11 @@ class FindOperation {
 		Assert.notNull(entityType, "entityType must not be null");
 		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
 		StringBuilder sql = new StringBuilder(256);
-		sql.append("SELECT ").append(getBeanFriendlySqlColumns(entityType)).append(" FROM ")
+		sql.append("SELECT ").append(getRawSqlColumns(entityType)).append(" FROM ")
 				.append(tableMapping.fullyQualifiedTableName())
 				.append(orderByClause(entityType, sortByArray, tableMapping));
-		return sjmSupport.getJdbcTemplate().query(sql.toString(), getBeanPropertyRowMapper(entityType));
+		return sjmSupport.getJdbcTemplate().query(sql.toString(), getEntityRowMapper(entityType, tableMapping));
+
 	}
 
 	public <T> List<T> findByPropertyValue(Class<T> entityType, String propertyName, Object propertyValue,
@@ -78,7 +81,7 @@ class FindOperation {
 			throw new MapperException(entityType.getSimpleName() + "." + propertyName + " does not have a mapping.");
 		}
 		StringBuilder sql = new StringBuilder(256);
-		sql.append("SELECT ").append(getBeanFriendlySqlColumns(entityType)).append(" FROM ")
+		sql.append("SELECT ").append(getRawSqlColumns(entityType)).append(" FROM ")
 				.append(tableMapping.fullyQualifiedTableName()).append(" WHERE ");
 		if (propertyValue == null) {
 			sql.append(propMapping.getColumnName()).append(" IS NULL");
@@ -87,9 +90,9 @@ class FindOperation {
 		}
 		sql.append(orderByClause(entityType, sortByArray, tableMapping));
 		if (propertyValue == null) {
-			return sjmSupport.getJdbcTemplate().query(sql.toString(), getBeanPropertyRowMapper(entityType));
+			return sjmSupport.getJdbcTemplate().query(sql.toString(), getEntityRowMapper(entityType, tableMapping));
 		} else {
-			return sjmSupport.getJdbcTemplate().query(sql.toString(), getBeanPropertyRowMapper(entityType),
+			return sjmSupport.getJdbcTemplate().query(sql.toString(), getEntityRowMapper(entityType, tableMapping),
 					new SqlParameterValue(propMapping.getEffectiveSqlType(), propertyValue));
 		}
 	}
@@ -110,7 +113,7 @@ class FindOperation {
 		Set<U> localPropertyValues = new LinkedHashSet<>(propertyValues);
 		boolean hasNullInSet = localPropertyValues.remove(null); // need to handle nulls in the set.
 		StringBuilder sql = new StringBuilder(256);
-		sql.append("SELECT ").append(getBeanFriendlySqlColumns(entityType)).append(" FROM ")
+		sql.append("SELECT ").append(getRawSqlColumns(entityType)).append(" FROM ")
 				.append(tableMapping.fullyQualifiedTableName()).append(" WHERE ");
 		if (ObjectUtils.isEmpty(localPropertyValues)) {
 			sql.append(propMapping.getColumnName()).append(" IS NULL");
@@ -122,12 +125,12 @@ class FindOperation {
 		}
 		sql.append(orderByClause(entityType, sortByArray, tableMapping));
 		if (ObjectUtils.isEmpty(localPropertyValues)) {
-			return sjmSupport.getJdbcTemplate().query(sql.toString(), getBeanPropertyRowMapper(entityType));
+			return sjmSupport.getJdbcTemplate().query(sql.toString(), getEntityRowMapper(entityType, tableMapping));
 		} else {
 			MapSqlParameterSource param = new MapSqlParameterSource();
 			param.addValue("propertyValues", localPropertyValues, propMapping.getEffectiveSqlType());
 			return sjmSupport.getNamedParameterJdbcTemplate().query(sql.toString(), param,
-					getBeanPropertyRowMapper(entityType));
+					getEntityRowMapper(entityType, tableMapping));
 		}
 	}
 
@@ -198,8 +201,23 @@ class FindOperation {
 		return beanColumnsTableAliasSqlCache;
 	}
 
-	private <T> BeanPropertyRowMapper<T> getBeanPropertyRowMapper(Class<T> type) {
-		return BeanPropertyRowMapper.newInstance(type, sjmSupport.getConversionService());
+	private String getRawSqlColumns(Class<?> entityType) {
+		Assert.notNull(entityType, "entityType must not be null");
+		String columnsSql = rawColumnsSqlCache.get(entityType.getName());
+		if (columnsSql == null) {
+			TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
+			StringJoiner sj = new StringJoiner(", ", " ", " ");
+			for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {
+				sj.add(propMapping.getColumnName());
+			}
+			columnsSql = sj.toString();
+			rawColumnsSqlCache.put(entityType.getName(), columnsSql);
+		}
+		return columnsSql;
+	}
+
+	private <T> EntityRowMapper<T> getEntityRowMapper(Class<T> type, TableMapping tableMapping) {
+		return new EntityRowMapper<>(type, tableMapping, sjmSupport.getConversionService());
 	}
 
 	private String orderByClause(Class<?> entityType, SortBy[] sortByArray, TableMapping tableMapping) {

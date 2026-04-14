@@ -25,6 +25,8 @@ class PropertyMapping {
 
 	private String propertyClassName;
 
+	private Class<?> propertyType;
+
 	private String columnName;
 
 	private Integer columnSqlType; // java.sql.Types from database meta data.
@@ -60,6 +62,7 @@ class PropertyMapping {
 		}
 		this.propertyName = propertyName;
 		this.propertyClassName = propertyType.getName();
+		this.propertyType = propertyType;
 		// column names stored in lower case always. No plans to support case sensitive
 		// table column names or column names with spaces in them
 		this.columnName = InternalUtils.toLowerCase(columnName);
@@ -83,6 +86,10 @@ class PropertyMapping {
 
 	public String getPropertyClassName() {
 		return propertyClassName;
+	}
+
+	public Class<?> getPropertyType() {
+		return propertyType;
 	}
 
 	public String getColumnName() {

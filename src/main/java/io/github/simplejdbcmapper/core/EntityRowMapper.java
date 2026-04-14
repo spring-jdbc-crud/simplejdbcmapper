@@ -47,7 +47,8 @@ class EntityRowMapper<T> implements RowMapper<T> {
 			PropertyMapping propMapping = tableMapping.getPropertyMappingByColumnName(column);
 			if (propMapping != null) {
 				try {
-					Object value = JdbcUtils.getResultSetValue(rs, index, propMapping.getPropertyType());
+					Object value = JdbcUtils.getResultSetValue(rs, index,
+							bw.getPropertyType(propMapping.getPropertyName()));
 					bw.setPropertyValue(propMapping.getPropertyName(), value);
 				} catch (Exception ex) {
 					throw new RuntimeException(ex);

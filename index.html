@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
+
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -327,10 +328,21 @@ spring.datasource.driver-<span class="hljs-class"><span class="hljs-keyword">cla
 }</code></pre><p>In this case you will have to manually set the id value before invoking insert()  </p>
 <p><strong>@Column</strong></p>
 <p>Properties that need be persisted to the database will need @Column annotation unless the property is already annotated with one of the other annotations (@Id, @Version, @CreatedOn @CreatedBy @UpdatedOn @UpdatedBy). @Column can be used along with the other annotations to map a property to a non-default column name. The default column name is camel case property name converted to underscore case name (e.g., property &#39;lastName&#39; maps to column &#39;last_name&#39; by default).</p>
-<p>@Column<br>This will map the property to a column using the default naming convention of camel case to underscore case. For example property &#39;lastName&#39; will map to column &#39;last_name&#39; by default.</p>
-<p>@Column(name=&quot;somecolumnname&quot;)<br>This will map the property to the column specified by the &#39;name&#39; attribute.  <strong>Note that column names with spaces are not supported.</strong></p>
-<p>@Column(sqlType = somesqltype)
-SimpleJdbcMapper 2.x uses Spring&#39;s default java type to sql type information for mapping. Even though this covers most cases, for things like BLOB/CLOB and database specific column types the sql type information will need to be provided using the &#39;sqlType&#39; attribute.</p>
+<p><em><strong>@Column</strong></em> 
+This will map the property to a column using the default naming convention of camel case to underscore case. For example property &#39;lastName&#39; will map to column &#39;last_name&#39; by default.  </p>
+<p><em><strong>@Column(name=&quot;somecolumnname&quot;)</strong></em> 
+This will map the property to the column specified by the &#39;name&#39; attribute.  <strong>Note that column names with spaces are not supported.</strong>  </p>
+<p><em><strong>@Column(sqlType = somesqltype)</strong></em><br>SimpleJdbcMapper tries to infer the correct SQL type from the Java types but some times it cannot. In these cases explicitly declaring the SQL type is a best practice to ensure correctness, improve performance, and correctly handle NULL values. </p>
+<p>To identify which properties in the mappings the SQL type is unknown do the following:</p>
+<ul class="list">
+<li>Turn on sql logging. (See logging section)</li>
+<li>Issue an insert/update for the entity.</li>
+<li>Check for &#39;SQL type unknown&#39; in the logs. Below is example of the logs. Line 1 has the SQL type while line 2 the SQL type is unknown:  </li>
+</ul>
+<pre class="hljs"><code>   Setting <span class="hljs-keyword">SQL</span> <span class="hljs-keyword">statement</span> parameter <span class="hljs-keyword">value</span>: <span class="hljs-keyword">column</span> <span class="hljs-keyword">index</span> <span class="hljs-number">6</span>, parameter <span class="hljs-keyword">value</span> [<span class="hljs-keyword">true</span>], <span class="hljs-keyword">value</span> <span class="hljs-keyword">class</span> [java.lang.Boolean], <span class="hljs-keyword">SQL</span> <span class="hljs-keyword">type</span> <span class="hljs-number">16</span>  
+   Setting <span class="hljs-keyword">SQL</span> <span class="hljs-keyword">statement</span> parameter <span class="hljs-keyword">value</span>: <span class="hljs-keyword">column</span> <span class="hljs-keyword">index</span> <span class="hljs-number">7</span>, parameter <span class="hljs-keyword">value</span> [[B@<span class="hljs-number">56</span>d742ad], <span class="hljs-keyword">value</span> <span class="hljs-keyword">class</span> [[B], <span class="hljs-keyword">SQL</span> <span class="hljs-keyword">type</span> <span class="hljs-type">unknown</span></code></pre><ul class="list">
+<li>For your specific database and database column type find the corresponding SQL type and assign it using @Column(sqlType = somesqltype).</li>
+</ul>
 <p><strong>@Version</strong></p>
 <p>This annotation is used for optimistic locking. It has to be of type Integer.
 Will be set to 1 when record is created and will be incremented on updates. On updates if the version is stale an OptimisticLockingException will be thrown.  @Column annotation can be used with the property to map to a non-default column name.</p>
@@ -384,14 +396,16 @@ If a Supplier is configured using simpleJdbcMapper.setRecordAuditedBySupplier(),
                                    <span class="hljs-comment">// Gets incremented every successful update.</span>
   
 }</code></pre><h2 id="blob-clob-mapping"><a class="header-link" href="#blob-clob-mapping"></a>BLOB CLOB mapping</h2>
-<ol class="list">
-<li><p>Binary large object database columns should be mapped to java type byte[]. No other java type is supported. The &#39;sqlType&#39; attribute of the @Column annotation with the following values are considered as Binary Large Objects by SimpleJdbcMapper: Types.BLOB, Types.ARRAY, Types.LONGVARBINARY, Types.VARBINARY. Use the pertinent sql type for your database. </p>
-</li>
-<li><p>Character large object database columns should be mapped to java types String or other CharSequence or char[]. No other java types are supported. The &#39;sqlType&#39; attribute of the @Column annotation with the following values are considered as Character Large Objects by SimpeJdbcMapper. Types.CLOB, Types.NCLOB,, Types.LONGVARCHAR, Types.LONGNVARCHAR.</p>
-</li>
-</ol>
-<p>In both the cases above the whole object (image files etc) will be read into memory. For very large objects this could create memory issues and you may want to use InputStream/Reader. To use InputStream/Reader you will have to use  JdbcTemplate directly.</p>
-<p>Some BLOB/CLOB examples below. Keep in mind depending on the versions of the databases these could be different.</p>
+<ul class="list">
+<li> Binary large object database columns should be mapped to java type byte[].<br>No other java type is supported. The &#39;sqlType&#39; attribute of the @Column annotation with the following values are considered as Binary Large Objects by SimpleJdbcMapper:<br>Types.BLOB<br>Types.ARRAY<br>Types.LONGVARBINARY<br>Types.VARBINARY  </li>
+</ul>
+<p>Use the pertinent SQL type for your database and database column type. </p>
+<ul class="list">
+<li> Character large object database columns should be mapped to java types String or other CharSequence or char[]. No other java types are supported.<br>The &#39;sqlType&#39; attribute of the @Column annotation with the following values are considered as Character Large Objects by SimpeJdbcMapper:<br>Types.CLOB<br>Types.NCLOB<br>Types.LONGVARCHAR<br>Types.LONGNVARCHAR  </li>
+</ul>
+<p>Use the pertinent SQL type for your database and database column type. </p>
+<p>In both the cases above the whole object (image files etc) will be read into memory. For very large objects this could create memory issues and you may want to use InputStream/Reader.  To use InputStream/Reader you will have to use  JdbcTemplate directly since SimpleJdbcMapper does not support these.</p>
+<p>Some BLOB/CLOB examples below. Keep in mind depending on the versions of the databases and database column types these could be different.</p>
 <p>Postgres:</p>
 <pre class="hljs"><code><span class="hljs-meta">@Column(sqlType = Types.ARRAY)</span> <span class="hljs-comment">//mapped to a bytea database column</span>
 <span class="hljs-keyword">private</span> <span class="hljs-keyword">byte</span>[] image;
@@ -459,42 +473,11 @@ If a Supplier is configured using simpleJdbcMapper.setRecordAuditedBySupplier(),
 <p>The 2.0.0 release has removed the dependency on database table column meta-data for mapping totally.</p>
 <p>Difference from 1.x:  </p>
 <ol class="list">
-<li>2.x uses Spring&#39;s default java type to sql type information for mapping. Even though this covers most cases, for things like BLOB/CLOB and database specific column types the sql type information may need to be provided using the @Column(sqlType = &quot;somesqltype&quot;).</li>
+<li>SimpleJdbcMapper 2.x tries to infer the correct SQL type from the Java types but some times it cannot. In these cases explicitly declaring the SQL type is a best practice to ensure correctness, improve performance, and correctly handle NULL values. See documentation on @Column(sqlType=&quot;somesqltype&quot;) and BLOB/CLOB mapping further above on how to figure out and set the SQL type value.</li>
 <li>Since 2.x does not use the database table column meta data, it cannot provide  detailed messages on what went wrong with a mapping. Mapping issues will surface through sql errors thrown, which is similar to what happens when using JdbcTemplate/JdbcClient directly.</li>
 </ol>
-<p>Generally the upgrade should be straight forward since API remains the same.</p>
-<p>Some examples of the mapping changes you may need to make are below. Keep in mind depending on the versions of the databases these could be different. Refer to each databases jdbc sql type to database column type information.</p>
-<p>Postgres:</p>
-<pre class="hljs"><code>@<span class="hljs-keyword">Column</span>(sqlType = <span class="hljs-keyword">Types</span>.<span class="hljs-keyword">ARRAY</span>) // mapped <span class="hljs-keyword">to</span> a <span class="hljs-type">bytea</span> <span class="hljs-keyword">database</span> <span class="hljs-keyword">column</span> <span class="hljs-keyword">type</span>
-private byte[] image;
-
-@<span class="hljs-keyword">Column</span>(sqlType = <span class="hljs-keyword">Types</span>.LONGVARCHAR)
-private String clobData;
-</code></pre><p>MySql:</p>
-<pre class="hljs"><code><span class="hljs-meta">@Column(sqlType = Types.BLOB)</span>
-<span class="hljs-keyword">private</span> <span class="hljs-keyword">byte</span>[] image;
-
-<span class="hljs-meta">@Column(sqlType = Types.LONGVARCHAR)</span>
-<span class="hljs-keyword">private</span> String textData;
-    </code></pre><p>Oracle:</p>
-<pre class="hljs"><code>@<span class="hljs-constructor">Column(<span class="hljs-params">sqlType</span> = Types.BLOB)</span>
-<span class="hljs-keyword">private</span> byte<span class="hljs-literal">[]</span> image;
-
-@<span class="hljs-constructor">Column(<span class="hljs-params">sqlType</span> = Types.CLOB)</span>
-<span class="hljs-keyword">private</span> String clobData;
-    
-@<span class="hljs-constructor">Column(<span class="hljs-params">sqlType</span> = <span class="hljs-params">oracle</span>.<span class="hljs-params">jdbc</span>.OracleTypes.TIMESTAMPTZ)</span> <span class="hljs-comment">// &#x27;timestamp with time zone&#x27; database column type</span>
-<span class="hljs-keyword">private</span> OffsetDateTime offsetDateTimeData;
-    </code></pre><p>SQL Server:</p>
-<pre class="hljs"><code>@<span class="hljs-keyword">Column</span>(sqlType = <span class="hljs-keyword">Types</span>.BLOB)
-private byte[] image;
-
-@<span class="hljs-keyword">Column</span>(sqlType = <span class="hljs-keyword">Types</span>.CLOB)
-private String clobData;
-
-@<span class="hljs-keyword">Column</span>(sqlType = microsoft.<span class="hljs-keyword">sql</span>.<span class="hljs-keyword">Types</span>.DATETIMEOFFSET) // datetimeoffset <span class="hljs-keyword">database</span> <span class="hljs-keyword">column</span> <span class="hljs-keyword">type</span>
-microsoft.<span class="hljs-keyword">sql</span>.DateTimeOffset  offsetDateTimeData;
-</code></pre><h2 id="troubleshooting"><a class="header-link" href="#troubleshooting"></a>TroubleShooting</h2>
+<p>Generally the upgrade should be straight forward since API remains the same.  </p>
+<h2 id="troubleshooting"><a class="header-link" href="#troubleshooting"></a>TroubleShooting</h2>
 <p>1.<strong>Connection issues:</strong></p>
 <p>Try to connect to the database using Spring JdbcClient or JdbcTemplate without the SimpleJdbcMapper and issue a simple query. The datasource configuration parameters are exactly the same.</p>
 <pre class="hljs"><code></code></pre>      </div>

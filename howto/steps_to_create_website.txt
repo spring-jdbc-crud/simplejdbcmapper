@@ -15,5 +15,6 @@ The simplejdbcmapper website is published from the 'gh-pages' branch.
    *) Fix the links on index.html
       1) remove @ (and sometimes ',')  on links for @CreatedBy @UpdatedBy @CreatedOn @UpdatedOn
       2) replace all hljs-string with hljs-string1 to turn of red highlighting of quoted strings
+      3) Need to tweak update anchor url  by removing the periods
 
 

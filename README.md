@@ -348,8 +348,11 @@ To identify which properties in the mappings the SQL type is unknown do the foll
    - Turn on sql logging. (See logging section)
    - Issue an insert/update for the entity.
    - Check for 'SQL type unknown' in the logs. Below is example of the logs. Line 1 has the SQL type while line 2 the SQL type is unknown:  
+   
+```
    Setting SQL statement parameter value: column index 6, parameter value [true], value class [java.lang.Boolean], SQL type 16  
    Setting SQL statement parameter value: column index 7, parameter value [[B@56d742ad], value class [[B], SQL type unknown
+```
    - For your specific database and database column type find the corresponding SQL type and assign it using @Column(sqlType = somesqltype).
 
 **@Version**

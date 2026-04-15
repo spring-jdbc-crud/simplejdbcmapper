@@ -534,7 +534,7 @@ Use JdbcTemplate/JdbcClient to handle these cases.
 The 2.0.0 release has removed the dependency on database table column meta-data for mapping totally.
 
 Difference from 1.x:  
-1. 2.x uses Spring's default java type to SQL type information for mapping. Even though this covers most cases, for things like BLOB/CLOB and database specific column types the SQL type information may need to be provided. See documentation on @Column(sqlType="somesqltype") and BLOB/CLOB mapping further above on how to figure out and set the SQL type value.
+1. SimpleJdbcMapper 2.x tries to infer the correct SQL type from the Java types but some times it cannot. In these cases explicitly declaring the SQL type is a best practice to ensure correctness, improve performance, and correctly handle NULL values. See documentation on @Column(sqlType="somesqltype") and BLOB/CLOB mapping further above on how to figure out and set the SQL type value.
 2. Since 2.x does not use the database table column meta data, it cannot provide  detailed messages on what went wrong with a mapping. Mapping issues will surface through sql errors thrown, which is similar to what happens when using JdbcTemplate/JdbcClient directly.
 
 Generally the upgrade should be straight forward since API remains the same.  

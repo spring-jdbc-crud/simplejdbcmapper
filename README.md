@@ -20,7 +20,7 @@ Just by annotating the models that you would use with JdbcTemplate/JdbcClient, y
 [Accessing JdbcClient JdbcTemplate](#accessing-jdbcclient-jdbctemplate)  
 [Logging](#logging)  
 [Limitations](#limitations)  
-[Upgrading to 2.x from 1.x](#upgrading-to-2-x-from-1-x)  
+[Upgrading to 2.x from 1.x](#upgrading-to-2x-from-1x)  
 [Troubleshooting](#troubleshooting)  
 [Bug Report](https://github.com/spring-jdbc-crud/simplejdbcmapper/issues) 
 
@@ -44,7 +44,7 @@ Just by annotating the models that you would use with JdbcTemplate/JdbcClient, y
   <dependency>
     <groupId>io.github.spring-jdbc-crud</groupId>
     <artifactId>simplejdbcmapper</artifactId>
-    <version>2.0.0</version>
+    <version>2.0.1</version>
  </dependency>
  ```
  

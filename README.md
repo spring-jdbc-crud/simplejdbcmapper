@@ -421,9 +421,23 @@ class Product {
 
 ## BLOB CLOB mapping
 
-1. Binary large object database columns should be mapped to java type byte[]. No other java type is supported. The 'sqlType' attribute of the @Column annotation with the following values are considered as Binary Large Objects by SimpleJdbcMapper: Types.BLOB, Types.ARRAY, Types.LONGVARBINARY, Types.VARBINARY. Use the pertinent SQL type for your database and database column type. 
+-  Binary large object database columns should be mapped to java type byte[].  
+No other java type is supported. The 'sqlType' attribute of the @Column annotation with the following values are considered as Binary Large Objects by SimpleJdbcMapper:  
+Types.BLOB  
+Types.ARRAY  
+Types.LONGVARBINARY  
+Types.VARBINARY  
 
-2. Character large object database columns should be mapped to java types String or other CharSequence or char[]. No other java types are supported. The 'sqlType' attribute of the @Column annotation with the following values are considered as Character Large Objects by SimpeJdbcMapper. Types.CLOB, Types.NCLOB,, Types.LONGVARCHAR, Types.LONGNVARCHAR. Use the pertinent SQL type for your database and database column type. 
+Use the pertinent SQL type for your database and database column type. 
+
+-  Character large object database columns should be mapped to java types String or other CharSequence or char[]. No other java types are supported.  
+The 'sqlType' attribute of the @Column annotation with the following values are considered as Character Large Objects by SimpeJdbcMapper:  
+Types.CLOB  
+Types.NCLOB  
+Types.LONGVARCHAR  
+Types.LONGNVARCHAR  
+
+Use the pertinent SQL type for your database and database column type. 
 
 In both the cases above the whole object (image files etc) will be read into memory. For very large objects this could create memory issues and you may want to use InputStream/Reader. To use InputStream/Reader you will have to use  JdbcTemplate directly since SimpleJdbcMapper does not support those.
 

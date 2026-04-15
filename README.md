@@ -548,7 +548,7 @@ Uses the same logging configurations as Spring. In application.properties:
 Use JdbcTemplate/JdbcClient to handle these cases.
 
 ## Upgrading to 2.x from 1.x
-The 2.0.0 release has removed the dependency on database table column meta-data for mapping totally.
+The 2.x release has removed the dependency on database table column meta-data for mapping totally.
 
 Difference from 1.x:  
 1. SimpleJdbcMapper 2.x tries to infer the correct SQL type from the Java types but some times it cannot. In these cases explicitly declaring the SQL type is a best practice to ensure correctness, improve performance, and correctly handle NULL values. See documentation on @Column(sqlType="somesqltype") and BLOB/CLOB mapping further above on how to figure out and set the SQL type value.

@@ -46,11 +46,6 @@ public class SimpleJdbcMapperConfig {
 			simpleJdbcMapper.setRecordAuditedOnSupplier(LocalDateTime::now);
 		}
 
-		// just for testing purposes running without a conversionSevice
-		if (runWithConversionServiceNull) {
-			simpleJdbcMapper.setConversionService(null);
-		}
-
 		return simpleJdbcMapper;
 	}
 

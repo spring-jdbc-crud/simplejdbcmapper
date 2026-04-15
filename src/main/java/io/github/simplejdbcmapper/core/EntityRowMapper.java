@@ -21,8 +21,8 @@ class EntityRowMapper<T> implements RowMapper<T> {
 	private TableMapping tableMapping;
 	private ConversionService conversionService;
 
-	public EntityRowMapper(Class<T> type, TableMapping tableMapping, ConversionService conversionService) {
-		this.mappedClass = type;
+	public EntityRowMapper(Class<T> entityType, TableMapping tableMapping, ConversionService conversionService) {
+		this.mappedClass = entityType;
 		this.tableMapping = tableMapping;
 		this.conversionService = conversionService;
 	}

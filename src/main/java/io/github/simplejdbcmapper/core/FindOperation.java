@@ -191,8 +191,8 @@ class FindOperation {
 		return columnsSql;
 	}
 
-	private <T> EntityRowMapper<T> getEntityRowMapper(Class<T> type, TableMapping tableMapping) {
-		return new EntityRowMapper<>(type, tableMapping, sjmSupport.getConversionService());
+	private <T> EntityRowMapper<T> getEntityRowMapper(Class<T> entityType, TableMapping tableMapping) {
+		return new EntityRowMapper<>(entityType, tableMapping, sjmSupport.getConversionService());
 	}
 
 	private String orderByClause(Class<?> entityType, SortBy[] sortByArray, TableMapping tableMapping) {

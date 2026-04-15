@@ -10,6 +10,8 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.JdbcUtils;
 
+import io.github.simplejdbcmapper.exception.MapperException;
+
 /**
  * A lighter row mapper than Spring's BeanPropertyRowMapper since column to
  * property relationship is already available through TableMapping.
@@ -33,7 +35,7 @@ class EntityRowMapper<T> implements RowMapper<T> {
 		try {
 			obj = mappedClass.getDeclaredConstructor().newInstance();
 		} catch (Exception e) {
-			throw new RuntimeException("Could not instantiate class " + mappedClass.getName(), e);
+			throw new MapperException("Could not instantiate class " + mappedClass.getName(), e);
 		}
 		BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(obj);
 		bw.setConversionService(conversionService);
@@ -49,7 +51,7 @@ class EntityRowMapper<T> implements RowMapper<T> {
 							bw.getPropertyType(propMapping.getPropertyName()));
 					bw.setPropertyValue(propMapping.getPropertyName(), value);
 				} catch (Exception ex) {
-					throw new RuntimeException(ex);
+					throw new MapperException(ex);
 				}
 			}
 		}

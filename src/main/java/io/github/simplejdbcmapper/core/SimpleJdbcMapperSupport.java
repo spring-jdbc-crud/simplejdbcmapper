@@ -71,7 +71,7 @@ class SimpleJdbcMapperSupport {
 		this.npJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);
 		this.jdbcTemplate = npJdbcTemplate.getJdbcTemplate();
 		this.jdbcClient = JdbcClient.create(npJdbcTemplate, conversionService);
-		this.tableMappingProvider = new TableMappingProvider(dataSource, schemaName, catalogName);
+		this.tableMappingProvider = new TableMappingProvider(schemaName, catalogName);
 	}
 
 	public DataSource getDataSource() {

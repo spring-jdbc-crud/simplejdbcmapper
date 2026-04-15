@@ -28,10 +28,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import io.github.simplejdbcmapper.exception.MapperException;
 import io.github.simplejdbcmapper.model.BlobErr;
 import io.github.simplejdbcmapper.model.ClobErr;
-import io.github.simplejdbcmapper.model.Order;
 import io.github.simplejdbcmapper.model.StatusEnum;
 import io.github.simplejdbcmapper.model.TypeCheckOracle;
 
@@ -263,19 +261,6 @@ class TypeCheckOracleTest {
 			sjm.update(obj);
 		});
 		assertTrue(exception.getMessage().contains("java type has to be String or other"));
-	}
-
-	@Test
-	void oracleConfig_failureOnUsingCatalogInsteadOfSchema() {
-		SimpleJdbcMapper mapper = new SimpleJdbcMapper(ds, null, "schema1");
-		Integer id = Integer.valueOf(1);
-
-		Exception exception = Assertions.assertThrows(MapperException.class, () -> {
-			mapper.findById(Order.class, id);
-		});
-
-		assertTrue(exception.getMessage().contains(
-				"When creating SimpleJdbcMapper() if you are using the 'catalog' (argument 3) use 'schema' (argument 2) instead"));
 	}
 
 }

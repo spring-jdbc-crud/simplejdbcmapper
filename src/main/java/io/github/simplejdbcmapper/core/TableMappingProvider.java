@@ -1,8 +1,6 @@
 package io.github.simplejdbcmapper.core;
 
 import java.lang.reflect.Field;
-import java.sql.DatabaseMetaData;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -11,12 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.sql.DataSource;
-
 import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.jdbc.support.DatabaseMetaDataCallback;
-import org.springframework.jdbc.support.JdbcUtils;
-import org.springframework.jdbc.support.MetaDataAccessException;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -24,11 +17,8 @@ import io.github.simplejdbcmapper.annotation.Id;
 import io.github.simplejdbcmapper.annotation.IdType;
 import io.github.simplejdbcmapper.annotation.Table;
 import io.github.simplejdbcmapper.exception.AnnotationException;
-import io.github.simplejdbcmapper.exception.MapperException;
 
 class TableMappingProvider {
-	private final DataSource dataSource;
-
 	private final String schemaName;
 
 	private final String catalogName;
@@ -39,10 +29,7 @@ class TableMappingProvider {
 
 	private final AnnotationProcessor ap;
 
-	private String commonDatabaseName;
-
-	public TableMappingProvider(DataSource dataSource, String schemaName, String catalogName) {
-		this.dataSource = dataSource;
+	public TableMappingProvider(String schemaName, String catalogName) {
 		this.schemaName = schemaName;
 		this.catalogName = catalogName;
 		this.ap = new AnnotationProcessor();
@@ -56,7 +43,6 @@ class TableMappingProvider {
 			String tableName = tableAnnotation.name();
 			String catalog = getCatalogForTable(tableAnnotation);
 			String schema = getSchemaForTable(tableAnnotation);
-			validateMetaDataConfig(catalog, schema);
 			List<Field> fields = getAllFields(entityType);
 			IdPropertyInfo idPropertyInfo = getIdPropertyInfo(entityType, fields);
 			List<PropertyMapping> propertyMappings = getPropertyMappings(entityType, fields);
@@ -135,38 +121,4 @@ class TableMappingProvider {
 		return StringUtils.hasText(tableAnnotation.schema()) ? tableAnnotation.schema() : schemaName;
 	}
 
-	private void validateMetaDataConfig(String catalog, String schema) {
-		String databaseName = getCommonDatabaseName();
-		if ("mysql".equalsIgnoreCase(databaseName) && schema != null) {
-			throw new MapperException(databaseName
-					+ ": When creating SimpleJdbcMapper() if you are using 'schema' (argument 2) use 'catalog' (argument 3) instead."
-					+ " If you are using the @Table annotation use the 'catalog' attribue instead of 'schema' attribute");
-		}
-		if ("oracle".equalsIgnoreCase(databaseName) && catalog != null) {
-			throw new MapperException(databaseName
-					+ ": When creating SimpleJdbcMapper() if you are using the 'catalog' (argument 3) use 'schema' (argument 2) instead."
-					+ " If you are using the @Table annotation use the 'schema' attribue instead of 'catalog' attribute");
-		}
-	}
-
-	private String getCommonDatabaseName() {
-		// Even if there is thread contention and commonDatabaseName gets set more than
-		// once there are no side effects.
-		if (commonDatabaseName == null) {
-			try {
-				String dbProductName = JdbcUtils.extractDatabaseMetaData(dataSource,
-						new DatabaseMetaDataCallback<String>() {
-							public String processMetaData(DatabaseMetaData dbMetaData)
-									throws SQLException, MetaDataAccessException {
-								return dbMetaData.getDatabaseProductName() == null ? ""
-										: dbMetaData.getDatabaseProductName();
-							}
-						});
-				commonDatabaseName = JdbcUtils.commonDatabaseName(dbProductName);
-			} catch (Exception e) {
-				throw new MapperException(e);
-			}
-		}
-		return commonDatabaseName;
-	}
 }

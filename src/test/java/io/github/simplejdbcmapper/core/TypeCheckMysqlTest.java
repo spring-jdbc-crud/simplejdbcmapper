@@ -12,8 +12,6 @@ import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
 
-import javax.sql.DataSource;
-
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -32,9 +30,6 @@ class TypeCheckMysqlTest {
 
 	@Value("${spring.datasource.driver-class-name}")
 	private String jdbcDriver;
-
-	@Autowired
-	private DataSource ds;
 
 	@Autowired
 	private SimpleJdbcMapper sjm;

@@ -15,7 +15,6 @@ import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
 
-import javax.sql.DataSource;
 import javax.sql.rowset.serial.SerialBlob;
 
 import org.junit.jupiter.api.Assertions;
@@ -39,9 +38,6 @@ class TypeCheckOracleTest {
 
 	@Value("${spring.datasource.driver-class-name}")
 	private String jdbcDriver;
-
-	@Autowired
-	private DataSource ds;
 
 	@Autowired
 	private SimpleJdbcMapper sjm;

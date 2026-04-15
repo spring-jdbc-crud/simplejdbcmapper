@@ -341,7 +341,7 @@ This will map the property to a column using the default naming convention of ca
 ***@Column(name="somecolumnname")*** 
 This will map the property to the column specified by the 'name' attribute.  **Note that column names with spaces are not supported.**  
 
-***@Column(sqlType = somesqltype)*** 
+***@Column(sqlType = somesqltype)***  
 SimpleJdbcMapper tries to infer the correct SQL type from the Java types but some times it cannot. In these cases explicitly declaring the SQL type is a best practice to ensure correctness, improve performance, and correctly handle NULL values. 
  
 To identify which properties in the mappings the SQL type is unknown do the following:

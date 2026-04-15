@@ -248,6 +248,10 @@ public final class SimpleJdbcMapper {
 	 * BeanPropertyRowMapper(), SimplePropertyRowMapper() etc. Will create the
 	 * needed column aliases where the column name does not match the corresponding
 	 * underscore case property name.
+	 * &lt;p&gt;
+	 * It is a good practice to store this string, since every time this method is
+	 * invoked the columns have to be concatenated along with some string
+	 * manipulation
 	 *
 	 * &lt;p&gt;
 	 * Will return something like below if 'userLastName' property is mapped to
@@ -262,7 +266,7 @@ public final class SimpleJdbcMapper {
 	 * 
 	 */
 	public String getBeanFriendlySqlColumns(Class&lt;?&gt; entityType) {
-<span class="fc" id="L265">		return findOperation.getBeanFriendlySqlColumns(entityType);</span>
+<span class="fc" id="L269">		return findOperation.getBeanFriendlySqlColumns(entityType);</span>
 	}
 
 	/**
@@ -271,10 +275,15 @@ public final class SimpleJdbcMapper {
 	 * SimplePropertyRowMapper() etc. Will prefix table column names with the
 	 * 'tableAlias.' and will create the needed column aliases where the column name
 	 * does not match the corresponding underscore case property name.
-	 * 
+	 * &lt;p&gt;
 	 * Use it in your custom queries when you are doing joins and need columns
 	 * corresponding to a table alias.
 	 *
+	 * &lt;p&gt;
+	 * It is a good practice to store this string, since every time this method is
+	 * invoked the columns have to be concatenated long with some string
+	 * manipulation.
+	 * 
 	 * &lt;p&gt;
 	 * For tableAlias argument 't1' will return something like below if
 	 * 'userLastName' property is mapped to 'last_name' column in database:
@@ -289,7 +298,7 @@ public final class SimpleJdbcMapper {
 	 * 
 	 */
 	public String getBeanFriendlySqlColumns(Class&lt;?&gt; entityType, String tableAlias) {
-<span class="fc" id="L292">		return findOperation.getBeanFriendlySqlColumns(entityType, tableAlias);</span>
+<span class="fc" id="L301">		return findOperation.getBeanFriendlySqlColumns(entityType, tableAlias);</span>
 	}
 
 	/**
@@ -301,7 +310,7 @@ public final class SimpleJdbcMapper {
 	 * 
 	 */
 	public Map&lt;String, String&gt; getPropertyToColumnMappings(Class&lt;?&gt; entityType) {
-<span class="fc" id="L304">		return findOperation.getPropertyToColumnMappings(entityType);</span>
+<span class="fc" id="L313">		return findOperation.getPropertyToColumnMappings(entityType);</span>
 	}
 
 	/**
@@ -310,7 +319,7 @@ public final class SimpleJdbcMapper {
 	 * @return the JdbcClient
 	 */
 	public JdbcClient getJdbcClient() {
-<span class="fc" id="L313">		return simpleJdbcMapperSupport.getJdbcClient();</span>
+<span class="fc" id="L322">		return simpleJdbcMapperSupport.getJdbcClient();</span>
 	}
 
 	/**
@@ -319,7 +328,7 @@ public final class SimpleJdbcMapper {
 	 * @return the JdbcTemplate
 	 */
 	public JdbcTemplate getJdbcTemplate() {
-<span class="fc" id="L322">		return simpleJdbcMapperSupport.getJdbcTemplate();</span>
+<span class="fc" id="L331">		return simpleJdbcMapperSupport.getJdbcTemplate();</span>
 	}
 
 	/**
@@ -328,7 +337,7 @@ public final class SimpleJdbcMapper {
 	 * @return the NamedParameterJdbcTemplate
 	 */
 	public NamedParameterJdbcTemplate getNamedParameterJdbcTemplate() {
-<span class="fc" id="L331">		return simpleJdbcMapperSupport.getNamedParameterJdbcTemplate();</span>
+<span class="fc" id="L340">		return simpleJdbcMapperSupport.getNamedParameterJdbcTemplate();</span>
 	}
 
 	/**
@@ -339,8 +348,8 @@ public final class SimpleJdbcMapper {
 	 * @param supplier the Supplier for audited by.
 	 */
 	public &lt;T&gt; void setRecordAuditedBySupplier(Supplier&lt;T&gt; supplier) {
-<span class="fc" id="L342">		simpleJdbcMapperSupport.setRecordAuditedBySupplier(supplier);</span>
-<span class="fc" id="L343">	}</span>
+<span class="fc" id="L351">		simpleJdbcMapperSupport.setRecordAuditedBySupplier(supplier);</span>
+<span class="fc" id="L352">	}</span>
 
 	/**
 	 * Set the Supplier that is used to populate the &amp;#64;CreatedOn and
@@ -350,8 +359,8 @@ public final class SimpleJdbcMapper {
 	 * @param supplier the Supplier for audited on.
 	 */
 	public &lt;T&gt; void setRecordAuditedOnSupplier(Supplier&lt;T&gt; supplier) {
-<span class="fc" id="L353">		simpleJdbcMapperSupport.setRecordAuditedOnSupplier(supplier);</span>
-<span class="fc" id="L354">	}</span>
+<span class="fc" id="L362">		simpleJdbcMapperSupport.setRecordAuditedOnSupplier(supplier);</span>
+<span class="fc" id="L363">	}</span>
 
 	/**
 	 * Exposing the conversion service used, so if necessary new converters can be
@@ -361,7 +370,7 @@ public final class SimpleJdbcMapper {
 	 * @return the conversion service.
 	 */
 	public ConversionService getConversionService() {
-<span class="fc" id="L364">		return simpleJdbcMapperSupport.getConversionService();</span>
+<span class="fc" id="L373">		return simpleJdbcMapperSupport.getConversionService();</span>
 	}
 
 	/**
@@ -370,8 +379,8 @@ public final class SimpleJdbcMapper {
 	 * @param conversionService The conversion service to set
 	 */
 	public void setConversionService(ConversionService conversionService) {
-<span class="fc" id="L373">		simpleJdbcMapperSupport.setConversionService(conversionService);</span>
-<span class="fc" id="L374">	}</span>
+<span class="fc" id="L382">		simpleJdbcMapperSupport.setConversionService(conversionService);</span>
+<span class="fc" id="L383">	}</span>
 
 	/**
 	 * Get the schema name.
@@ -379,7 +388,7 @@ public final class SimpleJdbcMapper {
 	 * @return the schema name.
 	 */
 	public String getSchemaName() {
-<span class="fc" id="L382">		return simpleJdbcMapperSupport.getSchemaName();</span>
+<span class="fc" id="L391">		return simpleJdbcMapperSupport.getSchemaName();</span>
 	}
 
 	/**
@@ -388,8 +397,8 @@ public final class SimpleJdbcMapper {
 	 * @return the catalog name.
 	 */
 	public String getCatalogName() {
-<span class="fc" id="L391">		return simpleJdbcMapperSupport.getCatalogName();</span>
+<span class="fc" id="L400">		return simpleJdbcMapperSupport.getCatalogName();</span>
 	}
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 3f26ce2f1d0a8a7dc17d494f1e42b1efcd376d44 2026-04-13T21:07:28</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 65ef8f1f02ed559a617b05face37055ba21aebe5 2026-04-15T01:00:57</div></body></html>

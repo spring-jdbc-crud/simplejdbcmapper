@@ -335,16 +335,16 @@ In this case you will have to manually set the id value before invoking insert()
 
 Properties that need be persisted to the database will need @Column annotation unless the property is already annotated with one of the other annotations (@Id, @Version, @CreatedOn @CreatedBy @UpdatedOn @UpdatedBy). @Column can be used along with the other annotations to map a property to a non-default column name. The default column name is camel case property name converted to underscore case name (e.g., property 'lastName' maps to column 'last_name' by default).
 
-***@Column *** 
+***@Column*** 
 This will map the property to a column using the default naming convention of camel case to underscore case. For example property 'lastName' will map to column 'last_name' by default.  
 
 ***@Column(name="somecolumnname")*** 
 This will map the property to the column specified by the 'name' attribute.  **Note that column names with spaces are not supported.**  
 
 ***@Column(sqlType = somesqltype)*** 
-SimpleJdbcMapper tries to infer the correct SQL type from the Java types but some times it cannot. In these cases explicitly declaring the SQL type is a best practice to ensure correctness, improve performance, and correctly handle NULL values.  
+SimpleJdbcMapper tries to infer the correct SQL type from the Java types but some times it cannot. In these cases explicitly declaring the SQL type is a best practice to ensure correctness, improve performance, and correctly handle NULL values. 
+ 
 To identify which properties in the mappings the SQL type is unknown do the following:
-
    - Turn on sql logging. (See logging section)
    - Issue an insert/update for the entity.
    - Check for 'SQL type unknown' in the logs. Below is example of the logs. Line 1 has the SQL type while line 2 the SQL type is unknown:  

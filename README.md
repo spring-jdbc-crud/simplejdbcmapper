@@ -335,14 +335,22 @@ In this case you will have to manually set the id value before invoking insert()
 
 Properties that need be persisted to the database will need @Column annotation unless the property is already annotated with one of the other annotations (@Id, @Version, @CreatedOn @CreatedBy @UpdatedOn @UpdatedBy). @Column can be used along with the other annotations to map a property to a non-default column name. The default column name is camel case property name converted to underscore case name (e.g., property 'lastName' maps to column 'last_name' by default).
 
-@Column  
-This will map the property to a column using the default naming convention of camel case to underscore case. For example property 'lastName' will map to column 'last_name' by default.
+***@Column *** 
+This will map the property to a column using the default naming convention of camel case to underscore case. For example property 'lastName' will map to column 'last_name' by default.  
 
-@Column(name="somecolumnname")  
-This will map the property to the column specified by the 'name' attribute.  **Note that column names with spaces are not supported.**
+***@Column(name="somecolumnname")*** 
+This will map the property to the column specified by the 'name' attribute.  **Note that column names with spaces are not supported.**  
 
-@Column(sqlType = somesqltype)
-SimpleJdbcMapper 2.x uses Spring's default java type to sql type information for mapping. Even though this covers most cases, for things like BLOB/CLOB and database specific column types the sql type information will need to be provided using the 'sqlType' attribute.
+***@Column(sqlType = somesqltype)*** 
+SimpleJdbcMapper tries to infer the correct SQL type from the Java types but some times it cannot. In these cases explicitly declaring the SQL type is a best practice to ensure correctness, improve performance, and correctly handle NULL values.  
+To identify which properties in the mappings the SQL type is unknown do the following:
+
+   - Turn on sql logging. (See logging section)
+   - Issue an insert/update for the entity.
+   - Check for 'SQL type unknown' in the logs. Below is example of the logs. Line 1 has the SQL type while line 2 the SQL type is unknown:  
+   Setting SQL statement parameter value: column index 6, parameter value [true], value class [java.lang.Boolean], SQL type 16  
+   Setting SQL statement parameter value: column index 7, parameter value [[B@56d742ad], value class [[B], SQL type unknown
+   - For your specific database and database column type find the corresponding SQL type and assign it using @Column(sqlType = somesqltype).
 
 **@Version**
 
@@ -413,13 +421,13 @@ class Product {
 
 ## BLOB CLOB mapping
 
-1. Binary large object database columns should be mapped to java type byte[]. No other java type is supported. The 'sqlType' attribute of the @Column annotation with the following values are considered as Binary Large Objects by SimpleJdbcMapper: Types.BLOB, Types.ARRAY, Types.LONGVARBINARY, Types.VARBINARY. Use the pertinent sql type for your database. 
+1. Binary large object database columns should be mapped to java type byte[]. No other java type is supported. The 'sqlType' attribute of the @Column annotation with the following values are considered as Binary Large Objects by SimpleJdbcMapper: Types.BLOB, Types.ARRAY, Types.LONGVARBINARY, Types.VARBINARY. Use the pertinent SQL type for your database and database column type. 
 
-2. Character large object database columns should be mapped to java types String or other CharSequence or char[]. No other java types are supported. The 'sqlType' attribute of the @Column annotation with the following values are considered as Character Large Objects by SimpeJdbcMapper. Types.CLOB, Types.NCLOB,, Types.LONGVARCHAR, Types.LONGNVARCHAR.
+2. Character large object database columns should be mapped to java types String or other CharSequence or char[]. No other java types are supported. The 'sqlType' attribute of the @Column annotation with the following values are considered as Character Large Objects by SimpeJdbcMapper. Types.CLOB, Types.NCLOB,, Types.LONGVARCHAR, Types.LONGNVARCHAR. Use the pertinent SQL type for your database and database column type. 
 
-In both the cases above the whole object (image files etc) will be read into memory. For very large objects this could create memory issues and you may want to use InputStream/Reader. To use InputStream/Reader you will have to use  JdbcTemplate directly.
+In both the cases above the whole object (image files etc) will be read into memory. For very large objects this could create memory issues and you may want to use InputStream/Reader. To use InputStream/Reader you will have to use  JdbcTemplate directly since SimpleJdbcMapper does not support those.
 
-Some BLOB/CLOB examples below. Keep in mind depending on the versions of the databases these could be different.
+Some BLOB/CLOB examples below. Keep in mind depending on the versions of the databases and database column types these could be different.
 
 Postgres:
 
@@ -526,60 +534,10 @@ Use JdbcTemplate/JdbcClient to handle these cases.
 The 2.0.0 release has removed the dependency on database table column meta-data for mapping totally.
 
 Difference from 1.x:  
-1. 2.x uses Spring's default java type to sql type information for mapping. Even though this covers most cases, for things like BLOB/CLOB and database specific column types the sql type information may need to be provided using the @Column(sqlType = "somesqltype").
+1. 2.x uses Spring's default java type to SQL type information for mapping. Even though this covers most cases, for things like BLOB/CLOB and database specific column types the SQL type information may need to be provided. See documentation on @Column(sqlType="somesqltype") and BLOB/CLOB mapping further above on how to figure out and set the SQL type value.
 2. Since 2.x does not use the database table column meta data, it cannot provide  detailed messages on what went wrong with a mapping. Mapping issues will surface through sql errors thrown, which is similar to what happens when using JdbcTemplate/JdbcClient directly.
 
-Generally the upgrade should be straight forward since API remains the same.
-
-Some examples of the mapping changes you may need to make are below. Keep in mind depending on the versions of the databases these could be different. Refer to each databases jdbc sql type to database column type information.
-
-Postgres:
-
-```
-@Column(sqlType = Types.ARRAY) // mapped to a bytea database column type
-private byte[] image;
-
-@Column(sqlType = Types.LONGVARCHAR)
-private String clobData;
-
-```
-
-MySql:
-
-``` 
-@Column(sqlType = Types.BLOB)
-private byte[] image;
-
-@Column(sqlType = Types.LONGVARCHAR)
-private String textData;
-	
-```
-
-Oracle:
-
-```
-@Column(sqlType = Types.BLOB)
-private byte[] image;
-
-@Column(sqlType = Types.CLOB)
-private String clobData;
-	
-@Column(sqlType = oracle.jdbc.OracleTypes.TIMESTAMPTZ) // 'timestamp with time zone' database column type
-private OffsetDateTime offsetDateTimeData;
-	
-```
-
-SQL Server:
-
-```
-@Column(sqlType = Types.BLOB)
-private byte[] image;
-
-@Column(sqlType = Types.CLOB)
-private String clobData;
-
-@Column(sqlType = microsoft.sql.Types.DATETIMEOFFSET) // datetimeoffset database column type
-microsoft.sql.DateTimeOffset  offsetDateTimeData;
+Generally the upgrade should be straight forward since API remains the same.  
 
 ```
   

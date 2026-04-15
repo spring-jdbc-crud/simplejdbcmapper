@@ -456,10 +456,10 @@ If a Supplier is configured using simpleJdbcMapper.setRecordAuditedBySupplier(),
 </ol>
 <p>Use JdbcTemplate/JdbcClient to handle these cases.</p>
 <h2 id="upgrading-to-2x-from-1x"><a class="header-link" href="#upgrading-to-2x-from-1x"></a>Upgrading to 2.x from 1.x</h2>
-<p>The main change in SimpleJdbcMapper 2.x from 1.x is that it does not use database table column meta data for its mapping. The 1.x versions needed access to the database table column meta-data to create the mappings and hence could not be used where that access was restricted due to security reasons. SimpleJdbcMapper 2.x uses Spring&#39;s default java type to sql type information for mapping. </p>
-<p>Difference from 1.x:</p>
+<p>The 2.0.0 release has removed the dependency on database table column meta-data for mapping totally.</p>
+<p>Difference from 1.x:  </p>
 <ol class="list">
-<li>Even though Spring&#39;s default java type to sql type information covers most cases, for  BLOB/CLOB and other database specific column types, the sql type information will need to be provided using @Column(sqlType = &quot;somesqltype&quot;). </li>
+<li>2.x uses Spring&#39;s default java type to sql type information for mapping. Even though this covers most cases, for things like BLOB/CLOB and database specific column types the sql type information may need to be provided using the @Column(sqlType = &quot;somesqltype&quot;).</li>
 <li>Since 2.x does not use the database table column meta data, it cannot provide  detailed messages on what went wrong with a mapping. Mapping issues will surface through sql errors thrown, which is similar to what happens when using JdbcTemplate/JdbcClient directly.</li>
 </ol>
 <p>Generally the upgrade should be straight forward since API remains the same.</p>

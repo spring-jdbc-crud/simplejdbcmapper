@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>TableMappingProvider.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">simplejdbcmapper</a> &gt; <a href="index.source.html" class="el_package">io.github.simplejdbcmapper.core</a> &gt; <span class="el_source">TableMappingProvider.java</span></div><h1>TableMappingProvider.java</h1><pre class="source lang-java linenums">package io.github.simplejdbcmapper.core;
 
 import java.lang.reflect.Field;
-import java.sql.DatabaseMetaData;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -11,12 +9,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-import javax.sql.DataSource;
-
 import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.jdbc.support.DatabaseMetaDataCallback;
-import org.springframework.jdbc.support.JdbcUtils;
-import org.springframework.jdbc.support.MetaDataAccessException;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
@@ -24,150 +17,109 @@ import io.github.simplejdbcmapper.annotation.Id;
 import io.github.simplejdbcmapper.annotation.IdType;
 import io.github.simplejdbcmapper.annotation.Table;
 import io.github.simplejdbcmapper.exception.AnnotationException;
-import io.github.simplejdbcmapper.exception.MapperException;
 
 class TableMappingProvider {
-	private final DataSource dataSource;
-
 	private final String schemaName;
 
 	private final String catalogName;
 
 	// Map key - class name
 	// value - the table mapping
-<span class="fc" id="L38">	private final SimpleCache&lt;String, TableMapping&gt; tableMappingCache = new SimpleCache&lt;&gt;();</span>
+<span class="fc" id="L28">	private final SimpleCache&lt;String, TableMapping&gt; tableMappingCache = new SimpleCache&lt;&gt;();</span>
 
 	private final AnnotationProcessor ap;
 
-	private String commonDatabaseName;
-
-<span class="fc" id="L44">	public TableMappingProvider(DataSource dataSource, String schemaName, String catalogName) {</span>
-<span class="fc" id="L45">		this.dataSource = dataSource;</span>
-<span class="fc" id="L46">		this.schemaName = schemaName;</span>
-<span class="fc" id="L47">		this.catalogName = catalogName;</span>
-<span class="fc" id="L48">		this.ap = new AnnotationProcessor();</span>
-<span class="fc" id="L49">	}</span>
+<span class="fc" id="L32">	public TableMappingProvider(String schemaName, String catalogName) {</span>
+<span class="fc" id="L33">		this.schemaName = schemaName;</span>
+<span class="fc" id="L34">		this.catalogName = catalogName;</span>
+<span class="fc" id="L35">		this.ap = new AnnotationProcessor();</span>
+<span class="fc" id="L36">	}</span>
 
 	TableMapping getTableMapping(Class&lt;?&gt; entityType) {
-<span class="fc" id="L52">		Assert.notNull(entityType, &quot;entityType must not be null&quot;);</span>
-<span class="fc" id="L53">		TableMapping tableMapping = tableMappingCache.get(entityType.getName());</span>
-<span class="fc bfc" id="L54" title="All 2 branches covered.">		if (tableMapping == null) {</span>
-<span class="fc" id="L55">			Table tableAnnotation = ap.getTableAnnotation(entityType);</span>
-<span class="fc" id="L56">			String tableName = tableAnnotation.name();</span>
-<span class="fc" id="L57">			String catalog = getCatalogForTable(tableAnnotation);</span>
-<span class="fc" id="L58">			String schema = getSchemaForTable(tableAnnotation);</span>
-<span class="fc" id="L59">			validateMetaDataConfig(catalog, schema);</span>
-<span class="fc" id="L60">			List&lt;Field&gt; fields = getAllFields(entityType);</span>
-<span class="fc" id="L61">			IdPropertyInfo idPropertyInfo = getIdPropertyInfo(entityType, fields);</span>
-<span class="fc" id="L62">			List&lt;PropertyMapping&gt; propertyMappings = getPropertyMappings(entityType, fields);</span>
-<span class="fc" id="L63">			tableMapping = new TableMapping(entityType, tableName, schema, catalog, idPropertyInfo, propertyMappings);</span>
-<span class="fc" id="L64">			tableMappingCache.put(entityType.getName(), tableMapping);</span>
+<span class="fc" id="L39">		Assert.notNull(entityType, &quot;entityType must not be null&quot;);</span>
+<span class="fc" id="L40">		TableMapping tableMapping = tableMappingCache.get(entityType.getName());</span>
+<span class="fc bfc" id="L41" title="All 2 branches covered.">		if (tableMapping == null) {</span>
+<span class="fc" id="L42">			Table tableAnnotation = ap.getTableAnnotation(entityType);</span>
+<span class="fc" id="L43">			String tableName = tableAnnotation.name();</span>
+<span class="fc" id="L44">			String catalog = getCatalogForTable(tableAnnotation);</span>
+<span class="fc" id="L45">			String schema = getSchemaForTable(tableAnnotation);</span>
+<span class="fc" id="L46">			List&lt;Field&gt; fields = getAllFields(entityType);</span>
+<span class="fc" id="L47">			IdPropertyInfo idPropertyInfo = getIdPropertyInfo(entityType, fields);</span>
+<span class="fc" id="L48">			List&lt;PropertyMapping&gt; propertyMappings = getPropertyMappings(entityType, fields);</span>
+<span class="fc" id="L49">			tableMapping = new TableMapping(entityType, tableName, schema, catalog, idPropertyInfo, propertyMappings);</span>
+<span class="fc" id="L50">			tableMappingCache.put(entityType.getName(), tableMapping);</span>
 		}
-<span class="fc" id="L66">		return tableMapping;</span>
+<span class="fc" id="L52">		return tableMapping;</span>
 	}
 
 	SimpleCache&lt;String, TableMapping&gt; getTableMappingCache() {
-<span class="fc" id="L70">		return tableMappingCache;</span>
+<span class="fc" id="L56">		return tableMappingCache;</span>
 	}
 
 	private List&lt;PropertyMapping&gt; getPropertyMappings(Class&lt;?&gt; entityType, List&lt;Field&gt; fields) {
 		// key:propertyName, value:PropertyMapping. LinkedHashMap to maintain order of
 		// properties
-<span class="fc" id="L76">		Map&lt;String, PropertyMapping&gt; propNameToPropertyMapping = new LinkedHashMap&lt;&gt;();</span>
-<span class="fc bfc" id="L77" title="All 2 branches covered.">		for (Field field : fields) {</span>
+<span class="fc" id="L62">		Map&lt;String, PropertyMapping&gt; propNameToPropertyMapping = new LinkedHashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L63" title="All 2 branches covered.">		for (Field field : fields) {</span>
 			// process column annotation always first
-<span class="fc" id="L79">			ap.processColumnAnnotation(field, propNameToPropertyMapping);</span>
-<span class="fc" id="L80">			ap.processIdAnnotation(field, propNameToPropertyMapping);</span>
-<span class="fc" id="L81">			ap.processVersionAnnotation(field, propNameToPropertyMapping);</span>
-<span class="fc" id="L82">			ap.processCreatedOnAnnotation(field, propNameToPropertyMapping);</span>
-<span class="fc" id="L83">			ap.processUpdatedOnAnnotation(field, propNameToPropertyMapping);</span>
-<span class="fc" id="L84">			ap.processCreatedByAnnotation(field, propNameToPropertyMapping);</span>
-<span class="fc" id="L85">			ap.processUpdatedByAnnotation(field, propNameToPropertyMapping);</span>
-<span class="fc" id="L86">		}</span>
-<span class="fc" id="L87">		List&lt;PropertyMapping&gt; propertyMappings = new ArrayList&lt;&gt;(propNameToPropertyMapping.values());</span>
-<span class="fc" id="L88">		ap.validateAnnotations(propertyMappings, entityType);</span>
-<span class="fc" id="L89">		return propertyMappings;</span>
+<span class="fc" id="L65">			ap.processColumnAnnotation(field, propNameToPropertyMapping);</span>
+<span class="fc" id="L66">			ap.processIdAnnotation(field, propNameToPropertyMapping);</span>
+<span class="fc" id="L67">			ap.processVersionAnnotation(field, propNameToPropertyMapping);</span>
+<span class="fc" id="L68">			ap.processCreatedOnAnnotation(field, propNameToPropertyMapping);</span>
+<span class="fc" id="L69">			ap.processUpdatedOnAnnotation(field, propNameToPropertyMapping);</span>
+<span class="fc" id="L70">			ap.processCreatedByAnnotation(field, propNameToPropertyMapping);</span>
+<span class="fc" id="L71">			ap.processUpdatedByAnnotation(field, propNameToPropertyMapping);</span>
+<span class="fc" id="L72">		}</span>
+<span class="fc" id="L73">		List&lt;PropertyMapping&gt; propertyMappings = new ArrayList&lt;&gt;(propNameToPropertyMapping.values());</span>
+<span class="fc" id="L74">		ap.validateAnnotations(propertyMappings, entityType);</span>
+<span class="fc" id="L75">		return propertyMappings;</span>
 	}
 
 	private List&lt;Field&gt; getAllFields(Class&lt;?&gt; entityType) {
-<span class="fc" id="L93">		List&lt;Field&gt; fields = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L94">		Class&lt;?&gt; clazz = entityType;</span>
-<span class="pc bpc" id="L95" title="1 of 4 branches missed.">		while (clazz != null &amp;&amp; clazz != Object.class) {</span>
-<span class="fc" id="L96">			Collections.addAll(fields, clazz.getDeclaredFields());</span>
-<span class="fc" id="L97">			clazz = clazz.getSuperclass();</span>
+<span class="fc" id="L79">		List&lt;Field&gt; fields = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L80">		Class&lt;?&gt; clazz = entityType;</span>
+<span class="pc bpc" id="L81" title="1 of 4 branches missed.">		while (clazz != null &amp;&amp; clazz != Object.class) {</span>
+<span class="fc" id="L82">			Collections.addAll(fields, clazz.getDeclaredFields());</span>
+<span class="fc" id="L83">			clazz = clazz.getSuperclass();</span>
 		}
 		// there could be duplicate fields due to super classes. Get unique fields list
 		// by name
-<span class="fc" id="L101">		Set&lt;String&gt; set = new HashSet&lt;&gt;();</span>
-<span class="fc" id="L102">		return fields.stream().filter(p -&gt; set.add(p.getName())).toList();</span>
+<span class="fc" id="L87">		Set&lt;String&gt; set = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L88">		return fields.stream().filter(p -&gt; set.add(p.getName())).toList();</span>
 	}
 
 	private IdPropertyInfo getIdPropertyInfo(Class&lt;?&gt; entityType, List&lt;Field&gt; fields) {
-<span class="fc" id="L106">		Id idAnnotation = null;</span>
-<span class="fc" id="L107">		String idPropertyName = null;</span>
-<span class="fc" id="L108">		boolean isIdAutoGenerated = false;</span>
-<span class="fc bfc" id="L109" title="All 2 branches covered.">		for (Field field : fields) {</span>
-<span class="fc" id="L110">			idAnnotation = AnnotationUtils.findAnnotation(field, Id.class);</span>
-<span class="fc bfc" id="L111" title="All 2 branches covered.">			if (idAnnotation != null) {</span>
-<span class="fc bfc" id="L112" title="All 2 branches covered.">				if (field.getType().isPrimitive()) {</span>
-<span class="fc" id="L113">					throw new AnnotationException(entityType.getSimpleName() + &quot;.&quot; + idPropertyName</span>
+<span class="fc" id="L92">		Id idAnnotation = null;</span>
+<span class="fc" id="L93">		String idPropertyName = null;</span>
+<span class="fc" id="L94">		boolean isIdAutoGenerated = false;</span>
+<span class="fc bfc" id="L95" title="All 2 branches covered.">		for (Field field : fields) {</span>
+<span class="fc" id="L96">			idAnnotation = AnnotationUtils.findAnnotation(field, Id.class);</span>
+<span class="fc bfc" id="L97" title="All 2 branches covered.">			if (idAnnotation != null) {</span>
+<span class="fc bfc" id="L98" title="All 2 branches covered.">				if (field.getType().isPrimitive()) {</span>
+<span class="fc" id="L99">					throw new AnnotationException(entityType.getSimpleName() + &quot;.&quot; + idPropertyName</span>
 							+ &quot; is an id and cannot be a primitive type.&quot;);
 				}
-<span class="fc" id="L116">				idPropertyName = field.getName();</span>
-<span class="fc bfc" id="L117" title="All 2 branches covered.">				if (idAnnotation.type() == IdType.AUTO_GENERATED) {</span>
-<span class="fc" id="L118">					isIdAutoGenerated = true;</span>
+<span class="fc" id="L102">				idPropertyName = field.getName();</span>
+<span class="fc bfc" id="L103" title="All 2 branches covered.">				if (idAnnotation.type() == IdType.AUTO_GENERATED) {</span>
+<span class="fc" id="L104">					isIdAutoGenerated = true;</span>
 				}
 				break;
 			}
-<span class="fc" id="L122">		}</span>
-<span class="fc bfc" id="L123" title="All 2 branches covered.">		if (idAnnotation == null) {</span>
-<span class="fc" id="L124">			throw new AnnotationException(</span>
-<span class="fc" id="L125">					&quot;@Id annotation not found in class &quot; + entityType.getSimpleName() + &quot; . It is required&quot;);</span>
+<span class="fc" id="L108">		}</span>
+<span class="fc bfc" id="L109" title="All 2 branches covered.">		if (idAnnotation == null) {</span>
+<span class="fc" id="L110">			throw new AnnotationException(</span>
+<span class="fc" id="L111">					&quot;@Id annotation not found in class &quot; + entityType.getSimpleName() + &quot; . It is required&quot;);</span>
 		}
-<span class="fc" id="L127">		return new IdPropertyInfo(idPropertyName, isIdAutoGenerated);</span>
+<span class="fc" id="L113">		return new IdPropertyInfo(idPropertyName, isIdAutoGenerated);</span>
 	}
 
 	private String getCatalogForTable(Table tableAnnotation) {
-<span class="fc bfc" id="L131" title="All 2 branches covered.">		return StringUtils.hasText(tableAnnotation.catalog()) ? tableAnnotation.catalog() : catalogName;</span>
+<span class="fc bfc" id="L117" title="All 2 branches covered.">		return StringUtils.hasText(tableAnnotation.catalog()) ? tableAnnotation.catalog() : catalogName;</span>
 	}
 
 	private String getSchemaForTable(Table tableAnnotation) {
-<span class="fc bfc" id="L135" title="All 2 branches covered.">		return StringUtils.hasText(tableAnnotation.schema()) ? tableAnnotation.schema() : schemaName;</span>
+<span class="fc bfc" id="L121" title="All 2 branches covered.">		return StringUtils.hasText(tableAnnotation.schema()) ? tableAnnotation.schema() : schemaName;</span>
 	}
 
-	private void validateMetaDataConfig(String catalog, String schema) {
-<span class="fc" id="L139">		String databaseName = getCommonDatabaseName();</span>
-<span class="fc bfc" id="L140" title="All 4 branches covered.">		if (&quot;mysql&quot;.equalsIgnoreCase(databaseName) &amp;&amp; schema != null) {</span>
-<span class="fc" id="L141">			throw new MapperException(databaseName</span>
-					+ &quot;: When creating SimpleJdbcMapper() if you are using 'schema' (argument 2) use 'catalog' (argument 3) instead.&quot;
-					+ &quot; If you are using the @Table annotation use the 'catalog' attribue instead of 'schema' attribute&quot;);
-		}
-<span class="fc bfc" id="L145" title="All 4 branches covered.">		if (&quot;oracle&quot;.equalsIgnoreCase(databaseName) &amp;&amp; catalog != null) {</span>
-<span class="fc" id="L146">			throw new MapperException(databaseName</span>
-					+ &quot;: When creating SimpleJdbcMapper() if you are using the 'catalog' (argument 3) use 'schema' (argument 2) instead.&quot;
-					+ &quot; If you are using the @Table annotation use the 'schema' attribue instead of 'catalog' attribute&quot;);
-		}
-<span class="fc" id="L150">	}</span>
-
-	private String getCommonDatabaseName() {
-		// Even if there is thread contention and commonDatabaseName gets set more than
-		// once there are no side effects.
-<span class="fc bfc" id="L155" title="All 2 branches covered.">		if (commonDatabaseName == null) {</span>
-			try {
-<span class="fc" id="L157">				String dbProductName = JdbcUtils.extractDatabaseMetaData(dataSource,</span>
-<span class="fc" id="L158">						new DatabaseMetaDataCallback&lt;String&gt;() {</span>
-							public String processMetaData(DatabaseMetaData dbMetaData)
-									throws SQLException, MetaDataAccessException {
-<span class="pc bpc" id="L161" title="1 of 2 branches missed.">								return dbMetaData.getDatabaseProductName() == null ? &quot;&quot;</span>
-<span class="fc" id="L162">										: dbMetaData.getDatabaseProductName();</span>
-							}
-						});
-<span class="fc" id="L165">				commonDatabaseName = JdbcUtils.commonDatabaseName(dbProductName);</span>
-<span class="nc" id="L166">			} catch (Exception e) {</span>
-<span class="nc" id="L167">				throw new MapperException(e);</span>
-<span class="fc" id="L168">			}</span>
-		}
-<span class="fc" id="L170">		return commonDatabaseName;</span>
-	}
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 0ee806d32f0f7755ffde583672865464b25cb8e5 2026-04-15T01:29:20</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main dff64ad5faaecded73e59e8cab9fb239b7884c4b 2026-04-15T18:18:16</div></body></html>

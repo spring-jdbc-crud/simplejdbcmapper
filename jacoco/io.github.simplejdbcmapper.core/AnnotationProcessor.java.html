@@ -187,13 +187,12 @@ import io.github.simplejdbcmapper.exception.AnnotationException;
 
 	private void annotationVersionTypeCheck(List&lt;PropertyMapping&gt; propertyMappings, Class&lt;?&gt; entityType) {
 <span class="fc bfc" id="L189" title="All 2 branches covered.">		for (PropertyMapping propMapping : propertyMappings) {</span>
-<span class="fc bfc" id="L190" title="All 2 branches covered.">			if (propMapping.isVersionAnnotation()</span>
-<span class="fc bfc" id="L191" title="All 2 branches covered.">					&amp;&amp; !(Integer.class.getName().equals(propMapping.getPropertyClassName()))) {</span>
-<span class="fc" id="L192">				throw new AnnotationException(&quot;@Version requires the type of property &quot; + entityType.getSimpleName()</span>
-<span class="fc" id="L193">						+ &quot;.&quot; + propMapping.getPropertyName() + &quot; to be Integer&quot;);</span>
+<span class="fc bfc" id="L190" title="All 4 branches covered.">			if (propMapping.isVersionAnnotation() &amp;&amp; propMapping.getPropertyType() != Integer.class) {</span>
+<span class="fc" id="L191">				throw new AnnotationException(&quot;@Version requires the type of property &quot; + entityType.getSimpleName()</span>
+<span class="fc" id="L192">						+ &quot;.&quot; + propMapping.getPropertyName() + &quot; to be Integer&quot;);</span>
 			}
-<span class="fc" id="L195">		}</span>
-<span class="fc" id="L196">	}</span>
+<span class="fc" id="L194">		}</span>
+<span class="fc" id="L195">	}</span>
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 0ee806d32f0f7755ffde583672865464b25cb8e5 2026-04-15T01:29:20</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main dff64ad5faaecded73e59e8cab9fb239b7884c4b 2026-04-15T18:18:16</div></body></html>

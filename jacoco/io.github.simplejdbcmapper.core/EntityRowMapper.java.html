@@ -47,15 +47,14 @@ class EntityRowMapper&lt;T&gt; implements RowMapper&lt;T&gt; {
 <span class="fc" id="L47">			PropertyMapping propMapping = tableMapping.getPropertyMappingByColumnName(column);</span>
 <span class="pc bpc" id="L48" title="1 of 2 branches missed.">			if (propMapping != null) {</span>
 				try {
-<span class="fc" id="L50">					Object value = JdbcUtils.getResultSetValue(rs, index,</span>
-<span class="fc" id="L51">							bw.getPropertyType(propMapping.getPropertyName()));</span>
-<span class="fc" id="L52">					bw.setPropertyValue(propMapping.getPropertyName(), value);</span>
-<span class="nc" id="L53">				} catch (Exception ex) {</span>
-<span class="nc" id="L54">					throw new MapperException(ex);</span>
-<span class="fc" id="L55">				}</span>
+<span class="fc" id="L50">					Object value = JdbcUtils.getResultSetValue(rs, index, propMapping.getPropertyType());</span>
+<span class="fc" id="L51">					bw.setPropertyValue(propMapping.getPropertyName(), value);</span>
+<span class="nc" id="L52">				} catch (Exception ex) {</span>
+<span class="nc" id="L53">					throw new MapperException(ex);</span>
+<span class="fc" id="L54">				}</span>
 			}
 		}
-<span class="fc" id="L58">		return obj;</span>
+<span class="fc" id="L57">		return obj;</span>
 	}
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 0ee806d32f0f7755ffde583672865464b25cb8e5 2026-04-15T01:29:20</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main dff64ad5faaecded73e59e8cab9fb239b7884c4b 2026-04-15T18:18:16</div></body></html>

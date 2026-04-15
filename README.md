@@ -523,10 +523,10 @@ Uses the same logging configurations as Spring. In application.properties:
 Use JdbcTemplate/JdbcClient to handle these cases.
 
 ## Upgrading to 2.x from 1.x
-The main change in SimpleJdbcMapper 2.x from 1.x is that it does not use database table column meta data for its mapping.  
+The 2.0.0 release has removed the dependency on database table column meta-data for mapping totally.
 
-Difference from 1.x:
-1.BLOB/CLOB and other database specific column types, the sql type information will need to be provided using @Column(sqlType = "somesqltype").
+Difference from 1.x:  
+1. BLOB/CLOB and other database specific column types, you may need to provide the sql type information using @Column(sqlType = "somesqltype").
 2. Since 2.x does not use the database table column meta data, it cannot provide  detailed messages on what went wrong with a mapping. Mapping issues will surface through sql errors thrown, which is similar to what happens when using JdbcTemplate/JdbcClient directly.
 
 Generally the upgrade should be straight forward since API remains the same.

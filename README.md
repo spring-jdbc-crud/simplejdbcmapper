@@ -439,7 +439,7 @@ Types.LONGNVARCHAR
 
 Use the pertinent SQL type for your database and database column type. 
 
-In both the cases above the whole object (image files etc) will be read into memory. For very large objects this could create memory issues and you may want to use InputStream/Reader. To use InputStream/Reader you will have to use  JdbcTemplate directly since SimpleJdbcMapper does not support those.
+In both the cases above the whole object (image files etc) will be read into memory. For very large objects this could create memory issues and you may want to use InputStream/Reader.  To use InputStream/Reader you will have to use  JdbcTemplate directly since SimpleJdbcMapper does not support these.
 
 Some BLOB/CLOB examples below. Keep in mind depending on the versions of the databases and database column types these could be different.
 

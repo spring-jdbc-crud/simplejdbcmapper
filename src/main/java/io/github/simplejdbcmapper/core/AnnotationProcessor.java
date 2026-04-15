@@ -187,8 +187,7 @@ class AnnotationProcessor {
 
 	private void annotationVersionTypeCheck(List<PropertyMapping> propertyMappings, Class<?> entityType) {
 		for (PropertyMapping propMapping : propertyMappings) {
-			if (propMapping.isVersionAnnotation()
-					&& !(Integer.class.getName().equals(propMapping.getPropertyClassName()))) {
+			if (propMapping.isVersionAnnotation() && propMapping.getPropertyType() != Integer.class) {
 				throw new AnnotationException("@Version requires the type of property " + entityType.getSimpleName()
 						+ "." + propMapping.getPropertyName() + " to be Integer");
 			}

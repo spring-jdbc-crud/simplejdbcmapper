@@ -539,8 +539,6 @@ Difference from 1.x:
 
 Generally the upgrade should be straight forward since API remains the same.  
 
-```
-  
 ## TroubleShooting
 
 1.**Connection issues:**

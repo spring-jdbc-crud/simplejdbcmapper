@@ -149,6 +149,8 @@ Just by annotating the models that you would use with JdbcTemplate/JdbcClient, y
  JdbcTemplate jdbcTemplate = sjm.getJdbcTemplate();
  NamedParameterJdbcTemplate namedParameterJdbcTemplate = sjm.getNamedParameterJdbcTemplate();
  
+ // The demo application (link provided at top) is easy to install and run where you can see above code in action.
+ 
  // See logging section for details to view the SQL
  
  // See troubleshooting section if you have issues.

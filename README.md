@@ -546,8 +546,9 @@ Uses the same logging configurations as Spring. In application.properties:
 
 1. @Id can only be mapped to a single database column.  Multi-column ids are not supported.
 2. No support for table/column names with spaces in them.
+3. Primitives not supported. Use the corresponding java wrapper classes in your mappings.
 
-Use JdbcTemplate/JdbcClient to handle these cases.
+Use JdbcTemplate/JdbcClient directly to handle these cases.
 
 ## Upgrading to 2.x from 1.x
 The 2.x release has removed the dependency on database table column meta-data for mapping totally.
@@ -555,6 +556,7 @@ The 2.x release has removed the dependency on database table column meta-data fo
 Difference from 1.x:  
 1. SimpleJdbcMapper 2.x tries to infer the correct SQL type from the Java types but some times it cannot. In these cases explicitly declaring the SQL type is a best practice to ensure correctness, improve performance, and correctly handle NULL values. See documentation on @Column(sqlType="somesqltype") and BLOB/CLOB mapping further above on how to figure out and set the SQL type value.
 2. Since 2.x does not use the database table column meta data, it cannot provide  detailed messages on what went wrong with a mapping. Mapping issues will surface through sql errors thrown, which is similar to what happens when using JdbcTemplate/JdbcClient directly.
+3. Primitives not supported. Use corresponding java wrapper classes in your mappings
 
 Generally the upgrade should be straight forward since API remains the same.  
 

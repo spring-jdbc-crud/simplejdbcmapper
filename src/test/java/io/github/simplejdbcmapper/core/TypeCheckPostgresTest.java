@@ -12,7 +12,9 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
+import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 
 import org.junit.jupiter.api.Assumptions;
@@ -232,6 +234,34 @@ class TypeCheckPostgresTest {
 		Integer cnt = sjm.delete(obj);
 
 		assertTrue(cnt > 0);
+	}
+
+	@Test
+	void findByPropertyValue_EnumValue_Test() {
+		TypeCheckPostgres iObj = new TypeCheckPostgres();
+		iObj.setStatus(StatusEnum.CLOSED);
+		sjm.insert(iObj);
+
+		List<TypeCheckPostgres> list = sjm.findByPropertyValue(TypeCheckPostgres.class, "status", StatusEnum.CLOSED);
+
+		assertTrue(list.size() > 0);
+	}
+
+	@Test
+	void findByPropertyValues_WithEnum_Test() {
+		StatusEnum[] statuses = { StatusEnum.OPEN, StatusEnum.CLOSED, null };
+		TypeCheckPostgres iObj = new TypeCheckPostgres();
+		iObj.setStatus(StatusEnum.CLOSED);
+		sjm.insert(iObj);
+
+		TypeCheckPostgres iObj2 = new TypeCheckPostgres();
+		iObj2.setStatus(StatusEnum.OPEN);
+		sjm.insert(iObj2);
+
+		List<TypeCheckPostgres> list = sjm.findByPropertyValues(TypeCheckPostgres.class, "status",
+				Arrays.asList(statuses));
+
+		assertTrue(list.size() >= 2);
 	}
 
 }

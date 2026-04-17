@@ -15,13 +15,13 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.util.NumberUtils;
-import org.springframework.util.ReflectionUtils;
 
 import io.github.simplejdbcmapper.exception.MapperException;
 
 /**
  * A lighter row mapper than Spring's BeanPropertyRowMapper since column to
- * property relationship is already available through TableMapping.
+ * property relationship is already available through TableMapping and avoids
+ * conversion it it can.
  * 
  * @param <T> the entityType
  */
@@ -29,6 +29,7 @@ class EntityRowMapper<T> implements RowMapper<T> {
 	private Class<T> mappedClass;
 	private TableMapping tableMapping;
 	private ConversionService conversionService;
+	private boolean resultSetTyped = true;
 
 	public EntityRowMapper(Class<T> entityType, TableMapping tableMapping, ConversionService conversionService) {
 		this.mappedClass = entityType;
@@ -46,7 +47,6 @@ class EntityRowMapper<T> implements RowMapper<T> {
 		}
 		BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(obj);
 		bw.setConversionService(conversionService);
-		boolean[] typedFlag = { false };
 		ResultSetMetaData rsmd = rs.getMetaData();
 		int columnCount = rsmd.getColumnCount();
 		for (int index = 1; index <= columnCount; index++) {
@@ -55,13 +55,12 @@ class EntityRowMapper<T> implements RowMapper<T> {
 			PropertyMapping propMapping = tableMapping.getPropertyMappingByColumnName(column);
 			if (propMapping != null) {
 				try {
-					// bw.setPropertyValue() is kind of expensive since it has to go through the
-					// conversion process and bunch of other logic. Call it only if needed
-					Object value = getResultSetValue(rs, index, propMapping.getPropertyType(), typedFlag);
-					if (typedFlag[0] || value == null) {
+					// bw.setPropertyValue() has to go through the conversion process and some other
+					// logic. Avoid it if we can
+					Object value = getResultSetValue(rs, index, propMapping.getPropertyType());
+					if (resultSetTyped || value == null) {
 						PropertyDescriptor pd = bw.getPropertyDescriptor(propMapping.getPropertyName());
 						Method writeMethod = pd.getWriteMethod();
-						ReflectionUtils.makeAccessible(writeMethod);
 						writeMethod.invoke(obj, value);
 					} else {
 						// getResultSetValue() could not extract a typed value so using bean wrapper to
@@ -77,12 +76,11 @@ class EntityRowMapper<T> implements RowMapper<T> {
 	}
 
 	/*
-	 * Copy of Springs JdbcUtils.ResultSetValue(). Only difference is it sets
-	 * typedFlag if it cannot explicitly extract typed value
+	 * Copy of Springs JdbcUtils.getResultSetValue(). The difference is it sets
+	 * resultSetTyped flag if it can explicitly extract typed value
 	 */
-	public Object getResultSetValue(ResultSet rs, int index, Class<?> requiredType, boolean[] typedFlag)
-			throws SQLException {
-		typedFlag[0] = true;
+	public Object getResultSetValue(ResultSet rs, int index, Class<?> requiredType) throws SQLException {
+		resultSetTyped = true;
 		// Explicitly extract typed value, as far as possible.
 		if (String.class == requiredType) {
 			return rs.getString(index);
@@ -115,7 +113,7 @@ class EntityRowMapper<T> implements RowMapper<T> {
 		} else if (Clob.class == requiredType) {
 			return rs.getClob(index);
 		} else if (requiredType.isEnum()) {
-			typedFlag[0] = false;
+			resultSetTyped = false;
 			// Enums can either be represented through a String or an enum index value:
 			// leave enum type conversion up to the caller (for example, a
 			// ConversionService)
@@ -132,11 +130,12 @@ class EntityRowMapper<T> implements RowMapper<T> {
 				return rs.getString(index);
 			}
 		} else {
-			typedFlag[0] = false;
+			resultSetTyped = false;
 			// Some unknown type desired -> rely on getObject.
 			try {
 				return rs.getObject(index, requiredType);
 			} catch (Exception ex) {
+				// jdbc driver has no support for this.
 			}
 
 			// Corresponding SQL types for JSR-310, left up to the caller to convert

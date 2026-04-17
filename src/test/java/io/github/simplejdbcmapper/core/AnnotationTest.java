@@ -27,6 +27,9 @@ import io.github.simplejdbcmapper.model.NoIdObject;
 import io.github.simplejdbcmapper.model.NoMatchingColumn;
 import io.github.simplejdbcmapper.model.NoMatchingColumn2;
 import io.github.simplejdbcmapper.model.NoTableAnnotationModel;
+import io.github.simplejdbcmapper.model.PersonWithColumnPrimitive;
+import io.github.simplejdbcmapper.model.PersonWithOtherPrimitive;
+import io.github.simplejdbcmapper.model.PersonWithPrimitiveId;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -161,6 +164,47 @@ class AnnotationTest {
 			sjm.findById(ModelWithVersionNotInteger.class, 1);
 		});
 		assertTrue(exception.getMessage().contains("to be Integer"));
+	}
+
+	@Test
+	void annotation_withIdPrimitive_Test() {
+		PersonWithPrimitiveId person = new PersonWithPrimitiveId();
+		person.setLastName("john");
+		person.setFirstName("doe");
+
+		Exception exception = Assertions.assertThrows(AnnotationException.class, () -> {
+			sjm.insert(person);
+		});
+
+		assertTrue(exception.getMessage().contains("is a primitive. Mapper does not support primitive types."));
+	}
+
+	@Test
+	void annotation_withColumnPrimitive_Test() {
+		PersonWithColumnPrimitive person = new PersonWithColumnPrimitive();
+		person.setLastName("john");
+		person.setFirstName("doe");
+		person.setBoolProperty(false);
+
+		Exception exception = Assertions.assertThrows(AnnotationException.class, () -> {
+			sjm.insert(person);
+		});
+
+		assertTrue(exception.getMessage().contains("is a primitive. Mapper does not support primitive types."));
+	}
+
+	@Test
+	void annotation_withOtherPrimitive_Test() {
+		PersonWithOtherPrimitive person = new PersonWithOtherPrimitive();
+		person.setLastName("john");
+		person.setFirstName("doe");
+		person.setCreatedBy(1);
+
+		Exception exception = Assertions.assertThrows(AnnotationException.class, () -> {
+			sjm.insert(person);
+		});
+
+		assertTrue(exception.getMessage().contains("is a primitive. Mapper does not support primitive types."));
 	}
 
 }

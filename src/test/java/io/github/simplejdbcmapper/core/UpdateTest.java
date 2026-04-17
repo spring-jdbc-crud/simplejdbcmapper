@@ -15,13 +15,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import io.github.simplejdbcmapper.exception.AnnotationException;
 import io.github.simplejdbcmapper.exception.MapperException;
 import io.github.simplejdbcmapper.exception.OptimisticLockingException;
 import io.github.simplejdbcmapper.model.Customer;
 import io.github.simplejdbcmapper.model.Order;
 import io.github.simplejdbcmapper.model.Person;
-import io.github.simplejdbcmapper.model.PersonWithPrimitiveId;
 import io.github.simplejdbcmapper.model.Product;
 import io.github.simplejdbcmapper.model.ProductWithNoAuditFields;
 
@@ -98,20 +96,6 @@ class UpdateTest {
 		Person person1 = sjm.findById(Person.class, "person101");
 
 		assertEquals("new name", person1.getLastName());
-	}
-
-	@Test
-	void insert_withIdPrimitiveFailure_Test() {
-		// id is int. insert should fail.
-		PersonWithPrimitiveId person = new PersonWithPrimitiveId();
-		person.setLastName("john");
-		person.setFirstName("doe");
-
-		Exception exception = Assertions.assertThrows(AnnotationException.class, () -> {
-			sjm.insert(person);
-		});
-
-		assertTrue(exception.getMessage().contains("is an id and cannot be a primitive type"));
 	}
 
 	@Test

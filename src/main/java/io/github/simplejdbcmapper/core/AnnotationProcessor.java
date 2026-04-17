@@ -114,8 +114,8 @@ class AnnotationProcessor {
 	private void annotationPrimitiveCheck(List<PropertyMapping> propertyMappings, Class<?> entityType) {
 		for (PropertyMapping propMapping : propertyMappings) {
 			if (propMapping.getPropertyType().isPrimitive()) {
-				throw new AnnotationException(entityType.getSimpleName() + "." + propMapping.getPropertyType()
-						+ " is a primitive. Mapper does not support primitive types. Use the corresponding wrapper type.");
+				throw new AnnotationException(entityType.getSimpleName() + "." + propMapping.getPropertyName()
+						+ " is a primitive. Mapper does not support primitive types. Use the corresponding java wrapper type.");
 			}
 		}
 	}

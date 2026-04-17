@@ -25,6 +25,8 @@ import io.github.simplejdbcmapper.model.Order;
 import io.github.simplejdbcmapper.model.OrderLine;
 import io.github.simplejdbcmapper.model.PersonView;
 import io.github.simplejdbcmapper.model.Product;
+import io.github.simplejdbcmapper.model.StatusEnum;
+import io.github.simplejdbcmapper.model.TypeCheckPostgres;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -143,6 +145,17 @@ class FindTest {
 	}
 
 	@Test
+	void findByPropertyValue_EnumValue_Test() {
+		TypeCheckPostgres iObj = new TypeCheckPostgres();
+		iObj.setStatus(StatusEnum.CLOSED);
+		sjm.insert(iObj);
+
+		List<TypeCheckPostgres> list = sjm.findByPropertyValue(TypeCheckPostgres.class, "status", StatusEnum.CLOSED);
+
+		assertTrue(list.size() > 0);
+	}
+
+	@Test
 	void findByPropertyValue_OrderBy_success_Test() {
 		List<OrderLine> orderLines = sjm.findByPropertyValue(OrderLine.class, "orderId", 1, new SortBy("productId"));
 		assertEquals(2, orderLines.size());
@@ -196,6 +209,23 @@ class FindTest {
 		Integer[] orderIds = { 1, 2, 3 };
 		List<Order> orders = sjm.findByPropertyValues(Order.class, "orderId", Arrays.asList(orderIds));
 		assertEquals(3, orders.size());
+	}
+
+	@Test
+	void findByPropertyValues_WithEnum_Test() {
+		StatusEnum[] statuses = { StatusEnum.OPEN, StatusEnum.CLOSED };
+		TypeCheckPostgres iObj = new TypeCheckPostgres();
+		iObj.setStatus(StatusEnum.CLOSED);
+		sjm.insert(iObj);
+
+		TypeCheckPostgres iObj2 = new TypeCheckPostgres();
+		iObj2.setStatus(StatusEnum.OPEN);
+		sjm.insert(iObj2);
+
+		List<TypeCheckPostgres> list = sjm.findByPropertyValues(TypeCheckPostgres.class, "status",
+				Arrays.asList(statuses));
+
+		assertTrue(list.size() >= 2);
 	}
 
 	@Test

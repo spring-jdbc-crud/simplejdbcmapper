@@ -44,7 +44,7 @@ class FindOperation {
 		T obj = null;
 		try {
 			obj = sjmSupport.getJdbcTemplate().queryForObject(sql, getEntityRowMapper(entityType, tableMapping),
-					new SqlParameterValue(tableMapping.getIdPropertyMapping().getEffectiveSqlType(), id));
+					new SqlParameterValue(tableMapping.getIdPropertyMapping().getEffectiveSqlType(), getValue(id)));
 		} catch (EmptyResultDataAccessException e) {
 			// do nothing
 		}
@@ -83,7 +83,7 @@ class FindOperation {
 			return sjmSupport.getJdbcTemplate().query(sql.toString(), getEntityRowMapper(entityType, tableMapping));
 		} else {
 			return sjmSupport.getJdbcTemplate().query(sql.toString(), getEntityRowMapper(entityType, tableMapping),
-					new SqlParameterValue(propMapping.getEffectiveSqlType(), propertyValue));
+					new SqlParameterValue(propMapping.getEffectiveSqlType(), getValue(propertyValue)));
 		}
 	}
 
@@ -117,8 +117,9 @@ class FindOperation {
 		if (ObjectUtils.isEmpty(localPropertyValues)) {
 			return sjmSupport.getJdbcTemplate().query(sql.toString(), getEntityRowMapper(entityType, tableMapping));
 		} else {
+			Set<?> values = getValues(localPropertyValues);
 			MapSqlParameterSource param = new MapSqlParameterSource();
-			param.addValue("propertyValues", localPropertyValues, propMapping.getEffectiveSqlType());
+			param.addValue("propertyValues", values, propMapping.getEffectiveSqlType());
 			return sjmSupport.getNamedParameterJdbcTemplate().query(sql.toString(), param,
 					getEntityRowMapper(entityType, tableMapping));
 		}
@@ -217,4 +218,24 @@ class FindOperation {
 			return "";
 		}
 	}
+
+	private Object getValue(Object obj) {
+		if (obj != null && obj.getClass().isEnum()) {
+			return ((Enum<?>) obj).name();
+		}
+		return obj;
+	}
+
+	private Set<?> getValues(Set<?> set) {
+		Object obj = set.iterator().next();
+		if (obj != null && obj.getClass().isEnum()) {
+			Set<String> values = new LinkedHashSet<>();
+			for (Object val : set) {
+				values.add(((Enum<?>) val).name());
+			}
+			return values;
+		}
+		return set;
+	}
+
 }

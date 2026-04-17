@@ -1,5 +1,10 @@
 package io.github.simplejdbcmapper.core;
 
+import java.beans.PropertyDescriptor;
+import java.lang.reflect.Method;
+import java.math.BigDecimal;
+import java.sql.Blob;
+import java.sql.Clob;
 import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
@@ -9,6 +14,8 @@ import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.JdbcUtils;
+import org.springframework.util.NumberUtils;
+import org.springframework.util.ReflectionUtils;
 
 import io.github.simplejdbcmapper.exception.MapperException;
 
@@ -39,6 +46,7 @@ class EntityRowMapper<T> implements RowMapper<T> {
 		}
 		BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(obj);
 		bw.setConversionService(conversionService);
+		boolean[] typedFlag = { false };
 		ResultSetMetaData rsmd = rs.getMetaData();
 		int columnCount = rsmd.getColumnCount();
 		for (int index = 1; index <= columnCount; index++) {
@@ -47,8 +55,19 @@ class EntityRowMapper<T> implements RowMapper<T> {
 			PropertyMapping propMapping = tableMapping.getPropertyMappingByColumnName(column);
 			if (propMapping != null) {
 				try {
-					Object value = JdbcUtils.getResultSetValue(rs, index, propMapping.getPropertyType());
-					bw.setPropertyValue(propMapping.getPropertyName(), value);
+					// bw.setPropertyValue() is kind of expensive since it has to go through the
+					// conversion process and bunch of other logic. Call it only if needed
+					Object value = getResultSetValue(rs, index, propMapping.getPropertyType(), typedFlag);
+					if (typedFlag[0] || value == null) {
+						PropertyDescriptor pd = bw.getPropertyDescriptor(propMapping.getPropertyName());
+						Method writeMethod = pd.getWriteMethod();
+						ReflectionUtils.makeAccessible(writeMethod);
+						writeMethod.invoke(obj, value);
+					} else {
+						// getResultSetValue() could not extract a typed value so using bean wrapper to
+						// go through the conversion process
+						bw.setPropertyValue(propMapping.getPropertyName(), value);
+					}
 				} catch (Exception ex) {
 					throw new MapperException(ex);
 				}
@@ -56,4 +75,82 @@ class EntityRowMapper<T> implements RowMapper<T> {
 		}
 		return obj;
 	}
+
+	/*
+	 * Copy of Springs JdbcUtils.ResultSetValue(). Only difference is it sets
+	 * typedFlag if it cannot explicitly extract typed value
+	 */
+	public Object getResultSetValue(ResultSet rs, int index, Class<?> requiredType, boolean[] typedFlag)
+			throws SQLException {
+		typedFlag[0] = true;
+		// Explicitly extract typed value, as far as possible.
+		if (String.class == requiredType) {
+			return rs.getString(index);
+		} else if (Boolean.class == requiredType) {
+			return rs.getBoolean(index);
+		} else if (Byte.class == requiredType) {
+			return rs.getByte(index);
+		} else if (Short.class == requiredType) {
+			return rs.getShort(index);
+		} else if (Integer.class == requiredType) {
+			return rs.getInt(index);
+		} else if (Long.class == requiredType) {
+			return rs.getLong(index);
+		} else if (Float.class == requiredType) {
+			return rs.getFloat(index);
+		} else if (Double.class == requiredType || Number.class == requiredType) {
+			return rs.getDouble(index);
+		} else if (BigDecimal.class == requiredType) {
+			return rs.getBigDecimal(index);
+		} else if (java.sql.Date.class == requiredType) {
+			return rs.getDate(index);
+		} else if (java.sql.Time.class == requiredType) {
+			return rs.getTime(index);
+		} else if (java.sql.Timestamp.class == requiredType || java.util.Date.class == requiredType) {
+			return rs.getTimestamp(index);
+		} else if (byte[].class == requiredType) {
+			return rs.getBytes(index);
+		} else if (Blob.class == requiredType) {
+			return rs.getBlob(index);
+		} else if (Clob.class == requiredType) {
+			return rs.getClob(index);
+		} else if (requiredType.isEnum()) {
+			typedFlag[0] = false;
+			// Enums can either be represented through a String or an enum index value:
+			// leave enum type conversion up to the caller (for example, a
+			// ConversionService)
+			// but make sure that we return nothing other than a String or an Integer.
+			Object obj = rs.getObject(index);
+			if (obj instanceof String) {
+				return obj;
+			} else if (obj instanceof Number number) {
+				// Defensively convert any Number to an Integer (as needed by our
+				// ConversionService's IntegerToEnumConverterFactory) for use as index
+				return NumberUtils.convertNumberToTargetClass(number, Integer.class);
+			} else {
+				// for example, on Postgres: getObject returns a PGObject, but we need a String
+				return rs.getString(index);
+			}
+		} else {
+			typedFlag[0] = false;
+			// Some unknown type desired -> rely on getObject.
+			try {
+				return rs.getObject(index, requiredType);
+			} catch (Exception ex) {
+			}
+
+			// Corresponding SQL types for JSR-310, left up to the caller to convert
+			// them (for example, through a ConversionService).
+			String typeName = requiredType.getSimpleName();
+			return switch (typeName) {
+			case "LocalDate" -> rs.getDate(index);
+			case "LocalTime" -> rs.getTime(index);
+			case "LocalDateTime" -> rs.getTimestamp(index);
+			// Fall back to getObject without type specification, again
+			// left up to the caller to convert the value if necessary.
+			default -> JdbcUtils.getResultSetValue(rs, index);
+			};
+		}
+	}
+
 }

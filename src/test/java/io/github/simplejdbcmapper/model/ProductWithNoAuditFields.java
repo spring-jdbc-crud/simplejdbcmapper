@@ -30,7 +30,7 @@ public class ProductWithNoAuditFields {
 	private String updatedBy;
 
 	@Column
-	private int version;
+	private Integer version;
 
 	public Integer getProductId() {
 		return productId;
@@ -88,11 +88,11 @@ public class ProductWithNoAuditFields {
 		this.updatedBy = updatedBy;
 	}
 
-	public int getVersion() {
+	public Integer getVersion() {
 		return version;
 	}
 
-	public void setVersion(int version) {
+	public void setVersion(Integer version) {
 		this.version = version;
 	}
 }

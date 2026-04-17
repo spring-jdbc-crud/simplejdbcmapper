@@ -15,7 +15,7 @@ simplejdbcmapper,io.github.simplejdbcmapper.core,SimpleJdbcMapperUtils,0,199,7,3
 simplejdbcmapper,io.github.simplejdbcmapper.core,SimpleJdbcMapperSupport,7,143,0,6,3,41,2,19,2,16
 simplejdbcmapper,io.github.simplejdbcmapper.core,IdPropertyInfo,5,22,1,1,1,8,1,3,0,3
 simplejdbcmapper,io.github.simplejdbcmapper.core,SimpleJdbcMapper,0,164,0,0,0,37,0,24,0,24
-simplejdbcmapper,io.github.simplejdbcmapper.core,FindOperation,0,651,0,42,0,127,0,34,0,13
+simplejdbcmapper,io.github.simplejdbcmapper.core,FindOperation,0,705,1,51,0,139,1,40,0,15
 simplejdbcmapper,io.github.simplejdbcmapper.exception,OptimisticLockingException,0,4,0,0,0,2,0,1,0,1
 simplejdbcmapper,io.github.simplejdbcmapper.exception,MapperException,9,4,0,0,4,2,2,1,2,1
 simplejdbcmapper,io.github.simplejdbcmapper.exception,AnnotationException,0,4,0,0,0,2,0,1,0,1

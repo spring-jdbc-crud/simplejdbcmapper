@@ -44,7 +44,7 @@ class FindOperation {
 <span class="fc" id="L44">		T obj = null;</span>
 		try {
 <span class="fc" id="L46">			obj = sjmSupport.getJdbcTemplate().queryForObject(sql, getEntityRowMapper(entityType, tableMapping),</span>
-<span class="fc" id="L47">					new SqlParameterValue(tableMapping.getIdPropertyMapping().getEffectiveSqlType(), id));</span>
+<span class="fc" id="L47">					new SqlParameterValue(tableMapping.getIdPropertyMapping().getEffectiveSqlType(), getValue(id)));</span>
 <span class="fc" id="L48">		} catch (EmptyResultDataAccessException e) {</span>
 			// do nothing
 <span class="fc" id="L50">		}</span>
@@ -83,7 +83,7 @@ class FindOperation {
 <span class="fc" id="L83">			return sjmSupport.getJdbcTemplate().query(sql.toString(), getEntityRowMapper(entityType, tableMapping));</span>
 		} else {
 <span class="fc" id="L85">			return sjmSupport.getJdbcTemplate().query(sql.toString(), getEntityRowMapper(entityType, tableMapping),</span>
-<span class="fc" id="L86">					new SqlParameterValue(propMapping.getEffectiveSqlType(), propertyValue));</span>
+<span class="fc" id="L86">					new SqlParameterValue(propMapping.getEffectiveSqlType(), getValue(propertyValue)));</span>
 		}
 	}
 
@@ -117,105 +117,126 @@ class FindOperation {
 <span class="fc bfc" id="L117" title="All 2 branches covered.">		if (ObjectUtils.isEmpty(localPropertyValues)) {</span>
 <span class="fc" id="L118">			return sjmSupport.getJdbcTemplate().query(sql.toString(), getEntityRowMapper(entityType, tableMapping));</span>
 		} else {
-<span class="fc" id="L120">			MapSqlParameterSource param = new MapSqlParameterSource();</span>
-<span class="fc" id="L121">			param.addValue(&quot;propertyValues&quot;, localPropertyValues, propMapping.getEffectiveSqlType());</span>
-<span class="fc" id="L122">			return sjmSupport.getNamedParameterJdbcTemplate().query(sql.toString(), param,</span>
-<span class="fc" id="L123">					getEntityRowMapper(entityType, tableMapping));</span>
+<span class="fc" id="L120">			Set&lt;?&gt; values = getValues(localPropertyValues);</span>
+<span class="fc" id="L121">			MapSqlParameterSource param = new MapSqlParameterSource();</span>
+<span class="fc" id="L122">			param.addValue(&quot;propertyValues&quot;, values, propMapping.getEffectiveSqlType());</span>
+<span class="fc" id="L123">			return sjmSupport.getNamedParameterJdbcTemplate().query(sql.toString(), param,</span>
+<span class="fc" id="L124">					getEntityRowMapper(entityType, tableMapping));</span>
 		}
 	}
 
 	public String getBeanFriendlySqlColumns(Class&lt;?&gt; entityType) {
-<span class="fc" id="L128">		Assert.notNull(entityType, &quot;entityType must not be null&quot;);</span>
-<span class="fc" id="L129">		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);</span>
-<span class="fc" id="L130">		StringJoiner sj = new StringJoiner(&quot;, &quot;, &quot; &quot;, &quot; &quot;);</span>
-<span class="fc bfc" id="L131" title="All 2 branches covered.">		for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {</span>
-<span class="fc" id="L132">			String underscorePropertyName = InternalUtils.toUnderscoreName(propMapping.getPropertyName());</span>
-<span class="fc bfc" id="L133" title="All 2 branches covered.">			if (underscorePropertyName.equals(propMapping.getColumnName())) {</span>
-<span class="fc" id="L134">				sj.add(propMapping.getColumnName());</span>
+<span class="fc" id="L129">		Assert.notNull(entityType, &quot;entityType must not be null&quot;);</span>
+<span class="fc" id="L130">		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);</span>
+<span class="fc" id="L131">		StringJoiner sj = new StringJoiner(&quot;, &quot;, &quot; &quot;, &quot; &quot;);</span>
+<span class="fc bfc" id="L132" title="All 2 branches covered.">		for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {</span>
+<span class="fc" id="L133">			String underscorePropertyName = InternalUtils.toUnderscoreName(propMapping.getPropertyName());</span>
+<span class="fc bfc" id="L134" title="All 2 branches covered.">			if (underscorePropertyName.equals(propMapping.getColumnName())) {</span>
+<span class="fc" id="L135">				sj.add(propMapping.getColumnName());</span>
 			} else {
-<span class="fc" id="L136">				sj.add(propMapping.getColumnName() + &quot; AS &quot; + underscorePropertyName);</span>
+<span class="fc" id="L137">				sj.add(propMapping.getColumnName() + &quot; AS &quot; + underscorePropertyName);</span>
 			}
-<span class="fc" id="L138">		}</span>
-<span class="fc" id="L139">		return sj.toString();</span>
+<span class="fc" id="L139">		}</span>
+<span class="fc" id="L140">		return sj.toString();</span>
 	}
 
 	public String getBeanFriendlySqlColumns(Class&lt;?&gt; entityType, String tableAlias) {
-<span class="fc" id="L143">		Assert.notNull(entityType, &quot;entityType must not be null&quot;);</span>
-<span class="fc bfc" id="L144" title="All 2 branches covered.">		if (!StringUtils.hasText(tableAlias)) {</span>
-<span class="fc" id="L145">			throw new IllegalArgumentException(&quot;tableAlias has no value&quot;);</span>
+<span class="fc" id="L144">		Assert.notNull(entityType, &quot;entityType must not be null&quot;);</span>
+<span class="fc bfc" id="L145" title="All 2 branches covered.">		if (!StringUtils.hasText(tableAlias)) {</span>
+<span class="fc" id="L146">			throw new IllegalArgumentException(&quot;tableAlias has no value&quot;);</span>
 		}
-<span class="fc" id="L147">		String tablePrefix = tableAlias + &quot;.&quot;;</span>
-<span class="fc" id="L148">		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);</span>
-<span class="fc" id="L149">		StringJoiner sj = new StringJoiner(&quot;, &quot;, &quot; &quot;, &quot; &quot;);</span>
-<span class="fc bfc" id="L150" title="All 2 branches covered.">		for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {</span>
-<span class="fc" id="L151">			String underscorePropertyName = InternalUtils.toUnderscoreName(propMapping.getPropertyName());</span>
-<span class="fc bfc" id="L152" title="All 2 branches covered.">			if (underscorePropertyName.equals(propMapping.getColumnName())) {</span>
-<span class="fc" id="L153">				sj.add(tablePrefix + propMapping.getColumnName());</span>
+<span class="fc" id="L148">		String tablePrefix = tableAlias + &quot;.&quot;;</span>
+<span class="fc" id="L149">		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);</span>
+<span class="fc" id="L150">		StringJoiner sj = new StringJoiner(&quot;, &quot;, &quot; &quot;, &quot; &quot;);</span>
+<span class="fc bfc" id="L151" title="All 2 branches covered.">		for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {</span>
+<span class="fc" id="L152">			String underscorePropertyName = InternalUtils.toUnderscoreName(propMapping.getPropertyName());</span>
+<span class="fc bfc" id="L153" title="All 2 branches covered.">			if (underscorePropertyName.equals(propMapping.getColumnName())) {</span>
+<span class="fc" id="L154">				sj.add(tablePrefix + propMapping.getColumnName());</span>
 			} else {
-<span class="fc" id="L155">				sj.add(tablePrefix + propMapping.getColumnName() + &quot; AS &quot; + underscorePropertyName);</span>
+<span class="fc" id="L156">				sj.add(tablePrefix + propMapping.getColumnName() + &quot; AS &quot; + underscorePropertyName);</span>
 			}
-<span class="fc" id="L157">		}</span>
-<span class="fc" id="L158">		return sj.toString();</span>
+<span class="fc" id="L158">		}</span>
+<span class="fc" id="L159">		return sj.toString();</span>
 	}
 
 	public Map&lt;String, String&gt; getPropertyToColumnMappings(Class&lt;?&gt; entityType) {
-<span class="fc" id="L162">		Assert.notNull(entityType, &quot;entityType must not be null&quot;);</span>
-<span class="fc" id="L163">		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);</span>
-<span class="fc" id="L164">		Map&lt;String, String&gt; map = new LinkedHashMap&lt;&gt;();</span>
-<span class="fc bfc" id="L165" title="All 2 branches covered.">		for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {</span>
-<span class="fc" id="L166">			map.put(propMapping.getPropertyName(), propMapping.getColumnName());</span>
-<span class="fc" id="L167">		}</span>
-<span class="fc" id="L168">		return map;</span>
+<span class="fc" id="L163">		Assert.notNull(entityType, &quot;entityType must not be null&quot;);</span>
+<span class="fc" id="L164">		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);</span>
+<span class="fc" id="L165">		Map&lt;String, String&gt; map = new LinkedHashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L166" title="All 2 branches covered.">		for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {</span>
+<span class="fc" id="L167">			map.put(propMapping.getPropertyName(), propMapping.getColumnName());</span>
+<span class="fc" id="L168">		}</span>
+<span class="fc" id="L169">		return map;</span>
 	}
 
 	SimpleCache&lt;String, String&gt; getFindByIdSqlCache() {
-<span class="fc" id="L172">		return findByIdSqlCache;</span>
+<span class="fc" id="L173">		return findByIdSqlCache;</span>
 	}
 
 	SimpleCache&lt;String, String&gt; getRawColumnsSqlCache() {
-<span class="fc" id="L176">		return rawColumnsSqlCache;</span>
+<span class="fc" id="L177">		return rawColumnsSqlCache;</span>
 	}
 
 	String getRawSqlColumns(Class&lt;?&gt; entityType) {
-<span class="fc" id="L180">		Assert.notNull(entityType, &quot;entityType must not be null&quot;);</span>
-<span class="fc" id="L181">		String columnsSql = rawColumnsSqlCache.get(entityType.getName());</span>
-<span class="fc bfc" id="L182" title="All 2 branches covered.">		if (columnsSql == null) {</span>
-<span class="fc" id="L183">			TableMapping tableMapping = sjmSupport.getTableMapping(entityType);</span>
-<span class="fc" id="L184">			StringJoiner sj = new StringJoiner(&quot;, &quot;, &quot; &quot;, &quot; &quot;);</span>
-<span class="fc bfc" id="L185" title="All 2 branches covered.">			for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {</span>
-<span class="fc" id="L186">				sj.add(propMapping.getColumnName());</span>
-<span class="fc" id="L187">			}</span>
-<span class="fc" id="L188">			columnsSql = sj.toString();</span>
-<span class="fc" id="L189">			rawColumnsSqlCache.put(entityType.getName(), columnsSql);</span>
+<span class="fc" id="L181">		Assert.notNull(entityType, &quot;entityType must not be null&quot;);</span>
+<span class="fc" id="L182">		String columnsSql = rawColumnsSqlCache.get(entityType.getName());</span>
+<span class="fc bfc" id="L183" title="All 2 branches covered.">		if (columnsSql == null) {</span>
+<span class="fc" id="L184">			TableMapping tableMapping = sjmSupport.getTableMapping(entityType);</span>
+<span class="fc" id="L185">			StringJoiner sj = new StringJoiner(&quot;, &quot;, &quot; &quot;, &quot; &quot;);</span>
+<span class="fc bfc" id="L186" title="All 2 branches covered.">			for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {</span>
+<span class="fc" id="L187">				sj.add(propMapping.getColumnName());</span>
+<span class="fc" id="L188">			}</span>
+<span class="fc" id="L189">			columnsSql = sj.toString();</span>
+<span class="fc" id="L190">			rawColumnsSqlCache.put(entityType.getName(), columnsSql);</span>
 		}
-<span class="fc" id="L191">		return columnsSql;</span>
+<span class="fc" id="L192">		return columnsSql;</span>
 	}
 
 	private &lt;T&gt; EntityRowMapper&lt;T&gt; getEntityRowMapper(Class&lt;T&gt; entityType, TableMapping tableMapping) {
-<span class="fc" id="L195">		return new EntityRowMapper&lt;&gt;(entityType, tableMapping, sjmSupport.getConversionService());</span>
+<span class="fc" id="L196">		return new EntityRowMapper&lt;&gt;(entityType, tableMapping, sjmSupport.getConversionService());</span>
 	}
 
 	private String orderByClause(Class&lt;?&gt; entityType, SortBy[] sortByArray, TableMapping tableMapping) {
-<span class="fc bfc" id="L199" title="All 2 branches covered.">		if (sortByArray.length &gt; 0) {</span>
-<span class="fc" id="L200">			StringBuilder clause = new StringBuilder(64);</span>
-<span class="fc" id="L201">			clause.append(&quot; ORDER BY &quot;);</span>
-<span class="fc" id="L202">			int cnt = 0;</span>
-<span class="fc bfc" id="L203" title="All 2 branches covered.">			for (SortBy sortBy : sortByArray) {</span>
-<span class="fc" id="L204">				PropertyMapping propMapping = tableMapping.getPropertyMappingByPropertyName(sortBy.getPropertyName());</span>
-<span class="fc bfc" id="L205" title="All 2 branches covered.">				if (propMapping == null) {</span>
-<span class="fc" id="L206">					throw new IllegalArgumentException(</span>
-<span class="fc" id="L207">							sortBy.getPropertyName() + &quot; is not a mapped property for class &quot; + entityType.getName());</span>
+<span class="fc bfc" id="L200" title="All 2 branches covered.">		if (sortByArray.length &gt; 0) {</span>
+<span class="fc" id="L201">			StringBuilder clause = new StringBuilder(64);</span>
+<span class="fc" id="L202">			clause.append(&quot; ORDER BY &quot;);</span>
+<span class="fc" id="L203">			int cnt = 0;</span>
+<span class="fc bfc" id="L204" title="All 2 branches covered.">			for (SortBy sortBy : sortByArray) {</span>
+<span class="fc" id="L205">				PropertyMapping propMapping = tableMapping.getPropertyMappingByPropertyName(sortBy.getPropertyName());</span>
+<span class="fc bfc" id="L206" title="All 2 branches covered.">				if (propMapping == null) {</span>
+<span class="fc" id="L207">					throw new IllegalArgumentException(</span>
+<span class="fc" id="L208">							sortBy.getPropertyName() + &quot; is not a mapped property for class &quot; + entityType.getName());</span>
 				}
-<span class="fc bfc" id="L209" title="All 2 branches covered.">				if (cnt &gt; 0) {</span>
-<span class="fc" id="L210">					clause.append(&quot;, &quot;);</span>
+<span class="fc bfc" id="L210" title="All 2 branches covered.">				if (cnt &gt; 0) {</span>
+<span class="fc" id="L211">					clause.append(&quot;, &quot;);</span>
 				}
-<span class="fc" id="L212">				clause.append(propMapping.getColumnName()).append(&quot; &quot;).append(sortBy.getDirection());</span>
-<span class="fc" id="L213">				cnt++;</span>
+<span class="fc" id="L213">				clause.append(propMapping.getColumnName()).append(&quot; &quot;).append(sortBy.getDirection());</span>
+<span class="fc" id="L214">				cnt++;</span>
 			}
-<span class="fc" id="L215">			return clause.toString();</span>
+<span class="fc" id="L216">			return clause.toString();</span>
 		} else {
-<span class="fc" id="L217">			return &quot;&quot;;</span>
+<span class="fc" id="L218">			return &quot;&quot;;</span>
 		}
 	}
+
+	private Object getValue(Object obj) {
+<span class="fc bfc" id="L223" title="All 4 branches covered.">		if (obj != null &amp;&amp; obj.getClass().isEnum()) {</span>
+<span class="fc" id="L224">			return ((Enum&lt;?&gt;) obj).name();</span>
+		}
+<span class="fc" id="L226">		return obj;</span>
+	}
+
+	private Set&lt;?&gt; getValues(Set&lt;?&gt; set) {
+<span class="fc" id="L230">		Object obj = set.iterator().next();</span>
+<span class="pc bpc" id="L231" title="1 of 4 branches missed.">		if (obj != null &amp;&amp; obj.getClass().isEnum()) {</span>
+<span class="fc" id="L232">			Set&lt;String&gt; values = new LinkedHashSet&lt;&gt;();</span>
+<span class="fc bfc" id="L233" title="All 2 branches covered.">			for (Object val : set) {</span>
+<span class="fc" id="L234">				values.add(((Enum&lt;?&gt;) val).name());</span>
+<span class="fc" id="L235">			}</span>
+<span class="fc" id="L236">			return values;</span>
+		}
+<span class="fc" id="L238">		return set;</span>
+	}
+
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main b943c459592b708a473cf310cc860c08a67e9d3d 2026-04-17T21:15:29</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main b3bf53ff7eb85f084d32f944c35b6a2e091cba9d 2026-04-17T22:57:32</div></body></html>

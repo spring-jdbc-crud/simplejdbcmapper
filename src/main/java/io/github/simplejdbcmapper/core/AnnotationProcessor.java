@@ -75,6 +75,7 @@ class AnnotationProcessor {
 	}
 
 	void validateAnnotations(List<PropertyMapping> propertyMappings, Class<?> type) {
+		annotationPrimitiveCheck(propertyMappings, type);
 		annotationDuplicateCheck(propertyMappings, type);
 		annotationConflictCheck(propertyMappings, type);
 		annotationVersionTypeCheck(propertyMappings, type);
@@ -107,6 +108,15 @@ class AnnotationProcessor {
 		if (!StringUtils.hasText(tableAnnotation.name())) {
 			throw new AnnotationException(
 					"For " + entityType.getSimpleName() + " the @Table annotation has a blank name");
+		}
+	}
+
+	private void annotationPrimitiveCheck(List<PropertyMapping> propertyMappings, Class<?> entityType) {
+		for (PropertyMapping propMapping : propertyMappings) {
+			if (propMapping.getPropertyType().isPrimitive()) {
+				throw new AnnotationException(entityType.getSimpleName() + "." + propMapping.getPropertyName()
+						+ " is a primitive. Mapper does not support primitive types. Use the corresponding java wrapper type.");
+			}
 		}
 	}
 

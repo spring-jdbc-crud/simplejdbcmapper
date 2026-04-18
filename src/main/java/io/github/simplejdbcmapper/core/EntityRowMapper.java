@@ -23,6 +23,9 @@ import io.github.simplejdbcmapper.exception.MapperException;
  * property relationship is already available through TableMapping and avoids
  * conversion if it can.
  * 
+ * <p>
+ * A new instance needs to be created per each use
+ * 
  * @param <T> the entityType
  */
 class EntityRowMapper<T> implements RowMapper<T> {

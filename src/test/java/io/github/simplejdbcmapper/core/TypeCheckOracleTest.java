@@ -74,11 +74,11 @@ class TypeCheckOracleTest {
 		var offsetVal = OffsetDateTime.now();
 		iObj.setOffsetDateTimeData(offsetVal);
 
-		iObj.setClobData("123456789".toCharArray());
+		iObj.setClobData("123456789");
 
 		iObj.setClobDataStr("123456789");
 
-		iObj.setNclobData("nclob123456789".toCharArray());
+		iObj.setNclobData("nclob123456789");
 
 		sjm.insert(iObj);
 
@@ -180,9 +180,9 @@ class TypeCheckOracleTest {
 		var offsetVal = OffsetDateTime.now();
 		uObj.setOffsetDateTimeData(offsetVal);
 
-		uObj.setClobData("123456789".toCharArray());
+		uObj.setClobData("123456789");
 		uObj.setClobDataStr("123456789");
-		uObj.setNclobData("nclob123456789".toCharArray());
+		uObj.setNclobData("nclob123456789");
 
 		sjm.update(uObj);
 

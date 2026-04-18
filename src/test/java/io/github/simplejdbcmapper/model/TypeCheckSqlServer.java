@@ -41,7 +41,7 @@ public class TypeCheckSqlServer {
 	private byte[] image;
 
 	@Column(sqlType = Types.CLOB)
-	private char[] clobData;
+	private String clobData;
 
 	@Column(sqlType = microsoft.sql.Types.DATETIMEOFFSET)
 	DateTimeOffset offsetDateTimeData;
@@ -110,11 +110,11 @@ public class TypeCheckSqlServer {
 		this.image = image;
 	}
 
-	public char[] getClobData() {
+	public String getClobData() {
 		return clobData;
 	}
 
-	public void setClobData(char[] clobData) {
+	public void setClobData(String clobData) {
 		this.clobData = clobData;
 	}
 

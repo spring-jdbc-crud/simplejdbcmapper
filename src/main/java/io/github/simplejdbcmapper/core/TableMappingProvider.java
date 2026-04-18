@@ -1,6 +1,8 @@
 package io.github.simplejdbcmapper.core;
 
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -9,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
@@ -72,6 +75,7 @@ class TableMappingProvider {
 		}
 		List<PropertyMapping> propertyMappings = new ArrayList<>(propNameToPropertyMapping.values());
 		ap.validateAnnotations(propertyMappings, entityType);
+		assignReflectionReadWriteMethods(entityType, propertyMappings);
 		return propertyMappings;
 	}
 
@@ -86,6 +90,19 @@ class TableMappingProvider {
 		// by name
 		Set<String> set = new HashSet<>();
 		return fields.stream().filter(p -> set.add(p.getName())).toList();
+	}
+
+	private void assignReflectionReadWriteMethods(Class<?> entityType, List<PropertyMapping> propertyMappings) {
+		BeanWrapperImpl bw = new BeanWrapperImpl(entityType);
+		for (PropertyMapping propMapping : propertyMappings) {
+			PropertyDescriptor pd = bw.getPropertyDescriptor(propMapping.getPropertyName());
+			Method writeMethod = pd.getWriteMethod();
+			writeMethod.setAccessible(true);
+			propMapping.setWriteMethod(writeMethod);
+			Method readMethod = pd.getReadMethod();
+			readMethod.setAccessible(true);
+			propMapping.setReadMethod(readMethod);
+		}
 	}
 
 	private IdPropertyInfo getIdPropertyInfo(Class<?> entityType, List<Field> fields) {

@@ -13,6 +13,7 @@
  */
 package io.github.simplejdbcmapper.core;
 
+import java.lang.reflect.Method;
 import java.sql.Types;
 
 /**
@@ -24,6 +25,9 @@ class PropertyMapping {
 	private String propertyName;
 
 	private Class<?> propertyType;
+
+	private Method readMethod;
+	private Method writeMethod;
 
 	private String columnName;
 
@@ -151,6 +155,22 @@ class PropertyMapping {
 
 	public boolean isEnum() {
 		return isEnum;
+	}
+
+	public Method getReadMethod() {
+		return readMethod;
+	}
+
+	public void setReadMethod(Method readMethod) {
+		this.readMethod = readMethod;
+	}
+
+	public Method getWriteMethod() {
+		return writeMethod;
+	}
+
+	public void setWriteMethod(Method writeMethod) {
+		this.writeMethod = writeMethod;
 	}
 
 	private void determineBlobClob() {

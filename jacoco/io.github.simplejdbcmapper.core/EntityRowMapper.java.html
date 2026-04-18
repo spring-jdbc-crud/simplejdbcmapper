@@ -21,7 +21,10 @@ import io.github.simplejdbcmapper.exception.MapperException;
 /**
  * A lighter row mapper than Spring's BeanPropertyRowMapper since column to
  * property relationship is already available through TableMapping and avoids
- * conversion it it can.
+ * conversion if it can.
+ * 
+ * &lt;p&gt;
+ * A new instance needs to be created per each use
  * 
  * @param &lt;T&gt; the entityType
  */
@@ -29,50 +32,49 @@ class EntityRowMapper&lt;T&gt; implements RowMapper&lt;T&gt; {
 	private Class&lt;T&gt; mappedClass;
 	private TableMapping tableMapping;
 	private ConversionService conversionService;
-<span class="fc" id="L32">	private boolean resultSetTyped = true;</span>
+<span class="fc" id="L35">	private boolean resultSetTyped = true;</span>
 
-<span class="fc" id="L34">	public EntityRowMapper(Class&lt;T&gt; entityType, TableMapping tableMapping, ConversionService conversionService) {</span>
-<span class="fc" id="L35">		this.mappedClass = entityType;</span>
-<span class="fc" id="L36">		this.tableMapping = tableMapping;</span>
-<span class="fc" id="L37">		this.conversionService = conversionService;</span>
-<span class="fc" id="L38">	}</span>
+<span class="fc" id="L37">	public EntityRowMapper(Class&lt;T&gt; entityType, TableMapping tableMapping, ConversionService conversionService) {</span>
+<span class="fc" id="L38">		this.mappedClass = entityType;</span>
+<span class="fc" id="L39">		this.tableMapping = tableMapping;</span>
+<span class="fc" id="L40">		this.conversionService = conversionService;</span>
+<span class="fc" id="L41">	}</span>
 
 	@Override
 	public T mapRow(ResultSet rs, int rowNumber) throws SQLException {
-<span class="fc" id="L42">		T obj = null;</span>
+<span class="fc" id="L45">		T obj = null;</span>
 		try {
-<span class="fc" id="L44">			obj = mappedClass.getDeclaredConstructor().newInstance();</span>
-<span class="nc" id="L45">		} catch (Exception e) {</span>
-<span class="nc" id="L46">			throw new MapperException(&quot;Could not instantiate class &quot; + mappedClass.getName(), e);</span>
-<span class="fc" id="L47">		}</span>
-<span class="fc" id="L48">		BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(obj);</span>
-<span class="fc" id="L49">		bw.setConversionService(conversionService);</span>
-<span class="fc" id="L50">		ResultSetMetaData rsmd = rs.getMetaData();</span>
-<span class="fc" id="L51">		int columnCount = rsmd.getColumnCount();</span>
-<span class="fc bfc" id="L52" title="All 2 branches covered.">		for (int index = 1; index &lt;= columnCount; index++) {</span>
-<span class="fc" id="L53">			String column = JdbcUtils.lookupColumnName(rsmd, index);</span>
-<span class="fc" id="L54">			column = InternalUtils.toLowerCase(column);</span>
-<span class="fc" id="L55">			PropertyMapping propMapping = tableMapping.getPropertyMappingByColumnName(column);</span>
-<span class="pc bpc" id="L56" title="1 of 2 branches missed.">			if (propMapping != null) {</span>
+<span class="fc" id="L47">			obj = mappedClass.getDeclaredConstructor().newInstance();</span>
+<span class="nc" id="L48">		} catch (Exception e) {</span>
+<span class="nc" id="L49">			throw new MapperException(&quot;Could not instantiate class &quot; + mappedClass.getName(), e);</span>
+<span class="fc" id="L50">		}</span>
+<span class="fc" id="L51">		BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(obj);</span>
+<span class="fc" id="L52">		bw.setConversionService(conversionService);</span>
+<span class="fc" id="L53">		ResultSetMetaData rsmd = rs.getMetaData();</span>
+<span class="fc" id="L54">		int columnCount = rsmd.getColumnCount();</span>
+<span class="fc bfc" id="L55" title="All 2 branches covered.">		for (int index = 1; index &lt;= columnCount; index++) {</span>
+<span class="fc" id="L56">			String column = JdbcUtils.lookupColumnName(rsmd, index);</span>
+<span class="fc" id="L57">			column = InternalUtils.toLowerCase(column);</span>
+<span class="fc" id="L58">			PropertyMapping propMapping = tableMapping.getPropertyMappingByColumnName(column);</span>
+<span class="pc bpc" id="L59" title="1 of 2 branches missed.">			if (propMapping != null) {</span>
 				try {
-					// bw.setPropertyValue() has to go through the conversion process and some other
-					// logic. Avoid it if we can
-<span class="fc" id="L60">					Object value = getResultSetValue(rs, index, propMapping.getPropertyType());</span>
-<span class="fc bfc" id="L61" title="All 4 branches covered.">					if (resultSetTyped || value == null) {</span>
-<span class="fc" id="L62">						PropertyDescriptor pd = bw.getPropertyDescriptor(propMapping.getPropertyName());</span>
-<span class="fc" id="L63">						Method writeMethod = pd.getWriteMethod();</span>
-<span class="fc" id="L64">						writeMethod.invoke(obj, value);</span>
-<span class="fc" id="L65">					} else {</span>
-						// getResultSetValue() could not extract a typed value so using bean wrapper to
-						// go through the conversion process
-<span class="fc" id="L68">						bw.setPropertyValue(propMapping.getPropertyName(), value);</span>
+					// bw.setPropertyValue() goes through the conversion process and some other
+					// logic. Avoid it if we can for some performance benefits
+<span class="fc" id="L63">					Object value = getResultSetValue(rs, index, propMapping.getPropertyType());</span>
+<span class="fc bfc" id="L64" title="All 4 branches covered.">					if (resultSetTyped || value == null) {</span>
+<span class="fc" id="L65">						PropertyDescriptor pd = bw.getPropertyDescriptor(propMapping.getPropertyName());</span>
+<span class="fc" id="L66">						Method writeMethod = pd.getWriteMethod();</span>
+<span class="fc" id="L67">						writeMethod.invoke(obj, value);</span>
+<span class="fc" id="L68">					} else {</span>
+						// getResultSetValue() could not extract a typed value so using bean wrapper
+<span class="fc" id="L70">						bw.setPropertyValue(propMapping.getPropertyName(), value);</span>
 					}
-<span class="nc" id="L70">				} catch (Exception ex) {</span>
-<span class="nc" id="L71">					throw new MapperException(ex);</span>
-<span class="fc" id="L72">				}</span>
+<span class="nc" id="L72">				} catch (Exception ex) {</span>
+<span class="nc" id="L73">					throw new MapperException(ex);</span>
+<span class="fc" id="L74">				}</span>
 			}
 		}
-<span class="fc" id="L75">		return obj;</span>
+<span class="fc" id="L77">		return obj;</span>
 	}
 
 	/*
@@ -80,80 +82,80 @@ class EntityRowMapper&lt;T&gt; implements RowMapper&lt;T&gt; {
 	 * resultSetTyped flag if it can explicitly extract typed value
 	 */
 	private Object getResultSetValue(ResultSet rs, int index, Class&lt;?&gt; requiredType) throws SQLException {
-<span class="fc" id="L83">		resultSetTyped = true;</span>
+<span class="fc" id="L85">		resultSetTyped = true;</span>
 		Object value;
 		// Explicitly extract typed value, as far as possible.
-<span class="fc bfc" id="L86" title="All 2 branches covered.">		if (String.class == requiredType) {</span>
-<span class="fc" id="L87">			return rs.getString(index);</span>
-<span class="fc bfc" id="L88" title="All 2 branches covered.">		} else if (Boolean.class == requiredType) {</span>
-<span class="fc" id="L89">			value = rs.getBoolean(index);</span>
-<span class="pc bpc" id="L90" title="1 of 2 branches missed.">		} else if (Byte.class == requiredType) {</span>
-<span class="nc" id="L91">			value = rs.getByte(index);</span>
-<span class="fc bfc" id="L92" title="All 2 branches covered.">		} else if (Short.class == requiredType) {</span>
-<span class="fc" id="L93">			value = rs.getShort(index);</span>
-<span class="fc bfc" id="L94" title="All 2 branches covered.">		} else if (Integer.class == requiredType) {</span>
-<span class="fc" id="L95">			value = rs.getInt(index);</span>
-<span class="fc bfc" id="L96" title="All 2 branches covered.">		} else if (Long.class == requiredType) {</span>
-<span class="fc" id="L97">			value = rs.getLong(index);</span>
-<span class="fc bfc" id="L98" title="All 2 branches covered.">		} else if (Float.class == requiredType) {</span>
-<span class="fc" id="L99">			value = rs.getFloat(index);</span>
-<span class="pc bpc" id="L100" title="1 of 4 branches missed.">		} else if (Double.class == requiredType || Number.class == requiredType) {</span>
-<span class="fc" id="L101">			value = rs.getDouble(index);</span>
-<span class="fc bfc" id="L102" title="All 2 branches covered.">		} else if (BigDecimal.class == requiredType) {</span>
-<span class="fc" id="L103">			return rs.getBigDecimal(index);</span>
-<span class="fc bfc" id="L104" title="All 2 branches covered.">		} else if (java.sql.Date.class == requiredType) {</span>
-<span class="fc" id="L105">			return rs.getDate(index);</span>
-<span class="fc bfc" id="L106" title="All 2 branches covered.">		} else if (java.sql.Time.class == requiredType) {</span>
-<span class="fc" id="L107">			return rs.getTime(index);</span>
-<span class="pc bpc" id="L108" title="1 of 4 branches missed.">		} else if (java.sql.Timestamp.class == requiredType || java.util.Date.class == requiredType) {</span>
-<span class="fc" id="L109">			return rs.getTimestamp(index);</span>
-<span class="fc bfc" id="L110" title="All 2 branches covered.">		} else if (byte[].class == requiredType) {</span>
-<span class="fc" id="L111">			return rs.getBytes(index);</span>
-<span class="pc bpc" id="L112" title="1 of 2 branches missed.">		} else if (Blob.class == requiredType) {</span>
-<span class="nc" id="L113">			return rs.getBlob(index);</span>
-<span class="pc bpc" id="L114" title="1 of 2 branches missed.">		} else if (Clob.class == requiredType) {</span>
-<span class="nc" id="L115">			return rs.getClob(index);</span>
-<span class="fc bfc" id="L116" title="All 2 branches covered.">		} else if (requiredType.isEnum()) {</span>
-<span class="fc" id="L117">			resultSetTyped = false;</span>
+<span class="fc bfc" id="L88" title="All 2 branches covered.">		if (String.class == requiredType) {</span>
+<span class="fc" id="L89">			return rs.getString(index);</span>
+<span class="fc bfc" id="L90" title="All 2 branches covered.">		} else if (Boolean.class == requiredType) {</span>
+<span class="fc" id="L91">			value = rs.getBoolean(index);</span>
+<span class="pc bpc" id="L92" title="1 of 2 branches missed.">		} else if (Byte.class == requiredType) {</span>
+<span class="nc" id="L93">			value = rs.getByte(index);</span>
+<span class="fc bfc" id="L94" title="All 2 branches covered.">		} else if (Short.class == requiredType) {</span>
+<span class="fc" id="L95">			value = rs.getShort(index);</span>
+<span class="fc bfc" id="L96" title="All 2 branches covered.">		} else if (Integer.class == requiredType) {</span>
+<span class="fc" id="L97">			value = rs.getInt(index);</span>
+<span class="fc bfc" id="L98" title="All 2 branches covered.">		} else if (Long.class == requiredType) {</span>
+<span class="fc" id="L99">			value = rs.getLong(index);</span>
+<span class="fc bfc" id="L100" title="All 2 branches covered.">		} else if (Float.class == requiredType) {</span>
+<span class="fc" id="L101">			value = rs.getFloat(index);</span>
+<span class="pc bpc" id="L102" title="1 of 4 branches missed.">		} else if (Double.class == requiredType || Number.class == requiredType) {</span>
+<span class="fc" id="L103">			value = rs.getDouble(index);</span>
+<span class="fc bfc" id="L104" title="All 2 branches covered.">		} else if (BigDecimal.class == requiredType) {</span>
+<span class="fc" id="L105">			return rs.getBigDecimal(index);</span>
+<span class="fc bfc" id="L106" title="All 2 branches covered.">		} else if (java.sql.Date.class == requiredType) {</span>
+<span class="fc" id="L107">			return rs.getDate(index);</span>
+<span class="fc bfc" id="L108" title="All 2 branches covered.">		} else if (java.sql.Time.class == requiredType) {</span>
+<span class="fc" id="L109">			return rs.getTime(index);</span>
+<span class="pc bpc" id="L110" title="1 of 4 branches missed.">		} else if (java.sql.Timestamp.class == requiredType || java.util.Date.class == requiredType) {</span>
+<span class="fc" id="L111">			return rs.getTimestamp(index);</span>
+<span class="fc bfc" id="L112" title="All 2 branches covered.">		} else if (byte[].class == requiredType) {</span>
+<span class="fc" id="L113">			return rs.getBytes(index);</span>
+<span class="pc bpc" id="L114" title="1 of 2 branches missed.">		} else if (Blob.class == requiredType) {</span>
+<span class="nc" id="L115">			return rs.getBlob(index);</span>
+<span class="pc bpc" id="L116" title="1 of 2 branches missed.">		} else if (Clob.class == requiredType) {</span>
+<span class="nc" id="L117">			return rs.getClob(index);</span>
+<span class="fc bfc" id="L118" title="All 2 branches covered.">		} else if (requiredType.isEnum()) {</span>
+<span class="fc" id="L119">			resultSetTyped = false;</span>
 			// Enums can either be represented through a String or an enum index value:
 			// leave enum type conversion up to the caller (for example, a
 			// ConversionService)
 			// but make sure that we return nothing other than a String or an Integer.
-<span class="fc" id="L122">			Object obj = rs.getObject(index);</span>
-<span class="fc bfc" id="L123" title="All 2 branches covered.">			if (obj instanceof String) {</span>
-<span class="fc" id="L124">				return obj;</span>
-<span class="pc bpc" id="L125" title="1 of 2 branches missed.">			} else if (obj instanceof Number number) {</span>
+<span class="fc" id="L124">			Object obj = rs.getObject(index);</span>
+<span class="fc bfc" id="L125" title="All 2 branches covered.">			if (obj instanceof String) {</span>
+<span class="fc" id="L126">				return obj;</span>
+<span class="pc bpc" id="L127" title="1 of 2 branches missed.">			} else if (obj instanceof Number number) {</span>
 				// Defensively convert any Number to an Integer (as needed by our
 				// ConversionService's IntegerToEnumConverterFactory) for use as index
-<span class="nc" id="L128">				return NumberUtils.convertNumberToTargetClass(number, Integer.class);</span>
+<span class="nc" id="L130">				return NumberUtils.convertNumberToTargetClass(number, Integer.class);</span>
 			} else {
 				// for example, on Postgres: getObject returns a PGObject, but we need a String
-<span class="fc" id="L131">				return rs.getString(index);</span>
+<span class="fc" id="L133">				return rs.getString(index);</span>
 			}
 		} else {
-<span class="fc" id="L134">			resultSetTyped = false;</span>
+<span class="fc" id="L136">			resultSetTyped = false;</span>
 			// Some unknown type desired -&gt; rely on getObject.
 			try {
-<span class="fc" id="L137">				return rs.getObject(index, requiredType);</span>
-<span class="fc" id="L138">			} catch (Exception ex) {</span>
+<span class="fc" id="L139">				return rs.getObject(index, requiredType);</span>
+<span class="fc" id="L140">			} catch (Exception ex) {</span>
 				// jdbc driver does not support
 			}
 			// Corresponding SQL types for JSR-310, left up to the caller to convert
 			// them (for example, through a ConversionService).
-<span class="fc" id="L143">			String typeName = requiredType.getSimpleName();</span>
-<span class="pc bpc" id="L144" title="3 of 4 branches missed.">			return switch (typeName) {</span>
-<span class="nc" id="L145">			case &quot;LocalDate&quot; -&gt; rs.getDate(index);</span>
-<span class="nc" id="L146">			case &quot;LocalTime&quot; -&gt; rs.getTime(index);</span>
-<span class="nc" id="L147">			case &quot;LocalDateTime&quot; -&gt; rs.getTimestamp(index);</span>
+<span class="fc" id="L145">			String typeName = requiredType.getSimpleName();</span>
+<span class="pc bpc" id="L146" title="3 of 4 branches missed.">			return switch (typeName) {</span>
+<span class="nc" id="L147">			case &quot;LocalDate&quot; -&gt; rs.getDate(index);</span>
+<span class="nc" id="L148">			case &quot;LocalTime&quot; -&gt; rs.getTime(index);</span>
+<span class="nc" id="L149">			case &quot;LocalDateTime&quot; -&gt; rs.getTimestamp(index);</span>
 			// Fall back to getObject without type specification, again
 			// left up to the caller to convert the value if necessary.
-<span class="fc" id="L150">			default -&gt; JdbcUtils.getResultSetValue(rs, index);</span>
+<span class="fc" id="L152">			default -&gt; JdbcUtils.getResultSetValue(rs, index);</span>
 			};
 		}
 		// Perform was-null check if necessary (for results that the JDBC driver returns
 		// as primitives).
-<span class="fc bfc" id="L155" title="All 2 branches covered.">		return (rs.wasNull() ? null : value);</span>
+<span class="fc bfc" id="L157" title="All 2 branches covered.">		return (rs.wasNull() ? null : value);</span>
 	}
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main a49cc45c81ce057ed5f9c9f666910dc0d9b974d6 2026-04-18T00:22:43</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 96a42ef540bb0a7997ee5635ee2f3196c6f661d9 2026-04-18T00:52:51</div></body></html>

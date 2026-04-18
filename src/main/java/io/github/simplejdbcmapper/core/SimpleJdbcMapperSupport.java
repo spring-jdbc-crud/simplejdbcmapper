@@ -56,8 +56,6 @@ class SimpleJdbcMapperSupport {
 
 	private boolean conversionServiceManuallySet = false;
 
-	private boolean classicConversionOption = false;
-
 	/**
 	 * Constructor.
 	 *
@@ -120,14 +118,6 @@ class SimpleJdbcMapperSupport {
 			this.jdbcClient = JdbcClient.create(npJdbcTemplate, conversionService);
 			conversionServiceManuallySet = true;
 		}
-	}
-
-	public boolean isClassicConversionOption() {
-		return classicConversionOption;
-	}
-
-	public void setClassicConversionOption(boolean classicConversionOption) {
-		this.classicConversionOption = classicConversionOption;
 	}
 
 	public String getSchemaName() {

@@ -21,7 +21,7 @@ import io.github.simplejdbcmapper.exception.MapperException;
 /**
  * A lighter row mapper than Spring's BeanPropertyRowMapper since column to
  * property relationship is already available through TableMapping and avoids
- * conversion it it can.
+ * conversion if it can.
  * 
  * @param <T> the entityType
  */
@@ -55,16 +55,15 @@ class EntityRowMapper<T> implements RowMapper<T> {
 			PropertyMapping propMapping = tableMapping.getPropertyMappingByColumnName(column);
 			if (propMapping != null) {
 				try {
-					// bw.setPropertyValue() has to go through the conversion process and some other
-					// logic. Avoid it if we can
+					// bw.setPropertyValue() goes through the conversion process and some other
+					// logic. Avoid it if we can for some performance benefits
 					Object value = getResultSetValue(rs, index, propMapping.getPropertyType());
 					if (resultSetTyped || value == null) {
 						PropertyDescriptor pd = bw.getPropertyDescriptor(propMapping.getPropertyName());
 						Method writeMethod = pd.getWriteMethod();
 						writeMethod.invoke(obj, value);
 					} else {
-						// getResultSetValue() could not extract a typed value so using bean wrapper to
-						// go through the conversion process
+						// getResultSetValue() could not extract a typed value so using bean wrapper
 						bw.setPropertyValue(propMapping.getPropertyName(), value);
 					}
 				} catch (Exception ex) {

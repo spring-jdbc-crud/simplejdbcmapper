@@ -14,7 +14,7 @@ public class ClobErr {
 
 	// CLOB being mapped to invalid type
 	@Column(sqlType = Types.CLOB)
-	private String[] clobData;
+	private char[] clobData;
 
 	public Integer getId() {
 		return id;
@@ -24,11 +24,11 @@ public class ClobErr {
 		this.id = id;
 	}
 
-	public String[] getClobData() {
+	public char[] getClobData() {
 		return clobData;
 	}
 
-	public void setClobData(String[] clobData) {
+	public void setClobData(char[] clobData) {
 		this.clobData = clobData;
 	}
 

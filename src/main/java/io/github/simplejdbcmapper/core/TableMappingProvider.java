@@ -99,9 +99,6 @@ class TableMappingProvider {
 			Method writeMethod = pd.getWriteMethod();
 			writeMethod.setAccessible(true);
 			propMapping.setWriteMethod(writeMethod);
-			Method readMethod = pd.getReadMethod();
-			readMethod.setAccessible(true);
-			propMapping.setReadMethod(readMethod);
 		}
 	}
 

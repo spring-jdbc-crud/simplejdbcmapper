@@ -146,7 +146,8 @@ class TypeCheckOracleTest {
 	@Test
 	void insert_ClobErrTest() {
 		ClobErr obj = new ClobErr();
-		obj.setClobData(new String[] { "a", "b", "c" });
+		char[] charArray = { 'J', 'a', 'v', 'a' };
+		obj.setClobData(charArray);
 		Assertions.assertThrows(Exception.class, () -> {
 			sjm.insert(obj);
 		});
@@ -252,11 +253,12 @@ class TypeCheckOracleTest {
 	void update_ClobErrTest() {
 		ClobErr obj = new ClobErr();
 		obj.setId(1);
-		obj.setClobData(new String[] { "a", "b", "c" });
+		char[] charArray = { 'J', 'a', 'v', 'a' };
+		obj.setClobData(charArray);
 		Exception exception = Assertions.assertThrows(Exception.class, () -> {
 			sjm.update(obj);
 		});
-		assertTrue(exception.getMessage().contains("java type has to be String or other"));
+		assertTrue(exception.getMessage().contains("java type has to be String for a CLOB mapping"));
 	}
 
 }

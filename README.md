@@ -435,7 +435,7 @@ Types.VARBINARY
 
 Use the pertinent SQL type for your database and database column type. 
 
--  Character large object database columns should be mapped to java types String or other CharSequence. No other java types are supported.  
+-  Character large object database columns should be mapped to java type String. No other java types are supported.  
 The 'sqlType' attribute of the @Column annotation with the following values are considered as Character Large Objects by SimpeJdbcMapper:  
 Types.CLOB  
 Types.NCLOB  

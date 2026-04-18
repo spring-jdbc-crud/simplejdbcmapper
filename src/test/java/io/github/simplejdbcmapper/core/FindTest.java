@@ -49,6 +49,7 @@ class FindTest {
 
 		int cnt = 0;
 		while (cnt <= 50) {
+			System.out.println(cnt);
 			cnt++;
 			sjm.findById(Order.class, 1);
 		}

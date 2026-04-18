@@ -39,21 +39,27 @@ class EntityRowMapper<T> implements RowMapper<T> {
 		}
 		ResultSetMetaData rsmd = rs.getMetaData();
 		int columnCount = rsmd.getColumnCount();
+		int total = 0;
 		for (int index = 1; index <= columnCount; index++) {
 			String column = JdbcUtils.lookupColumnName(rsmd, index);
 			column = InternalUtils.toLowerCase(column);
+
 			PropertyMapping propMapping = tableMapping.getPropertyMappingByColumnName(column);
 			if (propMapping != null) {
 				try {
-					Object value = JdbcUtils.getResultSetValue(rs, index, propMapping.getPropertyType());
-					if (value == null || value.getClass() == propMapping.getPropertyType()) {
+					long s1 = System.nanoTime();
+					Object value = propMapping.getTypeHandler().getValue(rs, index, propMapping.getPropertyType());
+					// Object value = JdbcUtils.getResultSetValue(rs, index,
+					// propMapping.getPropertyType());
+					long e1 = System.nanoTime();
+					// System.out.println("with type handler: " + (e1 - s1) + " ns propertyName: "
+					// + propMapping.getPropertyName() + " type:" + propMapping.getPropertyType());
+
+					total += e1 - s1;
+					if (value == null || propMapping.getPropertyType().isAssignableFrom(value.getClass())) {
 						propMapping.getWriteMethod().invoke(obj, value);
 					} else {
 						try {
-							// System.out.println("converting for property: " +
-							// propMapping.getPropertyName()
-							// + " ResultSet type: " + value.getClass() + " target property type:"
-							// + propMapping.getPropertyType());
 							propMapping.getWriteMethod().invoke(obj,
 									conversionService.convert(value, propMapping.getPropertyType()));
 						} catch (ConverterNotFoundException cnfex) {
@@ -68,6 +74,7 @@ class EntityRowMapper<T> implements RowMapper<T> {
 				}
 			}
 		}
+		System.out.println("Total time: " + total);
 		return obj;
 	}
 

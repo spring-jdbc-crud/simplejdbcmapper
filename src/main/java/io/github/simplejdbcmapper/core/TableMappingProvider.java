@@ -20,6 +20,8 @@ import io.github.simplejdbcmapper.annotation.Id;
 import io.github.simplejdbcmapper.annotation.IdType;
 import io.github.simplejdbcmapper.annotation.Table;
 import io.github.simplejdbcmapper.exception.AnnotationException;
+import io.github.simplejdbcmapper.type.HandlerFactory;
+import io.github.simplejdbcmapper.type.TypeHandler;
 
 class TableMappingProvider {
 	private final String schemaName;
@@ -75,7 +77,8 @@ class TableMappingProvider {
 		}
 		List<PropertyMapping> propertyMappings = new ArrayList<>(propNameToPropertyMapping.values());
 		ap.validateAnnotations(propertyMappings, entityType);
-		assignReflectionReadWriteMethods(entityType, propertyMappings);
+		assignReflectionWriteMethods(entityType, propertyMappings);
+		assignTypeHandlers(propertyMappings);
 		return propertyMappings;
 	}
 
@@ -92,13 +95,20 @@ class TableMappingProvider {
 		return fields.stream().filter(p -> set.add(p.getName())).toList();
 	}
 
-	private void assignReflectionReadWriteMethods(Class<?> entityType, List<PropertyMapping> propertyMappings) {
+	private void assignReflectionWriteMethods(Class<?> entityType, List<PropertyMapping> propertyMappings) {
 		BeanWrapperImpl bw = new BeanWrapperImpl(entityType);
 		for (PropertyMapping propMapping : propertyMappings) {
 			PropertyDescriptor pd = bw.getPropertyDescriptor(propMapping.getPropertyName());
 			Method writeMethod = pd.getWriteMethod();
 			writeMethod.setAccessible(true);
 			propMapping.setWriteMethod(writeMethod);
+		}
+	}
+
+	private void assignTypeHandlers(List<PropertyMapping> propertyMappings) {
+		for (PropertyMapping propMapping : propertyMappings) {
+			TypeHandler typeHandler = HandlerFactory.getTypeHandler(propMapping.getPropertyType());
+			propMapping.setTypeHandler(typeHandler);
 		}
 	}
 

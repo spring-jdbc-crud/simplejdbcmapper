@@ -3,6 +3,7 @@ package io.github.simplejdbcmapper.core;
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
@@ -94,6 +95,10 @@ class TypeCheckPostgresTest {
 		var offsetVal = OffsetDateTime.now();
 		iObj.setOffsetDateTimeData(offsetVal);
 
+		iObj.setJavaSqlDateData((java.sql.Date.valueOf(LocalDate.now())));
+
+		iObj.setJavaSqlTimeData((new java.sql.Time(System.currentTimeMillis())));
+
 		sjm.insert(iObj);
 
 		TypeCheckPostgres tc = sjm.findById(TypeCheckPostgres.class, iObj.getId());
@@ -124,6 +129,10 @@ class TypeCheckPostgresTest {
 		// so we have to check for instant
 		assertEquals(offsetVal.toInstant().truncatedTo(ChronoUnit.MILLIS),
 				tc.getOffsetDateTimeData().toInstant().truncatedTo(ChronoUnit.MILLIS));
+
+		assertNotNull(tc.getJavaSqlDateData());
+
+		assertNotNull(tc.getJavaSqlTimeData());
 
 	}
 
@@ -208,6 +217,23 @@ class TypeCheckPostgresTest {
 		IdSqlTypeOverridden findObj = sjm.findById(IdSqlTypeOverridden.class, idVal);
 
 		assertNotNull(findObj);
+	}
+
+	@Test
+	void find_MakeSurePrimitivesFromResultSet_AreNull_Test() {
+		TypeCheckPostgres obj = new TypeCheckPostgres();
+		sjm.insert(obj);
+
+		TypeCheckPostgres findObj = sjm.findById(TypeCheckPostgres.class, obj.getId());
+
+		assertNotNull(findObj);
+
+		assertNull(findObj.getShortData());
+		assertNull(findObj.getIntegerData());
+		assertNull(findObj.getFloatData());
+		assertNull(findObj.getDoubleData());
+		assertNull(findObj.getBooleanVal());
+
 	}
 
 	@Test

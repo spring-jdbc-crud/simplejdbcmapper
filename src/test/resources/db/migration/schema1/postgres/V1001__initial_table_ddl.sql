@@ -77,6 +77,12 @@ CREATE TABLE schema1.type_check (
    offset_date_time_data TIMESTAMP WITH TIME ZONE,
    instant_data timestamptz,
    some_uuid UUID,
+   short_data smallint,
+   integer_data integer,
+   float_data float4,
+   double_data float8,
+   java_sql_date_data date,
+   java_sql_time_data time,
    non_model_column varchar(100),
    non_model_offset_date_time timestamptz,
    CONSTRAINT type_check_pk PRIMARY KEY (id)

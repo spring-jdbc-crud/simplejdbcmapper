@@ -50,6 +50,24 @@ public class TypeCheckPostgres {
 	@Column(name = "string_enum")
 	private StatusEnum status;
 
+	@Column
+	private Short shortData;
+
+	@Column
+	private Integer integerData;
+
+	@Column
+	private Float floatData;
+
+	@Column
+	private Double doubleData;
+
+	@Column
+	private java.sql.Date javaSqlDateData;
+
+	@Column
+	private java.sql.Time javaSqlTimeData;
+
 	public Integer getId() {
 		return id;
 	}
@@ -144,6 +162,54 @@ public class TypeCheckPostgres {
 
 	public void setOffsetDateTimeData(OffsetDateTime offsetDateTimeData) {
 		this.offsetDateTimeData = offsetDateTimeData;
+	}
+
+	public Short getShortData() {
+		return shortData;
+	}
+
+	public void setShortData(Short shortData) {
+		this.shortData = shortData;
+	}
+
+	public Integer getIntegerData() {
+		return integerData;
+	}
+
+	public void setIntegerData(Integer integerData) {
+		this.integerData = integerData;
+	}
+
+	public Float getFloatData() {
+		return floatData;
+	}
+
+	public void setFloatData(Float floatData) {
+		this.floatData = floatData;
+	}
+
+	public Double getDoubleData() {
+		return doubleData;
+	}
+
+	public void setDoubleData(Double doubleData) {
+		this.doubleData = doubleData;
+	}
+
+	public java.sql.Date getJavaSqlDateData() {
+		return javaSqlDateData;
+	}
+
+	public void setJavaSqlDateData(java.sql.Date javaSqlDateData) {
+		this.javaSqlDateData = javaSqlDateData;
+	}
+
+	public java.sql.Time getJavaSqlTimeData() {
+		return javaSqlTimeData;
+	}
+
+	public void setJavaSqlTimeData(java.sql.Time javaSqlTimeData) {
+		this.javaSqlTimeData = javaSqlTimeData;
 	}
 
 }

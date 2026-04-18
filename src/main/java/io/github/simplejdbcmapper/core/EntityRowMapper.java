@@ -79,25 +79,26 @@ class EntityRowMapper<T> implements RowMapper<T> {
 	 * Copy of Springs JdbcUtils.getResultSetValue(). The difference is it sets
 	 * resultSetTyped flag if it can explicitly extract typed value
 	 */
-	public Object getResultSetValue(ResultSet rs, int index, Class<?> requiredType) throws SQLException {
+	private Object getResultSetValue(ResultSet rs, int index, Class<?> requiredType) throws SQLException {
 		resultSetTyped = true;
+		Object value;
 		// Explicitly extract typed value, as far as possible.
 		if (String.class == requiredType) {
 			return rs.getString(index);
 		} else if (Boolean.class == requiredType) {
-			return rs.getBoolean(index);
+			value = rs.getBoolean(index);
 		} else if (Byte.class == requiredType) {
-			return rs.getByte(index);
+			value = rs.getByte(index);
 		} else if (Short.class == requiredType) {
-			return rs.getShort(index);
+			value = rs.getShort(index);
 		} else if (Integer.class == requiredType) {
-			return rs.getInt(index);
+			value = rs.getInt(index);
 		} else if (Long.class == requiredType) {
-			return rs.getLong(index);
+			value = rs.getLong(index);
 		} else if (Float.class == requiredType) {
-			return rs.getFloat(index);
+			value = rs.getFloat(index);
 		} else if (Double.class == requiredType || Number.class == requiredType) {
-			return rs.getDouble(index);
+			value = rs.getDouble(index);
 		} else if (BigDecimal.class == requiredType) {
 			return rs.getBigDecimal(index);
 		} else if (java.sql.Date.class == requiredType) {
@@ -135,9 +136,8 @@ class EntityRowMapper<T> implements RowMapper<T> {
 			try {
 				return rs.getObject(index, requiredType);
 			} catch (Exception ex) {
-				// jdbc driver has no support for this.
+				// jdbc driver does not support
 			}
-
 			// Corresponding SQL types for JSR-310, left up to the caller to convert
 			// them (for example, through a ConversionService).
 			String typeName = requiredType.getSimpleName();
@@ -150,6 +150,9 @@ class EntityRowMapper<T> implements RowMapper<T> {
 			default -> JdbcUtils.getResultSetValue(rs, index);
 			};
 		}
+		// Perform was-null check if necessary (for results that the JDBC driver returns
+		// as primitives).
+		return (rs.wasNull() ? null : value);
 	}
 
 }

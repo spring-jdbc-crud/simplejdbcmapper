@@ -1,7 +1,6 @@
 <!DOCTYPE html>
 <html>
   <head>
-
 <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
@@ -69,7 +68,6 @@
 	<a href="https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper">Demo Application</a> |
 	<a href="https://dzone.com/articles/using-simplejdbcmapper-with-spring">Dzone Article</a>
 </p>
-
 <h2 id="features"><a class="header-link" href="#features"></a>Features</h2>
 <ol class="list">
 <li>One liners for CRUD</li>
@@ -91,7 +89,7 @@
 <pre class="hljs"><code> <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
    <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>io.github.spring-jdbc-crud<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
    <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>simplejdbcmapper<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
-   <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>2.0.2<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
+   <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>2.1.0<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
 <span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre><h2 id="example-code"><a class="header-link" href="#example-code"></a>Example code</h2>
 <pre class="hljs"><code> <span class="hljs-comment">//@Table annotation is required</span>
  <span class="hljs-meta">@Table(name=&quot;product&quot;)</span>
@@ -190,6 +188,8 @@ Note in this case the &#x27;name&#x27; property is mapped to the &#x27;product_n
  JdbcClient jdbcClient = sjm.getJdbcClient();
  JdbcTemplate jdbcTemplate = sjm.getJdbcTemplate();
  NamedParameterJdbcTemplate namedParameterJdbcTemplate = sjm.getNamedParameterJdbcTemplate();
+ 
+ <span class="hljs-comment">// The demo application (link provided at top) is easy to install and run where you can see example code in action.</span>
  
  <span class="hljs-comment">// See logging section for details to view the SQL</span>
  
@@ -303,7 +303,7 @@ spring.datasource.driver-<span class="hljs-class"><span class="hljs-keyword">cla
   ...
 }
 </code></pre><p><strong>@Id</strong></p>
-<p>The id property can be of any non-primitive java type. @Id can only be mapped to a single database column. <strong>Multi-column ids  are not supported.</strong></p>
+<p>The id property can be of any java type. @Id can only be mapped to a single database column. <strong>Multi-column ids  are not supported.</strong></p>
 <p>There are 2 forms of usage for this.</p>
 <ul class="list">
 <li><strong>auto generated id usage</strong></li>
@@ -467,14 +467,16 @@ If a Supplier is configured using simpleJdbcMapper.setRecordAuditedBySupplier(),
 <ol class="list">
 <li>@Id can only be mapped to a single database column.  Multi-column ids are not supported.</li>
 <li>No support for table/column names with spaces in them.</li>
+<li>Primitives not supported. Use the corresponding java wrapper classes in your mappings.</li>
 </ol>
-<p>Use JdbcTemplate/JdbcClient to handle these cases.</p>
+<p>Use JdbcTemplate/JdbcClient directly to handle these cases.</p>
 <h2 id="upgrading-to-2x-from-1x"><a class="header-link" href="#upgrading-to-2x-from-1x"></a>Upgrading to 2.x from 1.x</h2>
-<p>The 2.0.0 release has removed the dependency on database table column meta-data for mapping totally.</p>
+<p>The 2.x release has removed the dependency on database table column meta-data for mapping totally.</p>
 <p>Difference from 1.x:  </p>
 <ol class="list">
 <li>SimpleJdbcMapper 2.x tries to infer the correct SQL type from the Java types but some times it cannot. In these cases explicitly declaring the SQL type is a best practice to ensure correctness, improve performance, and correctly handle NULL values. See documentation on @Column(sqlType=&quot;somesqltype&quot;) and BLOB/CLOB mapping further above on how to figure out and set the SQL type value.</li>
 <li>Since 2.x does not use the database table column meta data, it cannot provide  detailed messages on what went wrong with a mapping. Mapping issues will surface through sql errors thrown, which is similar to what happens when using JdbcTemplate/JdbcClient directly.</li>
+<li>Primitives not supported. Use corresponding java wrapper classes in your mappings</li>
 </ol>
 <p>Generally the upgrade should be straight forward since API remains the same.  </p>
 <h2 id="troubleshooting"><a class="header-link" href="#troubleshooting"></a>TroubleShooting</h2>

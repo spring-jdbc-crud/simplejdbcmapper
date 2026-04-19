@@ -68,6 +68,9 @@ public class TypeCheckPostgres {
 	@Column
 	private java.sql.Time javaSqlTimeData;
 
+	@Column
+	private java.sql.Timestamp javaSqlTimestampData;
+
 	public Integer getId() {
 		return id;
 	}
@@ -210,6 +213,14 @@ public class TypeCheckPostgres {
 
 	public void setJavaSqlTimeData(java.sql.Time javaSqlTimeData) {
 		this.javaSqlTimeData = javaSqlTimeData;
+	}
+
+	public java.sql.Timestamp getJavaSqlTimestampData() {
+		return javaSqlTimestampData;
+	}
+
+	public void setJavaSqlTimestampData(java.sql.Timestamp javaSqlTimestampData) {
+		this.javaSqlTimestampData = javaSqlTimestampData;
 	}
 
 }

@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -99,6 +100,12 @@ class TypeCheckPostgresTest {
 
 		iObj.setJavaSqlTimeData((new java.sql.Time(System.currentTimeMillis())));
 
+		iObj.setShortData((short) 100);
+
+		iObj.setDoubleData(Double.valueOf(12.34));
+
+		iObj.setJavaSqlTimestampData(Timestamp.valueOf("2026-04-19 14:30:00.0"));
+
 		sjm.insert(iObj);
 
 		TypeCheckPostgres tc = sjm.findById(TypeCheckPostgres.class, iObj.getId());
@@ -133,6 +140,12 @@ class TypeCheckPostgresTest {
 		assertNotNull(tc.getJavaSqlDateData());
 
 		assertNotNull(tc.getJavaSqlTimeData());
+
+		assertEquals((short) 100, tc.getShortData());
+
+		assertEquals(Double.valueOf(12.34), tc.getDoubleData());
+
+		assertNotNull(tc.getJavaSqlTimestampData());
 
 	}
 

@@ -83,6 +83,7 @@ CREATE TABLE schema1.type_check (
    double_data float8,
    java_sql_date_data date,
    java_sql_time_data time,
+   java_sql_timestamp_data TIMESTAMP,
    non_model_column varchar(100),
    non_model_offset_date_time timestamptz,
    CONSTRAINT type_check_pk PRIMARY KEY (id)

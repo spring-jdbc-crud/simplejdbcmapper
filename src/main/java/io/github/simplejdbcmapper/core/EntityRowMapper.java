@@ -4,11 +4,10 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
+import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.core.convert.ConversionService;
-import org.springframework.core.convert.ConverterNotFoundException;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.JdbcUtils;
-import org.springframework.util.NumberUtils;
 
 import io.github.simplejdbcmapper.exception.MapperException;
 
@@ -56,11 +55,11 @@ class EntityRowMapper<T> implements RowMapper<T> {
 						try {
 							propMapping.getWriteMethod().invoke(obj,
 									conversionService.convert(value, propMapping.getPropertyType()));
-						} catch (ConverterNotFoundException cnfex) {
+						} catch (ConversionFailedException cfex) {
 							throw new MapperException("For property " + mappedClass.getSimpleName() + "."
-									+ propMapping.getPropertyName() + " could not convert ResultSet value of class "
-									+ value.getClass() + " to type of the property " + propMapping.getPropertyType(),
-									cnfex);
+									+ propMapping.getPropertyName() + " could not convert ResultSet value of type "
+									+ value.getClass().getCanonicalName() + " to type of the property "
+									+ propMapping.getPropertyType().getCanonicalName(), cfex);
 						}
 					}
 				} catch (Exception ex) {
@@ -83,7 +82,7 @@ class EntityRowMapper<T> implements RowMapper<T> {
 	private Object getResultSetValue(ResultSet rs, int index, ResultSetType resultSetType, Class<?> requiredType)
 			throws SQLException {
 		typedValueExtracted = true;
-		Object value = null;
+		Object value;
 		// Explicitly extract typed value, as far as possible.
 		switch (resultSetType) {
 		case ResultSetType.STRING:
@@ -120,7 +119,7 @@ class EntityRowMapper<T> implements RowMapper<T> {
 			return rs.getTime(index);
 		case ResultSetType.TIMESTAMP:
 			return rs.getTimestamp(index);
-		case ResultSetType.UTILDATE: // same as timestamp
+		case ResultSetType.UTILDATE: // java.util.Date. same as timestamp
 			return rs.getTimestamp(index);
 		case ResultSetType.BYTEARRAY:
 			return rs.getBytes(index);
@@ -137,10 +136,6 @@ class EntityRowMapper<T> implements RowMapper<T> {
 			Object obj = rs.getObject(index);
 			if (obj instanceof String) {
 				return obj;
-			} else if (obj instanceof Number number) {
-				// Defensively convert any Number to an Integer (as needed by our
-				// ConversionService's IntegerToEnumConverterFactory) for use as index
-				return NumberUtils.convertNumberToTargetClass(number, Integer.class);
 			} else {
 				// for example, on Postgres: getObject returns a PGObject, but we need a String
 				return rs.getString(index);

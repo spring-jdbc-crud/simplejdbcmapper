@@ -20,6 +20,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import io.github.simplejdbcmapper.exception.MapperException;
+import io.github.simplejdbcmapper.model.ConvertorMissingProduct;
 import io.github.simplejdbcmapper.model.Customer;
 import io.github.simplejdbcmapper.model.Order;
 import io.github.simplejdbcmapper.model.OrderLine;
@@ -270,6 +271,14 @@ class FindTest {
 			sjm.findByPropertyValues(Order.class, "x", list);
 		});
 		assertTrue(exception.getMessage().contains("does not have a mapping"));
+	}
+
+	@Test
+	void find_ConvertorMissing_Test() {
+		Exception exception = Assertions.assertThrows(MapperException.class, () -> {
+			sjm.findById(ConvertorMissingProduct.class, 1);
+		});
+		assertTrue(exception.getMessage().contains("could not convert ResultSet value"));
 	}
 
 }

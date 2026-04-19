@@ -72,6 +72,8 @@ class TypeCheckMysqlTest {
 
 		iObj.setTextData("123456");
 
+		iObj.setByteData(Byte.valueOf("1"));
+
 		sjm.insert(iObj);
 
 		TypeCheckMysql tc = sjm.findById(TypeCheckMysql.class, iObj.getId());
@@ -98,6 +100,7 @@ class TypeCheckMysqlTest {
 
 		assertEquals(iObj.getTextData(), tc.getTextData());
 
+		assertEquals(Byte.valueOf("1"), tc.getByteData());
 	}
 
 	@Test

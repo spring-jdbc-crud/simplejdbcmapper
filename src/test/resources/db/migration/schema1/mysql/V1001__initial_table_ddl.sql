@@ -72,6 +72,7 @@ CREATE TABLE schema1.type_check (
    image blob,
    text_data text,
    offset_date_time_data timestamp,
+   byte_data tinyint,
    string_enum varchar(100),
    non_model_column varchar(100),
    CONSTRAINT type_check_pk PRIMARY KEY (id)

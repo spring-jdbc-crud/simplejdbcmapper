@@ -46,6 +46,9 @@ public class TypeCheckMysql {
 	@Column(sqlType = Types.LONGVARCHAR)
 	private String textData;
 
+	@Column(sqlType = Types.INTEGER)
+	private Byte byteData;
+
 	public Integer getId() {
 		return id;
 	}
@@ -132,6 +135,14 @@ public class TypeCheckMysql {
 
 	public void setTextData(String textData) {
 		this.textData = textData;
+	}
+
+	public Byte getByteData() {
+		return byteData;
+	}
+
+	public void setByteData(Byte byteData) {
+		this.byteData = byteData;
 	}
 
 }

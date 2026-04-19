@@ -32,6 +32,8 @@ class PropertyMapping {
 
 	private TypeHandler typeHandler;
 
+	private int resultSetType;
+
 	private String columnName;
 
 	private Integer columnSqlType; // java.sql.Types from database meta data.
@@ -174,6 +176,14 @@ class PropertyMapping {
 
 	public void setTypeHandler(TypeHandler typeHandler) {
 		this.typeHandler = typeHandler;
+	}
+
+	public int getResultSetType() {
+		return resultSetType;
+	}
+
+	public void setResultSetType(int resultSetType) {
+		this.resultSetType = resultSetType;
 	}
 
 	private void determineBlobClob() {

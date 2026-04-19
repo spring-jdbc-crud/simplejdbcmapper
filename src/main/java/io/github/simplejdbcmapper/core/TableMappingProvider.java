@@ -79,6 +79,7 @@ class TableMappingProvider {
 		ap.validateAnnotations(propertyMappings, entityType);
 		assignReflectionWriteMethods(entityType, propertyMappings);
 		assignTypeHandlers(propertyMappings);
+		assignResultSetType(propertyMappings);
 		return propertyMappings;
 	}
 
@@ -109,6 +110,15 @@ class TableMappingProvider {
 		for (PropertyMapping propMapping : propertyMappings) {
 			TypeHandler typeHandler = HandlerFactory.getTypeHandler(propMapping.getPropertyType());
 			propMapping.setTypeHandler(typeHandler);
+		}
+	}
+
+	private void assignResultSetType(List<PropertyMapping> propertyMappings) {
+		for (PropertyMapping propMapping : propertyMappings) {
+			int resultSetType = ResultSetType.getResultSetType(propMapping.getPropertyType());
+			System.out.println("property:" + propMapping.getPropertyName() + " type: " + propMapping.getPropertyType()
+					+ " resultSetType: " + resultSetType);
+			propMapping.setResultSetType(resultSetType);
 		}
 	}
 

@@ -28,6 +28,8 @@ public class HandlerFactory {
 
 	private static TypeHandler shortTypeHandler = new ShortTypeHandler();
 
+	private static TypeHandler stringTypeHandler = new StringTypeHandler();
+
 	private static TypeHandler timestampTypeHandler = new TimestampTypeHandler();
 
 	private static TypeHandler timeTypeHandler = new TimeTypeHandler();
@@ -63,6 +65,8 @@ public class HandlerFactory {
 			return longTypeHandler;
 		} else if (Short.class == type) {
 			return shortTypeHandler;
+		} else if (String.class == type) {
+			return stringTypeHandler;
 		} else if (java.sql.Timestamp.class == type) {
 			return timestampTypeHandler;
 		} else if (java.sql.Time.class == type) {

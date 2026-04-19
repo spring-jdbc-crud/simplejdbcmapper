@@ -50,7 +50,8 @@ class EntityRowMapper<T> implements RowMapper<T> {
 			PropertyMapping propMapping = tableMapping.getPropertyMappingByColumnName(column);
 			if (propMapping != null) {
 				try {
-					Object value = getResultSetValue(rs, index, propMapping.getPropertyType());
+					Object value = getResultSetValue(rs, index, propMapping.getResultSetType(),
+							propMapping.getPropertyType());
 					if (typedValueExtracted || value == null) {
 						propMapping.getWriteMethod().invoke(obj, value);
 					} else {
@@ -73,10 +74,110 @@ class EntityRowMapper<T> implements RowMapper<T> {
 	}
 
 	/*
+	 * Same logic as Springs JdbcUtil.getResultSetValue(). The difference is, being
+	 * able to use 'switch' instead of all the 'if else's. Checked the complied code
+	 * and java has compiled it into a 'tableswitch' which means the program can
+	 * jump directly to the correct case block in one step. Also set the
+	 * typeValueExtracted flag which allows mapRow() to easily figure out whether
+	 * the property needs conversion
+	 */
+	private Object getResultSetValue(ResultSet rs, int index, int resultSetType, Class<?> requiredType)
+			throws SQLException {
+		typedValueExtracted = true;
+		Object value = null;
+		// Explicitly extract typed value, as far as possible.
+		switch (resultSetType) {
+		case ResultSetType.STRING:
+			return rs.getString(index);
+		case ResultSetType.BOOLEAN:
+			value = rs.getBoolean(index);
+			break;
+		case ResultSetType.BYTE:
+			value = rs.getByte(index);
+			break;
+		case ResultSetType.SHORT:
+			value = rs.getShort(index);
+			break;
+		case ResultSetType.INTEGER:
+			value = rs.getInt(index);
+			break;
+		case ResultSetType.LONG:
+			value = rs.getLong(index);
+			break;
+		case ResultSetType.FLOAT:
+			value = rs.getFloat(index);
+			break;
+		case ResultSetType.DOUBLE:
+			value = rs.getDouble(index);
+			break;
+		case ResultSetType.NUMBER: // same as double
+			value = rs.getDouble(index);
+			break;
+		case ResultSetType.BIGDECIMAL:
+			return rs.getBigDecimal(index);
+		case ResultSetType.DATE:
+			return rs.getDate(index);
+		case ResultSetType.TIME:
+			return rs.getTime(index);
+		case ResultSetType.TIMESTAMP:
+			return rs.getTimestamp(index);
+		case ResultSetType.UTILDATE: // same as timestamp
+			return rs.getTimestamp(index);
+		case ResultSetType.BYTEARRAY:
+			return rs.getBytes(index);
+		case ResultSetType.BLOB:
+			return rs.getBlob(index);
+		case ResultSetType.CLOB:
+			return rs.getClob(index);
+		case ResultSetType.ENUM:
+			System.out.println("ENUMXXXXXXXXXXXXXXx");
+			typedValueExtracted = false;
+			// Enums can either be represented through a String or an enum index value:
+			// leave enum type conversion up to the caller (for example, a
+			// ConversionService)
+			// but make sure that we return nothing other than a String or an Integer.
+			Object obj = rs.getObject(index);
+			if (obj instanceof String) {
+				return obj;
+			} else if (obj instanceof Number number) {
+				// Defensively convert any Number to an Integer (as needed by our
+				// ConversionService's IntegerToEnumConverterFactory) for use as index
+				return NumberUtils.convertNumberToTargetClass(number, Integer.class);
+			} else {
+				// for example, on Postgres: getObject returns a PGObject, but we need a String
+				return rs.getString(index);
+			}
+		default:
+			typedValueExtracted = false;
+			// Some unknown type desired -> rely on getObject.
+			try {
+				return rs.getObject(index, requiredType);
+			} catch (Exception ex) {
+				// jdbc driver does not support
+			}
+			// Corresponding SQL types for JSR-310, left up to the caller to convert
+			// them (for example, through a ConversionService).
+			String typeName = requiredType.getSimpleName();
+			return switch (typeName) {
+			case "LocalDate" -> rs.getDate(index);
+			case "LocalTime" -> rs.getTime(index);
+			case "LocalDateTime" -> rs.getTimestamp(index);
+			// Fall back to getObject without type specification, again
+			// left up to the caller to convert the value if necessary.
+			default -> JdbcUtils.getResultSetValue(rs, index);
+			};
+
+		}
+		// Perform was-null check if necessary (for results that the JDBC driver returns
+		// as primitives).
+		return (rs.wasNull() ? null : value);
+	}
+
+	/*
 	 * Copy of Springs JdbcUtils.getResultSetValue(). The difference is it sets
 	 * typedValueExtracted flag if it can explicitly extract typed value
 	 */
-	private Object getResultSetValue(ResultSet rs, int index, Class<?> requiredType) throws SQLException {
+	private Object getResultSetValueX(ResultSet rs, int index, Class<?> requiredType) throws SQLException {
 		typedValueExtracted = true;
 		Object value;
 		// Explicitly extract typed value, as far as possible.

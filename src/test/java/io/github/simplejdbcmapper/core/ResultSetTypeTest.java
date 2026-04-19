@@ -53,5 +53,7 @@ public class ResultSetTypeTest {
 
 		assertEquals(ResultSetType.ENUM, ResultSetType.getResultSetType(StatusEnum.class));
 
+		assertEquals(ResultSetType.UNKNOWN, ResultSetType.getResultSetType(char[].class));
+
 	}
 }

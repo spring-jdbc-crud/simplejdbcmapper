@@ -4,6 +4,12 @@ import java.math.BigDecimal;
 import java.sql.Blob;
 import java.sql.Clob;
 
+/**
+ * This enum is there because we want the switch statements in the
+ * EntityRowMapper to be compiled into a 'tableswitch' by java; this means that
+ * the program can jump directly to the correct case block in the switch
+ * statement (in EntityRowMapper) in one step.
+ */
 enum ResultSetType {
 
 	UNKNOWN, BIGDECIMAL, BLOB, BOOLEAN, BYTEARRAY, BYTE, CLOB, DATE, DOUBLE, ENUM, FLOAT, INTEGER, LONG, NUMBER, SHORT,

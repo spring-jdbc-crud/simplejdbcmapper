@@ -2,7 +2,9 @@ package io.github.simplejdbcmapper.core;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Member;
 import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -76,7 +78,7 @@ class TableMappingProvider {
 		List<PropertyMapping> propertyMappings = new ArrayList<>(propNameToPropertyMapping.values());
 		ap.validateAnnotations(propertyMappings, entityType);
 		assignReflectionWriteMethods(entityType, propertyMappings);
-		assignResultSetTypeEnum(propertyMappings);
+		assignResultSetType(propertyMappings);
 		return propertyMappings;
 	}
 
@@ -98,18 +100,16 @@ class TableMappingProvider {
 		for (PropertyMapping propMapping : propertyMappings) {
 			PropertyDescriptor pd = bw.getPropertyDescriptor(propMapping.getPropertyName());
 			Method writeMethod = pd.getWriteMethod();
-			writeMethod.setAccessible(true);
+			if (!isPublic(entityType, writeMethod)) {
+				writeMethod.setAccessible(true);
+			}
 			propMapping.setWriteMethod(writeMethod);
 		}
 	}
 
-	private void assignResultSetTypeEnum(List<PropertyMapping> propertyMappings) {
-
+	private void assignResultSetType(List<PropertyMapping> propertyMappings) {
 		for (PropertyMapping propMapping : propertyMappings) {
 			ResultSetType val = ResultSetType.getResultSetType(propMapping.getPropertyType());
-			// System.out.println("property:" + propMapping.getPropertyName() + " type: " +
-			// propMapping.getPropertyType()
-			// + " resultSetType: " + resultSetType);
 			propMapping.setResultSetType(val);
 		}
 	}
@@ -141,6 +141,10 @@ class TableMappingProvider {
 
 	private String getSchemaForTable(Table tableAnnotation) {
 		return StringUtils.hasText(tableAnnotation.schema()) ? tableAnnotation.schema() : schemaName;
+	}
+
+	private boolean isPublic(Class<?> clazz, Member member) {
+		return Modifier.isPublic(member.getModifiers()) && Modifier.isPublic(clazz.getModifiers());
 	}
 
 }

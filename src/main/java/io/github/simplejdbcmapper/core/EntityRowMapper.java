@@ -17,6 +17,9 @@ import io.github.simplejdbcmapper.exception.MapperException;
  * property relationship is already available through TableMapping and avoids
  * conversion if it can.
  * 
+ * <p>
+ * A new instance should be created for use each time
+ * 
  * @param <T> the entityType
  */
 class EntityRowMapper<T> implements RowMapper<T> {
@@ -51,13 +54,11 @@ class EntityRowMapper<T> implements RowMapper<T> {
 						propMapping.getWriteMethod().invoke(obj, value);
 					} else {
 						try {
-							System.out.println("property needs conversion:" + propMapping.getPropertyName() + " type: "
-									+ propMapping.getPropertyType() + " resultSet value type: " + value.getClass());
 							propMapping.getWriteMethod().invoke(obj,
 									conversionService.convert(value, propMapping.getPropertyType()));
 						} catch (ConverterNotFoundException cnfex) {
 							throw new MapperException("For property " + mappedClass.getSimpleName() + "."
-									+ propMapping.getPropertyName() + " could not convert ResulSet value of class "
+									+ propMapping.getPropertyName() + " could not convert ResultSet value of class "
 									+ value.getClass() + " to type of the property " + propMapping.getPropertyType(),
 									cnfex);
 						}
@@ -71,12 +72,12 @@ class EntityRowMapper<T> implements RowMapper<T> {
 	}
 
 	/*
-	 * Same logic as Springs JdbcUtil.getResultSetValue(). The difference is, being
-	 * able to use 'switch' instead of all the 'if else's. Checked the complied java
-	 * code and it has compiled the switch statement into a 'tableswitch' which
-	 * means the program can jump directly to the correct case block in one step.
-	 * Also set the typeValueExtracted flag which allows mapRow() to easily figure
-	 * out whether the property needs conversion
+	 * Same logic as Springs JdbcUtil.getResultSetValue(). Using switch with enums
+	 * instead of all the 'if else's. Checked the complied java code and it has
+	 * compiled the switch statement into a 'tableswitch' which means the program
+	 * can jump directly to the correct case block in one step. Also set the
+	 * typeValueExtracted flag which allows mapRow() to easily figure out whether
+	 * the property needs conversion
 	 */
 
 	private Object getResultSetValue(ResultSet rs, int index, ResultSetType resultSetType, Class<?> requiredType)

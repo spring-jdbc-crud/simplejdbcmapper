@@ -106,11 +106,11 @@ class TableMappingProvider {
 	private void assignResultSetTypeEnum(List<PropertyMapping> propertyMappings) {
 
 		for (PropertyMapping propMapping : propertyMappings) {
-			ResultSetTypeEnum val = ResultSetTypeEnum.getResultSetType(propMapping.getPropertyType());
+			ResultSetType val = ResultSetType.getResultSetType(propMapping.getPropertyType());
 			// System.out.println("property:" + propMapping.getPropertyName() + " type: " +
 			// propMapping.getPropertyType()
 			// + " resultSetType: " + resultSetType);
-			propMapping.setResultSetTypeEnum(val);
+			propMapping.setResultSetType(val);
 		}
 	}
 

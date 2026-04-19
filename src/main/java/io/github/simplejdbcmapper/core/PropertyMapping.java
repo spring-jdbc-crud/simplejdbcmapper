@@ -28,7 +28,7 @@ class PropertyMapping {
 
 	private Method writeMethod; // writeMethod for property to be set by reflection
 
-	private ResultSetTypeEnum resultSetTypeEnum;
+	private ResultSetType resultSetType;
 
 	private String columnName;
 
@@ -166,12 +166,12 @@ class PropertyMapping {
 		this.writeMethod = writeMethod;
 	}
 
-	public ResultSetTypeEnum getResultSetTypeEnum() {
-		return resultSetTypeEnum;
+	public ResultSetType getResultSetType() {
+		return resultSetType;
 	}
 
-	public void setResultSetTypeEnum(ResultSetTypeEnum resultSetTypeEnum) {
-		this.resultSetTypeEnum = resultSetTypeEnum;
+	public void setResultSetType(ResultSetType resultSetType) {
+		this.resultSetType = resultSetType;
 	}
 
 	private void determineBlobClob() {

@@ -4,12 +4,12 @@ import java.math.BigDecimal;
 import java.sql.Blob;
 import java.sql.Clob;
 
-enum ResultSetTypeEnum {
+enum ResultSetType {
 
 	UNKNOWN, BIGDECIMAL, BLOB, BOOLEAN, BYTEARRAY, BYTE, CLOB, DATE, DOUBLE, ENUM, FLOAT, INTEGER, LONG, NUMBER, SHORT,
 	STRING, TIMESTAMP, TIME, UTILDATE;
 
-	public static ResultSetTypeEnum getResultSetType(Class<?> type) {
+	public static ResultSetType getResultSetType(Class<?> type) {
 		if (BigDecimal.class == type) {
 			return BIGDECIMAL;
 		} else if (Blob.class == type) {

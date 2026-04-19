@@ -45,7 +45,7 @@ class EntityRowMapper<T> implements RowMapper<T> {
 			PropertyMapping propMapping = tableMapping.getPropertyMappingByResultSetIndex(index);
 			if (propMapping != null) {
 				try {
-					Object value = getResultSetValue(rs, index, propMapping.getResultSetTypeEnum(),
+					Object value = getResultSetValue(rs, index, propMapping.getResultSetType(),
 							propMapping.getPropertyType());
 					if (typedValueExtracted || value == null) {
 						propMapping.getWriteMethod().invoke(obj, value);
@@ -79,55 +79,55 @@ class EntityRowMapper<T> implements RowMapper<T> {
 	 * out whether the property needs conversion
 	 */
 
-	private Object getResultSetValue(ResultSet rs, int index, ResultSetTypeEnum resultSetType, Class<?> requiredType)
+	private Object getResultSetValue(ResultSet rs, int index, ResultSetType resultSetType, Class<?> requiredType)
 			throws SQLException {
 		typedValueExtracted = true;
 		Object value = null;
 		// Explicitly extract typed value, as far as possible.
 		switch (resultSetType) {
-		case ResultSetTypeEnum.STRING:
+		case ResultSetType.STRING:
 			return rs.getString(index);
-		case ResultSetTypeEnum.BOOLEAN:
+		case ResultSetType.BOOLEAN:
 			value = rs.getBoolean(index);
 			break;
-		case ResultSetTypeEnum.BYTE:
+		case ResultSetType.BYTE:
 			value = rs.getByte(index);
 			break;
-		case ResultSetTypeEnum.SHORT:
+		case ResultSetType.SHORT:
 			value = rs.getShort(index);
 			break;
-		case ResultSetTypeEnum.INTEGER:
+		case ResultSetType.INTEGER:
 			value = rs.getInt(index);
 			break;
-		case ResultSetTypeEnum.LONG:
+		case ResultSetType.LONG:
 			value = rs.getLong(index);
 			break;
-		case ResultSetTypeEnum.FLOAT:
+		case ResultSetType.FLOAT:
 			value = rs.getFloat(index);
 			break;
-		case ResultSetTypeEnum.DOUBLE:
+		case ResultSetType.DOUBLE:
 			value = rs.getDouble(index);
 			break;
-		case ResultSetTypeEnum.NUMBER: // same as double
+		case ResultSetType.NUMBER: // same as double
 			value = rs.getDouble(index);
 			break;
-		case ResultSetTypeEnum.BIGDECIMAL:
+		case ResultSetType.BIGDECIMAL:
 			return rs.getBigDecimal(index);
-		case ResultSetTypeEnum.DATE:
+		case ResultSetType.DATE:
 			return rs.getDate(index);
-		case ResultSetTypeEnum.TIME:
+		case ResultSetType.TIME:
 			return rs.getTime(index);
-		case ResultSetTypeEnum.TIMESTAMP:
+		case ResultSetType.TIMESTAMP:
 			return rs.getTimestamp(index);
-		case ResultSetTypeEnum.UTILDATE: // same as timestamp
+		case ResultSetType.UTILDATE: // same as timestamp
 			return rs.getTimestamp(index);
-		case ResultSetTypeEnum.BYTEARRAY:
+		case ResultSetType.BYTEARRAY:
 			return rs.getBytes(index);
-		case ResultSetTypeEnum.BLOB:
+		case ResultSetType.BLOB:
 			return rs.getBlob(index);
-		case ResultSetTypeEnum.CLOB:
+		case ResultSetType.CLOB:
 			return rs.getClob(index);
-		case ResultSetTypeEnum.ENUM:
+		case ResultSetType.ENUM:
 			typedValueExtracted = false;
 			// Enums can either be represented through a String or an enum index value:
 			// leave enum type conversion up to the caller (for example, a

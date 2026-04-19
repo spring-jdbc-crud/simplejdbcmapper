@@ -28,8 +28,6 @@ class PropertyMapping {
 
 	private Method writeMethod; // writeMethod for property to be set by reflection
 
-	private int resultSetType;
-
 	private ResultSetTypeEnum resultSetTypeEnum;
 
 	private String columnName;
@@ -166,14 +164,6 @@ class PropertyMapping {
 
 	public void setWriteMethod(Method writeMethod) {
 		this.writeMethod = writeMethod;
-	}
-
-	public int getResultSetType() {
-		return resultSetType;
-	}
-
-	public void setResultSetType(int resultSetType) {
-		this.resultSetType = resultSetType;
 	}
 
 	public ResultSetTypeEnum getResultSetTypeEnum() {

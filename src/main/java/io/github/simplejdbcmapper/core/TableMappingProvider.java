@@ -76,7 +76,6 @@ class TableMappingProvider {
 		List<PropertyMapping> propertyMappings = new ArrayList<>(propNameToPropertyMapping.values());
 		ap.validateAnnotations(propertyMappings, entityType);
 		assignReflectionWriteMethods(entityType, propertyMappings);
-		assignResultSetType(propertyMappings);
 		assignResultSetTypeEnum(propertyMappings);
 		return propertyMappings;
 	}
@@ -101,16 +100,6 @@ class TableMappingProvider {
 			Method writeMethod = pd.getWriteMethod();
 			writeMethod.setAccessible(true);
 			propMapping.setWriteMethod(writeMethod);
-		}
-	}
-
-	private void assignResultSetType(List<PropertyMapping> propertyMappings) {
-		for (PropertyMapping propMapping : propertyMappings) {
-			int resultSetType = ResultSetType.getResultSetType(propMapping.getPropertyType());
-			// System.out.println("property:" + propMapping.getPropertyName() + " type: " +
-			// propMapping.getPropertyType()
-			// + " resultSetType: " + resultSetType);
-			propMapping.setResultSetType(resultSetType);
 		}
 	}
 

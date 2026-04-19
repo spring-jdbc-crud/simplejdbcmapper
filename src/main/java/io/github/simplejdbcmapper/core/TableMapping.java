@@ -192,4 +192,9 @@ class TableMapping {
 	public boolean hasAutoAssignProperties() {
 		return autoAssignProperties;
 	}
+
+	public PropertyMapping getPropertyMappingByResultSetIndex(int index) {
+		// resultSet indexes start at 1.
+		return propertyMappings.get(index - 1);
+	}
 }

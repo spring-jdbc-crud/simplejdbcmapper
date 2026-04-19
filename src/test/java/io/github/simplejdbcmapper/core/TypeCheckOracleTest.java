@@ -74,11 +74,11 @@ class TypeCheckOracleTest {
 		var offsetVal = OffsetDateTime.now();
 		iObj.setOffsetDateTimeData(offsetVal);
 
-		iObj.setClobData("123456789".toCharArray());
+		iObj.setClobData("123456789");
 
 		iObj.setClobDataStr("123456789");
 
-		iObj.setNclobData("nclob123456789".toCharArray());
+		iObj.setNclobData("nclob123456789");
 
 		sjm.insert(iObj);
 
@@ -146,7 +146,8 @@ class TypeCheckOracleTest {
 	@Test
 	void insert_ClobErrTest() {
 		ClobErr obj = new ClobErr();
-		obj.setClobData(new String[] { "a", "b", "c" });
+		char[] charArray = { 'J', 'a', 'v', 'a' };
+		obj.setClobData(charArray);
 		Assertions.assertThrows(Exception.class, () -> {
 			sjm.insert(obj);
 		});
@@ -180,9 +181,9 @@ class TypeCheckOracleTest {
 		var offsetVal = OffsetDateTime.now();
 		uObj.setOffsetDateTimeData(offsetVal);
 
-		uObj.setClobData("123456789".toCharArray());
+		uObj.setClobData("123456789");
 		uObj.setClobDataStr("123456789");
-		uObj.setNclobData("nclob123456789".toCharArray());
+		uObj.setNclobData("nclob123456789");
 
 		sjm.update(uObj);
 
@@ -252,11 +253,12 @@ class TypeCheckOracleTest {
 	void update_ClobErrTest() {
 		ClobErr obj = new ClobErr();
 		obj.setId(1);
-		obj.setClobData(new String[] { "a", "b", "c" });
+		char[] charArray = { 'J', 'a', 'v', 'a' };
+		obj.setClobData(charArray);
 		Exception exception = Assertions.assertThrows(Exception.class, () -> {
 			sjm.update(obj);
 		});
-		assertTrue(exception.getMessage().contains("java type has to be String or other"));
+		assertTrue(exception.getMessage().contains("java type has to be String for a CLOB mapping"));
 	}
 
 }

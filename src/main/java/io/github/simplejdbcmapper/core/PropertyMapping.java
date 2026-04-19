@@ -13,6 +13,7 @@
  */
 package io.github.simplejdbcmapper.core;
 
+import java.lang.reflect.Method;
 import java.sql.Types;
 
 /**
@@ -24,6 +25,10 @@ class PropertyMapping {
 	private String propertyName;
 
 	private Class<?> propertyType;
+
+	private Method writeMethod; // writeMethod for property to be set by reflection
+
+	private ResultSetType resultSetType;
 
 	private String columnName;
 
@@ -151,6 +156,22 @@ class PropertyMapping {
 
 	public boolean isEnum() {
 		return isEnum;
+	}
+
+	public Method getWriteMethod() {
+		return writeMethod;
+	}
+
+	public void setWriteMethod(Method writeMethod) {
+		this.writeMethod = writeMethod;
+	}
+
+	public ResultSetType getResultSetType() {
+		return resultSetType;
+	}
+
+	public void setResultSetType(ResultSetType resultSetType) {
+		this.resultSetType = resultSetType;
 	}
 
 	private void determineBlobClob() {

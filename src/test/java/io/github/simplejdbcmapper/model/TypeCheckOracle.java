@@ -41,13 +41,13 @@ public class TypeCheckOracle {
 	private byte[] image;
 
 	@Column(sqlType = Types.CLOB)
-	private char[] clobData;
+	private String clobData;
 
 	@Column(sqlType = Types.CLOB)
 	private String clobDataStr;
 
 	@Column(sqlType = Types.NCLOB)
-	private char[] nclobData;
+	private String nclobData;
 
 	public StatusEnum getStatus() {
 		return status;
@@ -121,19 +121,19 @@ public class TypeCheckOracle {
 		this.image = image;
 	}
 
-	public char[] getClobData() {
+	public String getClobData() {
 		return clobData;
 	}
 
-	public void setClobData(char[] clobData) {
+	public void setClobData(String clobData) {
 		this.clobData = clobData;
 	}
 
-	public char[] getNclobData() {
+	public String getNclobData() {
 		return nclobData;
 	}
 
-	public void setNclobData(char[] nclobData) {
+	public void setNclobData(String nclobData) {
 		this.nclobData = nclobData;
 	}
 

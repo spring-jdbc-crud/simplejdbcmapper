@@ -71,13 +71,11 @@ class InternalUtils {
 		if (val == null) {
 			mapSqlParameterSource.addValue(param, null, columnSqlType);
 		} else {
-			if (val instanceof CharSequence charSequence) {
-				mapSqlParameterSource.addValue(param, new SqlCharacterValue(charSequence), columnSqlType);
-			} else if (val instanceof char[] charArray) {
-				mapSqlParameterSource.addValue(param, new SqlCharacterValue(charArray), columnSqlType);
+			if (val instanceof String str) {
+				mapSqlParameterSource.addValue(param, new SqlCharacterValue(str), columnSqlType);
 			} else {
 				throw new MapperException(bw.getWrappedClass().getSimpleName() + "." + propMapping.getPropertyName()
-						+ " : java type has to be String or other CharSequence or char[] for a CLOB mapping. No other type is supported");
+						+ " : java type has to be String for a CLOB mapping. No other type is supported");
 			}
 		}
 	}

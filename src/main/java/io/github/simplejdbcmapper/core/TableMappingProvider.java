@@ -1,6 +1,10 @@
 package io.github.simplejdbcmapper.core;
 
+import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
+import java.lang.reflect.Member;
+import java.lang.reflect.Method;
+import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -9,6 +13,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
@@ -72,6 +77,8 @@ class TableMappingProvider {
 		}
 		List<PropertyMapping> propertyMappings = new ArrayList<>(propNameToPropertyMapping.values());
 		ap.validateAnnotations(propertyMappings, entityType);
+		assignReflectionWriteMethods(entityType, propertyMappings);
+		assignResultSetType(propertyMappings);
 		return propertyMappings;
 	}
 
@@ -86,6 +93,25 @@ class TableMappingProvider {
 		// by name
 		Set<String> set = new HashSet<>();
 		return fields.stream().filter(p -> set.add(p.getName())).toList();
+	}
+
+	private void assignReflectionWriteMethods(Class<?> entityType, List<PropertyMapping> propertyMappings) {
+		BeanWrapperImpl bw = new BeanWrapperImpl(entityType);
+		for (PropertyMapping propMapping : propertyMappings) {
+			PropertyDescriptor pd = bw.getPropertyDescriptor(propMapping.getPropertyName());
+			Method writeMethod = pd.getWriteMethod();
+			if (!isPublic(entityType, writeMethod)) {
+				writeMethod.setAccessible(true);
+			}
+			propMapping.setWriteMethod(writeMethod);
+		}
+	}
+
+	private void assignResultSetType(List<PropertyMapping> propertyMappings) {
+		for (PropertyMapping propMapping : propertyMappings) {
+			ResultSetType val = ResultSetType.getResultSetType(propMapping.getPropertyType());
+			propMapping.setResultSetType(val);
+		}
 	}
 
 	private IdPropertyInfo getIdPropertyInfo(Class<?> entityType, List<Field> fields) {
@@ -115,6 +141,10 @@ class TableMappingProvider {
 
 	private String getSchemaForTable(Table tableAnnotation) {
 		return StringUtils.hasText(tableAnnotation.schema()) ? tableAnnotation.schema() : schemaName;
+	}
+
+	private boolean isPublic(Class<?> clazz, Member member) {
+		return Modifier.isPublic(member.getModifiers()) && Modifier.isPublic(clazz.getModifiers());
 	}
 
 }

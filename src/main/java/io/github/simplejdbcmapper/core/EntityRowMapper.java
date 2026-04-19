@@ -26,7 +26,7 @@ class EntityRowMapper<T> implements RowMapper<T> {
 	private Class<T> mappedClass;
 	private TableMapping tableMapping;
 	private ConversionService conversionService;
-	private boolean resultSetTyped = true;
+	private boolean typedValueExtracted = true;
 
 	public EntityRowMapper(Class<T> entityType, TableMapping tableMapping, ConversionService conversionService) {
 		this.mappedClass = entityType;
@@ -51,7 +51,7 @@ class EntityRowMapper<T> implements RowMapper<T> {
 			if (propMapping != null) {
 				try {
 					Object value = getResultSetValue(rs, index, propMapping.getPropertyType());
-					if (resultSetTyped || value == null) {
+					if (typedValueExtracted || value == null) {
 						propMapping.getWriteMethod().invoke(obj, value);
 					} else {
 						try {
@@ -74,10 +74,10 @@ class EntityRowMapper<T> implements RowMapper<T> {
 
 	/*
 	 * Copy of Springs JdbcUtils.getResultSetValue(). The difference is it sets
-	 * resultSetTyped flag if it can explicitly extract typed value
+	 * typedValueExtracted flag if it can explicitly extract typed value
 	 */
 	private Object getResultSetValue(ResultSet rs, int index, Class<?> requiredType) throws SQLException {
-		resultSetTyped = true;
+		typedValueExtracted = true;
 		Object value;
 		// Explicitly extract typed value, as far as possible.
 		if (String.class == requiredType) {
@@ -111,7 +111,7 @@ class EntityRowMapper<T> implements RowMapper<T> {
 		} else if (Clob.class == requiredType) {
 			return rs.getClob(index);
 		} else if (requiredType.isEnum()) {
-			resultSetTyped = false;
+			typedValueExtracted = false;
 			// Enums can either be represented through a String or an enum index value:
 			// leave enum type conversion up to the caller (for example, a
 			// ConversionService)
@@ -128,7 +128,7 @@ class EntityRowMapper<T> implements RowMapper<T> {
 				return rs.getString(index);
 			}
 		} else {
-			resultSetTyped = false;
+			typedValueExtracted = false;
 			// Some unknown type desired -> rely on getObject.
 			try {
 				return rs.getObject(index, requiredType);

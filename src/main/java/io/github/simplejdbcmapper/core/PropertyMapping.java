@@ -16,8 +16,6 @@ package io.github.simplejdbcmapper.core;
 import java.lang.reflect.Method;
 import java.sql.Types;
 
-import io.github.simplejdbcmapper.type.TypeHandler;
-
 /**
  * Object property to database column mapping.
  *
@@ -30,9 +28,9 @@ class PropertyMapping {
 
 	private Method writeMethod; // writeMethod for property to be set by reflection
 
-	private TypeHandler typeHandler;
-
 	private int resultSetType;
+
+	private ResultSetTypeEnum resultSetTypeEnum;
 
 	private String columnName;
 
@@ -170,20 +168,20 @@ class PropertyMapping {
 		this.writeMethod = writeMethod;
 	}
 
-	public TypeHandler getTypeHandler() {
-		return typeHandler;
-	}
-
-	public void setTypeHandler(TypeHandler typeHandler) {
-		this.typeHandler = typeHandler;
-	}
-
 	public int getResultSetType() {
 		return resultSetType;
 	}
 
 	public void setResultSetType(int resultSetType) {
 		this.resultSetType = resultSetType;
+	}
+
+	public ResultSetTypeEnum getResultSetTypeEnum() {
+		return resultSetTypeEnum;
+	}
+
+	public void setResultSetTypeEnum(ResultSetTypeEnum resultSetTypeEnum) {
+		this.resultSetTypeEnum = resultSetTypeEnum;
 	}
 
 	private void determineBlobClob() {

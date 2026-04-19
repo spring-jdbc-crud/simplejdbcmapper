@@ -20,8 +20,6 @@ import io.github.simplejdbcmapper.annotation.Id;
 import io.github.simplejdbcmapper.annotation.IdType;
 import io.github.simplejdbcmapper.annotation.Table;
 import io.github.simplejdbcmapper.exception.AnnotationException;
-import io.github.simplejdbcmapper.type.HandlerFactory;
-import io.github.simplejdbcmapper.type.TypeHandler;
 
 class TableMappingProvider {
 	private final String schemaName;
@@ -78,8 +76,8 @@ class TableMappingProvider {
 		List<PropertyMapping> propertyMappings = new ArrayList<>(propNameToPropertyMapping.values());
 		ap.validateAnnotations(propertyMappings, entityType);
 		assignReflectionWriteMethods(entityType, propertyMappings);
-		assignTypeHandlers(propertyMappings);
 		assignResultSetType(propertyMappings);
+		assignResultSetTypeEnum(propertyMappings);
 		return propertyMappings;
 	}
 
@@ -106,19 +104,24 @@ class TableMappingProvider {
 		}
 	}
 
-	private void assignTypeHandlers(List<PropertyMapping> propertyMappings) {
-		for (PropertyMapping propMapping : propertyMappings) {
-			TypeHandler typeHandler = HandlerFactory.getTypeHandler(propMapping.getPropertyType());
-			propMapping.setTypeHandler(typeHandler);
-		}
-	}
-
 	private void assignResultSetType(List<PropertyMapping> propertyMappings) {
 		for (PropertyMapping propMapping : propertyMappings) {
 			int resultSetType = ResultSetType.getResultSetType(propMapping.getPropertyType());
-			System.out.println("property:" + propMapping.getPropertyName() + " type: " + propMapping.getPropertyType()
-					+ " resultSetType: " + resultSetType);
+			// System.out.println("property:" + propMapping.getPropertyName() + " type: " +
+			// propMapping.getPropertyType()
+			// + " resultSetType: " + resultSetType);
 			propMapping.setResultSetType(resultSetType);
+		}
+	}
+
+	private void assignResultSetTypeEnum(List<PropertyMapping> propertyMappings) {
+
+		for (PropertyMapping propMapping : propertyMappings) {
+			ResultSetTypeEnum val = ResultSetTypeEnum.getResultSetType(propMapping.getPropertyType());
+			// System.out.println("property:" + propMapping.getPropertyName() + " type: " +
+			// propMapping.getPropertyType()
+			// + " resultSetType: " + resultSetType);
+			propMapping.setResultSetTypeEnum(val);
 		}
 	}
 

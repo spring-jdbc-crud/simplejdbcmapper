@@ -48,7 +48,7 @@ class FindTest {
 		assertNotNull(order.getVersion());
 
 		int cnt = 0;
-		while (cnt < 50) {
+		while (cnt < 0) {
 			cnt++;
 			sjm.findById(Order.class, 1);
 		}

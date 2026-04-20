@@ -273,7 +273,7 @@ class FindTest {
 		Exception exception = Assertions.assertThrows(MapperException.class, () -> {
 			sjm.findById(ConvertorMissingProduct.class, 1);
 		});
-		assertTrue(exception.getMessage().contains("could not convert ResultSet value"));
+		assertTrue(exception.getMessage().contains("Failed to convert from type"));
 	}
 
 }

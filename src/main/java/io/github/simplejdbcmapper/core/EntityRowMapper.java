@@ -4,7 +4,6 @@ import java.sql.ResultSet;
 import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
-import org.springframework.core.convert.ConversionFailedException;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.JdbcUtils;
@@ -42,34 +41,23 @@ class EntityRowMapper<T> implements RowMapper<T> {
 		T obj = null;
 		try {
 			obj = mappedClass.getDeclaredConstructor().newInstance();
-		} catch (Exception e) {
-			throw new MapperException("Could not instantiate class " + mappedClass.getName(), e);
-		}
-		ResultSetMetaData rsmd = rs.getMetaData();
-		int columnCount = rsmd.getColumnCount();
-		for (int index = 1; index <= columnCount; index++) {
-			PropertyMapping propMapping = tableMapping.getPropertyMappingByResultSetIndex(index);
-			if (propMapping != null) {
-				try {
+			ResultSetMetaData rsmd = rs.getMetaData();
+			int columnCount = rsmd.getColumnCount();
+			for (int index = 1; index <= columnCount; index++) {
+				PropertyMapping propMapping = tableMapping.getPropertyMappingByResultSetIndex(index);
+				if (propMapping != null) {
 					Object value = getResultSetValue(rs, index, propMapping.getResultSetType(),
 							propMapping.getPropertyType());
 					if (typedValueExtracted || value == null) {
 						propMapping.getWriteMethod().invoke(obj, value);
 					} else {
-						try {
-							propMapping.getWriteMethod().invoke(obj,
-									conversionService.convert(value, propMapping.getPropertyType()));
-						} catch (ConversionFailedException cfex) {
-							throw new MapperException("For property " + mappedClass.getSimpleName() + "."
-									+ propMapping.getPropertyName() + " could not convert ResultSet value of type "
-									+ value.getClass().getCanonicalName() + " to type of the property "
-									+ propMapping.getPropertyType().getCanonicalName(), cfex);
-						}
+						propMapping.getWriteMethod().invoke(obj,
+								conversionService.convert(value, propMapping.getPropertyType()));
 					}
-				} catch (Exception ex) {
-					throw new MapperException(ex);
 				}
 			}
+		} catch (Exception e) {
+			throw new MapperException(e.getMessage(), e);
 		}
 		return obj;
 	}

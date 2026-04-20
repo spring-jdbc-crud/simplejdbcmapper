@@ -230,6 +230,7 @@ class SimpleJdbcMapperTest {
 		// in sjm
 		sjm.close();
 
+		assertEquals(0, tableMappingCache.size());
 		assertEquals(0, findCache.size());
 		assertEquals(0, rawColCache.size());
 		assertEquals(0, insertCache.size());

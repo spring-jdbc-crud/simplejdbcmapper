@@ -11,13 +11,7 @@ import org.springframework.jdbc.support.JdbcUtils;
 import io.github.simplejdbcmapper.exception.MapperException;
 
 /**
- * We get the resultset values using a switch statement with enums which java
- * compiles into a 'tableswitch'. This means that the program will jump directly
- * to the correct case block in the switch statement in one step. When property
- * mappings for an entity is initialized, the property's resultSetType is
- * assigned for direct access when processing the query ResultSet. Also the
- * writeMethod (to set values by reflection) is assigned to the property mapping
- * so it is directly available.
+ * The row mapper used internally
  * 
  * <p>
  * A new instance should be created for use each time

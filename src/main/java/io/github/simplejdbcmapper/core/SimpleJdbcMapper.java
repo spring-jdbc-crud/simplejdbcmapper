@@ -403,15 +403,15 @@ public final class SimpleJdbcMapper {
 	/**
 	 * Clears all its internal caches.
 	 * 
-	 * This method is automatically invoked upon the closing of Springs's
+	 * This method is automatically invoked by spring upon the closing of its
 	 * application context
 	 */
 	public void close() {
+		simpleJdbcMapperSupport.close();
 		insertOperation.close();
 		findOperation.close();
 		updateOperation.close();
 		deleteOperation.close();
-		simpleJdbcMapperSupport.close();
 	}
 
 }

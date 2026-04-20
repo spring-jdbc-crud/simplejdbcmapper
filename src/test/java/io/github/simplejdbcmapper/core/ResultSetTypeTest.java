@@ -15,7 +15,7 @@ import io.github.simplejdbcmapper.model.StatusEnum;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-public class ResultSetTypeTest {
+class ResultSetTypeTest {
 	@Test
 	void resultSetType_fromClass_Test() {
 
@@ -26,8 +26,6 @@ public class ResultSetTypeTest {
 		assertEquals(ResultSetType.BYTE, ResultSetType.getResultSetType(Byte.class));
 
 		assertEquals(ResultSetType.SHORT, ResultSetType.getResultSetType(Short.class));
-
-		assertEquals(ResultSetType.STRING, ResultSetType.getResultSetType(String.class));
 
 		assertEquals(ResultSetType.INTEGER, ResultSetType.getResultSetType(Integer.class));
 

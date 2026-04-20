@@ -250,6 +250,9 @@ class TypeCheckPostgresTest {
 		assertNull(findObj.getFloatData());
 		assertNull(findObj.getDoubleData());
 		assertNull(findObj.getBooleanVal());
+		assertNull(findObj.getDoubleData());
+		assertNull(findObj.getNumberData());
+		// Byte primitive test is in mysql
 
 	}
 

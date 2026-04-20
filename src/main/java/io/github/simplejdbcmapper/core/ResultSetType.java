@@ -7,8 +7,6 @@ import java.sql.Clob;
 /**
  * This enum is there because we want the switch statements in the
  * EntityRowMapper to be compiled into a 'tableswitch' by java (which it does).
- * This means that the program can jump directly to the correct case block in
- * the switch statement (in EntityRowMapper) in one step.
  */
 enum ResultSetType {
 

@@ -16,7 +16,7 @@ import io.github.simplejdbcmapper.model.NoDefaultConstructor;
 class EntityRowMapperTest {
 
 	@Test
-	void no_defaultConstructor_Test() throws Exception {
+	void no_defaultConstructor_Test() {
 
 		EntityRowMapper<NoDefaultConstructor> rowMapper = new EntityRowMapper<>(NoDefaultConstructor.class, null, null);
 

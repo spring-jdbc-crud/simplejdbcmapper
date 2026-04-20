@@ -2,6 +2,7 @@ package io.github.simplejdbcmapper.core;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
@@ -160,6 +161,8 @@ class TypeCheckMysqlTest {
 		assertEquals(oFmt.format(offsetVal), oFmt.format(tc.getOffsetDateTimeData()));
 
 		assertEquals(uObj.getTextData(), tc.getTextData());
+
+		assertNull(tc.getByteData()); // this is a primitive test
 
 	}
 

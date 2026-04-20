@@ -17,7 +17,7 @@ import io.github.simplejdbcmapper.exception.MapperException;
  * mappings for an entity is initialized, the property's resultSetType is
  * assigned for direct access when processing the query ResultSet. Also the
  * writeMethod (to set values by reflection) is assigned to the property mapping
- * so it is directly available also.
+ * so it is directly available.
  * 
  * <p>
  * A new instance should be created for use each time
@@ -45,15 +45,13 @@ class EntityRowMapper<T> implements RowMapper<T> {
 			int columnCount = rsmd.getColumnCount();
 			for (int index = 1; index <= columnCount; index++) {
 				PropertyMapping propMapping = tableMapping.getPropertyMappingByResultSetIndex(index);
-				if (propMapping != null) {
-					Object value = getResultSetValue(rs, index, propMapping.getResultSetType(),
-							propMapping.getPropertyType());
-					if (typedValueExtracted || value == null) {
-						propMapping.getWriteMethod().invoke(obj, value);
-					} else {
-						propMapping.getWriteMethod().invoke(obj,
-								conversionService.convert(value, propMapping.getPropertyType()));
-					}
+				Object value = getResultSetValue(rs, index, propMapping.getResultSetType(),
+						propMapping.getPropertyType());
+				if (typedValueExtracted || value == null) {
+					propMapping.getWriteMethod().invoke(obj, value);
+				} else {
+					propMapping.getWriteMethod().invoke(obj,
+							conversionService.convert(value, propMapping.getPropertyType()));
 				}
 			}
 		} catch (Exception e) {
@@ -70,7 +68,6 @@ class EntityRowMapper<T> implements RowMapper<T> {
 	 * typeValueExtracted flag which allows mapRow() to easily figure out whether
 	 * the property needs conversion
 	 */
-
 	private Object getResultSetValue(ResultSet rs, int index, ResultSetType resultSetType, Class<?> requiredType)
 			throws SQLException {
 		typedValueExtracted = true;

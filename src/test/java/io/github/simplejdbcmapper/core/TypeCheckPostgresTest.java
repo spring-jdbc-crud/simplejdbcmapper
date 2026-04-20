@@ -104,6 +104,8 @@ class TypeCheckPostgresTest {
 
 		iObj.setDoubleData(Double.valueOf(12.34));
 
+		iObj.setNumberData(Double.valueOf(56.78));
+
 		iObj.setJavaSqlTimestampData(Timestamp.valueOf("2026-04-19 14:30:00.0"));
 
 		sjm.insert(iObj);
@@ -144,6 +146,8 @@ class TypeCheckPostgresTest {
 		assertEquals((short) 100, tc.getShortData());
 
 		assertEquals(Double.valueOf(12.34), tc.getDoubleData());
+
+		assertEquals(Double.valueOf(56.78), tc.getNumberData());
 
 		assertNotNull(tc.getJavaSqlTimestampData());
 

@@ -63,6 +63,9 @@ public class TypeCheckPostgres {
 	private Double doubleData;
 
 	@Column
+	private Number numberData;
+
+	@Column
 	private java.sql.Date javaSqlDateData;
 
 	@Column
@@ -221,6 +224,14 @@ public class TypeCheckPostgres {
 
 	public void setJavaSqlTimestampData(java.sql.Timestamp javaSqlTimestampData) {
 		this.javaSqlTimestampData = javaSqlTimestampData;
+	}
+
+	public Number getNumberData() {
+		return numberData;
+	}
+
+	public void setNumberData(Number numberData) {
+		this.numberData = numberData;
 	}
 
 }

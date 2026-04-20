@@ -22,6 +22,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import io.github.simplejdbcmapper.exception.MapperException;
 import io.github.simplejdbcmapper.model.ConvertorMissingProduct;
 import io.github.simplejdbcmapper.model.Customer;
+import io.github.simplejdbcmapper.model.NoDefaultConstructor;
 import io.github.simplejdbcmapper.model.Order;
 import io.github.simplejdbcmapper.model.OrderLine;
 import io.github.simplejdbcmapper.model.PersonView;
@@ -274,6 +275,14 @@ class FindTest {
 			sjm.findById(ConvertorMissingProduct.class, 1);
 		});
 		assertTrue(exception.getMessage().contains("Failed to convert from type"));
+	}
+
+	@Test
+	void find_noDefaultConstructor_Test() {
+		Exception exception = Assertions.assertThrows(MapperException.class, () -> {
+			sjm.findById(NoDefaultConstructor.class, 1);
+		});
+		assertTrue(exception.getMessage().contains("Failed to instantiate"));
 	}
 
 }

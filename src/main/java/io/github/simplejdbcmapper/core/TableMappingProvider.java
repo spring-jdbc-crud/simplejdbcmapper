@@ -22,6 +22,7 @@ import io.github.simplejdbcmapper.annotation.Id;
 import io.github.simplejdbcmapper.annotation.IdType;
 import io.github.simplejdbcmapper.annotation.Table;
 import io.github.simplejdbcmapper.exception.AnnotationException;
+import io.github.simplejdbcmapper.exception.MapperException;
 
 class TableMappingProvider {
 	private final String schemaName;
@@ -96,14 +97,18 @@ class TableMappingProvider {
 	}
 
 	private void assignReflectionWriteMethods(Class<?> entityType, List<PropertyMapping> propertyMappings) {
-		BeanWrapperImpl bw = new BeanWrapperImpl(entityType);
-		for (PropertyMapping propMapping : propertyMappings) {
-			PropertyDescriptor pd = bw.getPropertyDescriptor(propMapping.getPropertyName());
-			Method writeMethod = pd.getWriteMethod();
-			if (!isPublic(entityType, writeMethod)) {
-				writeMethod.setAccessible(true);
+		try {
+			BeanWrapperImpl bw = new BeanWrapperImpl(entityType);
+			for (PropertyMapping propMapping : propertyMappings) {
+				PropertyDescriptor pd = bw.getPropertyDescriptor(propMapping.getPropertyName());
+				Method writeMethod = pd.getWriteMethod();
+				if (!isPublic(entityType, writeMethod)) {
+					writeMethod.setAccessible(true);
+				}
+				propMapping.setWriteMethod(writeMethod);
 			}
-			propMapping.setWriteMethod(writeMethod);
+		} catch (Exception e) {
+			throw new MapperException(e.getMessage(), e);
 		}
 	}
 

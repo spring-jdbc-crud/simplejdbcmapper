@@ -177,6 +177,11 @@ class FindOperation {
 		return rawColumnsSqlCache;
 	}
 
+	void close() {
+		findByIdSqlCache.clear();
+		rawColumnsSqlCache.clear();
+	}
+
 	String getRawSqlColumns(Class<?> entityType) {
 		Assert.notNull(entityType, "entityType must not be null");
 		String columnsSql = rawColumnsSqlCache.get(entityType.getName());

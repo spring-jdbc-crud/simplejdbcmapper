@@ -152,4 +152,8 @@ class SimpleJdbcMapperSupport {
 		return tableMappingProvider.getTableMappingCache();
 	}
 
+	void close() {
+		tableMappingProvider.getTableMappingCache().clear();
+	}
+
 }

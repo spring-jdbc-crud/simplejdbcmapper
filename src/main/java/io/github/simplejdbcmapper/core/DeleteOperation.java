@@ -39,4 +39,8 @@ class DeleteOperation {
 		return deleteSqlCache;
 	}
 
+	void close() {
+		deleteSqlCache.clear();
+	}
+
 }

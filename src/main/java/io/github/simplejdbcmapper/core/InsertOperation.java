@@ -48,6 +48,10 @@ class InsertOperation {
 		return insertSqlCache;
 	}
 
+	void close() {
+		insertSqlCache.clear();
+	}
+
 	private MapSqlParameterSource createMapSqlParameterSource(TableMapping tableMapping, BeanWrapper bw) {
 		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
 		for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {

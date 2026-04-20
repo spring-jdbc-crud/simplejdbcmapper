@@ -400,4 +400,18 @@ public final class SimpleJdbcMapper {
 		return simpleJdbcMapperSupport.getCatalogName();
 	}
 
+	/**
+	 * Closes down SimpleJdbcMapper. Clears all referenced objects
+	 * 
+	 * This method is automatically invoked upon the closing of Springs's
+	 * application context
+	 */
+	public void close() {
+		insertOperation.close();
+		findOperation.close();
+		updateOperation.close();
+		deleteOperation.close();
+		simpleJdbcMapperSupport.close();
+	}
+
 }

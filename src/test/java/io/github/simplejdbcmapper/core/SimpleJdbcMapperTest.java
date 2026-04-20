@@ -19,8 +19,10 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import io.github.simplejdbcmapper.model.Customer;
 import io.github.simplejdbcmapper.model.NonDefaultNamingProduct;
 import io.github.simplejdbcmapper.model.Product;
 
@@ -173,6 +175,68 @@ class SimpleJdbcMapperTest {
 		Map<String, String> map = sjm.getPropertyToColumnMappings(Product.class);
 		assertEquals(9, map.size());
 		assertTrue(map.containsKey("productId"));
+	}
+
+	@Test
+	void close_Test() {
+		SimpleJdbcMapperSupport sjms = TestUtils.getSimpleJdbcMapperSupport(sjm);
+		SimpleCache<String, TableMapping> tableMappingCache = sjms.getTableMappingCache();
+		tableMappingCache.clear();
+
+		FindOperation fo = TestUtils.getFindOperation(sjm);
+		SimpleCache<String, String> findCache = fo.getFindByIdSqlCache();
+		findCache.clear();
+
+		SimpleCache<String, String> rawColCache = fo.getRawColumnsSqlCache();
+		rawColCache.clear();
+
+		InsertOperation io = TestUtils.getInsertOperation(sjm);
+		SimpleCache<String, SimpleJdbcInsert> insertCache = io.getInsertSqlCache();
+		insertCache.clear();
+
+		UpdateOperation uo = TestUtils.getUpdateOperation(sjm);
+		SimpleCache<String, SqlAndParams> updateCache = uo.getUpdateSqlCache();
+		updateCache.clear();
+
+		SimpleCache<String, SqlAndParams> updateSpecCache = uo.getUpdateSpecificPropertiesSqlCache();
+		updateSpecCache.clear();
+
+		DeleteOperation dop = TestUtils.getDeleteOperation(sjm);
+		SimpleCache<String, String> delCache = dop.getDeleteSqlCache();
+		delCache.clear();
+
+		sjm.findById(Customer.class, 1);
+		assertTrue(findCache.size() > 0);
+		assertTrue(rawColCache.size() > 0);
+
+		Product prod = new Product();
+		prod.setProductId(3121);
+		prod.setName("xyz");
+		sjm.insert(prod);
+		assertTrue(insertCache.size() > 0);
+
+		prod.setCost(10.25);
+		sjm.update(prod);
+		assertTrue(updateCache.size() > 0);
+
+		prod.setCost(20.22);
+		sjm.updateSpecificProperties(prod, "cost");
+		assertTrue(updateSpecCache.size() > 0);
+
+		sjm.delete(prod);
+		assertTrue(delCache.size() > 0);
+
+		// now close and check the cache sizes are 0 ie we have cleared all references
+		// in sjm
+		sjm.close();
+
+		assertEquals(0, findCache.size());
+		assertEquals(0, rawColCache.size());
+		assertEquals(0, insertCache.size());
+		assertEquals(0, updateCache.size());
+		assertEquals(0, updateSpecCache.size());
+		assertEquals(0, delCache.size());
+
 	}
 
 }

@@ -73,6 +73,11 @@ class UpdateOperation {
 		return updateSpecificPropertiesSqlCache;
 	}
 
+	void close() {
+		updateSqlCache.clear();
+		updateSpecificPropertiesSqlCache.clear();
+	}
+
 	private Integer updateInternal(Object object, SqlAndParams sqlAndParams, TableMapping tableMapping) {
 		Assert.notNull(object, "object must not be null");
 		Assert.notNull(sqlAndParams, "sqlAndParams must not be null");

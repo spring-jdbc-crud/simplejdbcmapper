@@ -48,11 +48,6 @@ class FindTest {
 		assertNotNull(order.getUpdatedOn());
 		assertNotNull(order.getVersion());
 
-		int cnt = 0;
-		while (cnt < 0) {
-			cnt++;
-			sjm.findById(Order.class, 1);
-		}
 	}
 
 	@Test

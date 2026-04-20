@@ -193,7 +193,7 @@ class UpdateOperation {
 
 	private SqlAndParams buildSqlAndParamsForUpdate(TableMapping tableMapping) {
 		Assert.notNull(tableMapping, "tableMapping must not be null");
-		List<String> propertyList = tableMapping.getPropertyMappings().stream().map(pm -> pm.getPropertyName())
+		List<String> propertyList = Arrays.stream(tableMapping.getPropertyMappings()).map(pm -> pm.getPropertyName())
 				.collect(Collectors.toList());
 		List<String> ignoreProps = getIgnoreProperties(tableMapping);
 		propertyList.removeAll(ignoreProps);

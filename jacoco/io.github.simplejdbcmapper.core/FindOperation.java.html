@@ -136,7 +136,7 @@ class FindOperation {
 			} else {
 <span class="fc" id="L137">				sj.add(propMapping.getColumnName() + &quot; AS &quot; + underscorePropertyName);</span>
 			}
-<span class="fc" id="L139">		}</span>
+		}
 <span class="fc" id="L140">		return sj.toString();</span>
 	}
 
@@ -155,7 +155,7 @@ class FindOperation {
 			} else {
 <span class="fc" id="L156">				sj.add(tablePrefix + propMapping.getColumnName() + &quot; AS &quot; + underscorePropertyName);</span>
 			}
-<span class="fc" id="L158">		}</span>
+		}
 <span class="fc" id="L159">		return sj.toString();</span>
 	}
 
@@ -165,7 +165,7 @@ class FindOperation {
 <span class="fc" id="L165">		Map&lt;String, String&gt; map = new LinkedHashMap&lt;&gt;();</span>
 <span class="fc bfc" id="L166" title="All 2 branches covered.">		for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {</span>
 <span class="fc" id="L167">			map.put(propMapping.getPropertyName(), propMapping.getColumnName());</span>
-<span class="fc" id="L168">		}</span>
+		}
 <span class="fc" id="L169">		return map;</span>
 	}
 
@@ -177,66 +177,71 @@ class FindOperation {
 <span class="fc" id="L177">		return rawColumnsSqlCache;</span>
 	}
 
+	void close() {
+<span class="fc" id="L181">		findByIdSqlCache.clear();</span>
+<span class="fc" id="L182">		rawColumnsSqlCache.clear();</span>
+<span class="fc" id="L183">	}</span>
+
 	String getRawSqlColumns(Class&lt;?&gt; entityType) {
-<span class="fc" id="L181">		Assert.notNull(entityType, &quot;entityType must not be null&quot;);</span>
-<span class="fc" id="L182">		String columnsSql = rawColumnsSqlCache.get(entityType.getName());</span>
-<span class="fc bfc" id="L183" title="All 2 branches covered.">		if (columnsSql == null) {</span>
-<span class="fc" id="L184">			TableMapping tableMapping = sjmSupport.getTableMapping(entityType);</span>
-<span class="fc" id="L185">			StringJoiner sj = new StringJoiner(&quot;, &quot;, &quot; &quot;, &quot; &quot;);</span>
-<span class="fc bfc" id="L186" title="All 2 branches covered.">			for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {</span>
-<span class="fc" id="L187">				sj.add(propMapping.getColumnName());</span>
-<span class="fc" id="L188">			}</span>
-<span class="fc" id="L189">			columnsSql = sj.toString();</span>
-<span class="fc" id="L190">			rawColumnsSqlCache.put(entityType.getName(), columnsSql);</span>
+<span class="fc" id="L186">		Assert.notNull(entityType, &quot;entityType must not be null&quot;);</span>
+<span class="fc" id="L187">		String columnsSql = rawColumnsSqlCache.get(entityType.getName());</span>
+<span class="fc bfc" id="L188" title="All 2 branches covered.">		if (columnsSql == null) {</span>
+<span class="fc" id="L189">			TableMapping tableMapping = sjmSupport.getTableMapping(entityType);</span>
+<span class="fc" id="L190">			StringJoiner sj = new StringJoiner(&quot;, &quot;, &quot; &quot;, &quot; &quot;);</span>
+<span class="fc bfc" id="L191" title="All 2 branches covered.">			for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {</span>
+<span class="fc" id="L192">				sj.add(propMapping.getColumnName());</span>
+			}
+<span class="fc" id="L194">			columnsSql = sj.toString();</span>
+<span class="fc" id="L195">			rawColumnsSqlCache.put(entityType.getName(), columnsSql);</span>
 		}
-<span class="fc" id="L192">		return columnsSql;</span>
+<span class="fc" id="L197">		return columnsSql;</span>
 	}
 
 	private &lt;T&gt; EntityRowMapper&lt;T&gt; getEntityRowMapper(Class&lt;T&gt; entityType, TableMapping tableMapping) {
-<span class="fc" id="L196">		return new EntityRowMapper&lt;&gt;(entityType, tableMapping, sjmSupport.getConversionService());</span>
+<span class="fc" id="L201">		return new EntityRowMapper&lt;&gt;(entityType, tableMapping, sjmSupport.getConversionService());</span>
 	}
 
 	private String orderByClause(Class&lt;?&gt; entityType, SortBy[] sortByArray, TableMapping tableMapping) {
-<span class="fc bfc" id="L200" title="All 2 branches covered.">		if (sortByArray.length &gt; 0) {</span>
-<span class="fc" id="L201">			StringBuilder clause = new StringBuilder(64);</span>
-<span class="fc" id="L202">			clause.append(&quot; ORDER BY &quot;);</span>
-<span class="fc" id="L203">			int cnt = 0;</span>
-<span class="fc bfc" id="L204" title="All 2 branches covered.">			for (SortBy sortBy : sortByArray) {</span>
-<span class="fc" id="L205">				PropertyMapping propMapping = tableMapping.getPropertyMappingByPropertyName(sortBy.getPropertyName());</span>
-<span class="fc bfc" id="L206" title="All 2 branches covered.">				if (propMapping == null) {</span>
-<span class="fc" id="L207">					throw new IllegalArgumentException(</span>
-<span class="fc" id="L208">							sortBy.getPropertyName() + &quot; is not a mapped property for class &quot; + entityType.getName());</span>
+<span class="fc bfc" id="L205" title="All 2 branches covered.">		if (sortByArray.length &gt; 0) {</span>
+<span class="fc" id="L206">			StringBuilder clause = new StringBuilder(64);</span>
+<span class="fc" id="L207">			clause.append(&quot; ORDER BY &quot;);</span>
+<span class="fc" id="L208">			int cnt = 0;</span>
+<span class="fc bfc" id="L209" title="All 2 branches covered.">			for (SortBy sortBy : sortByArray) {</span>
+<span class="fc" id="L210">				PropertyMapping propMapping = tableMapping.getPropertyMappingByPropertyName(sortBy.getPropertyName());</span>
+<span class="fc bfc" id="L211" title="All 2 branches covered.">				if (propMapping == null) {</span>
+<span class="fc" id="L212">					throw new IllegalArgumentException(</span>
+<span class="fc" id="L213">							sortBy.getPropertyName() + &quot; is not a mapped property for class &quot; + entityType.getName());</span>
 				}
-<span class="fc bfc" id="L210" title="All 2 branches covered.">				if (cnt &gt; 0) {</span>
-<span class="fc" id="L211">					clause.append(&quot;, &quot;);</span>
+<span class="fc bfc" id="L215" title="All 2 branches covered.">				if (cnt &gt; 0) {</span>
+<span class="fc" id="L216">					clause.append(&quot;, &quot;);</span>
 				}
-<span class="fc" id="L213">				clause.append(propMapping.getColumnName()).append(&quot; &quot;).append(sortBy.getDirection());</span>
-<span class="fc" id="L214">				cnt++;</span>
+<span class="fc" id="L218">				clause.append(propMapping.getColumnName()).append(&quot; &quot;).append(sortBy.getDirection());</span>
+<span class="fc" id="L219">				cnt++;</span>
 			}
-<span class="fc" id="L216">			return clause.toString();</span>
+<span class="fc" id="L221">			return clause.toString();</span>
 		} else {
-<span class="fc" id="L218">			return &quot;&quot;;</span>
+<span class="fc" id="L223">			return &quot;&quot;;</span>
 		}
 	}
 
 	private Object getValue(Object obj) {
-<span class="fc bfc" id="L223" title="All 4 branches covered.">		if (obj != null &amp;&amp; obj.getClass().isEnum()) {</span>
-<span class="fc" id="L224">			return ((Enum&lt;?&gt;) obj).name();</span>
+<span class="fc bfc" id="L228" title="All 4 branches covered.">		if (obj != null &amp;&amp; obj.getClass().isEnum()) {</span>
+<span class="fc" id="L229">			return ((Enum&lt;?&gt;) obj).name();</span>
 		}
-<span class="fc" id="L226">		return obj;</span>
+<span class="fc" id="L231">		return obj;</span>
 	}
 
 	private Set&lt;?&gt; getValues(Set&lt;?&gt; set) {
-<span class="fc" id="L230">		Object obj = set.iterator().next();</span>
-<span class="pc bpc" id="L231" title="1 of 4 branches missed.">		if (obj != null &amp;&amp; obj.getClass().isEnum()) {</span>
-<span class="fc" id="L232">			Set&lt;String&gt; values = new LinkedHashSet&lt;&gt;();</span>
-<span class="fc bfc" id="L233" title="All 2 branches covered.">			for (Object val : set) {</span>
-<span class="fc" id="L234">				values.add(((Enum&lt;?&gt;) val).name());</span>
-<span class="fc" id="L235">			}</span>
-<span class="fc" id="L236">			return values;</span>
+<span class="fc" id="L235">		Object obj = set.iterator().next();</span>
+<span class="pc bpc" id="L236" title="1 of 4 branches missed.">		if (obj != null &amp;&amp; obj.getClass().isEnum()) {</span>
+<span class="fc" id="L237">			Set&lt;String&gt; values = new LinkedHashSet&lt;&gt;();</span>
+<span class="fc bfc" id="L238" title="All 2 branches covered.">			for (Object val : set) {</span>
+<span class="fc" id="L239">				values.add(((Enum&lt;?&gt;) val).name());</span>
+<span class="fc" id="L240">			}</span>
+<span class="fc" id="L241">			return values;</span>
 		}
-<span class="fc" id="L238">		return set;</span>
+<span class="fc" id="L243">		return set;</span>
 	}
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 4fbb083053c71b0d0f8318265c6c707d88f4ebb0 2026-04-20T02:05:15</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main b0f25ea5f1fb03045d679a2f822dc96899c1c303 2026-04-20T22:33:54</div></body></html>

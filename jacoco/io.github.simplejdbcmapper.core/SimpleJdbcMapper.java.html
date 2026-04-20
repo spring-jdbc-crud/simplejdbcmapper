@@ -400,5 +400,19 @@ public final class SimpleJdbcMapper {
 <span class="fc" id="L400">		return simpleJdbcMapperSupport.getCatalogName();</span>
 	}
 
+	/**
+	 * Clears all its internal caches.
+	 * 
+	 * This method is automatically invoked by spring upon the closing of its
+	 * application context
+	 */
+	public void close() {
+<span class="fc" id="L410">		simpleJdbcMapperSupport.close();</span>
+<span class="fc" id="L411">		insertOperation.close();</span>
+<span class="fc" id="L412">		findOperation.close();</span>
+<span class="fc" id="L413">		updateOperation.close();</span>
+<span class="fc" id="L414">		deleteOperation.close();</span>
+<span class="fc" id="L415">	}</span>
+
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 4fbb083053c71b0d0f8318265c6c707d88f4ebb0 2026-04-20T02:05:15</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main b0f25ea5f1fb03045d679a2f822dc96899c1c303 2026-04-20T22:33:54</div></body></html>

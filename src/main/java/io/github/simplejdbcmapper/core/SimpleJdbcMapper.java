@@ -401,7 +401,7 @@ public final class SimpleJdbcMapper {
 	}
 
 	/**
-	 * Closes down SimpleJdbcMapper. Clears all referenced objects
+	 * Clears all its internal caches.
 	 * 
 	 * This method is automatically invoked upon the closing of Springs's
 	 * application context

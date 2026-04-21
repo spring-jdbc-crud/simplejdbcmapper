@@ -62,9 +62,7 @@ class EntityRowMapper<T> implements RowMapper<T> {
 	 * its logic but changed the structure to use 'switch' statement with enums
 	 * instead of the bunch of if/else's for performance reasons. As was the goal,
 	 * java compiled the switch statement into a 'tableswitch' which means the
-	 * program will jump directly to the correct 'case' block in one step. Also set
-	 * the 'typedValueExtracted' flag which allows mapRow() method above to easily
-	 * figure out whether the property needs conversion
+	 * program will jump directly to the correct 'case' block in one step.
 	 */
 	private Object getResultSetValue(ResultSet rs, int index, ResultSetType resultSetType, Class<?> requiredType)
 			throws SQLException {

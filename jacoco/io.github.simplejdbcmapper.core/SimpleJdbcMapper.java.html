@@ -401,18 +401,19 @@ public final class SimpleJdbcMapper {
 	}
 
 	/**
-	 * Clears all its internal caches.
-	 * 
-	 * This method is automatically invoked by spring upon the closing of its
-	 * application context
+	 * Closes down SimpleJdbcMapper. Clears all its internal caches and other
+	 * references.
+	 * &lt;p&gt;
+	 * This is handled entirely for you by Spring. Upon the closing of its
+	 * application context this method is automatically invoked
 	 */
 	public void close() {
-<span class="fc" id="L410">		simpleJdbcMapperSupport.close();</span>
-<span class="fc" id="L411">		insertOperation.close();</span>
-<span class="fc" id="L412">		findOperation.close();</span>
-<span class="fc" id="L413">		updateOperation.close();</span>
-<span class="fc" id="L414">		deleteOperation.close();</span>
-<span class="fc" id="L415">	}</span>
+<span class="fc" id="L411">		simpleJdbcMapperSupport.close();</span>
+<span class="fc" id="L412">		insertOperation.close();</span>
+<span class="fc" id="L413">		findOperation.close();</span>
+<span class="fc" id="L414">		updateOperation.close();</span>
+<span class="fc" id="L415">		deleteOperation.close();</span>
+<span class="fc" id="L416">	}</span>
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 8b7265a889af12dd548ebcabf58fc4c6c7011ac3 2026-04-20T22:51:50</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main dd4c72791771d27499e83cbc9c205b174a072a43 2026-04-21T00:42:29</div></body></html>

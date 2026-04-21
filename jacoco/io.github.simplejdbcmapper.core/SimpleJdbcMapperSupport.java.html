@@ -111,50 +111,55 @@ class SimpleJdbcMapperSupport {
 	}
 
 	public void setConversionService(ConversionService conversionService) {
-<span class="fc bfc" id="L114" title="All 2 branches covered.">		if (conversionServiceManuallySet) {</span>
-<span class="fc" id="L115">			throw new IllegalStateException(&quot;conversionService was already set and cannot be changed.&quot;);</span>
+<span class="fc" id="L114">		Assert.notNull(conversionService, &quot;conversionService must not be null&quot;);</span>
+<span class="fc bfc" id="L115" title="All 2 branches covered.">		if (conversionServiceManuallySet) {</span>
+<span class="fc" id="L116">			throw new IllegalStateException(&quot;conversionService was already set and cannot be changed.&quot;);</span>
 		} else {
-<span class="fc" id="L117">			this.conversionService = conversionService;</span>
-<span class="fc" id="L118">			this.jdbcClient = JdbcClient.create(npJdbcTemplate, conversionService);</span>
-<span class="fc" id="L119">			conversionServiceManuallySet = true;</span>
+<span class="fc" id="L118">			this.conversionService = conversionService;</span>
+<span class="fc" id="L119">			this.jdbcClient = JdbcClient.create(npJdbcTemplate, conversionService);</span>
+<span class="fc" id="L120">			conversionServiceManuallySet = true;</span>
 		}
-<span class="fc" id="L121">	}</span>
+<span class="fc" id="L122">	}</span>
 
 	public String getSchemaName() {
-<span class="fc" id="L124">		return schemaName;</span>
+<span class="fc" id="L125">		return schemaName;</span>
 	}
 
 	public String getCatalogName() {
-<span class="fc" id="L128">		return catalogName;</span>
+<span class="fc" id="L129">		return catalogName;</span>
 	}
 
 	TableMapping getTableMapping(Class&lt;?&gt; entityType) {
-<span class="fc" id="L132">		return tableMappingProvider.getTableMapping(entityType);</span>
+<span class="fc" id="L133">		return tableMappingProvider.getTableMapping(entityType);</span>
 	}
 
 	BeanWrapper getBeanWrapper(Object object) {
-<span class="fc" id="L136">		BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(object);</span>
-<span class="fc" id="L137">		bw.setConversionService(conversionService);</span>
-<span class="fc" id="L138">		return bw;</span>
+<span class="fc" id="L137">		BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(object);</span>
+<span class="fc" id="L138">		bw.setConversionService(conversionService);</span>
+<span class="fc" id="L139">		return bw;</span>
 	}
 
 	@SuppressWarnings(&quot;rawtypes&quot;)
 	Supplier getRecordAuditedBySupplier() {
-<span class="fc" id="L143">		return recordAuditedBySupplier;</span>
+<span class="fc" id="L144">		return recordAuditedBySupplier;</span>
 	}
 
 	@SuppressWarnings(&quot;rawtypes&quot;)
 	Supplier getRecordAuditedOnSupplier() {
-<span class="fc" id="L148">		return recordAuditedOnSupplier;</span>
+<span class="fc" id="L149">		return recordAuditedOnSupplier;</span>
 	}
 
 	SimpleCache&lt;String, TableMapping&gt; getTableMappingCache() {
-<span class="fc" id="L152">		return tableMappingProvider.getTableMappingCache();</span>
+<span class="fc" id="L153">		return tableMappingProvider.getTableMappingCache();</span>
 	}
 
 	void close() {
-<span class="fc" id="L156">		tableMappingProvider.getTableMappingCache().clear();</span>
-<span class="fc" id="L157">	}</span>
+<span class="fc" id="L157">		tableMappingProvider.getTableMappingCache().clear();</span>
+<span class="fc" id="L158">		recordAuditedOnSupplier = null;</span>
+<span class="fc" id="L159">		recordAuditedBySupplier = null;</span>
+<span class="fc" id="L160">		conversionService = null;</span>
+<span class="fc" id="L161">		jdbcClient = null;</span>
+<span class="fc" id="L162">	}</span>
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 8b7265a889af12dd548ebcabf58fc4c6c7011ac3 2026-04-20T22:51:50</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main dd4c72791771d27499e83cbc9c205b174a072a43 2026-04-21T00:42:29</div></body></html>

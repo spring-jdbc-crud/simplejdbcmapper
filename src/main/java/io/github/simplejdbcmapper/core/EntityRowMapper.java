@@ -23,7 +23,7 @@ import org.springframework.jdbc.support.JdbcUtils;
 import io.github.simplejdbcmapper.exception.MapperException;
 
 /**
- * A row mapper which has been optimized for performance.
+ * A row mapper for a mapped objects.
  * 
  * Use the method sjm.newEntityRowMapper({@code Class<?>}) to get an instance of
  * EntityRowMapper.

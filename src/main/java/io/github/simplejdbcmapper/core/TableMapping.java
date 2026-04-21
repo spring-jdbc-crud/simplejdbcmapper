@@ -195,7 +195,7 @@ class TableMapping {
 		return autoAssignProperties;
 	}
 
-	public PropertyMapping getPropertyMappingByColumnIndex(int index) {
+	public PropertyMapping getPropertyMappingByRsColumnIndex(int index) {
 		// resultSet indexes start at 1.
 		return propertyMappings[index - 1];
 	}

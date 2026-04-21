@@ -38,7 +38,7 @@ class EntityRowMapper<T> implements RowMapper<T> {
 			ResultSetMetaData rsmd = rs.getMetaData();
 			int columnCount = rsmd.getColumnCount();
 			for (int index = 1; index <= columnCount; index++) {
-				PropertyMapping propMapping = tableMapping.getPropertyMappingByColumnIndex(index);
+				PropertyMapping propMapping = tableMapping.getPropertyMappingByRsColumnIndex(index);
 				Object value = getResultSetValue(rs, index, propMapping.getResultSetType(),
 						propMapping.getPropertyType());
 				if (typedValueExtracted || value == null) {

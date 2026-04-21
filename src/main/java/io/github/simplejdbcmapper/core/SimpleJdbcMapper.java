@@ -303,8 +303,8 @@ public final class SimpleJdbcMapper {
 	 * position indexes to retrieve the data from the query ResultSet
 	 * <p>
 	 * Always use this method (or its sibling method
-	 * getEntityRowMapperSqlColumns({@code Class<?>}( entityType, String
-	 * tableAlias)) to create your custom query columns when using EntityRowMapper.
+	 * getEntityRowMapperSqlColumns({@code Class<?>} entityType, String tableAlias)
+	 * to create your custom query columns when using EntityRowMapper.
 	 * 
 	 * <pre>
 	 * "somecolumn, some_other_column, last_name"
@@ -324,7 +324,7 @@ public final class SimpleJdbcMapper {
 	 * position indexes to retrieve the data from the query ResultSet
 	 * <p>
 	 * Always use this method (or its sibling method
-	 * getEntityRowMapperSqlColumns({@code Class<?>} entityType)) to create your
+	 * getEntityRowMapperSqlColumns({@code Class<?>} entityType) to create your
 	 * custom query columns when using EntityRowMapper.
 	 * 
 	 * <p>

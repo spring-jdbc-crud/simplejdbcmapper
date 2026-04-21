@@ -38,7 +38,7 @@ class EntityRowMapper<T> implements RowMapper<T> {
 			ResultSetMetaData rsmd = rs.getMetaData();
 			int columnCount = rsmd.getColumnCount();
 			for (int index = 1; index <= columnCount; index++) {
-				PropertyMapping propMapping = tableMapping.getPropertyMappingByResultSetIndex(index);
+				PropertyMapping propMapping = tableMapping.getPropertyMappingByColumnIndex(index);
 				Object value = getResultSetValue(rs, index, propMapping.getResultSetType(),
 						propMapping.getPropertyType());
 				if (typedValueExtracted || value == null) {
@@ -56,13 +56,13 @@ class EntityRowMapper<T> implements RowMapper<T> {
 
 	/*
 	 * Same logic as Springs JdbcUtil.getResultSetValue().
-	 * JdbcUtil.getResultSetValue() logic has been proven over the years so
-	 * retaining logic but changed the structure to use 'switch' statement instead
-	 * of the the bunch of if/else's for performance reasons. As was the goal, java
-	 * compiled the switch statement into a 'tableswitch' which means the program
-	 * will jump directly to the correct 'case' block in one step. Also set the
-	 * 'typedValueExtracted' flag which allows mapRow() to easily figure out whether
-	 * the property needs conversion
+	 * JdbcUtil.getResultSetValue() logic has been proven over the years, retaining
+	 * its logic but changed the structure to use 'switch' statement with enums
+	 * instead of the bunch of if/else's for performance reasons. As was the goal,
+	 * java compiled the switch statement into a 'tableswitch' which means the
+	 * program will jump directly to the correct 'case' block in one step. Also set
+	 * the 'typedValueExtracted' flag which allows mapRow() method above to easily
+	 * figure out whether the property needs conversion
 	 */
 	private Object getResultSetValue(ResultSet rs, int index, ResultSetType resultSetType, Class<?> requiredType)
 			throws SQLException {

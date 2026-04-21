@@ -32,17 +32,17 @@ import org.springframework.util.Assert;
  * @author Antony Joseph
  */
 class SimpleJdbcMapperSupport {
-	private final DataSource dataSource;
+	private DataSource dataSource;
 
-	private final String schemaName;
+	private String schemaName;
 
-	private final String catalogName;
+	private String catalogName;
 
 	private JdbcClient jdbcClient;
 
-	private final JdbcTemplate jdbcTemplate;
+	private JdbcTemplate jdbcTemplate;
 
-	private final NamedParameterJdbcTemplate npJdbcTemplate;
+	private NamedParameterJdbcTemplate npJdbcTemplate;
 
 	private final TableMappingProvider tableMappingProvider;
 
@@ -159,6 +159,9 @@ class SimpleJdbcMapperSupport {
 		recordAuditedBySupplier = null;
 		conversionService = null;
 		jdbcClient = null;
+		jdbcTemplate = null;
+		npJdbcTemplate = null;
+		dataSource = null;
 	}
 
 }

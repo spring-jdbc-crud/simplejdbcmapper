@@ -155,7 +155,7 @@ class CachingTest {
 	}
 
 	@Test
-	void entityRowMapperSqlColumnsCache_test() {
+	void entitySqlColumnsCache_test() {
 		FindOperation fo = TestUtils.getFindOperation(sjm);
 		SimpleCache<String, String> cache = fo.getEntitySqlColumnsCache();
 		cache.clear();
@@ -175,7 +175,7 @@ class CachingTest {
 	}
 
 	@Test
-	void entityRowMapperSqlColumnsAliasCache_test() {
+	void entitySqlColumnsAliasCache_test() {
 		FindOperation fo = TestUtils.getFindOperation(sjm);
 		SimpleCache<String, String> cache = fo.getEntitySqlColumnsAliasCache();
 		cache.clear();

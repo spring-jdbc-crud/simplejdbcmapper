@@ -10,10 +10,7 @@ import org.springframework.jdbc.support.JdbcUtils;
 import io.github.simplejdbcmapper.exception.MapperException;
 
 /**
- * The row mapper used internally which has been optimized for performance.
- * 
- * <p>
- * A new instance should be created for use each time
+ * The row mapper which has been optimized for performance.
  * 
  * @param <T> the entityType
  */
@@ -21,7 +18,6 @@ class EntityRowMapper<T> implements RowMapper<T> {
 	private Class<T> mappedClass;
 	private TableMapping tableMapping;
 	private ConversionService conversionService;
-	private boolean typedValueExtracted = true;
 
 	public EntityRowMapper(Class<T> entityType, TableMapping tableMapping, ConversionService conversionService) {
 		this.mappedClass = entityType;
@@ -31,6 +27,7 @@ class EntityRowMapper<T> implements RowMapper<T> {
 
 	@Override
 	public T mapRow(ResultSet rs, int rowNumber) throws SQLException {
+		boolean[] typedValueExtracted = { true };
 		T obj = null;
 		try {
 			obj = mappedClass.getDeclaredConstructor().newInstance();
@@ -42,8 +39,8 @@ class EntityRowMapper<T> implements RowMapper<T> {
 			for (int index = 1; index <= columnCount; index++) {
 				PropertyMapping propMapping = propertyMappings[index - 1];
 				Object value = getResultSetValue(rs, index, propMapping.getResultSetType(),
-						propMapping.getPropertyType());
-				if (typedValueExtracted || value == null) {
+						propMapping.getPropertyType(), typedValueExtracted);
+				if (typedValueExtracted[0] || value == null) {
 					propMapping.getWriteMethod().invoke(obj, value);
 				} else {
 					propMapping.getWriteMethod().invoke(obj,
@@ -64,9 +61,9 @@ class EntityRowMapper<T> implements RowMapper<T> {
 	 * java compiled the switch statement into a 'tableswitch' which means the
 	 * program will jump directly to the correct 'case' block in one step.
 	 */
-	private Object getResultSetValue(ResultSet rs, int index, ResultSetType resultSetType, Class<?> requiredType)
-			throws SQLException {
-		typedValueExtracted = true;
+	private Object getResultSetValue(ResultSet rs, int index, ResultSetType resultSetType, Class<?> requiredType,
+			boolean[] typedValueExtracted) throws SQLException {
+		typedValueExtracted[0] = true;
 		Object value;
 		// Explicitly extract typed value, as far as possible.
 		switch (resultSetType) {
@@ -113,7 +110,7 @@ class EntityRowMapper<T> implements RowMapper<T> {
 		case ResultSetType.CLOB:
 			return rs.getClob(index);
 		case ResultSetType.ENUM:
-			typedValueExtracted = false;
+			typedValueExtracted[0] = false;
 			// Enums are represented as a String in simpleJdbcMapper.
 			// leave enum type conversion up to the caller (for example, a
 			// ConversionService)
@@ -132,7 +129,7 @@ class EntityRowMapper<T> implements RowMapper<T> {
 			} catch (Exception ex) {
 				// jdbc driver does not support
 			}
-			typedValueExtracted = false;
+			typedValueExtracted[0] = false;
 
 			// Corresponding SQL types for JSR-310, left up to the caller to convert
 			// them (for example, through a ConversionService).

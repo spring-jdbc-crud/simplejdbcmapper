@@ -1,7 +1,6 @@
 package io.github.simplejdbcmapper.core;
 
 import java.sql.ResultSet;
-import java.sql.ResultSetMetaData;
 import java.sql.SQLException;
 
 import org.springframework.core.convert.ConversionService;
@@ -35,10 +34,13 @@ class EntityRowMapper<T> implements RowMapper<T> {
 		T obj = null;
 		try {
 			obj = mappedClass.getDeclaredConstructor().newInstance();
-			ResultSetMetaData rsmd = rs.getMetaData();
-			int columnCount = rsmd.getColumnCount();
+			PropertyMapping[] propertyMappings = tableMapping.getPropertyMappings();
+			int columnCount = propertyMappings.length;
+			// since the columns sql was generated using the property mappings the resultset
+			// columns will be in same order
+			// resultset indexes start at 1.
 			for (int index = 1; index <= columnCount; index++) {
-				PropertyMapping propMapping = tableMapping.getPropertyMappingByRsColumnIndex(index);
+				PropertyMapping propMapping = propertyMappings[index - 1];
 				Object value = getResultSetValue(rs, index, propMapping.getResultSetType(),
 						propMapping.getPropertyType());
 				if (typedValueExtracted || value == null) {

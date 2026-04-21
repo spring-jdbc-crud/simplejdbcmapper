@@ -157,19 +157,19 @@ class CachingTest {
 	@Test
 	void entityRowMapperSqlColumnsCache_test() {
 		FindOperation fo = TestUtils.getFindOperation(sjm);
-		SimpleCache<String, String> cache = fo.getEntityRowMapperSqlColumnsCache();
+		SimpleCache<String, String> cache = fo.getEntitySqlColumnsCache();
 		cache.clear();
 
-		fo.getEntityRowMapperSqlColumns(Customer.class);
+		fo.getEntitySqlColumns(Customer.class);
 		assertEquals(1, cache.size());
 
-		fo.getEntityRowMapperSqlColumns(Customer.class);
+		fo.getEntitySqlColumns(Customer.class);
 		assertEquals(1, cache.size());
 
-		fo.getEntityRowMapperSqlColumns(Product.class);
+		fo.getEntitySqlColumns(Product.class);
 		assertEquals(2, cache.size());
 
-		fo.getEntityRowMapperSqlColumns(Product.class);
+		fo.getEntitySqlColumns(Product.class);
 		assertEquals(2, cache.size());
 
 	}
@@ -177,22 +177,22 @@ class CachingTest {
 	@Test
 	void entityRowMapperSqlColumnsAliasCache_test() {
 		FindOperation fo = TestUtils.getFindOperation(sjm);
-		SimpleCache<String, String> cache = fo.getEntityRowMapperSqlColumnsAliasCache();
+		SimpleCache<String, String> cache = fo.getEntitySqlColumnsAliasCache();
 		cache.clear();
 
-		fo.getEntityRowMapperSqlColumns(Customer.class, "t1");
+		fo.getEntitySqlColumns(Customer.class, "t1");
 		assertEquals(1, cache.size());
 
-		fo.getEntityRowMapperSqlColumns(Customer.class, "t1");
+		fo.getEntitySqlColumns(Customer.class, "t1");
 		assertEquals(1, cache.size());
 
-		fo.getEntityRowMapperSqlColumns(Product.class, "p1");
+		fo.getEntitySqlColumns(Product.class, "p1");
 		assertEquals(2, cache.size());
 
-		fo.getEntityRowMapperSqlColumns(Product.class, "p1");
+		fo.getEntitySqlColumns(Product.class, "p1");
 		assertEquals(2, cache.size());
 
-		fo.getEntityRowMapperSqlColumns(Product.class, "p2");
+		fo.getEntitySqlColumns(Product.class, "p2");
 		assertEquals(3, cache.size());
 
 	}

@@ -26,9 +26,9 @@ class FindOperation {
 
 	// Map key - classname
 	// value - the column sql string
-	private SimpleCache<String, String> entityRowMapperSqlColumnsCache = new SimpleCache<>();
+	private SimpleCache<String, String> entitySqlColumnsCache = new SimpleCache<>();
 
-	private SimpleCache<String, String> entityRowMapperSqlColumnsAliasCache = new SimpleCache<>(2000);
+	private SimpleCache<String, String> entitySqlColumnsAliasCache = new SimpleCache<>(2000);
 
 	public FindOperation(SimpleJdbcMapperSupport sjmSupport) {
 		this.sjmSupport = sjmSupport;
@@ -39,7 +39,7 @@ class FindOperation {
 		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
 		String sql = findByIdSqlCache.get(entityType.getName());
 		if (sql == null) {
-			sql = "SELECT " + getEntityRowMapperSqlColumns(entityType) + " FROM "
+			sql = "SELECT " + getEntitySqlColumns(entityType) + " FROM "
 					+ tableMapping.fullyQualifiedTableName() + " WHERE " + tableMapping.getIdColumnName() + " = ?";
 			findByIdSqlCache.put(entityType.getName(), sql);
 		}
@@ -57,7 +57,7 @@ class FindOperation {
 		Assert.notNull(entityType, "entityType must not be null");
 		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
 		StringBuilder sql = new StringBuilder(256);
-		sql.append("SELECT ").append(getEntityRowMapperSqlColumns(entityType)).append(" FROM ")
+		sql.append("SELECT ").append(getEntitySqlColumns(entityType)).append(" FROM ")
 				.append(tableMapping.fullyQualifiedTableName())
 				.append(orderByClause(entityType, sortByArray, tableMapping));
 		return sjmSupport.getJdbcTemplate().query(sql.toString(), newEntityRowMapper(entityType));
@@ -73,7 +73,7 @@ class FindOperation {
 			throw new MapperException(entityType.getSimpleName() + "." + propertyName + " does not have a mapping.");
 		}
 		StringBuilder sql = new StringBuilder(256);
-		sql.append("SELECT ").append(getEntityRowMapperSqlColumns(entityType)).append(" FROM ")
+		sql.append("SELECT ").append(getEntitySqlColumns(entityType)).append(" FROM ")
 				.append(tableMapping.fullyQualifiedTableName()).append(" WHERE ");
 		if (propertyValue == null) {
 			sql.append(propMapping.getColumnName()).append(" IS NULL");
@@ -105,7 +105,7 @@ class FindOperation {
 		Set<U> localPropertyValues = new LinkedHashSet<>(propertyValues);
 		boolean hasNullInSet = localPropertyValues.remove(null); // need to handle nulls in the set.
 		StringBuilder sql = new StringBuilder(256);
-		sql.append("SELECT ").append(getEntityRowMapperSqlColumns(entityType)).append(" FROM ")
+		sql.append("SELECT ").append(getEntitySqlColumns(entityType)).append(" FROM ")
 				.append(tableMapping.fullyQualifiedTableName()).append(" WHERE ");
 		if (ObjectUtils.isEmpty(localPropertyValues)) {
 			sql.append(propMapping.getColumnName()).append(" IS NULL");
@@ -127,9 +127,9 @@ class FindOperation {
 		}
 	}
 
-	public String getEntityRowMapperSqlColumns(Class<?> entityType) {
+	public String getEntitySqlColumns(Class<?> entityType) {
 		Assert.notNull(entityType, "entityType must not be null");
-		String columnsSql = entityRowMapperSqlColumnsCache.get(entityType.getName());
+		String columnsSql = entitySqlColumnsCache.get(entityType.getName());
 		if (columnsSql == null) {
 			TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
 			StringJoiner sj = new StringJoiner(", ", " ", " ");
@@ -137,18 +137,18 @@ class FindOperation {
 				sj.add(propMapping.getColumnName());
 			}
 			columnsSql = sj.toString();
-			entityRowMapperSqlColumnsCache.put(entityType.getName(), columnsSql);
+			entitySqlColumnsCache.put(entityType.getName(), columnsSql);
 		}
 		return columnsSql;
 	}
 
-	public String getEntityRowMapperSqlColumns(Class<?> entityType, String tableAlias) {
+	public String getEntitySqlColumns(Class<?> entityType, String tableAlias) {
 		Assert.notNull(entityType, "entityType must not be null");
 		if (!StringUtils.hasText(tableAlias)) {
 			throw new IllegalArgumentException("tableAlias has no value");
 		}
 		String cacheKey = entityType.getName() + "-" + tableAlias.trim();
-		String columnsSql = entityRowMapperSqlColumnsAliasCache.get(cacheKey);
+		String columnsSql = entitySqlColumnsAliasCache.get(cacheKey);
 		if (columnsSql == null) {
 			String tablePrefix = tableAlias + ".";
 			TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
@@ -157,7 +157,7 @@ class FindOperation {
 				sj.add(tablePrefix + propMapping.getColumnName());
 			}
 			columnsSql = sj.toString();
-			entityRowMapperSqlColumnsAliasCache.put(cacheKey, columnsSql);
+			entitySqlColumnsAliasCache.put(cacheKey, columnsSql);
 		}
 		return columnsSql;
 	}
@@ -215,19 +215,19 @@ class FindOperation {
 		return findByIdSqlCache;
 	}
 
-	SimpleCache<String, String> getEntityRowMapperSqlColumnsCache() {
-		return entityRowMapperSqlColumnsCache;
+	SimpleCache<String, String> getEntitySqlColumnsCache() {
+		return entitySqlColumnsCache;
 	}
 
-	SimpleCache<String, String> getEntityRowMapperSqlColumnsAliasCache() {
-		return entityRowMapperSqlColumnsAliasCache;
+	SimpleCache<String, String> getEntitySqlColumnsAliasCache() {
+		return entitySqlColumnsAliasCache;
 	}
 
 	// shutting down simplejdbcmapper
 	void close() {
 		findByIdSqlCache = null;
-		entityRowMapperSqlColumnsCache = null;
-		entityRowMapperSqlColumnsAliasCache = null;
+		entitySqlColumnsCache = null;
+		entitySqlColumnsAliasCache = null;
 	}
 
 	private String orderByClause(Class<?> entityType, SortBy[] sortByArray, TableMapping tableMapping) {

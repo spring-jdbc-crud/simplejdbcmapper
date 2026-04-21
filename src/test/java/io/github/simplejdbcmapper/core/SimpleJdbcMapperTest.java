@@ -113,14 +113,14 @@ class SimpleJdbcMapperTest {
 	}
 
 	@Test
-	void getEntityRowMapperSqlColumns_test() {
+	void getEntitySqlColumns_test() {
 		NonDefaultNamingProduct p = new NonDefaultNamingProduct();
 		p.setId(5461);
 		p.setProductName("test5461");
 		p.setCost(10.25);
 		sjm.insert(p);
 
-		String sql = "SELECT " + sjm.getEntityRowMapperSqlColumns(NonDefaultNamingProduct.class)
+		String sql = "SELECT " + sjm.getEntitySqlColumns(NonDefaultNamingProduct.class)
 				+ " FROM product WHERE name = ?";
 
 		// Using JdbcClient api for the above sql
@@ -141,32 +141,32 @@ class SimpleJdbcMapperTest {
 	}
 
 	@Test
-	void getEntityRowMapperSqlColumns_IllegalArgs_test() {
+	void getEntitySqlColumns_IllegalArgs_test() {
 		Assertions.assertThrows(IllegalArgumentException.class, () -> {
-			sjm.getEntityRowMapperSqlColumns(null);
+			sjm.getEntitySqlColumns(null);
 		});
 
 		Assertions.assertThrows(IllegalArgumentException.class, () -> {
-			sjm.getEntityRowMapperSqlColumns(null, "t1");
+			sjm.getEntitySqlColumns(null, "t1");
 		});
 		Assertions.assertThrows(IllegalArgumentException.class, () -> {
-			sjm.getEntityRowMapperSqlColumns(Product.class, null);
+			sjm.getEntitySqlColumns(Product.class, null);
 		});
 
 		Assertions.assertThrows(IllegalArgumentException.class, () -> {
-			sjm.getEntityRowMapperSqlColumns(Product.class, "   ");
+			sjm.getEntitySqlColumns(Product.class, "   ");
 		});
 	}
 
 	@Test
-	void getEntityRowMapperSqlColumns_withTableAlias_test() {
+	void getEntitySqlColumns_withTableAlias_test() {
 		NonDefaultNamingProduct p = new NonDefaultNamingProduct();
 		p.setId(7190);
 		p.setProductName("test7190");
 		p.setCost(10.25);
 		sjm.insert(p);
 
-		String sql = "SELECT " + sjm.getEntityRowMapperSqlColumns(NonDefaultNamingProduct.class, "t1")
+		String sql = "SELECT " + sjm.getEntitySqlColumns(NonDefaultNamingProduct.class, "t1")
 				+ " FROM product t1 WHERE t1.name = ?";
 
 		// Using JdbcClient api for the above sql
@@ -264,8 +264,8 @@ class SimpleJdbcMapperTest {
 
 		assertNull(sjms.getTableMappingCache());
 		assertNull(fo.getFindByIdSqlCache());
-		assertNull(fo.getEntityRowMapperSqlColumnsCache());
-		assertNull(fo.getEntityRowMapperSqlColumnsAliasCache());
+		assertNull(fo.getEntitySqlColumnsCache());
+		assertNull(fo.getEntitySqlColumnsAliasCache());
 		assertNull(io.getInsertSqlCache());
 		assertNull(uo.getUpdateSqlCache());
 		assertNull(uo.getUpdateSpecificPropertiesSqlCache());

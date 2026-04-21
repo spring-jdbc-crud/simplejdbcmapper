@@ -251,8 +251,8 @@ public final class SimpleJdbcMapper {
 	 * either
 	 * 
 	 * <pre>
-	 * getEntityRowMapperSqlColumns({@code Class<?>} entityType) or
-	 * getEntityRowMapperSqlColumns({@code Class<?>} entityType, String tableAlias).
+	 * getEntitySqlColumns({@code Class<?>} entityType) or
+	 * getEntitySqlColumns({@code Class<?>} entityType, String tableAlias).
 	 * </pre>
 	 * 
 	 * <p>
@@ -268,13 +268,13 @@ public final class SimpleJdbcMapper {
 	 * Query:
 	 * 
 	 * <pre>
-	 * String sql = "SELECT " + sjm.getEntityRowMapperSqlColumns(Product.class) + "FROM product WHERE name = ?";
+	 * String sql = "SELECT " + sjm.getEntitySqlColumns(Product.class) + "FROM product WHERE name = ?";
 	 * </pre>
 	 * 
 	 * Example using JdbcTemplate:
 	 * 
 	 * <pre>
-	 * {@code List<Product>} products = sjm.getJdbcTemplate().query(sql,sjm.getEntityRowMapper(Product.class), "someProductName");
+	 * {@code List<Product>} products = sjm.getJdbcTemplate().query(sql,sjm.newEntityRowMapper(Product.class), "someProductName");
 	 * </pre>
 	 * 
 	 * <p>
@@ -285,7 +285,7 @@ public final class SimpleJdbcMapper {
 	 * <pre>
 	 * {@code List<Product>} products = sjm.getJdbcClient().sql(sql)
 	 *                                                     .param("someProductName")
-	 *                                                     .query(sjm.getEntityRowMapper(Product.class))
+	 *                                                     .query(sjm.newEntityRowMapper(Product.class))
 	 *                                                     .list();
 	 * </pre>
 	 * 
@@ -303,8 +303,8 @@ public final class SimpleJdbcMapper {
 	 * position indexes to retrieve the data from the query ResultSet
 	 * <p>
 	 * Always use this method (or its sibling method
-	 * getEntityRowMapperSqlColumns({@code Class<?>} entityType, String tableAlias)
-	 * to create your custom query columns when using EntityRowMapper.
+	 * getEntitySqlColumns({@code Class<?>} entityType, String tableAlias) to create
+	 * your custom query columns when using EntityRowMapper.
 	 * 
 	 * <pre>
 	 * "somecolumn, some_other_column, last_name"
@@ -314,8 +314,8 @@ public final class SimpleJdbcMapper {
 	 * @return comma separated select column string
 	 * 
 	 */
-	public String getEntityRowMapperSqlColumns(Class<?> entityType) {
-		return findOperation.getEntityRowMapperSqlColumns(entityType);
+	public String getEntitySqlColumns(Class<?> entityType) {
+		return findOperation.getEntitySqlColumns(entityType);
 	}
 
 	/**
@@ -324,8 +324,8 @@ public final class SimpleJdbcMapper {
 	 * position indexes to retrieve the data from the query ResultSet
 	 * <p>
 	 * Always use this method (or its sibling method
-	 * getEntityRowMapperSqlColumns({@code Class<?>} entityType) to create your
-	 * custom query columns when using EntityRowMapper.
+	 * getEntitySqlColumns({@code Class<?>} entityType) to create your custom query
+	 * columns when using EntityRowMapper.
 	 * 
 	 * <p>
 	 * For tableAlias argument 't1' will return something like below:
@@ -339,8 +339,8 @@ public final class SimpleJdbcMapper {
 	 * @return comma separated select column string
 	 * 
 	 */
-	public String getEntityRowMapperSqlColumns(Class<?> entityType, String tableAlias) {
-		return findOperation.getEntityRowMapperSqlColumns(entityType, tableAlias);
+	public String getEntitySqlColumns(Class<?> entityType, String tableAlias) {
+		return findOperation.getEntitySqlColumns(entityType, tableAlias);
 	}
 
 	/**
@@ -361,7 +361,7 @@ public final class SimpleJdbcMapper {
 	 * "somecolumn, someothercolumn, last_name AS user_last_name"
 	 * </pre>
 	 * 
-	 * @see "getEntityRowMapper() which is the recommended row mapper to use when quering mapped entities"
+	 * @see "EntityRowMapper which is the recommended row mapper to use when quering mapped entities"
 	 * 
 	 * 
 	 * @param entityType the type
@@ -395,7 +395,7 @@ public final class SimpleJdbcMapper {
 	 * "t1.somecolumn, t1.someothercolumn, t1.last_name AS user_last_name"
 	 * </pre>
 	 * 
-	 * @see "getEntityRowMapper() which is the recommended row mapper to use when quering mapped entities"
+	 * @see "EntityRowMapper which is the recommended row mapper to use when quering mapped entities"
 	 * 
 	 * @param entityType the type
 	 * @param tableAlias the table alias

@@ -33,8 +33,8 @@ import io.github.simplejdbcmapper.exception.MapperException;
  * either
  * 
  * <pre>
- * getEntityRowMapperSqlColumns({@code Class<?>} entityType) or
- * getEntityRowMapperSqlColumns({@code Class<?>} entityType, String tableAlias).
+ * getEntitySqlColumns({@code Class<?>} entityType) or
+ * getEntitySqlColumns({@code Class<?>} entityType, String tableAlias).
  * </pre>
  * 
  * <p>
@@ -50,17 +50,17 @@ import io.github.simplejdbcmapper.exception.MapperException;
  * Query:
  * 
  * <pre>
- * String sql = "SELECT " + sjm.getEntityRowMapperSqlColumns(Product.class) + "FROM product WHERE name = ?";
+ * String sql = "SELECT " + sjm.getEntitySqlColumns(Product.class) + "FROM product WHERE name = ?";
  * </pre>
  * 
  * Example using JdbcTemplate:
  * 
  * <pre>
- * {@code List<Product>} products = sjm.getJdbcTemplate().query(sql,sjm.newEntityRowMapper(Product.class), "someProductName");
+ * {@code List<Product>} products = sjm.getJdbcTemplate().query(sql, sjm.newEntityRowMapper(Product.class), "someProductName");
  * </pre>
  * <p>
- * Example using JdbcClient. Note that the EntityRowMaper has to be passed in as
- * an argument, otherwise JdbcClient will use its internal
+ * Example using JdbcClient. Note that the EntityRowMapper has to be passed in
+ * as an argument, otherwise JdbcClient will use its internal
  * SimplePropertyRowMapper which will not work with the sql.
  * 
  * <pre>

@@ -27,6 +27,7 @@ import io.github.simplejdbcmapper.model.Order;
 import io.github.simplejdbcmapper.model.OrderLine;
 import io.github.simplejdbcmapper.model.PersonView;
 import io.github.simplejdbcmapper.model.Product;
+import io.github.simplejdbcmapper.model.ProductMismatchType;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -283,6 +284,14 @@ class FindTest {
 			sjm.findById(NoDefaultConstructor.class, 1);
 		});
 		assertTrue(exception.getMessage().contains("Failed to instantiate"));
+	}
+
+	@Test
+	void find_typeMismatch_Test() {
+		Exception exception = Assertions.assertThrows(MapperException.class, () -> {
+			sjm.findById(ProductMismatchType.class, 1);
+		});
+		assertTrue(exception.getMessage().contains("No converter found"));
 	}
 
 }

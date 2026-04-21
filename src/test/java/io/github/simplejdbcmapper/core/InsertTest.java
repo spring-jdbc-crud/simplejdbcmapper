@@ -19,6 +19,7 @@ import io.github.simplejdbcmapper.model.Customer;
 import io.github.simplejdbcmapper.model.Order;
 import io.github.simplejdbcmapper.model.Person;
 import io.github.simplejdbcmapper.model.Product;
+import io.github.simplejdbcmapper.model.ProductMismatchType;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -169,5 +170,20 @@ class InsertTest {
 		});
 
 		assertTrue(exception.getMessage().contains("must not be null since it is not an auto generated id"));
+	}
+
+	@Test
+	void insert_typeMismatch_Test() {
+		ProductMismatchType product = new ProductMismatchType();
+		product.setProductId(8650);
+
+		Person person = new Person();
+		person.setPersonId("p1");
+		product.setCreatedOn(person);
+
+		Exception exception = Assertions.assertThrows(Exception.class, () -> {
+			sjm.insert(product);
+		});
+		assertTrue(exception.getMessage().contains("Failed to convert property value"));
 	}
 }

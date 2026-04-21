@@ -111,6 +111,7 @@ class SimpleJdbcMapperSupport {
 	}
 
 	public void setConversionService(ConversionService conversionService) {
+		Assert.notNull(conversionService, "conversionService must not be null");
 		if (conversionServiceManuallySet) {
 			throw new IllegalStateException("conversionService was already set and cannot be changed.");
 		} else {

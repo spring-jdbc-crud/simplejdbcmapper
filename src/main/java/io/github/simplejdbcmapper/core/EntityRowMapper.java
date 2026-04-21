@@ -85,11 +85,6 @@ final public class EntityRowMapper<T> implements RowMapper<T> {
 		this.conversionService = conversionService;
 	}
 
-	protected static <T> EntityRowMapper<T> newInstance(Class<T> entityType, TableMapping tableMapping,
-			ConversionService conversionService) {
-		return new EntityRowMapper<T>(entityType, tableMapping, conversionService);
-	}
-
 	@Override
 	public T mapRow(ResultSet rs, int rowNumber) throws SQLException {
 		boolean[] typedValueExtracted = { true };
@@ -99,7 +94,7 @@ final public class EntityRowMapper<T> implements RowMapper<T> {
 			PropertyMapping[] propertyMappings = tableMapping.getPropertyMappings();
 			int columnCount = propertyMappings.length;
 			// since the columns sql was generated using the property mappings the resultset
-			// columns will be in same order
+			// columns will be in same order.
 			// resultset indexes start at 1.
 			for (int index = 1; index <= columnCount; index++) {
 				PropertyMapping propMapping = propertyMappings[index - 1];
@@ -212,6 +207,11 @@ final public class EntityRowMapper<T> implements RowMapper<T> {
 		// Perform was-null check if necessary (for results that the JDBC driver returns
 		// as primitives).
 		return (rs.wasNull() ? null : value);
+	}
+
+	protected static <T> EntityRowMapper<T> newInstance(Class<T> entityType, TableMapping tableMapping,
+			ConversionService conversionService) {
+		return new EntityRowMapper<T>(entityType, tableMapping, conversionService);
 	}
 
 }

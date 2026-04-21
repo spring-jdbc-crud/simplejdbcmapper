@@ -45,7 +45,7 @@ class FindOperation {
 		}
 		T obj = null;
 		try {
-			obj = sjmSupport.getJdbcTemplate().queryForObject(sql, getEntityRowMapper(entityType),
+			obj = sjmSupport.getJdbcTemplate().queryForObject(sql, newEntityRowMapper(entityType),
 					new SqlParameterValue(tableMapping.getIdPropertyMapping().getEffectiveSqlType(), getValue(id)));
 		} catch (EmptyResultDataAccessException e) {
 			// do nothing
@@ -60,7 +60,7 @@ class FindOperation {
 		sql.append("SELECT ").append(getEntityRowMapperSqlColumns(entityType)).append(" FROM ")
 				.append(tableMapping.fullyQualifiedTableName())
 				.append(orderByClause(entityType, sortByArray, tableMapping));
-		return sjmSupport.getJdbcTemplate().query(sql.toString(), getEntityRowMapper(entityType));
+		return sjmSupport.getJdbcTemplate().query(sql.toString(), newEntityRowMapper(entityType));
 	}
 
 	public <T> List<T> findByPropertyValue(Class<T> entityType, String propertyName, Object propertyValue,
@@ -82,9 +82,9 @@ class FindOperation {
 		}
 		sql.append(orderByClause(entityType, sortByArray, tableMapping));
 		if (propertyValue == null) {
-			return sjmSupport.getJdbcTemplate().query(sql.toString(), getEntityRowMapper(entityType));
+			return sjmSupport.getJdbcTemplate().query(sql.toString(), newEntityRowMapper(entityType));
 		} else {
-			return sjmSupport.getJdbcTemplate().query(sql.toString(), getEntityRowMapper(entityType),
+			return sjmSupport.getJdbcTemplate().query(sql.toString(), newEntityRowMapper(entityType),
 					new SqlParameterValue(propMapping.getEffectiveSqlType(), getValue(propertyValue)));
 		}
 	}
@@ -117,13 +117,13 @@ class FindOperation {
 		}
 		sql.append(orderByClause(entityType, sortByArray, tableMapping));
 		if (ObjectUtils.isEmpty(localPropertyValues)) {
-			return sjmSupport.getJdbcTemplate().query(sql.toString(), getEntityRowMapper(entityType));
+			return sjmSupport.getJdbcTemplate().query(sql.toString(), newEntityRowMapper(entityType));
 		} else {
 			Set<?> values = getValues(localPropertyValues);
 			MapSqlParameterSource param = new MapSqlParameterSource();
 			param.addValue("propertyValues", values, propMapping.getEffectiveSqlType());
 			return sjmSupport.getNamedParameterJdbcTemplate().query(sql.toString(), param,
-					getEntityRowMapper(entityType));
+					newEntityRowMapper(entityType));
 		}
 	}
 
@@ -162,7 +162,7 @@ class FindOperation {
 		return columnsSql;
 	}
 
-	public <T> EntityRowMapper<T> getEntityRowMapper(Class<T> entityType) {
+	public <T> EntityRowMapper<T> newEntityRowMapper(Class<T> entityType) {
 		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
 		return EntityRowMapper.newInstance(entityType, tableMapping, sjmSupport.getConversionService());
 	}

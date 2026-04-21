@@ -125,7 +125,7 @@ class SimpleJdbcMapperTest {
 
 		// Using JdbcClient api for the above sql
 		List<NonDefaultNamingProduct> products = sjm.getJdbcClient().sql(sql).param("test5461")
-				.query(sjm.getEntityRowMapper(NonDefaultNamingProduct.class)).list();
+				.query(sjm.newEntityRowMapper(NonDefaultNamingProduct.class)).list();
 
 		assertEquals(1, products.size());
 		assertEquals(10.25, products.get(0).getCost());
@@ -133,7 +133,7 @@ class SimpleJdbcMapperTest {
 
 		// Using JdbcTemplate api for the above sql
 		List<NonDefaultNamingProduct> products2 = sjm.getJdbcTemplate().query(sql,
-				sjm.getEntityRowMapper(NonDefaultNamingProduct.class), "test5461");
+				sjm.newEntityRowMapper(NonDefaultNamingProduct.class), "test5461");
 
 		assertEquals(1, products2.size());
 		assertEquals(10.25, products2.get(0).getCost());
@@ -171,7 +171,7 @@ class SimpleJdbcMapperTest {
 
 		// Using JdbcClient api for the above sql
 		List<NonDefaultNamingProduct> products = sjm.getJdbcClient().sql(sql).param("test7190")
-				.query(sjm.getEntityRowMapper(NonDefaultNamingProduct.class)).list();
+				.query(sjm.newEntityRowMapper(NonDefaultNamingProduct.class)).list();
 
 		assertEquals(1, products.size());
 		assertEquals(10.25, products.get(0).getCost());
@@ -179,7 +179,7 @@ class SimpleJdbcMapperTest {
 
 		// Using JdbcTemplate api for the above sql
 		List<NonDefaultNamingProduct> products2 = sjm.getJdbcTemplate().query(sql,
-				sjm.getEntityRowMapper(NonDefaultNamingProduct.class), "test7190");
+				sjm.newEntityRowMapper(NonDefaultNamingProduct.class), "test7190");
 
 		assertEquals(1, products2.size());
 		assertEquals(10.25, products2.get(0).getCost());

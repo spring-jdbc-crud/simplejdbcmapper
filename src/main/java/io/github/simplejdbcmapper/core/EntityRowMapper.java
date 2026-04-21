@@ -25,7 +25,7 @@ import io.github.simplejdbcmapper.exception.MapperException;
 /**
  * A row mapper which has been optimized for performance.
  * 
- * Use the method sjm.getEntityRowMapper({@code Class<?>}) to get an instance of
+ * Use the method sjm.newEntityRowMapper({@code Class<?>}) to get an instance of
  * EntityRowMapper.
  * 
  * <p>
@@ -76,13 +76,15 @@ import io.github.simplejdbcmapper.exception.MapperException;
  */
 final public class EntityRowMapper<T> implements RowMapper<T> {
 	private final Class<T> mappedClass;
-	private final TableMapping tableMapping;
 	private final ConversionService conversionService;
+	private final PropertyMapping[] propertyMappings;
+	private final int columnCount;
 
 	private EntityRowMapper(Class<T> entityType, TableMapping tableMapping, ConversionService conversionService) {
 		this.mappedClass = entityType;
-		this.tableMapping = tableMapping;
 		this.conversionService = conversionService;
+		this.propertyMappings = tableMapping.getPropertyMappings();
+		this.columnCount = propertyMappings.length;
 	}
 
 	@Override
@@ -91,8 +93,6 @@ final public class EntityRowMapper<T> implements RowMapper<T> {
 		T obj = null;
 		try {
 			obj = mappedClass.getDeclaredConstructor().newInstance();
-			PropertyMapping[] propertyMappings = tableMapping.getPropertyMappings();
-			int columnCount = propertyMappings.length;
 			// since the columns sql was generated using the property mappings the resultset
 			// columns will be in same order.
 			// resultset indexes start at 1.

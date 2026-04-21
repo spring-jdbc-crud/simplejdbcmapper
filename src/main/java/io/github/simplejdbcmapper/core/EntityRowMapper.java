@@ -11,7 +11,7 @@ import org.springframework.jdbc.support.JdbcUtils;
 import io.github.simplejdbcmapper.exception.MapperException;
 
 /**
- * The row mapper used internally
+ * The row mapper used internally which has been optimized for performance.
  * 
  * <p>
  * A new instance should be created for use each time
@@ -55,11 +55,13 @@ class EntityRowMapper<T> implements RowMapper<T> {
 	}
 
 	/*
-	 * Same logic as Springs JdbcUtil.getResultSetValue(). Using switch with enums
-	 * instead of all the 'if else's. Checked the complied java code and it has
+	 * Same logic as Springs JdbcUtil.getResultSetValue().
+	 * JdbcUtil.getResultSetValue() logic has been proven over the years so
+	 * retaining logic but changed the structure to use 'switch' statement instead
+	 * of the the bunch of if/else's for performance reasons. As was the goal, java
 	 * compiled the switch statement into a 'tableswitch' which means the program
-	 * can jump directly to the correct case block in one step. Also set the
-	 * typeValueExtracted flag which allows mapRow() to easily figure out whether
+	 * will jump directly to the correct 'case' block in one step. Also set the
+	 * 'typedValueExtracted' flag which allows mapRow() to easily figure out whether
 	 * the property needs conversion
 	 */
 	private Object getResultSetValue(ResultSet rs, int index, ResultSetType resultSetType, Class<?> requiredType)
@@ -112,10 +114,10 @@ class EntityRowMapper<T> implements RowMapper<T> {
 			return rs.getClob(index);
 		case ResultSetType.ENUM:
 			typedValueExtracted = false;
-			// Enums can either be represented through a String or an enum index value:
+			// Enums are represented as a String in simpleJdbcMapper.
 			// leave enum type conversion up to the caller (for example, a
 			// ConversionService)
-			// but make sure that we return nothing other than a String or an Integer.
+			// but make sure that we return nothing other than a String
 			Object obj = rs.getObject(index);
 			if (obj instanceof String) {
 				return obj;

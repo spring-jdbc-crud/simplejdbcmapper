@@ -56,7 +56,7 @@ import io.github.simplejdbcmapper.exception.MapperException;
  * Example using JdbcTemplate:
  * 
  * <pre>
- * {@code List<Product>} products = sjm.getJdbcTemplate().query(sql,sjm.getEntityRowMapper(Product.class), "someProductName");
+ * {@code List<Product>} products = sjm.getJdbcTemplate().query(sql,sjm.newEntityRowMapper(Product.class), "someProductName");
  * </pre>
  * <p>
  * Example using JdbcClient. Note that the EntityRowMaper has to be passed in as
@@ -66,7 +66,7 @@ import io.github.simplejdbcmapper.exception.MapperException;
  * <pre>
  * {@code List<Product>} products = sjm.getJdbcClient().sql(sql)
  *                                                     .param("someProductName")
- *                                                     .query(sjm.getEntityRowMapper(Product.class))
+ *                                                     .query(sjm.newEntityRowMapper(Product.class))
  *                                                     .list();
  * </pre>
  * 

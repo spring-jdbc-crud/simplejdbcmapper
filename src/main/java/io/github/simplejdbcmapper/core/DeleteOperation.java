@@ -9,7 +9,7 @@ class DeleteOperation {
 
 	// Map key - class name
 	// value - the sql
-	private final SimpleCache<String, String> deleteSqlCache = new SimpleCache<>();
+	private SimpleCache<String, String> deleteSqlCache = new SimpleCache<>();
 
 	public DeleteOperation(SimpleJdbcMapperSupport sjmSupport) {
 		this.sjmSupport = sjmSupport;
@@ -39,8 +39,9 @@ class DeleteOperation {
 		return deleteSqlCache;
 	}
 
+	// closing down simplejdbcmapper
 	void close() {
-		deleteSqlCache.clear();
+		deleteSqlCache = null;
 	}
 
 }

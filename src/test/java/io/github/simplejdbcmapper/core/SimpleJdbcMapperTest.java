@@ -2,6 +2,7 @@ package io.github.simplejdbcmapper.core;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.time.LocalDateTime;
@@ -19,10 +20,8 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import io.github.simplejdbcmapper.model.Customer;
 import io.github.simplejdbcmapper.model.NonDefaultNamingProduct;
 import io.github.simplejdbcmapper.model.Product;
 
@@ -114,6 +113,80 @@ class SimpleJdbcMapperTest {
 	}
 
 	@Test
+	void getEntityRowMapperSqlColumns_test() {
+		NonDefaultNamingProduct p = new NonDefaultNamingProduct();
+		p.setId(5461);
+		p.setProductName("test5461");
+		p.setCost(10.25);
+		sjm.insert(p);
+
+		String sql = "SELECT " + sjm.getEntityRowMapperSqlColumns(NonDefaultNamingProduct.class)
+				+ " FROM product WHERE name = ?";
+
+		// Using JdbcClient api for the above sql
+		List<NonDefaultNamingProduct> products = sjm.getJdbcClient().sql(sql).param("test5461")
+				.query(sjm.getEntityRowMapper(NonDefaultNamingProduct.class)).list();
+
+		assertEquals(1, products.size());
+		assertEquals(10.25, products.get(0).getCost());
+		assertEquals("test5461", products.get(0).getProductName());
+
+		// Using JdbcTemplate api for the above sql
+		List<NonDefaultNamingProduct> products2 = sjm.getJdbcTemplate().query(sql,
+				sjm.getEntityRowMapper(NonDefaultNamingProduct.class), "test5461");
+
+		assertEquals(1, products2.size());
+		assertEquals(10.25, products2.get(0).getCost());
+		assertEquals("test5461", products2.get(0).getProductName());
+	}
+
+	@Test
+	void getEntityRowMapperSqlColumns_IllegalArgs_test() {
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			sjm.getEntityRowMapperSqlColumns(null);
+		});
+
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			sjm.getEntityRowMapperSqlColumns(null, "t1");
+		});
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			sjm.getEntityRowMapperSqlColumns(Product.class, null);
+		});
+
+		Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			sjm.getEntityRowMapperSqlColumns(Product.class, "   ");
+		});
+	}
+
+	@Test
+	void getEntityRowMapperSqlColumns_withTableAlias_test() {
+		NonDefaultNamingProduct p = new NonDefaultNamingProduct();
+		p.setId(7190);
+		p.setProductName("test7190");
+		p.setCost(10.25);
+		sjm.insert(p);
+
+		String sql = "SELECT " + sjm.getEntityRowMapperSqlColumns(NonDefaultNamingProduct.class, "t1")
+				+ " FROM product t1 WHERE t1.name = ?";
+
+		// Using JdbcClient api for the above sql
+		List<NonDefaultNamingProduct> products = sjm.getJdbcClient().sql(sql).param("test7190")
+				.query(sjm.getEntityRowMapper(NonDefaultNamingProduct.class)).list();
+
+		assertEquals(1, products.size());
+		assertEquals(10.25, products.get(0).getCost());
+		assertEquals("test7190", products.get(0).getProductName());
+
+		// Using JdbcTemplate api for the above sql
+		List<NonDefaultNamingProduct> products2 = sjm.getJdbcTemplate().query(sql,
+				sjm.getEntityRowMapper(NonDefaultNamingProduct.class), "test7190");
+
+		assertEquals(1, products2.size());
+		assertEquals(10.25, products2.get(0).getCost());
+		assertEquals("test7190", products2.get(0).getProductName());
+	}
+
+	@Test
 	void setRecordAuditedBySupplier_resetting_failure() {
 		SimpleJdbcMapper m = new SimpleJdbcMapper(dataSource);
 		Supplier<String> supplier = () -> "tester";
@@ -177,67 +250,35 @@ class SimpleJdbcMapperTest {
 		assertTrue(map.containsKey("productId"));
 	}
 
-	// Order of tests causing problem.
+	// Order of tests causing problem. Address it another day. It works when run on
+	// its own
 	// @Test
 	void close_Test() {
 		SimpleJdbcMapperSupport sjms = TestUtils.getSimpleJdbcMapperSupport(sjm);
-		SimpleCache<String, TableMapping> tableMappingCache = sjms.getTableMappingCache();
-		tableMappingCache.clear();
-
 		FindOperation fo = TestUtils.getFindOperation(sjm);
-		SimpleCache<String, String> findCache = fo.getFindByIdSqlCache();
-		findCache.clear();
-
-		SimpleCache<String, String> rawColCache = fo.getRawColumnsSqlCache();
-		rawColCache.clear();
-
 		InsertOperation io = TestUtils.getInsertOperation(sjm);
-		SimpleCache<String, SimpleJdbcInsert> insertCache = io.getInsertSqlCache();
-		insertCache.clear();
-
 		UpdateOperation uo = TestUtils.getUpdateOperation(sjm);
-		SimpleCache<String, SqlAndParams> updateCache = uo.getUpdateSqlCache();
-		updateCache.clear();
-
-		SimpleCache<String, SqlAndParams> updateSpecCache = uo.getUpdateSpecificPropertiesSqlCache();
-		updateSpecCache.clear();
-
 		DeleteOperation dop = TestUtils.getDeleteOperation(sjm);
-		SimpleCache<String, String> delCache = dop.getDeleteSqlCache();
-		delCache.clear();
 
-		sjm.findById(Customer.class, 1);
-		assertTrue(findCache.size() > 0);
-		assertTrue(rawColCache.size() > 0);
-
-		Product prod = new Product();
-		prod.setProductId(3121);
-		prod.setName("xyz");
-		sjm.insert(prod);
-		assertTrue(insertCache.size() > 0);
-
-		prod.setCost(10.25);
-		sjm.update(prod);
-		assertTrue(updateCache.size() > 0);
-
-		prod.setCost(20.22);
-		sjm.updateSpecificProperties(prod, "cost");
-		assertTrue(updateSpecCache.size() > 0);
-
-		sjm.delete(prod);
-		assertTrue(delCache.size() > 0);
-
-		// now close and check the cache sizes are 0 ie we have cleared all references
-		// in sjm
 		sjm.close();
 
-		assertEquals(0, tableMappingCache.size());
-		assertEquals(0, findCache.size());
-		assertEquals(0, rawColCache.size());
-		assertEquals(0, insertCache.size());
-		assertEquals(0, updateCache.size());
-		assertEquals(0, updateSpecCache.size());
-		assertEquals(0, delCache.size());
+		assertNull(sjms.getTableMappingCache());
+		assertNull(fo.getFindByIdSqlCache());
+		assertNull(fo.getEntityRowMapperSqlColumnsCache());
+		assertNull(fo.getEntityRowMapperSqlColumnsAliasCache());
+		assertNull(io.getInsertSqlCache());
+		assertNull(uo.getUpdateSqlCache());
+		assertNull(uo.getUpdateSpecificPropertiesSqlCache());
+		assertNull(dop.getDeleteSqlCache());
+
+		assertNull(sjms.getRecordAuditedOnSupplier());
+		assertNull(sjms.getRecordAuditedBySupplier());
+		assertNull(sjms.getConversionService());
+
+		assertNull(sjms.getJdbcClient());
+		assertNull(sjms.getJdbcTemplate());
+		assertNull(sjms.getNamedParameterJdbcTemplate());
+		assertNull(sjms.getDataSource());
 
 	}
 

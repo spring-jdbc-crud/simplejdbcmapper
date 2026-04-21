@@ -154,7 +154,7 @@ class SimpleJdbcMapperSupport {
 	}
 
 	void close() {
-		tableMappingProvider.getTableMappingCache().clear();
+		tableMappingProvider.close();
 		recordAuditedOnSupplier = null;
 		recordAuditedBySupplier = null;
 		conversionService = null;

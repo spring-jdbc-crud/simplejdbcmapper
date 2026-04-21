@@ -31,7 +31,7 @@ class TableMappingProvider {
 
 	// Map key - class name
 	// value - the table mapping
-	private final SimpleCache<String, TableMapping> tableMappingCache = new SimpleCache<>();
+	private SimpleCache<String, TableMapping> tableMappingCache = new SimpleCache<>();
 
 	private final AnnotationProcessor ap;
 
@@ -60,6 +60,11 @@ class TableMappingProvider {
 
 	SimpleCache<String, TableMapping> getTableMappingCache() {
 		return tableMappingCache;
+	}
+
+	// closing down simplejdbcmapper
+	void close() {
+		tableMappingCache = null;
 	}
 
 	private List<PropertyMapping> getPropertyMappings(Class<?> entityType, List<Field> fields) {

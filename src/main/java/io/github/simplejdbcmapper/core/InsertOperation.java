@@ -16,7 +16,7 @@ class InsertOperation {
 	// insert cache. Note that Spring SimpleJdbcInsert is thread safe.
 	// Map key - class name
 	// value - SimpleJdbcInsert
-	private final SimpleCache<String, SimpleJdbcInsert> insertSqlCache = new SimpleCache<>();
+	private SimpleCache<String, SimpleJdbcInsert> insertSqlCache = new SimpleCache<>();
 
 	public InsertOperation(SimpleJdbcMapperSupport sjmSupport) {
 		this.sjmSupport = sjmSupport;
@@ -48,8 +48,9 @@ class InsertOperation {
 		return insertSqlCache;
 	}
 
+	// closing down simplejdbcmapper
 	void close() {
-		insertSqlCache.clear();
+		insertSqlCache = null;
 	}
 
 	private MapSqlParameterSource createMapSqlParameterSource(TableMapping tableMapping, BeanWrapper bw) {

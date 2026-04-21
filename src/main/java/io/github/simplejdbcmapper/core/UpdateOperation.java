@@ -25,12 +25,12 @@ class UpdateOperation {
 	// update sql cache
 	// Map key - class name
 	// value - the update sql and params
-	private final SimpleCache<String, SqlAndParams> updateSqlCache = new SimpleCache<>();
+	private SimpleCache<String, SqlAndParams> updateSqlCache = new SimpleCache<>();
 
 	// update specified properties sql cache
 	// Map key - class name and properties
 	// value - the update sql and params
-	private final SimpleCache<String, SqlAndParams> updateSpecificPropertiesSqlCache = new SimpleCache<>(2000);
+	private SimpleCache<String, SqlAndParams> updateSpecificPropertiesSqlCache = new SimpleCache<>(2000);
 
 	public UpdateOperation(SimpleJdbcMapperSupport sjmSupport) {
 		this.sjmSupport = sjmSupport;
@@ -73,9 +73,10 @@ class UpdateOperation {
 		return updateSpecificPropertiesSqlCache;
 	}
 
+	// closing down simplejdbcmapper
 	void close() {
-		updateSqlCache.clear();
-		updateSpecificPropertiesSqlCache.clear();
+		updateSqlCache = null;
+		updateSpecificPropertiesSqlCache = null;
 	}
 
 	private Integer updateInternal(Object object, SqlAndParams sqlAndParams, TableMapping tableMapping) {

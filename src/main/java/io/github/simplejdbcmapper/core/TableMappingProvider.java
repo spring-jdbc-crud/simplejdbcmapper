@@ -2,9 +2,7 @@ package io.github.simplejdbcmapper.core;
 
 import java.beans.PropertyDescriptor;
 import java.lang.reflect.Field;
-import java.lang.reflect.Member;
 import java.lang.reflect.Method;
-import java.lang.reflect.Modifier;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
@@ -107,9 +105,6 @@ class TableMappingProvider {
 			for (PropertyMapping propMapping : propertyMappings) {
 				PropertyDescriptor pd = bw.getPropertyDescriptor(propMapping.getPropertyName());
 				Method writeMethod = pd.getWriteMethod();
-				if (!isPublic(entityType, writeMethod)) {
-					writeMethod.setAccessible(true);
-				}
 				propMapping.setWriteMethod(writeMethod);
 			}
 		} catch (Exception e) {
@@ -152,9 +147,4 @@ class TableMappingProvider {
 	private String getSchemaForTable(Table tableAnnotation) {
 		return StringUtils.hasText(tableAnnotation.schema()) ? tableAnnotation.schema() : schemaName;
 	}
-
-	private boolean isPublic(Class<?> clazz, Member member) {
-		return Modifier.isPublic(member.getModifiers()) && Modifier.isPublic(clazz.getModifiers());
-	}
-
 }

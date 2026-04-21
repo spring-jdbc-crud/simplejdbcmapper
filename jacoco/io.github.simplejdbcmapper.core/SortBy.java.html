@@ -1,4 +1,17 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SortBy.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">simplejdbcmapper</a> &gt; <a href="index.source.html" class="el_package">io.github.simplejdbcmapper.core</a> &gt; <span class="el_source">SortBy.java</span></div><h1>SortBy.java</h1><pre class="source lang-java linenums">package io.github.simplejdbcmapper.core;
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>SortBy.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">simplejdbcmapper</a> &gt; <a href="index.source.html" class="el_package">io.github.simplejdbcmapper.core</a> &gt; <span class="el_source">SortBy.java</span></div><h1>SortBy.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2025-present the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ *
+ * https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
+ */
+package io.github.simplejdbcmapper.core;
 
 import org.springframework.util.Assert;
 
@@ -17,8 +30,8 @@ public class SortBy {
 	 * @param propertyName the property name to sort by. (NOT the column name)
 	 */
 	public SortBy(String propertyName) {
-<span class="fc" id="L20">		this(propertyName, null);</span>
-<span class="fc" id="L21">	}</span>
+<span class="fc" id="L33">		this(propertyName, null);</span>
+<span class="fc" id="L34">	}</span>
 
 	/**
 	 * The constructor
@@ -27,25 +40,25 @@ public class SortBy {
 	 * @param direction    the direction of the sort. Has to be either &quot;ASC&quot; or
 	 *                     &quot;DESC&quot;
 	 */
-<span class="fc" id="L30">	public SortBy(String propertyName, String direction) {</span>
-<span class="fc" id="L31">		Assert.notNull(propertyName, &quot;propertyName must not be null&quot;);</span>
-<span class="fc" id="L32">		this.propertyName = propertyName;</span>
-<span class="fc bfc" id="L33" title="All 2 branches covered.">		if (direction != null) {</span>
-<span class="fc bfc" id="L34" title="All 4 branches covered.">			if (!&quot;ASC&quot;.equalsIgnoreCase(direction) &amp;&amp; !&quot;DESC&quot;.equalsIgnoreCase(direction)) {</span>
-<span class="fc" id="L35">				throw new IllegalArgumentException(&quot;direction should be ASC or DESC&quot;);</span>
+<span class="fc" id="L43">	public SortBy(String propertyName, String direction) {</span>
+<span class="fc" id="L44">		Assert.notNull(propertyName, &quot;propertyName must not be null&quot;);</span>
+<span class="fc" id="L45">		this.propertyName = propertyName;</span>
+<span class="fc bfc" id="L46" title="All 2 branches covered.">		if (direction != null) {</span>
+<span class="fc bfc" id="L47" title="All 4 branches covered.">			if (!&quot;ASC&quot;.equalsIgnoreCase(direction) &amp;&amp; !&quot;DESC&quot;.equalsIgnoreCase(direction)) {</span>
+<span class="fc" id="L48">				throw new IllegalArgumentException(&quot;direction should be ASC or DESC&quot;);</span>
 			}
-<span class="fc" id="L37">			this.direction = direction.toUpperCase();</span>
+<span class="fc" id="L50">			this.direction = direction.toUpperCase();</span>
 		} else {
-<span class="fc" id="L39">			this.direction = &quot;&quot;;</span>
+<span class="fc" id="L52">			this.direction = &quot;&quot;;</span>
 		}
-<span class="fc" id="L41">	}</span>
+<span class="fc" id="L54">	}</span>
 
 	public String getPropertyName() {
-<span class="fc" id="L44">		return propertyName;</span>
+<span class="fc" id="L57">		return propertyName;</span>
 	}
 
 	public String getDirection() {
-<span class="fc" id="L48">		return direction;</span>
+<span class="fc" id="L61">		return direction;</span>
 	}
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main dd4c72791771d27499e83cbc9c205b174a072a43 2026-04-21T00:42:29</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper v2.1.5a 7c77078c59820054b55d332263dee56bc9ec7b2b 2026-04-21T22:13:25</div></body></html>

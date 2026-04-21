@@ -9,7 +9,7 @@ class DeleteOperation {
 
 	// Map key - class name
 	// value - the sql
-<span class="fc" id="L12">	private final SimpleCache&lt;String, String&gt; deleteSqlCache = new SimpleCache&lt;&gt;();</span>
+<span class="fc" id="L12">	private SimpleCache&lt;String, String&gt; deleteSqlCache = new SimpleCache&lt;&gt;();</span>
 
 <span class="fc" id="L14">	public DeleteOperation(SimpleJdbcMapperSupport sjmSupport) {</span>
 <span class="fc" id="L15">		this.sjmSupport = sjmSupport;</span>
@@ -39,9 +39,10 @@ class DeleteOperation {
 <span class="fc" id="L39">		return deleteSqlCache;</span>
 	}
 
+	// closing down simplejdbcmapper
 	void close() {
-<span class="fc" id="L43">		deleteSqlCache.clear();</span>
-<span class="fc" id="L44">	}</span>
+<span class="fc" id="L44">		deleteSqlCache = null;</span>
+<span class="fc" id="L45">	}</span>
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main dd4c72791771d27499e83cbc9c205b174a072a43 2026-04-21T00:42:29</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper v2.1.5a 7c77078c59820054b55d332263dee56bc9ec7b2b 2026-04-21T22:13:25</div></body></html>

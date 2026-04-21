@@ -32,17 +32,17 @@ import org.springframework.util.Assert;
  * @author Antony Joseph
  */
 class SimpleJdbcMapperSupport {
-	private final DataSource dataSource;
+	private DataSource dataSource;
 
-	private final String schemaName;
+	private String schemaName;
 
-	private final String catalogName;
+	private String catalogName;
 
 	private JdbcClient jdbcClient;
 
-	private final JdbcTemplate jdbcTemplate;
+	private JdbcTemplate jdbcTemplate;
 
-	private final NamedParameterJdbcTemplate npJdbcTemplate;
+	private NamedParameterJdbcTemplate npJdbcTemplate;
 
 	private final TableMappingProvider tableMappingProvider;
 
@@ -154,12 +154,15 @@ class SimpleJdbcMapperSupport {
 	}
 
 	void close() {
-<span class="fc" id="L157">		tableMappingProvider.getTableMappingCache().clear();</span>
+<span class="fc" id="L157">		tableMappingProvider.close();</span>
 <span class="fc" id="L158">		recordAuditedOnSupplier = null;</span>
 <span class="fc" id="L159">		recordAuditedBySupplier = null;</span>
 <span class="fc" id="L160">		conversionService = null;</span>
 <span class="fc" id="L161">		jdbcClient = null;</span>
-<span class="fc" id="L162">	}</span>
+<span class="fc" id="L162">		jdbcTemplate = null;</span>
+<span class="fc" id="L163">		npJdbcTemplate = null;</span>
+<span class="fc" id="L164">		dataSource = null;</span>
+<span class="fc" id="L165">	}</span>
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main dd4c72791771d27499e83cbc9c205b174a072a43 2026-04-21T00:42:29</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper v2.1.5a 7c77078c59820054b55d332263dee56bc9ec7b2b 2026-04-21T22:13:25</div></body></html>

@@ -44,7 +44,7 @@ Just by annotating the models that you would use with JdbcTemplate/JdbcClient, y
   <dependency>
     <groupId>io.github.spring-jdbc-crud</groupId>
     <artifactId>simplejdbcmapper</artifactId>
-    <version>2.1.4</version>
+    <version>2.2.0</version>
  </dependency>
  ```
  
@@ -124,18 +124,18 @@ Just by annotating the models that you would use with JdbcTemplate/JdbcClient, y
  sjm.deleteById(Product.class, 5);
  
  /*
-  For custom queries use getBeanFriendlySqlColumns() to get the columns sql. It creates the appropriate column aliases 
-  when the column name does not match the corresponding underscore case property name. This allows the usage of 
-  Spring row mappers like BeanPropertyRowMapper, SimplePropertyRowMapper etc instead of writing custom row mappers. 
+  For custom queries use getEntitySqlColumns() to get the columns for the sql to work with EntityRowMapper(see its javadoc) 
   Note in this case the 'name' property is mapped to the 'product_name' column.
  */
- String sql = "SELECT " + sjm.getBeanFriendlySqlColumns(Product.class) +  " FROM product WHERE product_name = ?";
+ String sql = "SELECT " + sjm.getEntitySqlColumns(Product.class) +  " FROM product WHERE product_name = ?";
  
- // Using Spring's JdbcClient api for the above sql. JdbcClient is using SimplePropertyRowMapper internally here.
- List<Product> products = sjm.getJdbcClient().sql(sql).param("someProductName").query(Product.class).list();
- 
+ // Using Spring's JdbcClient api for the above sql.
+ List<Product> products = sjm.getJdbcClient().sql(sql)
+                                             .param("someProductName")
+                                             .query(sjm.newEntityRowMapper(Product.class))
+                                             .list();
  // Using Spring's JdbcTemplate api for the above sql
- List<Product> products = sjm.getJdbcTemplate().query(sql, BeanPropertyRowMapper.newInstance(Product.class), "someProductName");
+ List<Product> products = sjm.getJdbcTemplate().query(sql, sjm.newEntityRowMapper(Product.class), "someProductName");
  
  // find by a property value
  List<Product> products = sjm.findByPropertyValue(Product.class, "sku", "some sku#");

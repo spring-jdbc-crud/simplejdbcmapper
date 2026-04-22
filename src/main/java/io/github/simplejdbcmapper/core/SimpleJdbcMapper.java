@@ -261,8 +261,8 @@ public final class SimpleJdbcMapper {
 	 * 
 	 * <p>
 	 * This is the recommended row mapper to use when querying mapped objects. It
-	 * has optimizations which allows it to retrieve data from the query ResultSet
-	 * in a performant way.
+	 * has optimizations which allows it to process data from the query ResultSet in
+	 * a performant way.
 	 * 
 	 * <p>
 	 * Query:
@@ -279,7 +279,7 @@ public final class SimpleJdbcMapper {
 	 * 
 	 * <p>
 	 * Example using JdbcClient. Note that the EntityRowMaper has to be passed in as
-	 * an argument, otherwise JdbcClient will use its internal
+	 * an argument, otherwise JdbcClient will use its internal row mapper
 	 * SimplePropertyRowMapper which will not work with the sql.
 	 * 
 	 * <pre>
@@ -291,7 +291,7 @@ public final class SimpleJdbcMapper {
 	 * 
 	 * @param <T>
 	 * @param entityType
-	 * @return
+	 * @return EntityRowMapper for the type
 	 */
 	public <T> EntityRowMapper<T> newEntityRowMapper(Class<T> entityType) {
 		return findOperation.newEntityRowMapper(entityType);
@@ -361,7 +361,7 @@ public final class SimpleJdbcMapper {
 	 * "somecolumn, someothercolumn, last_name AS user_last_name"
 	 * </pre>
 	 * 
-	 * @see "EntityRowMapper which is the recommended row mapper to use when quering mapped entities"
+	 * @see "EntityRowMapper is the recommended row mapper to use when quering mapped entities. See its documentation"
 	 * 
 	 * 
 	 * @param entityType the type
@@ -395,7 +395,7 @@ public final class SimpleJdbcMapper {
 	 * "t1.somecolumn, t1.someothercolumn, t1.last_name AS user_last_name"
 	 * </pre>
 	 * 
-	 * @see "EntityRowMapper which is the recommended row mapper to use when quering mapped entities"
+	 * @see "EntityRowMapper is the recommended row mapper to use when quering mapped entities. See its documentation"
 	 * 
 	 * @param entityType the type
 	 * @param tableAlias the table alias

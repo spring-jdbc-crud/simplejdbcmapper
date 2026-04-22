@@ -43,8 +43,8 @@ import io.github.simplejdbcmapper.exception.MapperException;
  * 
  * <p>
  * This is the recommended row mapper to use when querying mapped objects. It
- * has optimizations which allows it to retrieve data from the query ResultSet
- * in a performant way.
+ * has optimizations which allows it to process data from the query ResultSet in
+ * a performant way.
  * 
  * <p>
  * Query:

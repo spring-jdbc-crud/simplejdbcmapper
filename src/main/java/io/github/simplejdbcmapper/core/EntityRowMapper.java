@@ -74,7 +74,7 @@ import io.github.simplejdbcmapper.exception.MapperException;
  * 
  * @author Antony Joseph
  */
-final public class EntityRowMapper<T> implements RowMapper<T> {
+public final class EntityRowMapper<T> implements RowMapper<T> {
 	private final Class<T> mappedClass;
 	private final ConversionService conversionService;
 	private final PropertyMapping[] propertyMappings;
@@ -212,7 +212,7 @@ final public class EntityRowMapper<T> implements RowMapper<T> {
 
 	protected static <T> EntityRowMapper<T> newInstance(Class<T> entityType, PropertyMapping[] propertyMappings,
 			ConversionService conversionService) {
-		return new EntityRowMapper<T>(entityType, propertyMappings, conversionService);
+		return new EntityRowMapper<>(entityType, propertyMappings, conversionService);
 	}
 
 }

@@ -39,8 +39,8 @@ class FindOperation {
 		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
 		String sql = findByIdSqlCache.get(entityType.getName());
 		if (sql == null) {
-			sql = "SELECT " + getEntitySqlColumns(entityType) + " FROM "
-					+ tableMapping.fullyQualifiedTableName() + " WHERE " + tableMapping.getIdColumnName() + " = ?";
+			sql = "SELECT " + getEntitySqlColumns(entityType) + " FROM " + tableMapping.fullyQualifiedTableName()
+					+ " WHERE " + tableMapping.getIdColumnName() + " = ?";
 			findByIdSqlCache.put(entityType.getName(), sql);
 		}
 		T obj = null;
@@ -164,7 +164,8 @@ class FindOperation {
 
 	public <T> EntityRowMapper<T> newEntityRowMapper(Class<T> entityType) {
 		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
-		return EntityRowMapper.newInstance(entityType, tableMapping, sjmSupport.getConversionService());
+		return EntityRowMapper.newInstance(entityType, tableMapping.getPropertyMappings(),
+				sjmSupport.getConversionService());
 	}
 
 	public String getBeanFriendlySqlColumns(Class<?> entityType) {

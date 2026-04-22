@@ -80,10 +80,11 @@ final public class EntityRowMapper<T> implements RowMapper<T> {
 	private final PropertyMapping[] propertyMappings;
 	private final int columnCount;
 
-	private EntityRowMapper(Class<T> entityType, TableMapping tableMapping, ConversionService conversionService) {
+	private EntityRowMapper(Class<T> entityType, PropertyMapping[] propertyMappings,
+			ConversionService conversionService) {
 		this.mappedClass = entityType;
 		this.conversionService = conversionService;
-		this.propertyMappings = tableMapping.getPropertyMappings();
+		this.propertyMappings = propertyMappings;
 		this.columnCount = propertyMappings.length;
 	}
 
@@ -209,9 +210,9 @@ final public class EntityRowMapper<T> implements RowMapper<T> {
 		return (rs.wasNull() ? null : value);
 	}
 
-	protected static <T> EntityRowMapper<T> newInstance(Class<T> entityType, TableMapping tableMapping,
+	protected static <T> EntityRowMapper<T> newInstance(Class<T> entityType, PropertyMapping[] propertyMappings,
 			ConversionService conversionService) {
-		return new EntityRowMapper<T>(entityType, tableMapping, conversionService);
+		return new EntityRowMapper<T>(entityType, propertyMappings, conversionService);
 	}
 
 }

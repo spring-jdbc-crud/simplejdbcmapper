@@ -9,7 +9,6 @@ Just by annotating the models that you would use with JdbcTemplate/JdbcClient, y
 
 ## Table of contents
 [Features](#features)  
-[Maven coordinates](#maven-coordinates)   
 [Example code](#example-code)  
 [JDK and Spring version requirements](#jdk-and-spring-version-requirements)  
 [Spring bean configuration for SimpleJdbcMapper](#spring-bean-configuration-for-simplejdbcmapper)  
@@ -37,16 +36,6 @@ Just by annotating the models that you would use with JdbcTemplate/JdbcClient, y
 7. Tests are run against PostgreSQL, MySQL, Oracle, SQLServer. Should work with other databases.
 [![CI SimpleJdbcMapper](https://github.com/spring-jdbc-crud/simplejdbcmapper/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/spring-jdbc-crud/simplejdbcmapper/actions/workflows/ci.yml)
 8. Only dependency is Spring JDBC libraries. No other external dependencies.
-
-## Maven coordinates
-
- ``` 
-  <dependency>
-    <groupId>io.github.spring-jdbc-crud</groupId>
-    <artifactId>simplejdbcmapper</artifactId>
-    <version>2.2.0</version>
- </dependency>
- ```
  
 
 ## Example code

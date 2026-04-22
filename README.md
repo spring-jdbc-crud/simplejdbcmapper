@@ -3,7 +3,7 @@
 
 A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations by making them less verbose. Use it as needed and keep using JdbcTemplate/JdbcClient for other functionality.
 
-Just by annotating the models that you would use with JdbcTemplate/JdbcClient, you get single-line CRUD. For custom queries which retrieve mapped objects you can use row mappers like Spring's BeanPropertyRowMapper/SimplePropertyRowMapper or the frameworks EntityRowMapper to get the results without writing custom row mappers.
+Just by annotating the models that you would use with JdbcTemplate/JdbcClient, you get single-line CRUD. For custom queries which retrieve mapped objects, you can use row mappers like Spring's BeanPropertyRowMapper/SimplePropertyRowMapper or the framework's EntityRowMapper to get the results without writing custom row mappers.
 
 [Javadoc](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/index.html) | [Demo Application](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper) | [Dzone Article](https://dzone.com/articles/using-simplejdbcmapper-with-spring)
 
@@ -113,8 +113,8 @@ Just by annotating the models that you would use with JdbcTemplate/JdbcClient, y
  sjm.deleteById(Product.class, 5);
  
  /*
-  For custom queries use getEntitySqlColumns() to get the columns for the sql to work with EntityRowMapper(see its javadoc) 
-  Note in this case the 'name' property is mapped to the 'product_name' column.
+  For custom queries which retrieve mapped objects use getEntitySqlColumns() to get the columns for the sql 
+  to work with EntityRowMapper(see its javadoc). Note in this case the 'name' property is mapped to the 'product_name' column.
  */
  String sql = "SELECT " + sjm.getEntitySqlColumns(Product.class) +  " FROM product WHERE product_name = ?";
  

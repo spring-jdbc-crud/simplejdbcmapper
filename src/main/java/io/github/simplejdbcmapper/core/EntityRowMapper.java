@@ -60,7 +60,7 @@ import io.github.simplejdbcmapper.exception.MapperException;
  * </pre>
  * <p>
  * Example using JdbcClient. Note that the EntityRowMapper has to be passed in
- * as an argument, otherwise JdbcClient will use its internal
+ * as an argument, otherwise JdbcClient will use its internal row mapper
  * SimplePropertyRowMapper which will not work with the sql.
  * 
  * <pre>

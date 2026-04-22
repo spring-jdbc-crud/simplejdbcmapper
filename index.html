@@ -1,9 +1,6 @@
 <!DOCTYPE html>
 <html>
   <head>
-<meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <!-- Begin SEO tag -->
 <meta property="og:title" content="Simplify Spring CRUD JdbcTemplate/JdbcClient operations by making them less verbose using SimpleJdbcMapper" >
 <meta property="og:locale" content="en_US" />
@@ -43,7 +40,6 @@
     <li class="sidebar-header-1"><a href="#simplejdbcmapper">SimpleJdbcMapper</a></li>
     <li class="sidebar-header-2"><a href="#table-of-contents">Table of contents</a></li>
     <li class="sidebar-header-2"><a href="#features">Features</a></li>
-    <li class="sidebar-header-2"><a href="#maven-coordinates">Maven coordinates</a></li>
     <li class="sidebar-header-2"><a href="#example-code">Example code</a></li>
     <li class="sidebar-header-2"><a href="#jdk-and-spring-version-requirements">JDK and Spring version requirements</a></li>
     <li class="sidebar-header-2"><a href="#spring-bean-configuration-for-simplejdbcmapper">Spring bean configuration for SimpleJdbcMapper</a></li>
@@ -61,9 +57,9 @@
       <div class="span9 main"><h1 id="simplejdbcmapper"><a class="header-link" href="#simplejdbcmapper"></a>SimpleJdbcMapper</h1>
 <p><a href="https://github.com/spring-jdbc-crud/simplejdbcmapper/actions/workflows/ci.yml"><img src="https://github.com/spring-jdbc-crud/simplejdbcmapper/actions/workflows/ci.yml/badge.svg" alt="CI SimpleJdbcMapper"></a>  <a href="https://spring-jdbc-crud.github.io/simplejdbcmapper/jacoco/index.html"><img src="https://spring-jdbc-crud.github.io/simplejdbcmapper/jacoco/jacoco.svg" alt="coverage"></a>  <a href="https://central.sonatype.com/artifact/io.github.spring-jdbc-crud/simplejdbcmapper"><img src="https://img.shields.io/maven-central/v/io.github.spring-jdbc-crud/simplejdbcmapper" alt="maven-central"></a>  <a href="https://central.sonatype.com/artifact/io.github.spring-jdbc-crud/simplejdbcmapper"><img src="https://img.shields.io/:license-apache-brightgreen.svg" alt="License"></a></p>
 <p>A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations by making them less verbose. Use it as needed and keep using JdbcTemplate/JdbcClient for other functionality.</p>
-<p>Just by annotating the models that you would use with JdbcTemplate/JdbcClient, you get single-line CRUD. Also, you will be able to use Spring row mappers like BeanPropertyRowMapper and SimplePropertyRowMapper etc for certain custom queries, avoiding writing custom row mappers.</p>
+<p>Just by annotating the models that you would use with JdbcTemplate/JdbcClient, you get single-line CRUD. For custom queries which retrieve mapped objects, you can use row mappers like Spring&#39;s BeanPropertyRowMapper/SimplePropertyRowMapper or the framework&#39;s EntityRowMapper to get the results without writing custom row mappers.</p>
 <p>
-	<a href="https://github.com/spring-jdbc-crud/simplejdbcmapper">github</a> |
+<a href="https://github.com/spring-jdbc-crud/simplejdbcmapper">github</a> |
 	<a href="https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/index.html">Javadoc</a> |
 	<a href="https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper">Demo Application</a> |
 	<a href="https://dzone.com/articles/using-simplejdbcmapper-with-spring">Dzone Article</a>
@@ -85,12 +81,7 @@
 <a href="https://github.com/spring-jdbc-crud/simplejdbcmapper/actions/workflows/ci.yml"><img src="https://github.com/spring-jdbc-crud/simplejdbcmapper/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI SimpleJdbcMapper"></a></li>
 <li>Only dependency is Spring JDBC libraries. No other external dependencies.</li>
 </ol>
-<h2 id="maven-coordinates"><a class="header-link" href="#maven-coordinates"></a>Maven coordinates</h2>
-<pre class="hljs"><code> <span class="hljs-tag">&lt;<span class="hljs-name">dependency</span>&gt;</span>
-   <span class="hljs-tag">&lt;<span class="hljs-name">groupId</span>&gt;</span>io.github.spring-jdbc-crud<span class="hljs-tag">&lt;/<span class="hljs-name">groupId</span>&gt;</span>
-   <span class="hljs-tag">&lt;<span class="hljs-name">artifactId</span>&gt;</span>simplejdbcmapper<span class="hljs-tag">&lt;/<span class="hljs-name">artifactId</span>&gt;</span>
-   <span class="hljs-tag">&lt;<span class="hljs-name">version</span>&gt;</span>2.1.4<span class="hljs-tag">&lt;/<span class="hljs-name">version</span>&gt;</span>
-<span class="hljs-tag">&lt;/<span class="hljs-name">dependency</span>&gt;</span></code></pre><h2 id="example-code"><a class="header-link" href="#example-code"></a>Example code</h2>
+<h2 id="example-code"><a class="header-link" href="#example-code"></a>Example code</h2>
 <pre class="hljs"><code> <span class="hljs-comment">//@Table annotation is required</span>
  <span class="hljs-meta">@Table(name=&quot;product&quot;)</span>
  <span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Product</span> </span>{
@@ -164,18 +155,18 @@ List&lt;Product&gt; products = sjm.findAll(Product.class, <span class="hljs-keyw
  sjm.deleteById(Product.class, <span class="hljs-number">5</span>);
  
  <span class="hljs-comment">/*
-For custom queries use getBeanFriendlySqlColumns() to get the columns sql. It creates the appropriate column aliases 
-when the column name does not match the corresponding underscore case property name. This allows the usage of 
-Spring row mappers like BeanPropertyRowMapper, SimplePropertyRowMapper etc instead of writing custom row mappers. 
-Note in this case the &#x27;name&#x27; property is mapped to the &#x27;product_name&#x27; column.
+For custom queries which retrieve mapped objects use getEntitySqlColumns() to get the columns for the sql 
+to work with EntityRowMapper(see its javadoc). Note in this case the &#x27;name&#x27; property is mapped to the &#x27;product_name&#x27; column.
  */</span>
- String sql = <span class="hljs-string1">&quot;SELECT &quot;</span> + sjm.getBeanFriendlySqlColumns(Product.class) +  <span class="hljs-string1">&quot; FROM product WHERE product_name = ?&quot;</span>;
+ String sql = <span class="hljs-string1">&quot;SELECT &quot;</span> + sjm.getEntitySqlColumns(Product.class) +  <span class="hljs-string1">&quot; FROM product WHERE product_name = ?&quot;</span>;
  
- <span class="hljs-comment">// Using Spring&#x27;s JdbcClient api for the above sql. JdbcClient is using SimplePropertyRowMapper internally here.</span>
- List&lt;Product&gt; products = sjm.getJdbcClient().sql(sql).param(<span class="hljs-string1">&quot;someProductName&quot;</span>).query(Product.class).list();
- 
+ <span class="hljs-comment">// Using Spring&#x27;s JdbcClient api for the above sql.</span>
+ List&lt;Product&gt; products = sjm.getJdbcClient().sql(sql)
+                                           .param(<span class="hljs-string1">&quot;someProductName&quot;</span>)
+                                           .query(sjm.newEntityRowMapper(Product.class))
+                                           .list();
  <span class="hljs-comment">// Using Spring&#x27;s JdbcTemplate api for the above sql</span>
- List&lt;Product&gt; products = sjm.getJdbcTemplate().query(sql, BeanPropertyRowMapper.newInstance(Product.class), <span class="hljs-string1">&quot;someProductName&quot;</span>);
+ List&lt;Product&gt; products = sjm.getJdbcTemplate().query(sql, sjm.newEntityRowMapper(Product.class), <span class="hljs-string1">&quot;someProductName&quot;</span>);
  
  <span class="hljs-comment">// find by a property value</span>
  List&lt;Product&gt; products = sjm.findByPropertyValue(Product.class, <span class="hljs-string1">&quot;sku&quot;</span>, <span class="hljs-string1">&quot;some sku#&quot;</span>);
@@ -401,7 +392,7 @@ If a Supplier is configured using simpleJdbcMapper.setRecordAuditedBySupplier(),
 </ul>
 <p>Use the pertinent SQL type for your database and database column type. </p>
 <ul class="list">
-<li> Character large object database columns should be mapped to java types String or other CharSequence or char[]. No other java types are supported.<br>The &#39;sqlType&#39; attribute of the @Column annotation with the following values are considered as Character Large Objects by SimpeJdbcMapper:<br>Types.CLOB<br>Types.NCLOB<br>Types.LONGVARCHAR<br>Types.LONGNVARCHAR  </li>
+<li> Character large object database columns should be mapped to java type String. No other java types are supported.<br>The &#39;sqlType&#39; attribute of the @Column annotation with the following values are considered as Character Large Objects by SimpeJdbcMapper:<br>Types.CLOB<br>Types.NCLOB<br>Types.LONGVARCHAR<br>Types.LONGNVARCHAR  </li>
 </ul>
 <p>Use the pertinent SQL type for your database and database column type. </p>
 <p>In both the cases above the whole object (image files etc) will be read into memory. For very large objects this could create memory issues and you may want to use InputStream/Reader.  To use InputStream/Reader you will have to use  JdbcTemplate directly since SimpleJdbcMapper does not support these.</p>

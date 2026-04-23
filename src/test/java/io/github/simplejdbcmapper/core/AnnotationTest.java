@@ -210,7 +210,7 @@ class AnnotationTest {
 	}
 
 	@Test
-	void insert_BlobTypeTest() throws Exception {
+	void insert_BlobTypeTest() {
 		BlobType obj = new BlobType();
 		Exception exception = Assertions.assertThrows(AnnotationException.class, () -> {
 			sjm.insert(obj);
@@ -219,7 +219,7 @@ class AnnotationTest {
 	}
 
 	@Test
-	void insert_ClobTypeTest() throws Exception {
+	void insert_ClobTypeTest() {
 		ClobType obj = new ClobType();
 		Exception exception = Assertions.assertThrows(AnnotationException.class, () -> {
 			sjm.insert(obj);

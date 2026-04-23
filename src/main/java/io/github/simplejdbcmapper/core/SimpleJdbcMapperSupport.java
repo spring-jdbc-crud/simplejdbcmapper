@@ -149,7 +149,7 @@ class SimpleJdbcMapperSupport {
 		return recordAuditedOnSupplier;
 	}
 
-	SimpleCache<String, TableMapping> getTableMappingCache() {
+	SimpleCache<Class<?>, TableMapping> getTableMappingCache() {
 		return tableMappingProvider.getTableMappingCache();
 	}
 

@@ -29,7 +29,7 @@ class TableMappingProvider {
 
 	// Map key - class name
 	// value - the table mapping
-	private SimpleCache<String, TableMapping> tableMappingCache = new SimpleCache<>();
+	private SimpleCache<Class<?>, TableMapping> tableMappingCache = new SimpleCache<>();
 
 	private final AnnotationProcessor ap;
 
@@ -41,7 +41,7 @@ class TableMappingProvider {
 
 	TableMapping getTableMapping(Class<?> entityType) {
 		Assert.notNull(entityType, "entityType must not be null");
-		TableMapping tableMapping = tableMappingCache.get(entityType.getName());
+		TableMapping tableMapping = tableMappingCache.get(entityType);
 		if (tableMapping == null) {
 			Table tableAnnotation = ap.getTableAnnotation(entityType);
 			String tableName = tableAnnotation.name();
@@ -51,12 +51,12 @@ class TableMappingProvider {
 			IdPropertyInfo idPropertyInfo = getIdPropertyInfo(entityType, fields);
 			List<PropertyMapping> propertyMappings = getPropertyMappings(entityType, fields);
 			tableMapping = new TableMapping(entityType, tableName, schema, catalog, idPropertyInfo, propertyMappings);
-			tableMappingCache.put(entityType.getName(), tableMapping);
+			tableMappingCache.put(entityType, tableMapping);
 		}
 		return tableMapping;
 	}
 
-	SimpleCache<String, TableMapping> getTableMappingCache() {
+	SimpleCache<Class<?>, TableMapping> getTableMappingCache() {
 		return tableMappingCache;
 	}
 

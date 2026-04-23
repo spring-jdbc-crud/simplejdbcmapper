@@ -20,14 +20,13 @@ import io.github.simplejdbcmapper.exception.MapperException;
 
 class FindOperation {
 	private final SimpleJdbcMapperSupport sjmSupport;
-	// Map key - class name
-	// value - the sql
-	private SimpleCache<String, String> findByIdSqlCache = new SimpleCache<>();
 
-	// Map key - classname
+	private SimpleCache<Class<?>, String> findByIdSqlCache = new SimpleCache<>();
+
+	private SimpleCache<Class<?>, String> entitySqlColumnsCache = new SimpleCache<>();
+
+	// Map key - classname-tableAlias
 	// value - the column sql string
-	private SimpleCache<String, String> entitySqlColumnsCache = new SimpleCache<>();
-
 	private SimpleCache<String, String> entitySqlColumnsAliasCache = new SimpleCache<>(2000);
 
 	public FindOperation(SimpleJdbcMapperSupport sjmSupport) {
@@ -37,11 +36,11 @@ class FindOperation {
 	public <T> T findById(Class<T> entityType, Object id) {
 		Assert.notNull(entityType, "entityType must not be null");
 		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
-		String sql = findByIdSqlCache.get(entityType.getName());
+		String sql = findByIdSqlCache.get(entityType);
 		if (sql == null) {
 			sql = "SELECT " + getEntitySqlColumns(entityType) + " FROM " + tableMapping.fullyQualifiedTableName()
 					+ " WHERE " + tableMapping.getIdColumnName() + " = ?";
-			findByIdSqlCache.put(entityType.getName(), sql);
+			findByIdSqlCache.put(entityType, sql);
 		}
 		T obj = null;
 		try {
@@ -129,7 +128,7 @@ class FindOperation {
 
 	public String getEntitySqlColumns(Class<?> entityType) {
 		Assert.notNull(entityType, "entityType must not be null");
-		String columnsSql = entitySqlColumnsCache.get(entityType.getName());
+		String columnsSql = entitySqlColumnsCache.get(entityType);
 		if (columnsSql == null) {
 			TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
 			StringJoiner sj = new StringJoiner(", ", " ", " ");
@@ -137,7 +136,7 @@ class FindOperation {
 				sj.add(propMapping.getColumnName());
 			}
 			columnsSql = sj.toString();
-			entitySqlColumnsCache.put(entityType.getName(), columnsSql);
+			entitySqlColumnsCache.put(entityType, columnsSql);
 		}
 		return columnsSql;
 	}
@@ -211,11 +210,11 @@ class FindOperation {
 		return map;
 	}
 
-	SimpleCache<String, String> getFindByIdSqlCache() {
+	SimpleCache<Class<?>, String> getFindByIdSqlCache() {
 		return findByIdSqlCache;
 	}
 
-	SimpleCache<String, String> getEntitySqlColumnsCache() {
+	SimpleCache<Class<?>, String> getEntitySqlColumnsCache() {
 		return entitySqlColumnsCache;
 	}
 

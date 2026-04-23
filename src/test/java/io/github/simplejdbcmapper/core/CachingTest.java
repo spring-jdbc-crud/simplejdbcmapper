@@ -32,7 +32,7 @@ class CachingTest {
 	@Test
 	void findByIdCache_test() {
 		FindOperation fo = TestUtils.getFindOperation(sjm);
-		SimpleCache<String, String> cache = fo.getFindByIdSqlCache();
+		SimpleCache<Class<?>, String> cache = fo.getFindByIdSqlCache();
 		cache.clear();
 
 		sjm.findById(Order.class, 1);
@@ -48,7 +48,7 @@ class CachingTest {
 	@Test
 	void insertCache_test() {
 		InsertOperation io = TestUtils.getInsertOperation(sjm);
-		SimpleCache<String, SimpleJdbcInsert> cache = io.getInsertSqlCache();
+		SimpleCache<Class<?>, SimpleJdbcInsert> cache = io.getInsertSqlCache();
 		cache.clear();
 
 		Order order = new Order();
@@ -79,7 +79,7 @@ class CachingTest {
 	@Test
 	void updateCache_test() {
 		UpdateOperation uo = TestUtils.getUpdateOperation(sjm);
-		SimpleCache<String, SqlAndParams> cache = uo.getUpdateSqlCache();
+		SimpleCache<Class<?>, SqlAndParams> cache = uo.getUpdateSqlCache();
 		cache.clear();
 
 		Customer customer = new Customer();
@@ -157,7 +157,7 @@ class CachingTest {
 	@Test
 	void entitySqlColumnsCache_test() {
 		FindOperation fo = TestUtils.getFindOperation(sjm);
-		SimpleCache<String, String> cache = fo.getEntitySqlColumnsCache();
+		SimpleCache<Class<?>, String> cache = fo.getEntitySqlColumnsCache();
 		cache.clear();
 
 		fo.getEntitySqlColumns(Customer.class);
@@ -200,7 +200,7 @@ class CachingTest {
 	@Test
 	void deleteSqlCache_test() {
 		DeleteOperation op = TestUtils.getDeleteOperation(sjm);
-		SimpleCache<String, String> cache = op.getDeleteSqlCache();
+		SimpleCache<Class<?>, String> cache = op.getDeleteSqlCache();
 		cache.clear();
 
 		Order ord = new Order();

@@ -7,9 +7,7 @@ import org.springframework.util.Assert;
 class DeleteOperation {
 	private final SimpleJdbcMapperSupport sjmSupport;
 
-	// Map key - class name
-	// value - the sql
-	private SimpleCache<String, String> deleteSqlCache = new SimpleCache<>();
+	private SimpleCache<Class<?>, String> deleteSqlCache = new SimpleCache<>();
 
 	public DeleteOperation(SimpleJdbcMapperSupport sjmSupport) {
 		this.sjmSupport = sjmSupport;
@@ -25,17 +23,17 @@ class DeleteOperation {
 	public Integer deleteById(Class<?> entityType, Object id) {
 		Assert.notNull(entityType, "entityType must not be null");
 		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
-		String sql = deleteSqlCache.get(entityType.getName());
+		String sql = deleteSqlCache.get(entityType);
 		if (sql == null) {
 			sql = "DELETE FROM " + tableMapping.fullyQualifiedTableName() + " WHERE " + tableMapping.getIdColumnName()
 					+ " = ?";
-			deleteSqlCache.put(entityType.getName(), sql);
+			deleteSqlCache.put(entityType, sql);
 		}
 		return sjmSupport.getJdbcTemplate().update(sql,
 				new SqlParameterValue(tableMapping.getIdPropertyMapping().getEffectiveSqlType(), id));
 	}
 
-	SimpleCache<String, String> getDeleteSqlCache() {
+	SimpleCache<Class<?>, String> getDeleteSqlCache() {
 		return deleteSqlCache;
 	}
 

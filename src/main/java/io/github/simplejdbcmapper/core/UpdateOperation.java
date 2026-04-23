@@ -22,13 +22,9 @@ class UpdateOperation {
 
 	private final SimpleJdbcMapperSupport sjmSupport;
 
-	// update sql cache
-	// Map key - class name
-	// value - the update sql and params
-	private SimpleCache<String, SqlAndParams> updateSqlCache = new SimpleCache<>();
+	private SimpleCache<Class<?>, SqlAndParams> updateSqlCache = new SimpleCache<>();
 
-	// update specified properties sql cache
-	// Map key - class name and properties
+	// Map key - class name and properties concatenated by hyphens
 	// value - the update sql and params
 	private SimpleCache<String, SqlAndParams> updateSpecificPropertiesSqlCache = new SimpleCache<>(2000);
 
@@ -39,10 +35,10 @@ class UpdateOperation {
 	public Integer update(Object object) {
 		Assert.notNull(object, "object must not be null");
 		TableMapping tableMapping = sjmSupport.getTableMapping(object.getClass());
-		SqlAndParams sqlAndParams = updateSqlCache.get(object.getClass().getName());
+		SqlAndParams sqlAndParams = updateSqlCache.get(object.getClass());
 		if (sqlAndParams == null) {
 			sqlAndParams = buildSqlAndParamsForUpdate(tableMapping);
-			updateSqlCache.put(object.getClass().getName(), sqlAndParams);
+			updateSqlCache.put(object.getClass(), sqlAndParams);
 		}
 		return updateInternal(object, sqlAndParams, tableMapping);
 	}
@@ -65,7 +61,7 @@ class UpdateOperation {
 		return updateInternal(object, sqlAndParams, tableMapping);
 	}
 
-	SimpleCache<String, SqlAndParams> getUpdateSqlCache() {
+	SimpleCache<Class<?>, SqlAndParams> getUpdateSqlCache() {
 		return updateSqlCache;
 	}
 

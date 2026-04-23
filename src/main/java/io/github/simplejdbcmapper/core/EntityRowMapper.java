@@ -13,6 +13,7 @@
  */
 package io.github.simplejdbcmapper.core;
 
+import java.lang.reflect.Constructor;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 
@@ -75,17 +76,17 @@ import io.github.simplejdbcmapper.exception.MapperException;
  * @author Antony Joseph
  */
 public final class EntityRowMapper<T> implements RowMapper<T> {
-	private final Class<T> mappedClass;
 	private final ConversionService conversionService;
 	private final PropertyMapping[] propertyMappings;
 	private final int columnCount;
+	private final Constructor<T> mappedObjConstructor;
 
-	private EntityRowMapper(Class<T> entityType, PropertyMapping[] propertyMappings,
-			ConversionService conversionService) {
-		this.mappedClass = entityType;
+	@SuppressWarnings("unchecked")
+	private EntityRowMapper(Class<T> entityType, TableMapping tableMapping, ConversionService conversionService) {
 		this.conversionService = conversionService;
-		this.propertyMappings = propertyMappings;
+		this.propertyMappings = tableMapping.getPropertyMappings();
 		this.columnCount = propertyMappings.length;
+		this.mappedObjConstructor = (Constructor<T>) tableMapping.getMappedObjConstructor();
 	}
 
 	@Override
@@ -93,7 +94,7 @@ public final class EntityRowMapper<T> implements RowMapper<T> {
 		boolean[] typedValueExtracted = { true };
 		T obj = null;
 		try {
-			obj = mappedClass.getDeclaredConstructor().newInstance();
+			obj = mappedObjConstructor.newInstance();
 			// since the columns sql was generated using the property mappings the resultset
 			// columns will be in same order.
 			// resultset indexes start at 1.
@@ -210,9 +211,9 @@ public final class EntityRowMapper<T> implements RowMapper<T> {
 		return (rs.wasNull() ? null : value);
 	}
 
-	protected static <T> EntityRowMapper<T> newInstance(Class<T> entityType, PropertyMapping[] propertyMappings,
+	protected static <T> EntityRowMapper<T> newInstance(Class<T> entityType, TableMapping tableMapping,
 			ConversionService conversionService) {
-		return new EntityRowMapper<>(entityType, propertyMappings, conversionService);
+		return new EntityRowMapper<>(entityType, tableMapping, conversionService);
 	}
 
 }

@@ -13,6 +13,7 @@
  */
 package io.github.simplejdbcmapper.core;
 
+import java.lang.reflect.Constructor;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -61,6 +62,8 @@ class TableMapping {
 	// key: property name, value: property mapping
 	private Map<String, PropertyMapping> propertyNameMap;
 
+	private Constructor<?> mappedObjConstructor;
+
 	public TableMapping(Class<?> mappedObjType, String tableName, String schemaName, String catalogName,
 			IdPropertyInfo idPropertyInfo, List<PropertyMapping> propertyMappings) {
 		Assert.notNull(mappedObjType, "mappedObjType must not be null");
@@ -104,6 +107,12 @@ class TableMapping {
 		}
 
 		this.propertyMappings = propertyMappings.toArray(new PropertyMapping[0]);
+
+		try {
+			this.mappedObjConstructor = mappedObjType.getDeclaredConstructor();
+		} catch (NoSuchMethodException e) {
+			throw new MapperException(e.getMessage(), e);
+		}
 	}
 
 	public String getMappedObjClassName() {
@@ -193,6 +202,10 @@ class TableMapping {
 
 	public boolean hasAutoAssignProperties() {
 		return autoAssignProperties;
+	}
+
+	public Constructor<?> getMappedObjConstructor() {
+		return mappedObjConstructor;
 	}
 
 }

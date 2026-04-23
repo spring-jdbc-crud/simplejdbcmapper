@@ -13,9 +13,6 @@ import io.github.simplejdbcmapper.exception.MapperException;
 class InsertOperation {
 	private final SimpleJdbcMapperSupport sjmSupport;
 
-	// insert cache. Note that Spring SimpleJdbcInsert is thread safe.
-	// Map key - class name
-	// value - SimpleJdbcInsert
 	private SimpleCache<Class<?>, SimpleJdbcInsert> insertSqlCache = new SimpleCache<>();
 
 	public InsertOperation(SimpleJdbcMapperSupport sjmSupport) {

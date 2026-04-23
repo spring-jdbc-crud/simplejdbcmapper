@@ -27,8 +27,6 @@ class TableMappingProvider {
 
 	private final String catalogName;
 
-	// Map key - class name
-	// value - the table mapping
 	private SimpleCache<Class<?>, TableMapping> tableMappingCache = new SimpleCache<>();
 
 	private final AnnotationProcessor ap;

@@ -62,7 +62,8 @@ class TableMapping {
 	// key: property name, value: property mapping
 	private Map<String, PropertyMapping> propertyNameMap;
 
-	private Constructor<?> mappedObjConstructor;
+	@SuppressWarnings("rawtypes")
+	private Constructor mappedObjConstructor;
 
 	public TableMapping(Class<?> mappedObjType, String tableName, String schemaName, String catalogName,
 			IdPropertyInfo idPropertyInfo, List<PropertyMapping> propertyMappings) {
@@ -204,7 +205,8 @@ class TableMapping {
 		return autoAssignProperties;
 	}
 
-	public Constructor<?> getMappedObjConstructor() {
+	@SuppressWarnings("rawtypes")
+	public Constructor getMappedObjConstructor() {
 		return mappedObjConstructor;
 	}
 

@@ -82,11 +82,11 @@ public final class EntityRowMapper<T> implements RowMapper<T> {
 	private final Constructor<T> mappedObjConstructor;
 
 	@SuppressWarnings("unchecked")
-	private EntityRowMapper(Class<T> entityType, TableMapping tableMapping, ConversionService conversionService) {
+	private EntityRowMapper(TableMapping tableMapping, ConversionService conversionService) {
 		this.conversionService = conversionService;
 		this.propertyMappings = tableMapping.getPropertyMappings();
 		this.columnCount = propertyMappings.length;
-		this.mappedObjConstructor = (Constructor<T>) tableMapping.getMappedObjConstructor();
+		this.mappedObjConstructor = tableMapping.getMappedObjConstructor();
 	}
 
 	@Override
@@ -211,9 +211,9 @@ public final class EntityRowMapper<T> implements RowMapper<T> {
 		return (rs.wasNull() ? null : value);
 	}
 
-	protected static <T> EntityRowMapper<T> newInstance(Class<T> entityType, TableMapping tableMapping,
+	protected static <T> EntityRowMapper<T> newInstance(TableMapping tableMapping,
 			ConversionService conversionService) {
-		return new EntityRowMapper<>(entityType, tableMapping, conversionService);
+		return new EntityRowMapper<>(tableMapping, conversionService);
 	}
 
 }

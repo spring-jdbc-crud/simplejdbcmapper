@@ -2,6 +2,8 @@ package io.github.simplejdbcmapper.core;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.sql.Blob;
+import java.sql.Clob;
 import java.util.List;
 import java.util.Map;
 
@@ -75,10 +77,9 @@ class AnnotationProcessor {
 	}
 
 	void validateAnnotations(List<PropertyMapping> propertyMappings, Class<?> type) {
-		annotationPrimitiveCheck(propertyMappings, type);
+		annotationTypeCheck(propertyMappings, type);
 		annotationDuplicateCheck(propertyMappings, type);
 		annotationConflictCheck(propertyMappings, type);
-		annotationVersionTypeCheck(propertyMappings, type);
 	}
 
 	private <T extends Annotation> void processAnnotation(Class<T> annotationType, Field field,
@@ -111,11 +112,20 @@ class AnnotationProcessor {
 		}
 	}
 
-	private void annotationPrimitiveCheck(List<PropertyMapping> propertyMappings, Class<?> entityType) {
+	private void annotationTypeCheck(List<PropertyMapping> propertyMappings, Class<?> entityType) {
 		for (PropertyMapping propMapping : propertyMappings) {
 			if (propMapping.getPropertyType().isPrimitive()) {
 				throw new AnnotationException(entityType.getSimpleName() + "." + propMapping.getPropertyName()
 						+ " is a primitive. Mapper does not support primitive types. Use the corresponding java wrapper type.");
+			} else if (propMapping.getPropertyType() == Blob.class) {
+				throw new AnnotationException(entityType.getSimpleName() + "." + propMapping.getPropertyName()
+						+ " is of type java.sql.Blob and is not supported.");
+			} else if (propMapping.getPropertyType() == Clob.class) {
+				throw new AnnotationException(entityType.getSimpleName() + "." + propMapping.getPropertyName()
+						+ " is of type java.sql.Clob and is not supported.");
+			} else if (propMapping.isVersionAnnotation() && propMapping.getPropertyType() != Integer.class) {
+				throw new AnnotationException("@Version requires the type of property " + entityType.getSimpleName()
+						+ "." + propMapping.getPropertyName() + " to be Integer");
 			}
 		}
 	}
@@ -191,15 +201,6 @@ class AnnotationProcessor {
 			if (conflictCnt > 1) {
 				throw new AnnotationException(entityType.getSimpleName() + "." + propMapping.getPropertyName()
 						+ " has multiple annotations that conflict");
-			}
-		}
-	}
-
-	private void annotationVersionTypeCheck(List<PropertyMapping> propertyMappings, Class<?> entityType) {
-		for (PropertyMapping propMapping : propertyMappings) {
-			if (propMapping.isVersionAnnotation() && propMapping.getPropertyType() != Integer.class) {
-				throw new AnnotationException("@Version requires the type of property " + entityType.getSimpleName()
-						+ "." + propMapping.getPropertyName() + " to be Integer");
 			}
 		}
 	}

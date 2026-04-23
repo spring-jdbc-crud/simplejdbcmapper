@@ -91,10 +91,10 @@ public final class EntityRowMapper<T> implements RowMapper<T> {
 
 	@Override
 	public T mapRow(ResultSet rs, int rowNumber) throws SQLException {
-		boolean[] typedValueExtracted = { true };
 		T obj = null;
 		try {
 			obj = mappedObjConstructor.newInstance();
+			boolean[] typedValueExtracted = { true };
 			// since the columns sql was generated using the property mappings the resultset
 			// columns will be in same order.
 			// resultset indexes start at 1.

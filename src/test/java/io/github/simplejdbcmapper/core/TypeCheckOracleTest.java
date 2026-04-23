@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
-import java.sql.SQLException;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
@@ -14,8 +13,6 @@ import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
-
-import javax.sql.rowset.serial.SerialBlob;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
@@ -27,7 +24,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import io.github.simplejdbcmapper.model.BlobErr;
 import io.github.simplejdbcmapper.model.ClobErr;
 import io.github.simplejdbcmapper.model.StatusEnum;
 import io.github.simplejdbcmapper.model.TypeCheckOracle;
@@ -130,20 +126,6 @@ class TypeCheckOracleTest {
 	}
 
 	@Test
-	void insert_BlobErrTest() throws Exception {
-		BlobErr obj = new BlobErr();
-		byte[] byteArray = new byte[] { 10, 20, 30 };
-		SerialBlob blob = new SerialBlob(byteArray);
-		obj.setImage(blob);
-
-		Exception exception = Assertions.assertThrows(Exception.class, () -> {
-			sjm.insert(obj);
-		});
-
-		assertTrue(exception.getMessage().contains("java type has to be byte[]"));
-	}
-
-	@Test
 	void insert_ClobErrTest() {
 		ClobErr obj = new ClobErr();
 		char[] charArray = { 'J', 'a', 'v', 'a' };
@@ -232,21 +214,6 @@ class TypeCheckOracleTest {
 			sjm.update(tc);
 		});
 
-	}
-
-	@Test
-	void update_BlobErrTest() throws SQLException {
-		BlobErr obj = new BlobErr();
-		obj.setId(1);
-		byte[] byteArray = new byte[] { 10, 20, 30 };
-		SerialBlob blob = new SerialBlob(byteArray);
-		obj.setImage(blob);
-
-		Exception exception = Assertions.assertThrows(Exception.class, () -> {
-			sjm.update(obj);
-		});
-
-		assertTrue(exception.getMessage().contains("java type has to be byte[]"));
 	}
 
 	@Test

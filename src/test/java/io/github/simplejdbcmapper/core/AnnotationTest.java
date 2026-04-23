@@ -12,6 +12,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import io.github.simplejdbcmapper.exception.AnnotationException;
 import io.github.simplejdbcmapper.model.BlankTableObject;
+import io.github.simplejdbcmapper.model.BlobType;
+import io.github.simplejdbcmapper.model.ClobType;
 import io.github.simplejdbcmapper.model.ConflictAnnotation;
 import io.github.simplejdbcmapper.model.ConflictAnnotation2;
 import io.github.simplejdbcmapper.model.ConflictAnnotation3;
@@ -205,6 +207,24 @@ class AnnotationTest {
 		});
 
 		assertTrue(exception.getMessage().contains("is a primitive. Mapper does not support primitive types."));
+	}
+
+	@Test
+	void insert_BlobTypeTest() throws Exception {
+		BlobType obj = new BlobType();
+		Exception exception = Assertions.assertThrows(AnnotationException.class, () -> {
+			sjm.insert(obj);
+		});
+		assertTrue(exception.getMessage().contains("is of type java.sql.Blob and is not supported"));
+	}
+
+	@Test
+	void insert_ClobTypeTest() throws Exception {
+		ClobType obj = new ClobType();
+		Exception exception = Assertions.assertThrows(AnnotationException.class, () -> {
+			sjm.insert(obj);
+		});
+		assertTrue(exception.getMessage().contains("is of type java.sql.Clob and is not supported"));
 	}
 
 }

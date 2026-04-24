@@ -553,7 +553,7 @@ public final class SimpleJdbcMapper {
 	}
 
 	/**
-	 * Closes down SimpleJdbcMapper. Clears all references.
+	 * Closes down SimpleJdbcMapper.
 	 * <p>
 	 * This is handled entirely by Spring. Upon the closing of its application
 	 * context this method is invoked automatically.

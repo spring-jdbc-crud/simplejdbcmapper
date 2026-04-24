@@ -116,6 +116,10 @@ class TableMappingProvider {
 			for (PropertyMapping propMapping : propertyMappings) {
 				PropertyDescriptor pd = bw.getPropertyDescriptor(propMapping.getPropertyName());
 				Method writeMethod = pd.getWriteMethod();
+				if (writeMethod == null) {
+					throw new MapperException("writeMethod was null maybe because it cannot be written to for property "
+							+ entityType.getName() + "." + propMapping.getPropertyName());
+				}
 				propMapping.setWriteMethod(writeMethod);
 			}
 		} catch (Exception e) {

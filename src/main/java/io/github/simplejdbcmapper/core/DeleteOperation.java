@@ -20,7 +20,7 @@ import org.springframework.util.Assert;
 class DeleteOperation {
 	private final SimpleJdbcMapperSupport sjmSupport;
 
-	private SimpleCache<Class<?>, String> deleteSqlCache = new SimpleCache<>();
+	private final SimpleCache<Class<?>, String> deleteSqlCache = new SimpleCache<>();
 
 	public DeleteOperation(SimpleJdbcMapperSupport sjmSupport) {
 		this.sjmSupport = sjmSupport;
@@ -48,11 +48,6 @@ class DeleteOperation {
 
 	SimpleCache<Class<?>, String> getDeleteSqlCache() {
 		return deleteSqlCache;
-	}
-
-	// closing down simplejdbcmapper
-	void close() {
-		deleteSqlCache = null;
 	}
 
 }

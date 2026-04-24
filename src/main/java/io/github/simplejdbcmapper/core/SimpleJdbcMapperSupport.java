@@ -32,17 +32,17 @@ import org.springframework.util.Assert;
  * @author Antony Joseph
  */
 class SimpleJdbcMapperSupport {
-	private DataSource dataSource;
+	private final DataSource dataSource;
 
-	private String schemaName;
+	private final String schemaName;
 
-	private String catalogName;
+	private final String catalogName;
 
 	private JdbcClient jdbcClient;
 
-	private JdbcTemplate jdbcTemplate;
+	private final JdbcTemplate jdbcTemplate;
 
-	private NamedParameterJdbcTemplate npJdbcTemplate;
+	private final NamedParameterJdbcTemplate npJdbcTemplate;
 
 	private final TableMappingProvider tableMappingProvider;
 
@@ -151,17 +151,6 @@ class SimpleJdbcMapperSupport {
 
 	SimpleCache<Class<?>, TableMapping> getTableMappingCache() {
 		return tableMappingProvider.getTableMappingCache();
-	}
-
-	void close() {
-		tableMappingProvider.close();
-		recordAuditedOnSupplier = null;
-		recordAuditedBySupplier = null;
-		conversionService = null;
-		jdbcClient = null;
-		jdbcTemplate = null;
-		npJdbcTemplate = null;
-		dataSource = null;
 	}
 
 }

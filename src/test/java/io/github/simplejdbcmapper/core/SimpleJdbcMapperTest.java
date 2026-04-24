@@ -254,31 +254,12 @@ class SimpleJdbcMapperTest {
 	// its own
 	// @Test
 	void close_Test() {
-		SimpleJdbcMapperSupport sjms = TestUtils.getSimpleJdbcMapperSupport(sjm);
-		FindOperation fo = TestUtils.getFindOperation(sjm);
-		InsertOperation io = TestUtils.getInsertOperation(sjm);
-		UpdateOperation uo = TestUtils.getUpdateOperation(sjm);
-		DeleteOperation dop = TestUtils.getDeleteOperation(sjm);
-
 		sjm.close();
-
-		assertNull(sjms.getTableMappingCache());
-		assertNull(fo.getFindByIdSqlCache());
-		assertNull(fo.getEntitySqlColumnsCache());
-		assertNull(fo.getEntitySqlColumnsAliasCache());
-		assertNull(io.getInsertSqlCache());
-		assertNull(uo.getUpdateSqlCache());
-		assertNull(uo.getUpdateSpecificPropertiesSqlCache());
-		assertNull(dop.getDeleteSqlCache());
-
-		assertNull(sjms.getRecordAuditedOnSupplier());
-		assertNull(sjms.getRecordAuditedBySupplier());
-		assertNull(sjms.getConversionService());
-
-		assertNull(sjms.getJdbcClient());
-		assertNull(sjms.getJdbcTemplate());
-		assertNull(sjms.getNamedParameterJdbcTemplate());
-		assertNull(sjms.getDataSource());
+		assertNull(TestUtils.getSimpleJdbcMapperSupport(sjm));
+		assertNull(TestUtils.getFindOperation(sjm));
+		assertNull(TestUtils.getInsertOperation(sjm));
+		assertNull(TestUtils.getUpdateOperation(sjm));
+		assertNull(TestUtils.getDeleteOperation(sjm));
 
 	}
 

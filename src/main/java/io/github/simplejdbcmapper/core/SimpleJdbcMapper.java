@@ -41,15 +41,15 @@ import org.springframework.util.Assert;
  */
 public final class SimpleJdbcMapper {
 
-	private final SimpleJdbcMapperSupport simpleJdbcMapperSupport;
+	private SimpleJdbcMapperSupport simpleJdbcMapperSupport;
 
-	private final InsertOperation insertOperation;
+	private InsertOperation insertOperation;
 
-	private final FindOperation findOperation;
+	private FindOperation findOperation;
 
-	private final UpdateOperation updateOperation;
+	private UpdateOperation updateOperation;
 
-	private final DeleteOperation deleteOperation;
+	private DeleteOperation deleteOperation;
 
 	/**
 	 * Constructor.
@@ -560,11 +560,11 @@ public final class SimpleJdbcMapper {
 	 * context this method is automatically invoked.
 	 */
 	public void close() {
-		simpleJdbcMapperSupport.close();
-		insertOperation.close();
-		findOperation.close();
-		updateOperation.close();
-		deleteOperation.close();
+		simpleJdbcMapperSupport = null;
+		insertOperation = null;
+		findOperation = null;
+		updateOperation = null;
+		deleteOperation = null;
 	}
 
 }

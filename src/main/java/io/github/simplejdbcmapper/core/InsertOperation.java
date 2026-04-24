@@ -26,7 +26,7 @@ import io.github.simplejdbcmapper.exception.MapperException;
 class InsertOperation {
 	private final SimpleJdbcMapperSupport sjmSupport;
 
-	private SimpleCache<Class<?>, SimpleJdbcInsert> insertSqlCache = new SimpleCache<>();
+	private final SimpleCache<Class<?>, SimpleJdbcInsert> insertSqlCache = new SimpleCache<>();
 
 	public InsertOperation(SimpleJdbcMapperSupport sjmSupport) {
 		this.sjmSupport = sjmSupport;
@@ -56,11 +56,6 @@ class InsertOperation {
 
 	SimpleCache<Class<?>, SimpleJdbcInsert> getInsertSqlCache() {
 		return insertSqlCache;
-	}
-
-	// closing down simplejdbcmapper
-	void close() {
-		insertSqlCache = null;
 	}
 
 	private MapSqlParameterSource createMapSqlParameterSource(TableMapping tableMapping, BeanWrapper bw) {

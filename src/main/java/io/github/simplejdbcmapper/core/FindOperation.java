@@ -34,13 +34,13 @@ import io.github.simplejdbcmapper.exception.MapperException;
 class FindOperation {
 	private final SimpleJdbcMapperSupport sjmSupport;
 
-	private SimpleCache<Class<?>, String> findByIdSqlCache = new SimpleCache<>();
+	private final SimpleCache<Class<?>, String> findByIdSqlCache = new SimpleCache<>();
 
-	private SimpleCache<Class<?>, String> entitySqlColumnsCache = new SimpleCache<>();
+	private final SimpleCache<Class<?>, String> entitySqlColumnsCache = new SimpleCache<>();
 
 	// Map key - classname-tableAlias
 	// value - the column sql string
-	private SimpleCache<String, String> entitySqlColumnsAliasCache = new SimpleCache<>(2000);
+	private final SimpleCache<String, String> entitySqlColumnsAliasCache = new SimpleCache<>(2000);
 
 	public FindOperation(SimpleJdbcMapperSupport sjmSupport) {
 		this.sjmSupport = sjmSupport;
@@ -233,13 +233,6 @@ class FindOperation {
 
 	SimpleCache<String, String> getEntitySqlColumnsAliasCache() {
 		return entitySqlColumnsAliasCache;
-	}
-
-	// shutting down simplejdbcmapper
-	void close() {
-		findByIdSqlCache = null;
-		entitySqlColumnsCache = null;
-		entitySqlColumnsAliasCache = null;
 	}
 
 	private String orderByClause(Class<?> entityType, SortBy[] sortByArray, TableMapping tableMapping) {

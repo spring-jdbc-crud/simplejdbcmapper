@@ -304,7 +304,8 @@ public final class SimpleJdbcMapper {
 	 * <p>
 	 * Always use this method (or its sibling method
 	 * getEntitySqlColumns({@code Class<?>} entityType, String tableAlias) to create
-	 * your custom query columns when using EntityRowMapper.
+	 * your custom query columns when using EntityRowMapper. EntityRowMapper will
+	 * handle the column to property mapping.
 	 * 
 	 * <pre>
 	 * "somecolumn, some_other_column, last_name"
@@ -325,7 +326,8 @@ public final class SimpleJdbcMapper {
 	 * <p>
 	 * Always use this method (or its sibling method
 	 * getEntitySqlColumns({@code Class<?>} entityType) to create your custom query
-	 * columns when using EntityRowMapper.
+	 * columns when using EntityRowMapper. EntityRowMapper will handle the column to
+	 * property mapping.
 	 * <p>
 	 * Use it in your custom queries when you are doing joins and need columns
 	 * corresponding to a table alias.
@@ -363,9 +365,6 @@ public final class SimpleJdbcMapper {
 	 * "somecolumn, someothercolumn, last_name AS name"
 	 * </pre>
 	 * 
-	 * @see "EntityRowMapper is the recommended row mapper to use when quering mapped entities. See its documentation"
-	 * 
-	 * 
 	 * @param entityType the type
 	 * @return comma separated select column string
 	 * 
@@ -396,8 +395,6 @@ public final class SimpleJdbcMapper {
 	 * <pre>
 	 * "t1.somecolumn, t1.someothercolumn, t1.last_name AS name"
 	 * </pre>
-	 * 
-	 * @see "EntityRowMapper is the recommended row mapper to use when quering mapped entities. See its documentation"
 	 * 
 	 * @param entityType the type
 	 * @param tableAlias the table alias

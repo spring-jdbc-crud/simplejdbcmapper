@@ -82,7 +82,7 @@ public final class EntityRowMapper<T> implements RowMapper<T> {
 	private final Constructor<T> mappedObjConstructor;
 
 	@SuppressWarnings("unchecked")
-	private EntityRowMapper(TableMapping tableMapping, ConversionService conversionService) {
+	EntityRowMapper(TableMapping tableMapping, ConversionService conversionService) {
 		this.conversionService = conversionService;
 		this.propertyMappings = tableMapping.getPropertyMappings();
 		this.columnCount = propertyMappings.length;
@@ -209,11 +209,6 @@ public final class EntityRowMapper<T> implements RowMapper<T> {
 		// Perform was-null check if necessary (for results that the JDBC driver returns
 		// as primitives).
 		return (rs.wasNull() ? null : value);
-	}
-
-	protected static <T> EntityRowMapper<T> newInstance(TableMapping tableMapping,
-			ConversionService conversionService) {
-		return new EntityRowMapper<>(tableMapping, conversionService);
 	}
 
 }

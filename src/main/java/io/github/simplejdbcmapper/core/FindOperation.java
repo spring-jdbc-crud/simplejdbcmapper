@@ -163,7 +163,7 @@ class FindOperation {
 
 	public <T> EntityRowMapper<T> newEntityRowMapper(Class<T> entityType) {
 		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
-		return EntityRowMapper.newInstance(tableMapping, sjmSupport.getConversionService());
+		return new EntityRowMapper<>(tableMapping, sjmSupport.getConversionService());
 	}
 
 	public String getBeanFriendlySqlColumns(Class<?> entityType) {

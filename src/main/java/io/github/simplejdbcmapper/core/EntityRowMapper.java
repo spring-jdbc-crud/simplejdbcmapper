@@ -46,9 +46,9 @@ import io.github.simplejdbcmapper.exception.MapperException;
  * underscore to camel case naming convention.
  * 
  * <p>
- * This is the recommended row mapper to use when querying mapped objects. It
- * has optimizations which allows it to process data from the query ResultSet in
- * a performant way.
+ * This is the recommended row mapper to use when writing custom queries for
+ * mapped objects. It has optimizations which allows it to process data from the
+ * query ResultSet in a performant way.
  * 
  * <p>
  * Query:

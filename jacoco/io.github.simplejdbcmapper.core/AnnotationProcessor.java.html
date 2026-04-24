@@ -1,7 +1,22 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AnnotationProcessor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">simplejdbcmapper</a> &gt; <a href="index.source.html" class="el_package">io.github.simplejdbcmapper.core</a> &gt; <span class="el_source">AnnotationProcessor.java</span></div><h1>AnnotationProcessor.java</h1><pre class="source lang-java linenums">package io.github.simplejdbcmapper.core;
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>AnnotationProcessor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">simplejdbcmapper</a> &gt; <a href="index.source.html" class="el_package">io.github.simplejdbcmapper.core</a> &gt; <span class="el_source">AnnotationProcessor.java</span></div><h1>AnnotationProcessor.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2025-present the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ *
+ * https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
+ */
+package io.github.simplejdbcmapper.core;
 
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.sql.Blob;
+import java.sql.Clob;
 import java.util.List;
 import java.util.Map;
 
@@ -20,189 +35,188 @@ import io.github.simplejdbcmapper.annotation.UpdatedOn;
 import io.github.simplejdbcmapper.annotation.Version;
 import io.github.simplejdbcmapper.exception.AnnotationException;
 
-<span class="fc" id="L23">class AnnotationProcessor {</span>
+<span class="fc" id="L38">class AnnotationProcessor {</span>
 
 	Table getTableAnnotation(Class&lt;?&gt; entityType) {
-<span class="fc" id="L26">		Table tableAnnotation = AnnotationUtils.findAnnotation(entityType, Table.class);</span>
-<span class="fc" id="L27">		validateTableAnnotation(tableAnnotation, entityType);</span>
-<span class="fc" id="L28">		return tableAnnotation;</span>
+<span class="fc" id="L41">		Table tableAnnotation = AnnotationUtils.findAnnotation(entityType, Table.class);</span>
+<span class="fc" id="L42">		validateTableAnnotation(tableAnnotation, entityType);</span>
+<span class="fc" id="L43">		return tableAnnotation;</span>
 	}
 
 	void processColumnAnnotation(Field field, Map&lt;String, PropertyMapping&gt; propNameToPropertyMapping) {
-<span class="fc" id="L32">		Column colAnnotation = AnnotationUtils.findAnnotation(field, Column.class);</span>
-<span class="fc bfc" id="L33" title="All 2 branches covered.">		if (colAnnotation != null) {</span>
-<span class="fc" id="L34">			String propertyName = field.getName();</span>
-<span class="fc" id="L35">			String colName = colAnnotation.name();</span>
-<span class="fc bfc" id="L36" title="All 2 branches covered.">			if (&quot;[DEFAULT]&quot;.equals(colName)) {</span>
-<span class="fc" id="L37">				colName = InternalUtils.toUnderscoreName(propertyName);</span>
+<span class="fc" id="L47">		Column colAnnotation = AnnotationUtils.findAnnotation(field, Column.class);</span>
+<span class="fc bfc" id="L48" title="All 2 branches covered.">		if (colAnnotation != null) {</span>
+<span class="fc" id="L49">			String propertyName = field.getName();</span>
+<span class="fc" id="L50">			String colName = colAnnotation.name();</span>
+<span class="fc bfc" id="L51" title="All 2 branches covered.">			if (&quot;[DEFAULT]&quot;.equals(colName)) {</span>
+<span class="fc" id="L52">				colName = InternalUtils.toUnderscoreName(propertyName);</span>
 			}
-<span class="fc" id="L39">			colName = InternalUtils.toLowerCase(colName);</span>
-<span class="fc" id="L40">			Integer sqlType = InternalUtils.javaTypeToSqlParameterType(field.getType());</span>
-<span class="fc" id="L41">			PropertyMapping propertyMapping = null;</span>
-<span class="fc bfc" id="L42" title="All 2 branches covered.">			if (colAnnotation.sqlType() != Integer.MIN_VALUE) {</span>
+<span class="fc" id="L54">			colName = InternalUtils.toLowerCase(colName);</span>
+<span class="fc" id="L55">			Integer sqlType = InternalUtils.javaTypeToSqlParameterType(field.getType());</span>
+<span class="fc" id="L56">			PropertyMapping propertyMapping = null;</span>
+<span class="fc bfc" id="L57" title="All 2 branches covered.">			if (colAnnotation.sqlType() != Integer.MIN_VALUE) {</span>
 				// sqlType has been configured in @Column
-<span class="fc" id="L44">				propertyMapping = new PropertyMapping(propertyName, field.getType(), colName, sqlType,</span>
-<span class="fc" id="L45">						colAnnotation.sqlType());</span>
+<span class="fc" id="L59">				propertyMapping = new PropertyMapping(propertyName, field.getType(), colName, sqlType,</span>
+<span class="fc" id="L60">						colAnnotation.sqlType());</span>
 			} else {
-<span class="fc" id="L47">				propertyMapping = new PropertyMapping(propertyName, field.getType(), colName, sqlType);</span>
+<span class="fc" id="L62">				propertyMapping = new PropertyMapping(propertyName, field.getType(), colName, sqlType);</span>
 			}
-<span class="fc" id="L49">			propNameToPropertyMapping.put(propertyName, propertyMapping);</span>
+<span class="fc" id="L64">			propNameToPropertyMapping.put(propertyName, propertyMapping);</span>
 		}
-<span class="fc" id="L51">	}</span>
+<span class="fc" id="L66">	}</span>
 
 	void processIdAnnotation(Field field, Map&lt;String, PropertyMapping&gt; propNameToPropertyMapping) {
-<span class="fc" id="L54">		processAnnotation(Id.class, field, propNameToPropertyMapping);</span>
-<span class="fc" id="L55">	}</span>
+<span class="fc" id="L69">		processAnnotation(Id.class, field, propNameToPropertyMapping);</span>
+<span class="fc" id="L70">	}</span>
 
 	void processVersionAnnotation(Field field, Map&lt;String, PropertyMapping&gt; propNameToPropertyMapping) {
-<span class="fc" id="L58">		processAnnotation(Version.class, field, propNameToPropertyMapping);</span>
-<span class="fc" id="L59">	}</span>
+<span class="fc" id="L73">		processAnnotation(Version.class, field, propNameToPropertyMapping);</span>
+<span class="fc" id="L74">	}</span>
 
 	void processCreatedOnAnnotation(Field field, Map&lt;String, PropertyMapping&gt; propNameToPropertyMapping) {
-<span class="fc" id="L62">		processAnnotation(CreatedOn.class, field, propNameToPropertyMapping);</span>
-<span class="fc" id="L63">	}</span>
+<span class="fc" id="L77">		processAnnotation(CreatedOn.class, field, propNameToPropertyMapping);</span>
+<span class="fc" id="L78">	}</span>
 
 	void processUpdatedOnAnnotation(Field field, Map&lt;String, PropertyMapping&gt; propNameToPropertyMapping) {
-<span class="fc" id="L66">		processAnnotation(UpdatedOn.class, field, propNameToPropertyMapping);</span>
-<span class="fc" id="L67">	}</span>
+<span class="fc" id="L81">		processAnnotation(UpdatedOn.class, field, propNameToPropertyMapping);</span>
+<span class="fc" id="L82">	}</span>
 
 	void processCreatedByAnnotation(Field field, Map&lt;String, PropertyMapping&gt; propNameToPropertyMapping) {
-<span class="fc" id="L70">		processAnnotation(CreatedBy.class, field, propNameToPropertyMapping);</span>
-<span class="fc" id="L71">	}</span>
+<span class="fc" id="L85">		processAnnotation(CreatedBy.class, field, propNameToPropertyMapping);</span>
+<span class="fc" id="L86">	}</span>
 
 	void processUpdatedByAnnotation(Field field, Map&lt;String, PropertyMapping&gt; propNameToPropertyMapping) {
-<span class="fc" id="L74">		processAnnotation(UpdatedBy.class, field, propNameToPropertyMapping);</span>
-<span class="fc" id="L75">	}</span>
+<span class="fc" id="L89">		processAnnotation(UpdatedBy.class, field, propNameToPropertyMapping);</span>
+<span class="fc" id="L90">	}</span>
 
 	void validateAnnotations(List&lt;PropertyMapping&gt; propertyMappings, Class&lt;?&gt; type) {
-<span class="fc" id="L78">		annotationPrimitiveCheck(propertyMappings, type);</span>
-<span class="fc" id="L79">		annotationDuplicateCheck(propertyMappings, type);</span>
-<span class="fc" id="L80">		annotationConflictCheck(propertyMappings, type);</span>
-<span class="fc" id="L81">		annotationVersionTypeCheck(propertyMappings, type);</span>
-<span class="fc" id="L82">	}</span>
+<span class="fc" id="L93">		annotationTypeCheck(propertyMappings, type);</span>
+<span class="fc" id="L94">		annotationDuplicateCheck(propertyMappings, type);</span>
+<span class="fc" id="L95">		annotationConflictCheck(propertyMappings, type);</span>
+<span class="fc" id="L96">	}</span>
 
 	private &lt;T extends Annotation&gt; void processAnnotation(Class&lt;T&gt; annotationType, Field field,
 			Map&lt;String, PropertyMapping&gt; propNameToPropertyMapping) {
-<span class="fc" id="L86">		Annotation annotation = AnnotationUtils.findAnnotation(field, annotationType);</span>
-<span class="fc bfc" id="L87" title="All 2 branches covered.">		if (annotation != null) {</span>
-<span class="fc" id="L88">			String propertyName = field.getName();</span>
-<span class="fc" id="L89">			PropertyMapping propMapping = propNameToPropertyMapping.get(propertyName);</span>
-<span class="fc bfc" id="L90" title="All 2 branches covered.">			if (propMapping == null) { // it means there is no @Column annotation for the property</span>
-<span class="fc" id="L91">				String colName = InternalUtils.toUnderscoreName(propertyName); // the default column name</span>
-<span class="fc" id="L92">				Integer sqlType = InternalUtils.javaTypeToSqlParameterType(field.getType());</span>
-<span class="fc" id="L93">				propMapping = new PropertyMapping(propertyName, field.getType(), colName, sqlType);</span>
-<span class="fc" id="L94">				propNameToPropertyMapping.put(propertyName, propMapping);</span>
+<span class="fc" id="L100">		Annotation annotation = AnnotationUtils.findAnnotation(field, annotationType);</span>
+<span class="fc bfc" id="L101" title="All 2 branches covered.">		if (annotation != null) {</span>
+<span class="fc" id="L102">			String propertyName = field.getName();</span>
+<span class="fc" id="L103">			PropertyMapping propMapping = propNameToPropertyMapping.get(propertyName);</span>
+<span class="fc bfc" id="L104" title="All 2 branches covered.">			if (propMapping == null) { // it means there is no @Column annotation for the property</span>
+<span class="fc" id="L105">				String colName = InternalUtils.toUnderscoreName(propertyName); // the default column name</span>
+<span class="fc" id="L106">				Integer sqlType = InternalUtils.javaTypeToSqlParameterType(field.getType());</span>
+<span class="fc" id="L107">				propMapping = new PropertyMapping(propertyName, field.getType(), colName, sqlType);</span>
+<span class="fc" id="L108">				propNameToPropertyMapping.put(propertyName, propMapping);</span>
 			}
-<span class="fc" id="L96">			BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(propMapping);</span>
+<span class="fc" id="L110">			BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(propMapping);</span>
 			// set idAnnotation, versionAnnotation, createdOnAnnotation etc on
 			// PropertyMapping object
-<span class="fc" id="L99">			bw.setPropertyValue(StringUtils.uncapitalize(annotationType.getSimpleName()) + &quot;Annotation&quot;, true);</span>
+<span class="fc" id="L113">			bw.setPropertyValue(StringUtils.uncapitalize(annotationType.getSimpleName()) + &quot;Annotation&quot;, true);</span>
 		}
-<span class="fc" id="L101">	}</span>
+<span class="fc" id="L115">	}</span>
 
 	private void validateTableAnnotation(Table tableAnnotation, Class&lt;?&gt; entityType) {
-<span class="fc bfc" id="L104" title="All 2 branches covered.">		if (tableAnnotation == null) {</span>
-<span class="fc" id="L105">			throw new AnnotationException(</span>
-<span class="fc" id="L106">					entityType.getSimpleName() + &quot; does not have the @Table annotation. It is required&quot;);</span>
+<span class="fc bfc" id="L118" title="All 2 branches covered.">		if (tableAnnotation == null) {</span>
+<span class="fc" id="L119">			throw new AnnotationException(</span>
+<span class="fc" id="L120">					entityType.getSimpleName() + &quot; does not have the @Table annotation. It is required&quot;);</span>
 		}
-<span class="fc bfc" id="L108" title="All 2 branches covered.">		if (!StringUtils.hasText(tableAnnotation.name())) {</span>
-<span class="fc" id="L109">			throw new AnnotationException(</span>
-<span class="fc" id="L110">					&quot;For &quot; + entityType.getSimpleName() + &quot; the @Table annotation has a blank name&quot;);</span>
+<span class="fc bfc" id="L122" title="All 2 branches covered.">		if (!StringUtils.hasText(tableAnnotation.name())) {</span>
+<span class="fc" id="L123">			throw new AnnotationException(</span>
+<span class="fc" id="L124">					&quot;For &quot; + entityType.getSimpleName() + &quot; the @Table annotation has a blank name&quot;);</span>
 		}
-<span class="fc" id="L112">	}</span>
+<span class="fc" id="L126">	}</span>
 
-	private void annotationPrimitiveCheck(List&lt;PropertyMapping&gt; propertyMappings, Class&lt;?&gt; entityType) {
-<span class="fc bfc" id="L115" title="All 2 branches covered.">		for (PropertyMapping propMapping : propertyMappings) {</span>
-<span class="fc bfc" id="L116" title="All 2 branches covered.">			if (propMapping.getPropertyType().isPrimitive()) {</span>
-<span class="fc" id="L117">				throw new AnnotationException(entityType.getSimpleName() + &quot;.&quot; + propMapping.getPropertyName()</span>
+	private void annotationTypeCheck(List&lt;PropertyMapping&gt; propertyMappings, Class&lt;?&gt; entityType) {
+<span class="fc bfc" id="L129" title="All 2 branches covered.">		for (PropertyMapping propMapping : propertyMappings) {</span>
+<span class="fc bfc" id="L130" title="All 2 branches covered.">			if (propMapping.getPropertyType().isPrimitive()) {</span>
+<span class="fc" id="L131">				throw new AnnotationException(entityType.getSimpleName() + &quot;.&quot; + propMapping.getPropertyName()</span>
 						+ &quot; is a primitive. Mapper does not support primitive types. Use the corresponding java wrapper type.&quot;);
+<span class="fc bfc" id="L133" title="All 2 branches covered.">			} else if (propMapping.getPropertyType() == Blob.class) {</span>
+<span class="fc" id="L134">				throw new AnnotationException(entityType.getSimpleName() + &quot;.&quot; + propMapping.getPropertyName()</span>
+						+ &quot; is of type java.sql.Blob and is not supported.&quot;);
+<span class="fc bfc" id="L136" title="All 2 branches covered.">			} else if (propMapping.getPropertyType() == Clob.class) {</span>
+<span class="fc" id="L137">				throw new AnnotationException(entityType.getSimpleName() + &quot;.&quot; + propMapping.getPropertyName()</span>
+						+ &quot; is of type java.sql.Clob and is not supported.&quot;);
+<span class="fc bfc" id="L139" title="All 4 branches covered.">			} else if (propMapping.isVersionAnnotation() &amp;&amp; propMapping.getPropertyType() != Integer.class) {</span>
+<span class="fc" id="L140">				throw new AnnotationException(&quot;@Version requires the type of property &quot; + entityType.getSimpleName()</span>
+<span class="fc" id="L141">						+ &quot;.&quot; + propMapping.getPropertyName() + &quot; to be Integer&quot;);</span>
 			}
-<span class="fc" id="L120">		}</span>
-<span class="fc" id="L121">	}</span>
+<span class="fc" id="L143">		}</span>
+<span class="fc" id="L144">	}</span>
 
 	private void annotationDuplicateCheck(List&lt;PropertyMapping&gt; propertyMappings, Class&lt;?&gt; entityType) {
-<span class="fc" id="L124">		int idCnt = 0;</span>
-<span class="fc" id="L125">		int versionCnt = 0;</span>
-<span class="fc" id="L126">		int createdByCnt = 0;</span>
-<span class="fc" id="L127">		int createdOnCnt = 0;</span>
-<span class="fc" id="L128">		int updatedOnCnt = 0;</span>
-<span class="fc" id="L129">		int updatedByCnt = 0;</span>
-<span class="fc bfc" id="L130" title="All 2 branches covered.">		for (PropertyMapping propMapping : propertyMappings) {</span>
-<span class="fc bfc" id="L131" title="All 2 branches covered.">			if (propMapping.isIdAnnotation()) {</span>
-<span class="fc" id="L132">				idCnt++;</span>
+<span class="fc" id="L147">		int idCnt = 0;</span>
+<span class="fc" id="L148">		int versionCnt = 0;</span>
+<span class="fc" id="L149">		int createdByCnt = 0;</span>
+<span class="fc" id="L150">		int createdOnCnt = 0;</span>
+<span class="fc" id="L151">		int updatedOnCnt = 0;</span>
+<span class="fc" id="L152">		int updatedByCnt = 0;</span>
+<span class="fc bfc" id="L153" title="All 2 branches covered.">		for (PropertyMapping propMapping : propertyMappings) {</span>
+<span class="fc bfc" id="L154" title="All 2 branches covered.">			if (propMapping.isIdAnnotation()) {</span>
+<span class="fc" id="L155">				idCnt++;</span>
 			}
-<span class="fc bfc" id="L134" title="All 2 branches covered.">			if (propMapping.isVersionAnnotation()) {</span>
-<span class="fc" id="L135">				versionCnt++;</span>
+<span class="fc bfc" id="L157" title="All 2 branches covered.">			if (propMapping.isVersionAnnotation()) {</span>
+<span class="fc" id="L158">				versionCnt++;</span>
 			}
-<span class="fc bfc" id="L137" title="All 2 branches covered.">			if (propMapping.isCreatedOnAnnotation()) {</span>
-<span class="fc" id="L138">				createdOnCnt++;</span>
+<span class="fc bfc" id="L160" title="All 2 branches covered.">			if (propMapping.isCreatedOnAnnotation()) {</span>
+<span class="fc" id="L161">				createdOnCnt++;</span>
 			}
-<span class="fc bfc" id="L140" title="All 2 branches covered.">			if (propMapping.isCreatedByAnnotation()) {</span>
-<span class="fc" id="L141">				createdByCnt++;</span>
+<span class="fc bfc" id="L163" title="All 2 branches covered.">			if (propMapping.isCreatedByAnnotation()) {</span>
+<span class="fc" id="L164">				createdByCnt++;</span>
 			}
-<span class="fc bfc" id="L143" title="All 2 branches covered.">			if (propMapping.isUpdatedOnAnnotation()) {</span>
-<span class="fc" id="L144">				updatedOnCnt++;</span>
+<span class="fc bfc" id="L166" title="All 2 branches covered.">			if (propMapping.isUpdatedOnAnnotation()) {</span>
+<span class="fc" id="L167">				updatedOnCnt++;</span>
 			}
-<span class="fc bfc" id="L146" title="All 2 branches covered.">			if (propMapping.isUpdatedByAnnotation()) {</span>
-<span class="fc" id="L147">				updatedByCnt++;</span>
+<span class="fc bfc" id="L169" title="All 2 branches covered.">			if (propMapping.isUpdatedByAnnotation()) {</span>
+<span class="fc" id="L170">				updatedByCnt++;</span>
 			}
-<span class="fc" id="L149">		}</span>
-<span class="fc bfc" id="L150" title="All 2 branches covered.">		if (idCnt &gt; 1) {</span>
-<span class="fc" id="L151">			throw new AnnotationException(entityType.getSimpleName() + &quot; has multiple @Id annotations&quot;);</span>
+<span class="fc" id="L172">		}</span>
+<span class="fc bfc" id="L173" title="All 2 branches covered.">		if (idCnt &gt; 1) {</span>
+<span class="fc" id="L174">			throw new AnnotationException(entityType.getSimpleName() + &quot; has multiple @Id annotations&quot;);</span>
 		}
-<span class="fc bfc" id="L153" title="All 2 branches covered.">		if (versionCnt &gt; 1) {</span>
-<span class="fc" id="L154">			throw new AnnotationException(entityType.getSimpleName() + &quot; has multiple @Version annotations&quot;);</span>
+<span class="fc bfc" id="L176" title="All 2 branches covered.">		if (versionCnt &gt; 1) {</span>
+<span class="fc" id="L177">			throw new AnnotationException(entityType.getSimpleName() + &quot; has multiple @Version annotations&quot;);</span>
 		}
-<span class="fc bfc" id="L156" title="All 2 branches covered.">		if (createdOnCnt &gt; 1) {</span>
-<span class="fc" id="L157">			throw new AnnotationException(entityType.getSimpleName() + &quot; has multiple @CreatedOn annotations&quot;);</span>
+<span class="fc bfc" id="L179" title="All 2 branches covered.">		if (createdOnCnt &gt; 1) {</span>
+<span class="fc" id="L180">			throw new AnnotationException(entityType.getSimpleName() + &quot; has multiple @CreatedOn annotations&quot;);</span>
 		}
-<span class="fc bfc" id="L159" title="All 2 branches covered.">		if (createdByCnt &gt; 1) {</span>
-<span class="fc" id="L160">			throw new AnnotationException(entityType.getSimpleName() + &quot; has multiple @CreatedBy annotations&quot;);</span>
+<span class="fc bfc" id="L182" title="All 2 branches covered.">		if (createdByCnt &gt; 1) {</span>
+<span class="fc" id="L183">			throw new AnnotationException(entityType.getSimpleName() + &quot; has multiple @CreatedBy annotations&quot;);</span>
 		}
-<span class="fc bfc" id="L162" title="All 2 branches covered.">		if (updatedOnCnt &gt; 1) {</span>
-<span class="fc" id="L163">			throw new AnnotationException(entityType.getSimpleName() + &quot; has multiple @UpdatedOn annotations&quot;);</span>
+<span class="fc bfc" id="L185" title="All 2 branches covered.">		if (updatedOnCnt &gt; 1) {</span>
+<span class="fc" id="L186">			throw new AnnotationException(entityType.getSimpleName() + &quot; has multiple @UpdatedOn annotations&quot;);</span>
 		}
-<span class="fc bfc" id="L165" title="All 2 branches covered.">		if (updatedByCnt &gt; 1) {</span>
-<span class="fc" id="L166">			throw new AnnotationException(entityType.getSimpleName() + &quot; has multiple @UpdatedBy annotations&quot;);</span>
+<span class="fc bfc" id="L188" title="All 2 branches covered.">		if (updatedByCnt &gt; 1) {</span>
+<span class="fc" id="L189">			throw new AnnotationException(entityType.getSimpleName() + &quot; has multiple @UpdatedBy annotations&quot;);</span>
 		}
-<span class="fc" id="L168">	}</span>
+<span class="fc" id="L191">	}</span>
 
 	private void annotationConflictCheck(List&lt;PropertyMapping&gt; propertyMappings, Class&lt;?&gt; entityType) {
-<span class="fc bfc" id="L171" title="All 2 branches covered.">		for (PropertyMapping propMapping : propertyMappings) {</span>
-<span class="fc" id="L172">			int conflictCnt = 0;</span>
-<span class="fc bfc" id="L173" title="All 2 branches covered.">			if (propMapping.isIdAnnotation()) {</span>
-<span class="fc" id="L174">				conflictCnt++;</span>
+<span class="fc bfc" id="L194" title="All 2 branches covered.">		for (PropertyMapping propMapping : propertyMappings) {</span>
+<span class="fc" id="L195">			int conflictCnt = 0;</span>
+<span class="fc bfc" id="L196" title="All 2 branches covered.">			if (propMapping.isIdAnnotation()) {</span>
+<span class="fc" id="L197">				conflictCnt++;</span>
 			}
-<span class="fc bfc" id="L176" title="All 2 branches covered.">			if (propMapping.isVersionAnnotation()) {</span>
-<span class="fc" id="L177">				conflictCnt++;</span>
+<span class="fc bfc" id="L199" title="All 2 branches covered.">			if (propMapping.isVersionAnnotation()) {</span>
+<span class="fc" id="L200">				conflictCnt++;</span>
 			}
-<span class="fc bfc" id="L179" title="All 2 branches covered.">			if (propMapping.isCreatedOnAnnotation()) {</span>
-<span class="fc" id="L180">				conflictCnt++;</span>
+<span class="fc bfc" id="L202" title="All 2 branches covered.">			if (propMapping.isCreatedOnAnnotation()) {</span>
+<span class="fc" id="L203">				conflictCnt++;</span>
 			}
-<span class="fc bfc" id="L182" title="All 2 branches covered.">			if (propMapping.isCreatedByAnnotation()) {</span>
-<span class="fc" id="L183">				conflictCnt++;</span>
+<span class="fc bfc" id="L205" title="All 2 branches covered.">			if (propMapping.isCreatedByAnnotation()) {</span>
+<span class="fc" id="L206">				conflictCnt++;</span>
 			}
-<span class="fc bfc" id="L185" title="All 2 branches covered.">			if (propMapping.isUpdatedOnAnnotation()) {</span>
-<span class="fc" id="L186">				conflictCnt++;</span>
+<span class="fc bfc" id="L208" title="All 2 branches covered.">			if (propMapping.isUpdatedOnAnnotation()) {</span>
+<span class="fc" id="L209">				conflictCnt++;</span>
 			}
-<span class="fc bfc" id="L188" title="All 2 branches covered.">			if (propMapping.isUpdatedByAnnotation()) {</span>
-<span class="fc" id="L189">				conflictCnt++;</span>
+<span class="fc bfc" id="L211" title="All 2 branches covered.">			if (propMapping.isUpdatedByAnnotation()) {</span>
+<span class="fc" id="L212">				conflictCnt++;</span>
 			}
-<span class="fc bfc" id="L191" title="All 2 branches covered.">			if (conflictCnt &gt; 1) {</span>
-<span class="fc" id="L192">				throw new AnnotationException(entityType.getSimpleName() + &quot;.&quot; + propMapping.getPropertyName()</span>
+<span class="fc bfc" id="L214" title="All 2 branches covered.">			if (conflictCnt &gt; 1) {</span>
+<span class="fc" id="L215">				throw new AnnotationException(entityType.getSimpleName() + &quot;.&quot; + propMapping.getPropertyName()</span>
 						+ &quot; has multiple annotations that conflict&quot;);
 			}
-<span class="fc" id="L195">		}</span>
-<span class="fc" id="L196">	}</span>
-
-	private void annotationVersionTypeCheck(List&lt;PropertyMapping&gt; propertyMappings, Class&lt;?&gt; entityType) {
-<span class="fc bfc" id="L199" title="All 2 branches covered.">		for (PropertyMapping propMapping : propertyMappings) {</span>
-<span class="fc bfc" id="L200" title="All 4 branches covered.">			if (propMapping.isVersionAnnotation() &amp;&amp; propMapping.getPropertyType() != Integer.class) {</span>
-<span class="fc" id="L201">				throw new AnnotationException(&quot;@Version requires the type of property &quot; + entityType.getSimpleName()</span>
-<span class="fc" id="L202">						+ &quot;.&quot; + propMapping.getPropertyName() + &quot; to be Integer&quot;);</span>
-			}
-<span class="fc" id="L204">		}</span>
-<span class="fc" id="L205">	}</span>
+<span class="fc" id="L218">		}</span>
+<span class="fc" id="L219">	}</span>
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main ad4986ab3316481cc962bc748f5ac8d8132b4e84 2026-04-22T02:07:09</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper v2.2.1a 8e24909c289b304143a473c41d90e40d98a3a9ba 2026-04-24T15:18:57</div></body></html>

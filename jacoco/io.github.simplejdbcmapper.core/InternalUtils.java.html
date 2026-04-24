@@ -52,10 +52,10 @@ class InternalUtils {
 		}
 <span class="fc bfc" id="L53" title="All 2 branches covered.">		if (val == null) {</span>
 <span class="fc" id="L54">			mapSqlParameterSource.addValue(param, null, columnSqlType);</span>
-<span class="fc bfc" id="L55" title="All 2 branches covered.">		} else if (val instanceof byte[] byteArray) {</span>
+<span class="pc bpc" id="L55" title="1 of 2 branches missed.">		} else if (val instanceof byte[] byteArray) {</span>
 <span class="fc" id="L56">			mapSqlParameterSource.addValue(param, new SqlBinaryValue(byteArray), columnSqlType);</span>
 		} else {
-<span class="fc" id="L58">			throw new MapperException(bw.getWrappedClass().getSimpleName() + &quot;.&quot; + propMapping.getPropertyName()</span>
+<span class="nc" id="L58">			throw new MapperException(bw.getWrappedClass().getSimpleName() + &quot;.&quot; + propMapping.getPropertyName()</span>
 					+ &quot; : java type has to be byte[] for a BLOB mapping. No other type is supported.&quot;);
 		}
 <span class="fc" id="L61">	}</span>
@@ -139,4 +139,4 @@ class InternalUtils {
 	private InternalUtils() {
 	}
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main ad4986ab3316481cc962bc748f5ac8d8132b4e84 2026-04-22T02:07:09</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper v2.2.1a 8e24909c289b304143a473c41d90e40d98a3a9ba 2026-04-24T15:18:57</div></body></html>

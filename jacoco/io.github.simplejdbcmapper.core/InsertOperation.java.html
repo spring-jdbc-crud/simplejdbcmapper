@@ -1,4 +1,17 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InsertOperation.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">simplejdbcmapper</a> &gt; <a href="index.source.html" class="el_package">io.github.simplejdbcmapper.core</a> &gt; <span class="el_source">InsertOperation.java</span></div><h1>InsertOperation.java</h1><pre class="source lang-java linenums">package io.github.simplejdbcmapper.core;
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>InsertOperation.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">simplejdbcmapper</a> &gt; <a href="index.source.html" class="el_package">io.github.simplejdbcmapper.core</a> &gt; <span class="el_source">InsertOperation.java</span></div><h1>InsertOperation.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2025-present the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ *
+ * https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
+ */
+package io.github.simplejdbcmapper.core;
 
 import java.util.Arrays;
 
@@ -13,134 +26,126 @@ import io.github.simplejdbcmapper.exception.MapperException;
 class InsertOperation {
 	private final SimpleJdbcMapperSupport sjmSupport;
 
-	// insert cache. Note that Spring SimpleJdbcInsert is thread safe.
-	// Map key - class name
-	// value - SimpleJdbcInsert
-<span class="fc" id="L19">	private SimpleCache&lt;String, SimpleJdbcInsert&gt; insertSqlCache = new SimpleCache&lt;&gt;();</span>
+<span class="fc" id="L29">	private final SimpleCache&lt;Class&lt;?&gt;, SimpleJdbcInsert&gt; insertSqlCache = new SimpleCache&lt;&gt;();</span>
 
-<span class="fc" id="L21">	public InsertOperation(SimpleJdbcMapperSupport sjmSupport) {</span>
-<span class="fc" id="L22">		this.sjmSupport = sjmSupport;</span>
-<span class="fc" id="L23">	}</span>
+<span class="fc" id="L31">	public InsertOperation(SimpleJdbcMapperSupport sjmSupport) {</span>
+<span class="fc" id="L32">		this.sjmSupport = sjmSupport;</span>
+<span class="fc" id="L33">	}</span>
 
 	public void insert(Object object) {
-<span class="fc" id="L26">		Assert.notNull(object, &quot;object must not be null&quot;);</span>
-<span class="fc" id="L27">		TableMapping tableMapping = sjmSupport.getTableMapping(object.getClass());</span>
-<span class="fc" id="L28">		BeanWrapper bw = sjmSupport.getBeanWrapper(object);</span>
-<span class="fc" id="L29">		validateId(tableMapping, bw);</span>
-<span class="fc" id="L30">		populateAutoAssignProperties(tableMapping, bw);</span>
-<span class="fc" id="L31">		MapSqlParameterSource mapSqlParameterSource = createMapSqlParameterSource(tableMapping, bw);</span>
-<span class="fc" id="L32">		SimpleJdbcInsert simpleJdbcInsert = insertSqlCache.get(object.getClass().getName());</span>
-<span class="fc bfc" id="L33" title="All 2 branches covered.">		if (simpleJdbcInsert == null) {</span>
-<span class="fc" id="L34">			simpleJdbcInsert = createSimpleJdbcInsert(tableMapping);</span>
+<span class="fc" id="L36">		Assert.notNull(object, &quot;object must not be null&quot;);</span>
+<span class="fc" id="L37">		TableMapping tableMapping = sjmSupport.getTableMapping(object.getClass());</span>
+<span class="fc" id="L38">		BeanWrapper bw = sjmSupport.getBeanWrapper(object);</span>
+<span class="fc" id="L39">		validateId(tableMapping, bw);</span>
+<span class="fc" id="L40">		populateAutoAssignProperties(tableMapping, bw);</span>
+<span class="fc" id="L41">		MapSqlParameterSource mapSqlParameterSource = createMapSqlParameterSource(tableMapping, bw);</span>
+<span class="fc" id="L42">		SimpleJdbcInsert simpleJdbcInsert = insertSqlCache.get(object.getClass());</span>
+<span class="fc bfc" id="L43" title="All 2 branches covered.">		if (simpleJdbcInsert == null) {</span>
+<span class="fc" id="L44">			simpleJdbcInsert = createSimpleJdbcInsert(tableMapping);</span>
 			// SimpleJdbcInsert is thread safe. cache it
-<span class="fc" id="L36">			insertSqlCache.put(object.getClass().getName(), simpleJdbcInsert);</span>
+<span class="fc" id="L46">			insertSqlCache.put(object.getClass(), simpleJdbcInsert);</span>
 		}
-<span class="fc bfc" id="L38" title="All 2 branches covered.">		if (tableMapping.isIdAutoGenerated()) {</span>
-<span class="fc" id="L39">			KeyHolder kh = simpleJdbcInsert.executeAndReturnKeyHolder(mapSqlParameterSource);</span>
+<span class="fc bfc" id="L48" title="All 2 branches covered.">		if (tableMapping.isIdAutoGenerated()) {</span>
+<span class="fc" id="L49">			KeyHolder kh = simpleJdbcInsert.executeAndReturnKeyHolder(mapSqlParameterSource);</span>
 			// set the generated id on the object
-<span class="fc" id="L41">			bw.setPropertyValue(tableMapping.getIdPropertyName(), kh.getKeyAs(Object.class));</span>
-<span class="fc" id="L42">		} else {</span>
-<span class="fc" id="L43">			simpleJdbcInsert.execute(mapSqlParameterSource);</span>
+<span class="fc" id="L51">			bw.setPropertyValue(tableMapping.getIdPropertyName(), kh.getKeyAs(Object.class));</span>
+<span class="fc" id="L52">		} else {</span>
+<span class="fc" id="L53">			simpleJdbcInsert.execute(mapSqlParameterSource);</span>
 		}
-<span class="fc" id="L45">	}</span>
+<span class="fc" id="L55">	}</span>
 
-	SimpleCache&lt;String, SimpleJdbcInsert&gt; getInsertSqlCache() {
-<span class="fc" id="L48">		return insertSqlCache;</span>
+	SimpleCache&lt;Class&lt;?&gt;, SimpleJdbcInsert&gt; getInsertSqlCache() {
+<span class="fc" id="L58">		return insertSqlCache;</span>
 	}
 
-	// closing down simplejdbcmapper
-	void close() {
-<span class="fc" id="L53">		insertSqlCache = null;</span>
-<span class="fc" id="L54">	}</span>
-
 	private MapSqlParameterSource createMapSqlParameterSource(TableMapping tableMapping, BeanWrapper bw) {
-<span class="fc" id="L57">		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();</span>
-<span class="fc bfc" id="L58" title="All 2 branches covered.">		for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {</span>
-<span class="fc" id="L59">			Integer columnSqlType = propMapping.getEffectiveSqlType();</span>
-<span class="fc bfc" id="L60" title="All 2 branches covered.">			if (propMapping.isBinaryLargeObject()) {</span>
-<span class="fc" id="L61">				InternalUtils.assignBlobMapSqlParameterSource(bw, mapSqlParameterSource, propMapping, columnSqlType,</span>
+<span class="fc" id="L62">		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();</span>
+<span class="fc bfc" id="L63" title="All 2 branches covered.">		for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {</span>
+<span class="fc" id="L64">			Integer columnSqlType = propMapping.getEffectiveSqlType();</span>
+<span class="fc bfc" id="L65" title="All 2 branches covered.">			if (propMapping.isBinaryLargeObject()) {</span>
+<span class="fc" id="L66">				InternalUtils.assignBlobMapSqlParameterSource(bw, mapSqlParameterSource, propMapping, columnSqlType,</span>
 						true);
-<span class="fc bfc" id="L63" title="All 2 branches covered.">			} else if (propMapping.isCharacterLargeObject()) {</span>
-<span class="fc" id="L64">				InternalUtils.assignClobMapSqlParameterSource(bw, mapSqlParameterSource, propMapping, columnSqlType,</span>
+<span class="fc bfc" id="L68" title="All 2 branches covered.">			} else if (propMapping.isCharacterLargeObject()) {</span>
+<span class="fc" id="L69">				InternalUtils.assignClobMapSqlParameterSource(bw, mapSqlParameterSource, propMapping, columnSqlType,</span>
 						true);
-<span class="fc bfc" id="L66" title="All 2 branches covered.">			} else if (propMapping.isEnum()) {</span>
-<span class="fc" id="L67">				InternalUtils.assignEnumMapSqlParameterSource(bw, mapSqlParameterSource, propMapping, columnSqlType,</span>
+<span class="fc bfc" id="L71" title="All 2 branches covered.">			} else if (propMapping.isEnum()) {</span>
+<span class="fc" id="L72">				InternalUtils.assignEnumMapSqlParameterSource(bw, mapSqlParameterSource, propMapping, columnSqlType,</span>
 						true);
 			} else {
-<span class="fc" id="L70">				mapSqlParameterSource.addValue(propMapping.getColumnName(),</span>
-<span class="fc" id="L71">						bw.getPropertyValue(propMapping.getPropertyName()), columnSqlType);</span>
+<span class="fc" id="L75">				mapSqlParameterSource.addValue(propMapping.getColumnName(),</span>
+<span class="fc" id="L76">						bw.getPropertyValue(propMapping.getPropertyName()), columnSqlType);</span>
 			}
 		}
-<span class="fc" id="L74">		return mapSqlParameterSource;</span>
+<span class="fc" id="L79">		return mapSqlParameterSource;</span>
 	}
 
 	private void validateId(TableMapping tableMapping, BeanWrapper bw) {
-<span class="fc" id="L78">		Object idValue = bw.getPropertyValue(tableMapping.getIdPropertyName());</span>
-<span class="fc bfc" id="L79" title="All 2 branches covered.">		if (tableMapping.isIdAutoGenerated()) {</span>
-<span class="fc bfc" id="L80" title="All 2 branches covered.">			if (idValue != null) {</span>
-<span class="fc" id="L81">				throw new MapperException(&quot;For insert() the property &quot; + bw.getWrappedClass().getSimpleName() + &quot;.&quot;</span>
-<span class="fc" id="L82">						+ tableMapping.getIdPropertyName()</span>
+<span class="fc" id="L83">		Object idValue = bw.getPropertyValue(tableMapping.getIdPropertyName());</span>
+<span class="fc bfc" id="L84" title="All 2 branches covered.">		if (tableMapping.isIdAutoGenerated()) {</span>
+<span class="fc bfc" id="L85" title="All 2 branches covered.">			if (idValue != null) {</span>
+<span class="fc" id="L86">				throw new MapperException(&quot;For insert() the property &quot; + bw.getWrappedClass().getSimpleName() + &quot;.&quot;</span>
+<span class="fc" id="L87">						+ tableMapping.getIdPropertyName()</span>
 						+ &quot; has to be null since this insert is for an object whose id is auto generated&quot;);
 			}
 		} else {
-<span class="fc bfc" id="L86" title="All 2 branches covered.">			if (idValue == null) {</span>
-<span class="fc" id="L87">				throw new MapperException(&quot;For insert() the property &quot; + bw.getWrappedClass().getSimpleName() + &quot;.&quot;</span>
-<span class="fc" id="L88">						+ tableMapping.getIdPropertyName() + &quot; must not be null since it is not an auto generated id&quot;);</span>
+<span class="fc bfc" id="L91" title="All 2 branches covered.">			if (idValue == null) {</span>
+<span class="fc" id="L92">				throw new MapperException(&quot;For insert() the property &quot; + bw.getWrappedClass().getSimpleName() + &quot;.&quot;</span>
+<span class="fc" id="L93">						+ tableMapping.getIdPropertyName() + &quot; must not be null since it is not an auto generated id&quot;);</span>
 			}
 		}
-<span class="fc" id="L91">	}</span>
+<span class="fc" id="L96">	}</span>
 
 	private void populateAutoAssignProperties(TableMapping tableMapping, BeanWrapper bw) {
-<span class="fc bfc" id="L94" title="All 2 branches covered.">		if (tableMapping.hasAutoAssignProperties()) {</span>
-<span class="fc" id="L95">			PropertyMapping createdOnPropMapping = tableMapping.getCreatedOnPropertyMapping();</span>
-<span class="pc bpc" id="L96" title="2 of 4 branches missed.">			if (createdOnPropMapping != null &amp;&amp; sjmSupport.getRecordAuditedOnSupplier() != null) {</span>
-<span class="fc" id="L97">				bw.setPropertyValue(createdOnPropMapping.getPropertyName(),</span>
-<span class="fc" id="L98">						sjmSupport.getRecordAuditedOnSupplier().get());</span>
-			}
-<span class="fc" id="L100">			PropertyMapping updatedOnPropMapping = tableMapping.getUpdatedOnPropertyMapping();</span>
-<span class="pc bpc" id="L101" title="2 of 4 branches missed.">			if (updatedOnPropMapping != null &amp;&amp; sjmSupport.getRecordAuditedOnSupplier() != null) {</span>
-<span class="fc" id="L102">				bw.setPropertyValue(updatedOnPropMapping.getPropertyName(),</span>
+<span class="fc bfc" id="L99" title="All 2 branches covered.">		if (tableMapping.hasAutoAssignProperties()) {</span>
+<span class="fc" id="L100">			PropertyMapping createdOnPropMapping = tableMapping.getCreatedOnPropertyMapping();</span>
+<span class="pc bpc" id="L101" title="2 of 4 branches missed.">			if (createdOnPropMapping != null &amp;&amp; sjmSupport.getRecordAuditedOnSupplier() != null) {</span>
+<span class="fc" id="L102">				bw.setPropertyValue(createdOnPropMapping.getPropertyName(),</span>
 <span class="fc" id="L103">						sjmSupport.getRecordAuditedOnSupplier().get());</span>
 			}
-<span class="fc" id="L105">			PropertyMapping createdByPropMapping = tableMapping.getCreatedByPropertyMapping();</span>
-<span class="pc bpc" id="L106" title="2 of 4 branches missed.">			if (createdByPropMapping != null &amp;&amp; sjmSupport.getRecordAuditedBySupplier() != null) {</span>
-<span class="fc" id="L107">				bw.setPropertyValue(createdByPropMapping.getPropertyName(),</span>
-<span class="fc" id="L108">						sjmSupport.getRecordAuditedBySupplier().get());</span>
+<span class="fc" id="L105">			PropertyMapping updatedOnPropMapping = tableMapping.getUpdatedOnPropertyMapping();</span>
+<span class="pc bpc" id="L106" title="2 of 4 branches missed.">			if (updatedOnPropMapping != null &amp;&amp; sjmSupport.getRecordAuditedOnSupplier() != null) {</span>
+<span class="fc" id="L107">				bw.setPropertyValue(updatedOnPropMapping.getPropertyName(),</span>
+<span class="fc" id="L108">						sjmSupport.getRecordAuditedOnSupplier().get());</span>
 			}
-<span class="fc" id="L110">			PropertyMapping updatedByPropMapping = tableMapping.getUpdatedByPropertyMapping();</span>
-<span class="pc bpc" id="L111" title="2 of 4 branches missed.">			if (updatedByPropMapping != null &amp;&amp; sjmSupport.getRecordAuditedBySupplier() != null) {</span>
-<span class="fc" id="L112">				bw.setPropertyValue(updatedByPropMapping.getPropertyName(),</span>
+<span class="fc" id="L110">			PropertyMapping createdByPropMapping = tableMapping.getCreatedByPropertyMapping();</span>
+<span class="pc bpc" id="L111" title="2 of 4 branches missed.">			if (createdByPropMapping != null &amp;&amp; sjmSupport.getRecordAuditedBySupplier() != null) {</span>
+<span class="fc" id="L112">				bw.setPropertyValue(createdByPropMapping.getPropertyName(),</span>
 <span class="fc" id="L113">						sjmSupport.getRecordAuditedBySupplier().get());</span>
 			}
-<span class="fc" id="L115">			PropertyMapping versionPropMapping = tableMapping.getVersionPropertyMapping();</span>
-<span class="pc bpc" id="L116" title="1 of 2 branches missed.">			if (versionPropMapping != null) {</span>
+<span class="fc" id="L115">			PropertyMapping updatedByPropMapping = tableMapping.getUpdatedByPropertyMapping();</span>
+<span class="pc bpc" id="L116" title="2 of 4 branches missed.">			if (updatedByPropMapping != null &amp;&amp; sjmSupport.getRecordAuditedBySupplier() != null) {</span>
+<span class="fc" id="L117">				bw.setPropertyValue(updatedByPropMapping.getPropertyName(),</span>
+<span class="fc" id="L118">						sjmSupport.getRecordAuditedBySupplier().get());</span>
+			}
+<span class="fc" id="L120">			PropertyMapping versionPropMapping = tableMapping.getVersionPropertyMapping();</span>
+<span class="pc bpc" id="L121" title="1 of 2 branches missed.">			if (versionPropMapping != null) {</span>
 				// version property value defaults to 1 on inserts
-<span class="fc" id="L118">				bw.setPropertyValue(versionPropMapping.getPropertyName(), 1);</span>
+<span class="fc" id="L123">				bw.setPropertyValue(versionPropMapping.getPropertyName(), 1);</span>
 			}
 		}
-<span class="fc" id="L121">	}</span>
+<span class="fc" id="L126">	}</span>
 
 	private SimpleJdbcInsert createSimpleJdbcInsert(TableMapping tableMapping) {
-<span class="fc" id="L124">		SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(sjmSupport.getJdbcTemplate())</span>
-<span class="fc" id="L125">				.withCatalogName(tableMapping.getCatalogName()).withSchemaName(tableMapping.getSchemaName())</span>
-<span class="fc" id="L126">				.withTableName(tableMapping.getTableName());</span>
+<span class="fc" id="L129">		SimpleJdbcInsert simpleJdbcInsert = new SimpleJdbcInsert(sjmSupport.getJdbcTemplate())</span>
+<span class="fc" id="L130">				.withCatalogName(tableMapping.getCatalogName()).withSchemaName(tableMapping.getSchemaName())</span>
+<span class="fc" id="L131">				.withTableName(tableMapping.getTableName());</span>
 		// make sure SimpleJdbcInsert does not access database table meta data.
-<span class="fc" id="L128">		simpleJdbcInsert.setAccessTableColumnMetaData(false);</span>
-<span class="fc" id="L129">		String[] columns = null;</span>
-<span class="fc bfc" id="L130" title="All 2 branches covered.">		if (tableMapping.isIdAutoGenerated()) {</span>
+<span class="fc" id="L133">		simpleJdbcInsert.setAccessTableColumnMetaData(false);</span>
+<span class="fc" id="L134">		String[] columns = null;</span>
+<span class="fc bfc" id="L135" title="All 2 branches covered.">		if (tableMapping.isIdAutoGenerated()) {</span>
 			// remove id from list of columns
-<span class="fc bfc" id="L132" title="All 2 branches covered.">			columns = Arrays.stream(tableMapping.getPropertyMappings()).filter(e -&gt; !e.isIdAnnotation())</span>
-<span class="fc" id="L133">					.map(e -&gt; e.getColumnName()).toArray(String[]::new);</span>
+<span class="fc bfc" id="L137" title="All 2 branches covered.">			columns = Arrays.stream(tableMapping.getPropertyMappings()).filter(e -&gt; !e.isIdAnnotation())</span>
+<span class="fc" id="L138">					.map(e -&gt; e.getColumnName()).toArray(String[]::new);</span>
 		} else {
-<span class="fc" id="L135">			columns = Arrays.stream(tableMapping.getPropertyMappings()).map(e -&gt; e.getColumnName())</span>
-<span class="fc" id="L136">					.toArray(String[]::new);</span>
+<span class="fc" id="L140">			columns = Arrays.stream(tableMapping.getPropertyMappings()).map(e -&gt; e.getColumnName())</span>
+<span class="fc" id="L141">					.toArray(String[]::new);</span>
 		}
-<span class="fc" id="L138">		simpleJdbcInsert.usingColumns(columns);</span>
-<span class="fc bfc" id="L139" title="All 2 branches covered.">		if (tableMapping.isIdAutoGenerated()) {</span>
-<span class="fc" id="L140">			simpleJdbcInsert.usingGeneratedKeyColumns(tableMapping.getIdColumnName());</span>
+<span class="fc" id="L143">		simpleJdbcInsert.usingColumns(columns);</span>
+<span class="fc bfc" id="L144" title="All 2 branches covered.">		if (tableMapping.isIdAutoGenerated()) {</span>
+<span class="fc" id="L145">			simpleJdbcInsert.usingGeneratedKeyColumns(tableMapping.getIdColumnName());</span>
 		}
-<span class="fc" id="L142">		return simpleJdbcInsert;</span>
+<span class="fc" id="L147">		return simpleJdbcInsert;</span>
 	}
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main ad4986ab3316481cc962bc748f5ac8d8132b4e84 2026-04-22T02:07:09</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper v2.2.1a 8e24909c289b304143a473c41d90e40d98a3a9ba 2026-04-24T15:18:57</div></body></html>

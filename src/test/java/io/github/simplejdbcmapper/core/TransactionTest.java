@@ -22,7 +22,6 @@ class TransactionTest {
 
 	@BeforeEach
 	void beforeMethod() {
-		// clear caches to force a table meta data lookup from database.
 		SimpleJdbcMapperSupport sjmSupport = TestUtils.getSimpleJdbcMapperSupport(sjm);
 		FindOperation fo = TestUtils.getFindOperation(sjm);
 		InsertOperation io = TestUtils.getInsertOperation(sjm);
@@ -35,7 +34,7 @@ class TransactionTest {
 
 	@Test
 	@Transactional
-	void database_metadata_lookup_within_a_transaction_test() {
+	void mapping_creation_within_transaction_test() {
 		Customer cust = sjm.findById(Customer.class, 1);
 		assertNotNull(cust);
 		sjm.update(cust);

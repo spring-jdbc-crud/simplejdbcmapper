@@ -32,7 +32,7 @@ class PropertyMapping {
 
 	private String columnName;
 
-	private Integer columnSqlType; // java.sql.Types from database meta data.
+	private Integer columnSqlType;
 
 	private Integer columnOverriddenSqlType;
 

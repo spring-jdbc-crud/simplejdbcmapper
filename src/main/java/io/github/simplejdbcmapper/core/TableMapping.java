@@ -111,7 +111,7 @@ class TableMapping {
 
 		try {
 			this.mappedObjConstructor = mappedObjType.getDeclaredConstructor();
-		} catch (NoSuchMethodException e) {
+		} catch (Exception e) {
 			throw new MapperException(e.getMessage(), e);
 		}
 	}

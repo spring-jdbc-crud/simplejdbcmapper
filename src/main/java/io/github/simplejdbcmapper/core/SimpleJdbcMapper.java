@@ -312,6 +312,9 @@ public final class SimpleJdbcMapper {
 	 * <pre>
 	 * "somecolumn, some_other_column, last_name"
 	 * </pre>
+	 *
+	 * See
+	 * {@link io.github.simplejdbcmapper.core.SimpleJdbcMapper#newEntityRowMapper}
 	 * 
 	 * @param entityType the type
 	 * @return comma separated select column string
@@ -339,6 +342,9 @@ public final class SimpleJdbcMapper {
 	 * <pre>
 	 * "t1.somecolumn, t1.someothercolumn, t1.last_name"
 	 * </pre>
+	 * 
+	 * See
+	 * {@link io.github.simplejdbcmapper.core.SimpleJdbcMapper#newEntityRowMapper}
 	 * 
 	 * @param entityType the type
 	 * @param tableAlias the table alias

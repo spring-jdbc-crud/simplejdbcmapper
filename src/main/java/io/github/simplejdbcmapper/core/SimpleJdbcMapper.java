@@ -289,8 +289,8 @@ public final class SimpleJdbcMapper {
 	 *                                                     .list();
 	 * </pre>
 	 * 
-	 * @param <T>
-	 * @param entityType
+	 * @param <T>        the type
+	 * @param entityType the entity type
 	 * @return EntityRowMapper for the type
 	 */
 	public <T> EntityRowMapper<T> newEntityRowMapper(Class<T> entityType) {
@@ -365,6 +365,26 @@ public final class SimpleJdbcMapper {
 	 * "somecolumn, someothercolumn, last_name AS name"
 	 * </pre>
 	 * 
+	 * Example:
+	 * 
+	 * <pre>
+	 * String sql = "SELECT " + sjm.getBeanFriendlySqlColumns(Product.class) + " FROM product WHERE product_name = ?";
+	 * </pre>
+	 * 
+	 * Using Spring's JdbcClient api for the above sql. JdbcClient is using
+	 * SimplePropertyRowMapper internally here.
+	 * 
+	 * <pre>
+	 * {@code List<Product>} products = sjm.getJdbcClient().sql(sql).param("someProductName").query(Product.class).list();
+	 * </pre>
+	 * 
+	 * Using Spring's JdbcTemplate api for the above sql
+	 * 
+	 * <pre>
+	 * {@code List<Product>} products = sjm.getJdbcTemplate().query(sql, BeanPropertyRowMapper.newInstance(Product.class), "someProductName");
+	 * </pre>
+	 * 
+	 * 
 	 * @param entityType the type
 	 * @return comma separated select column string
 	 * 
@@ -394,6 +414,26 @@ public final class SimpleJdbcMapper {
 	 *
 	 * <pre>
 	 * "t1.somecolumn, t1.someothercolumn, t1.last_name AS name"
+	 * </pre>
+	 * 
+	 * Example:
+	 * 
+	 * <pre>
+	 * String sql = "SELECT " + sjm.getBeanFriendlySqlColumns(Product.class, "t1")
+	 * 		+ " FROM product t1 WHERE t1.product_name = ?";
+	 * </pre>
+	 * 
+	 * Using Spring's JdbcClient api for the above sql. JdbcClient is using
+	 * SimplePropertyRowMapper internally here.
+	 * 
+	 * <pre>
+	 * {@code List<Product>} products = sjm.getJdbcClient().sql(sql).param("someProductName").query(Product.class).list();
+	 * </pre>
+	 * 
+	 * Using Spring's JdbcTemplate api for the above sql
+	 * 
+	 * <pre>
+	 * {@code List<Product>} products = sjm.getJdbcTemplate().query(sql, BeanPropertyRowMapper.newInstance(Product.class), "someProductName");
 	 * </pre>
 	 * 
 	 * @param entityType the type

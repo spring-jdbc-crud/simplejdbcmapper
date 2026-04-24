@@ -80,7 +80,7 @@ class UpdateOperation {
 		Assert.notNull(sqlAndParams, "sqlAndParams must not be null");
 		BeanWrapper bw = sjmSupport.getBeanWrapper(object);
 		if (bw.getPropertyValue(tableMapping.getIdPropertyName()) == null) {
-			throw new IllegalArgumentException("Property " + tableMapping.getMappedObjClassName() + "."
+			throw new IllegalArgumentException("Property " + tableMapping.getMappedObjType().getName() + "."
 					+ tableMapping.getIdPropertyName() + " is the id and must not be null.");
 		}
 		Set<String> parameters = sqlAndParams.getParams();
@@ -255,16 +255,16 @@ class UpdateOperation {
 			PropertyMapping propertyMapping = tableMapping.getPropertyMappingByPropertyName(propertyName);
 			if (propertyMapping == null) {
 				throw new MapperException("No mapping found for property '" + propertyName + "' in class "
-						+ tableMapping.getMappedObjClassName());
+						+ tableMapping.getMappedObjType().getName());
 			}
 			if (propertyMapping.isIdAnnotation()) {
-				throw new MapperException("Id property " + tableMapping.getMappedObjClassName() + "." + propertyName
-						+ " cannot be updated using updateSpecificProperties() method.");
+				throw new MapperException("Id property " + tableMapping.getMappedObjType().getName() + "."
+						+ propertyName + " cannot be updated using updateSpecificProperties() method.");
 			}
 			if (propertyMapping.isCreatedByAnnotation() || propertyMapping.isCreatedOnAnnotation()
 					|| propertyMapping.isUpdatedByAnnotation() || propertyMapping.isUpdatedOnAnnotation()
 					|| propertyMapping.isVersionAnnotation()) {
-				throw new MapperException("Auto assign property " + tableMapping.getMappedObjClassName() + "."
+				throw new MapperException("Auto assign property " + tableMapping.getMappedObjType().getName() + "."
 						+ propertyName + " cannot be updated using updateSpecificProperties() method.");
 			}
 		}

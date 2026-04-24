@@ -30,7 +30,7 @@ import io.github.simplejdbcmapper.exception.MapperException;
  * @author Antony Joseph
  */
 class TableMapping {
-	private String mappedObjClassName;
+	private Class<?> mappedObjType;
 
 	private String tableName;
 
@@ -73,7 +73,7 @@ class TableMapping {
 		if (ObjectUtils.isEmpty(propertyMappings)) {
 			throw new IllegalArgumentException("propertyMappings cannot be null or empty");
 		}
-		this.mappedObjClassName = mappedObjType.getName();
+		this.mappedObjType = mappedObjType;
 		this.tableName = tableName;
 		this.schemaName = StringUtils.hasText(schemaName) ? schemaName : null;
 		this.catalogName = StringUtils.hasText(catalogName) ? catalogName : null;
@@ -116,8 +116,8 @@ class TableMapping {
 		}
 	}
 
-	public String getMappedObjClassName() {
-		return mappedObjClassName;
+	public Class<?> getMappedObjType() {
+		return mappedObjType;
 	}
 
 	public String getTableName() {

@@ -114,7 +114,7 @@ Just by annotating the models that you would use with JdbcTemplate/JdbcClient, y
  
  /*
   For custom queries which retrieve mapped objects use getEntitySqlColumns() to get the columns for the sql 
-  to work with EntityRowMapper(see its javadoc). Note in this case the 'name' property is mapped to the 'product_name' column.
+  to work with EntityRowMapper (see its javadoc). Note in this case the 'name' property is mapped to the 'product_name' column.
  */
  String sql = "SELECT " + sjm.getEntitySqlColumns(Product.class) +  " FROM product WHERE product_name = ?";
  

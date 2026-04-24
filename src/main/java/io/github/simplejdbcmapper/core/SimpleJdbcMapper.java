@@ -257,7 +257,9 @@ public final class SimpleJdbcMapper {
 	 * 
 	 * <p>
 	 * It expects the sql columns to be exactly in a specific order because it uses
-	 * position indexes to retrieve the data from the query ResultSet.
+	 * position indexes to retrieve the data from the query ResultSet. It will
+	 * handle the cases where the column to property mappings do not follow the
+	 * underscore to camel case naming convention.
 	 * 
 	 * <p>
 	 * This is the recommended row mapper to use when querying mapped objects. It

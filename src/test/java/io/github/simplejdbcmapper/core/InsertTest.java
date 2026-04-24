@@ -18,6 +18,7 @@ import io.github.simplejdbcmapper.exception.MapperException;
 import io.github.simplejdbcmapper.model.Customer;
 import io.github.simplejdbcmapper.model.Order;
 import io.github.simplejdbcmapper.model.Person;
+import io.github.simplejdbcmapper.model.PersonSetterPrivate;
 import io.github.simplejdbcmapper.model.Product;
 import io.github.simplejdbcmapper.model.ProductMismatchType;
 
@@ -186,4 +187,17 @@ class InsertTest {
 		});
 		assertTrue(exception.getMessage().contains("Failed to convert property value"));
 	}
+
+	@Test
+	void insert_setterPrivate_Test() {
+		PersonSetterPrivate person = new PersonSetterPrivate();
+		person.setPersonId("p1x");
+
+		Exception exception = Assertions.assertThrows(MapperException.class, () -> {
+			sjm.insert(person);
+		});
+		assertTrue(exception.getMessage()
+				.contains("writeMethod was null maybe because it cannot be written to for property "));
+	}
+
 }

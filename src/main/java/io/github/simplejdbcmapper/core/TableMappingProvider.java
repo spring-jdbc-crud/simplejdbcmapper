@@ -118,7 +118,8 @@ class TableMappingProvider {
 				Method writeMethod = pd.getWriteMethod();
 				if (writeMethod == null) {
 					throw new MapperException("writeMethod was null maybe because it cannot be written to for property "
-							+ entityType.getName() + "." + propMapping.getPropertyName());
+							+ entityType.getName() + "." + propMapping.getPropertyName()
+							+ " Check the methods visibility.");
 				}
 				propMapping.setWriteMethod(writeMethod);
 			}

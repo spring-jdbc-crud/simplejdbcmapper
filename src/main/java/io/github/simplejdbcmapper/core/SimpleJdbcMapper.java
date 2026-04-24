@@ -326,7 +326,9 @@ public final class SimpleJdbcMapper {
 	 * Always use this method (or its sibling method
 	 * getEntitySqlColumns({@code Class<?>} entityType) to create your custom query
 	 * columns when using EntityRowMapper.
-	 * 
+	 * <p>
+	 * Use it in your custom queries when you are doing joins and need columns
+	 * corresponding to a table alias.
 	 * <p>
 	 * For tableAlias argument 't1' will return something like below:
 	 * 
@@ -354,11 +356,11 @@ public final class SimpleJdbcMapper {
 	 * manipulation
 	 *
 	 * <p>
-	 * Will return something like below if 'userLastName' property is mapped to
-	 * 'last_name' column in database:
+	 * Will return something like below if 'name' property is mapped to 'last_name'
+	 * column in database:
 	 *
 	 * <pre>
-	 * "somecolumn, someothercolumn, last_name AS user_last_name"
+	 * "somecolumn, someothercolumn, last_name AS name"
 	 * </pre>
 	 * 
 	 * @see "EntityRowMapper is the recommended row mapper to use when quering mapped entities. See its documentation"
@@ -388,11 +390,11 @@ public final class SimpleJdbcMapper {
 	 * manipulation.
 	 * 
 	 * <p>
-	 * For tableAlias argument 't1' will return something like below if
-	 * 'userLastName' property is mapped to 'last_name' column in database:
+	 * For tableAlias argument 't1' will return something like below if 'name'
+	 * property is mapped to 'last_name' column in database:
 	 *
 	 * <pre>
-	 * "t1.somecolumn, t1.someothercolumn, t1.last_name AS user_last_name"
+	 * "t1.somecolumn, t1.someothercolumn, t1.last_name AS name"
 	 * </pre>
 	 * 
 	 * @see "EntityRowMapper is the recommended row mapper to use when quering mapped entities. See its documentation"

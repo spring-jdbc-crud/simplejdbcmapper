@@ -4,7 +4,7 @@ simplejdbcmapper,io.github.simplejdbcmapper.core,InternalUtils,17,186,3,23,4,41,
 simplejdbcmapper,io.github.simplejdbcmapper.core,DeleteOperation,0,84,0,2,0,17,0,5,0,4
 simplejdbcmapper,io.github.simplejdbcmapper.core,InsertOperation,0,346,9,35,0,77,9,25,0,12
 simplejdbcmapper,io.github.simplejdbcmapper.core,SortBy,0,43,0,6,0,13,0,7,0,4
-simplejdbcmapper,io.github.simplejdbcmapper.core,TableMappingProvider,4,312,1,23,2,73,2,22,1,11
+simplejdbcmapper,io.github.simplejdbcmapper.core,TableMappingProvider,4,323,1,25,2,76,2,23,1,11
 simplejdbcmapper,io.github.simplejdbcmapper.core,EntityRowMapper,20,238,5,28,5,58,5,24,0,3
 simplejdbcmapper,io.github.simplejdbcmapper.core,AnnotationProcessor,0,419,0,68,0,117,0,49,0,15
 simplejdbcmapper,io.github.simplejdbcmapper.core,PropertyMapping,8,200,8,20,2,61,9,33,1,27

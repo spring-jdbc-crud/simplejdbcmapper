@@ -138,7 +138,7 @@ Just by annotating the models that you would use with JdbcTemplate/JdbcClient, y
  JdbcTemplate jdbcTemplate = sjm.getJdbcTemplate();
  NamedParameterJdbcTemplate namedParameterJdbcTemplate = sjm.getNamedParameterJdbcTemplate();
  
- // The demo application (<pre><code><a href="https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper">Demo</a></code></pre>) is easy to install and run where you can see example code in action.
+ // The demo application ([`Demo`](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/)) is easy to install and run where you can see example code in action.
  
  // See logging section for details to view the SQL
  

@@ -28,6 +28,11 @@ import org.springframework.util.Assert;
 import io.github.simplejdbcmapper.exception.MapperException;
 import io.github.simplejdbcmapper.exception.OptimisticLockingException;
 
+/**
+ * Update operations
+ *
+ * @author Antony Joseph
+ */
 class UpdateOperation {
 	private static final int CACHEABLE_UPDATE_SPECIFIC_PROPERTIES_COUNT = 5;
 

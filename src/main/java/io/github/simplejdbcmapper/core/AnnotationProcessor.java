@@ -35,6 +35,11 @@ import io.github.simplejdbcmapper.annotation.UpdatedOn;
 import io.github.simplejdbcmapper.annotation.Version;
 import io.github.simplejdbcmapper.exception.AnnotationException;
 
+/**
+ * The annotation processor
+ *
+ * @author Antony Joseph
+ */
 class AnnotationProcessor {
 
 	Table getTableAnnotation(Class<?> entityType) {

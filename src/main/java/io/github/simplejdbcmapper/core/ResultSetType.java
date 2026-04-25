@@ -20,6 +20,8 @@ import java.sql.Clob;
 /**
  * This enum is there because we want the switch statements in the
  * EntityRowMapper to be compiled into a 'tableswitch' by java (which it does).
+ *
+ * @author Antony Joseph
  */
 enum ResultSetType {
 

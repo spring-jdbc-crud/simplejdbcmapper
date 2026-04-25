@@ -31,6 +31,11 @@ import org.springframework.util.StringUtils;
 
 import io.github.simplejdbcmapper.exception.MapperException;
 
+/**
+ * The find operations
+ *
+ * @author Antony Joseph
+ */
 class FindOperation {
 	private final SimpleJdbcMapperSupport sjmSupport;
 

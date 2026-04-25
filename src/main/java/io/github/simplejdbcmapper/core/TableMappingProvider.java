@@ -35,6 +35,11 @@ import io.github.simplejdbcmapper.annotation.Table;
 import io.github.simplejdbcmapper.exception.AnnotationException;
 import io.github.simplejdbcmapper.exception.MapperException;
 
+/**
+ * Provides the table mapping for an object.
+ *
+ * @author Antony Joseph
+ */
 class TableMappingProvider {
 	private final String schemaName;
 

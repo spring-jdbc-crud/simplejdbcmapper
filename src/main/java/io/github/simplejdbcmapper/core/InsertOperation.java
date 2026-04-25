@@ -23,6 +23,11 @@ import org.springframework.util.Assert;
 
 import io.github.simplejdbcmapper.exception.MapperException;
 
+/**
+ * The insert operation.
+ *
+ * @author Antony Joseph
+ */
 class InsertOperation {
 	private final SimpleJdbcMapperSupport sjmSupport;
 

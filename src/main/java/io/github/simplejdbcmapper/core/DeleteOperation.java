@@ -17,6 +17,11 @@ import org.springframework.beans.BeanWrapper;
 import org.springframework.jdbc.core.SqlParameterValue;
 import org.springframework.util.Assert;
 
+/**
+ * Delete operations
+ *
+ * @author Antony Joseph
+ */
 class DeleteOperation {
 	private final SimpleJdbcMapperSupport sjmSupport;
 

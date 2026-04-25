@@ -451,7 +451,7 @@ private String clobData;
 MySql:
 
 ``` 
-@Column(sqlType = Types.BLOB) // mapped to a 'blob' database column type
+@Column(sqlType = Types.LONGVARBINARY) // mapped to a 'blob' database column type
 private byte[] image;
 
 @Column(sqlType = Types.LONGVARCHAR) // mapped to a 'text' database column type

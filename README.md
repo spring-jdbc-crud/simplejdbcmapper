@@ -440,10 +440,10 @@ Some BLOB/CLOB examples below. Keep in mind depending on the versions of the dat
 Postgres:
 
 ```
-@Column(sqlType = Types.ARRAY) //mapped to a bytea database column
+@Column(sqlType = Types.ARRAY) //mapped to a 'bytea' database column
 private byte[] image;
 
-@Column(sqlType = Types.LONGVARCHAR)
+@Column(sqlType = Types.LONGVARCHAR) // mapped to a 'text' database column type
 private String clobData;	
 
 ```
@@ -451,30 +451,30 @@ private String clobData;
 MySql:
 
 ``` 
-@Column(sqlType = Types.BLOB)
+@Column(sqlType = Types.BLOB) // mapped to a 'blob' database column type
 private byte[] image;
 
-@Column(sqlType = Types.LONGVARCHAR)
+@Column(sqlType = Types.LONGVARCHAR) // mapped to a 'text' database column type
 private String textData;
 	
 ```
 Oracle:
 
 ```
-@Column(sqlType = Types.BLOB)
+@Column(sqlType = Types.BLOB) // mapped to a 'blob' database column type
 private byte[] image;
 
-@Column(sqlType = Types.CLOB)
+@Column(sqlType = Types.CLOB) // mapped to a 'clob' database column type
 private String clobData;
 	
 ```
 SQL Server:
 
 ```
-@Column(sqlType = Types.BLOB)
+@Column(sqlType = Types.LONGVARBINARY) // mapped to a 'VARBINARY(MAX)' database column type
 private byte[] image;
 
-@Column(sqlType = Types.CLOB)
+@Column(sqlType = Types.LONGVARCHAR) // mapped to a 'VARCHAR(MAX)' database column type
 private String clobData;
 
 ```

@@ -440,7 +440,7 @@ Some BLOB/CLOB examples below. Keep in mind depending on the versions of the dat
 Postgres:
 
 ```
-@Column(sqlType = Types.ARRAY) //mapped to a 'bytea' database column
+@Column(sqlType = Types.ARRAY) //mapped to a 'bytea' database column type
 private byte[] image;
 
 @Column(sqlType = Types.LONGVARCHAR) // mapped to a 'text' database column type

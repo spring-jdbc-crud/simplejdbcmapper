@@ -45,7 +45,7 @@ class TableMappingProvider {
 
 	private final String catalogName;
 
-	private SimpleCache<Class<?>, TableMapping> tableMappingCache = new SimpleCache<>();
+	private final SimpleCache<Class<?>, TableMapping> tableMappingCache = new SimpleCache<>();
 
 	private final AnnotationProcessor ap;
 
@@ -74,11 +74,6 @@ class TableMappingProvider {
 
 	SimpleCache<Class<?>, TableMapping> getTableMappingCache() {
 		return tableMappingCache;
-	}
-
-	// closing down simplejdbcmapper
-	void close() {
-		tableMappingCache = null;
 	}
 
 	private List<PropertyMapping> getPropertyMappings(Class<?> entityType, List<Field> fields) {
@@ -124,7 +119,7 @@ class TableMappingProvider {
 				if (writeMethod == null) {
 					throw new MapperException("writeMethod was null maybe because it cannot be written to for property "
 							+ entityType.getName() + "." + propMapping.getPropertyName()
-							+ " Check the methods visibility.");
+							+ " Check the method's visibility.");
 				}
 				propMapping.setWriteMethod(writeMethod);
 			}

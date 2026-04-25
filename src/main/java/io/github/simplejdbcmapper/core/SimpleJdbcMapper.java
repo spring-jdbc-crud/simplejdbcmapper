@@ -304,7 +304,7 @@ public final class SimpleJdbcMapper {
 	 * expects the sql columns to be exactly in a specific order because it uses
 	 * position indexes to retrieve the data from the query ResultSet
 	 * <p>
-	 * Always use this method (or its sibling method
+	 * Always use this method (or its overloaded method
 	 * getEntitySqlColumns({@code Class<?>} entityType, String tableAlias) to create
 	 * your custom query columns when using EntityRowMapper. EntityRowMapper will
 	 * handle the column to property mapping.
@@ -329,7 +329,7 @@ public final class SimpleJdbcMapper {
 	 * expects the sql columns to be exactly in a specific order because it uses
 	 * position indexes to retrieve the data from the query ResultSet
 	 * <p>
-	 * Always use this method (or its sibling method
+	 * Always use this method (or its overloaded method
 	 * getEntitySqlColumns({@code Class<?>} entityType) to create your custom query
 	 * columns when using EntityRowMapper. EntityRowMapper will handle the column to
 	 * property mapping.

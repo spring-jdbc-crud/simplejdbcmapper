@@ -37,7 +37,7 @@ public class TypeCheckMysql {
 	@Column
 	private Boolean booleanVal;
 
-	@Column(sqlType = Types.BLOB)
+	@Column(sqlType = Types.LONGVARBINARY)
 	private byte[] image;
 
 	@Column(name = "string_enum")

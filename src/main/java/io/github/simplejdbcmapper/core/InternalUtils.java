@@ -21,7 +21,6 @@ import org.springframework.jdbc.core.StatementCreatorUtils;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.support.SqlBinaryValue;
 import org.springframework.jdbc.core.support.SqlCharacterValue;
-import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.util.StringUtils;
 
 import io.github.simplejdbcmapper.exception.MapperException;
@@ -92,17 +91,6 @@ class InternalUtils {
 		} else {
 			mapSqlParameterSource.addValue(param, null, columnSqlType);
 		}
-	}
-
-	/**
-	 * Converts underscore case to camel case. Ex: user_last_name gets converted to
-	 * userLastName.
-	 *
-	 * @param str underscore case string
-	 * @return the camel case string
-	 */
-	public static String toCamelCaseName(String str) {
-		return JdbcUtils.convertUnderscoreNameToPropertyName(str);
 	}
 
 	/**

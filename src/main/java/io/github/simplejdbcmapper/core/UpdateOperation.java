@@ -44,7 +44,7 @@ class UpdateOperation {
 
 	// Map key - class name and properties concatenated by hyphens
 	// value - the update sql and params
-	private final SimpleCache<String, SqlAndParams> updateSpecificPropertiesSqlCache = new SimpleCache<>(2000);
+	private final SimpleCache<String, SqlAndParams> updateSpecificPropertiesSqlCache = new SimpleCache<>(5000);
 
 	public UpdateOperation(SimpleJdbcMapperSupport sjmSupport) {
 		this.sjmSupport = sjmSupport;

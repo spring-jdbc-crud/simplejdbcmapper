@@ -93,7 +93,7 @@ class TableMappingProvider {
 		List<PropertyMapping> propertyMappings = new ArrayList<>(propNameToPropertyMapping.values());
 		ap.validateAnnotations(propertyMappings, entityType);
 		assignReflectionWriteMethods(entityType, propertyMappings);
-		assignResultSetType(propertyMappings);
+		assignResultSetTypes(propertyMappings);
 		return propertyMappings;
 	}
 
@@ -127,10 +127,10 @@ class TableMappingProvider {
 		}
 	}
 
-	private void assignResultSetType(List<PropertyMapping> propertyMappings) {
+	private void assignResultSetTypes(List<PropertyMapping> propertyMappings) {
 		for (PropertyMapping propMapping : propertyMappings) {
-			ResultSetType val = ResultSetType.getResultSetType(propMapping.getPropertyType());
-			propMapping.setResultSetType(val);
+			ResultSetType rsType = ResultSetType.getResultSetType(propMapping.getPropertyType());
+			propMapping.setResultSetType(rsType);
 		}
 	}
 

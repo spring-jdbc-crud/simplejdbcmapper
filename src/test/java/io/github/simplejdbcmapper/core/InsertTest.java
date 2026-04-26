@@ -196,8 +196,7 @@ class InsertTest {
 		Exception exception = Assertions.assertThrows(MapperException.class, () -> {
 			sjm.insert(person);
 		});
-		assertTrue(exception.getMessage()
-				.contains("writeMethod was null maybe because it cannot be written to for property "));
+		assertTrue(exception.getMessage().contains("setter method was not accessible for property "));
 	}
 
 }

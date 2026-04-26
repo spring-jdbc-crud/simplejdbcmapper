@@ -117,9 +117,8 @@ class TableMappingProvider {
 				PropertyDescriptor pd = bw.getPropertyDescriptor(propMapping.getPropertyName());
 				Method writeMethod = pd.getWriteMethod();
 				if (writeMethod == null) {
-					throw new MapperException("writeMethod was null maybe because it cannot be written to for property "
-							+ entityType.getName() + "." + propMapping.getPropertyName()
-							+ " Check the method's visibility.");
+					throw new MapperException("setter method was not accessible for property " + entityType.getName()
+							+ "." + propMapping.getPropertyName() + " Check the method's visibility.");
 				}
 				propMapping.setWriteMethod(writeMethod);
 			}

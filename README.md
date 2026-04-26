@@ -27,7 +27,7 @@ Just by annotating the models that you would use with JdbcTemplate/JdbcClient, y
 ## Features
 1. One liners for CRUD
 2. Simple configuration similar to Jdbctemplate/JdbClient configuration.
-3. Helper methods to construct SQL for the mapped objects that can be used with Spring row mappers like BeanPropertyRowMapper, SimplePropertyRowMapper, which avoids writing custom row mappers.
+3. Helper methods to construct SQL for the mapped objects that can be used with Spring row mappers like BeanPropertyRowMapper, SimplePropertyRowMapper or the framework's EntityRowMapper which avoids writing custom row mappers.
 4. Auto assign properties
     * auto assign audited  by (created by, updated by) by providing a Supplier
     * auto assign audited on (created on, updated on) by providing a Supplier

@@ -48,7 +48,7 @@ class DeleteOperation {
 			deleteSqlCache.put(entityType, sql);
 		}
 		return sjmSupport.getJdbcTemplate().update(sql,
-				new SqlParameterValue(tableMapping.getIdPropertyMapping().getEffectiveSqlType(), id));
+				new SqlParameterValue(tableMapping.getIdPropertyMapping().getColumnSqlType(), id));
 	}
 
 	SimpleCache<Class<?>, String> getDeleteSqlCache() {

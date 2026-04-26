@@ -63,7 +63,7 @@ class FindOperation {
 		T obj = null;
 		try {
 			obj = sjmSupport.getJdbcTemplate().queryForObject(sql, newEntityRowMapper(entityType),
-					new SqlParameterValue(tableMapping.getIdPropertyMapping().getEffectiveSqlType(), getValue(id)));
+					new SqlParameterValue(tableMapping.getIdPropertyMapping().getColumnSqlType(), getValue(id)));
 		} catch (EmptyResultDataAccessException e) {
 			// do nothing
 		}
@@ -102,7 +102,7 @@ class FindOperation {
 			return sjmSupport.getJdbcTemplate().query(sql.toString(), newEntityRowMapper(entityType));
 		} else {
 			return sjmSupport.getJdbcTemplate().query(sql.toString(), newEntityRowMapper(entityType),
-					new SqlParameterValue(propMapping.getEffectiveSqlType(), getValue(propertyValue)));
+					new SqlParameterValue(propMapping.getColumnSqlType(), getValue(propertyValue)));
 		}
 	}
 
@@ -138,7 +138,7 @@ class FindOperation {
 		} else {
 			Set<?> values = getValues(localPropertyValues);
 			MapSqlParameterSource param = new MapSqlParameterSource();
-			param.addValue("propertyValues", values, propMapping.getEffectiveSqlType());
+			param.addValue("propertyValues", values, propMapping.getColumnSqlType());
 			return sjmSupport.getNamedParameterJdbcTemplate().query(sql.toString(), param,
 					newEntityRowMapper(entityType));
 		}

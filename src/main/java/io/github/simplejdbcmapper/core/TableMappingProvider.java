@@ -117,10 +117,18 @@ class TableMappingProvider {
 				PropertyDescriptor pd = bw.getPropertyDescriptor(propMapping.getPropertyName());
 				Method writeMethod = pd.getWriteMethod();
 				if (writeMethod == null) {
-					throw new MapperException("setter method was not accessible for property " + entityType.getName()
-							+ "." + propMapping.getPropertyName() + " Check the method's visibility.");
+					throw new MapperException("set method was not accessible for property " + entityType.getName() + "."
+							+ propMapping.getPropertyName() + " Check the method's visibility.");
 				}
 				propMapping.setWriteMethod(writeMethod);
+
+				Method readMethod = pd.getReadMethod();
+				if (readMethod == null) {
+					throw new MapperException("get method was not accessible for property " + entityType.getName() + "."
+							+ propMapping.getPropertyName() + " Check the method's visibility.");
+				}
+				propMapping.setReadMethod(readMethod);
+
 			}
 		} catch (Exception e) {
 			throw new MapperException(e.getMessage(), e);

@@ -26,7 +26,9 @@ class PropertyMapping {
 
 	private Class<?> propertyType;
 
-	private Method writeMethod; // writeMethod for property to be set by reflection
+	private Method writeMethod;
+
+	private Method readMethod;
 
 	private ResultSetType resultSetType;
 
@@ -140,6 +142,14 @@ class PropertyMapping {
 
 	public boolean isEnum() {
 		return isEnum;
+	}
+
+	public Method getReadMethod() {
+		return readMethod;
+	}
+
+	public void setReadMethod(Method readMethod) {
+		this.readMethod = readMethod;
 	}
 
 	public Method getWriteMethod() {

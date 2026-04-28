@@ -22,6 +22,7 @@ import javax.sql.DataSource;
 
 import org.springframework.core.convert.ConversionService;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.util.Assert;
@@ -354,6 +355,15 @@ public final class SimpleJdbcMapper {
 	 */
 	public String getEntitySqlColumns(Class<?> entityType, String tableAlias) {
 		return findOperation.getEntitySqlColumns(entityType, tableAlias);
+	}
+
+	public String getMultiEntitySqlColumns(MultiEntity multiEntity) {
+		return findOperation.getMultiEntitySqlColumns(multiEntity);
+	}
+
+	@SuppressWarnings("rawtypes")
+	public ResultSetExtractor<Map<Class, List>> resultSetExtractor(MultiEntity multiEntity) {
+		return findOperation.resultSetExtractor(multiEntity);
 	}
 
 	/**

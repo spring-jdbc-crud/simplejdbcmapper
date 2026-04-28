@@ -33,7 +33,6 @@ import org.springframework.jdbc.core.SqlParameterValue;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
 
 import io.github.simplejdbcmapper.exception.MapperException;
 
@@ -167,10 +166,8 @@ class FindOperation {
 
 	public String getEntitySqlColumns(Class<?> entityType, String tableAlias) {
 		Assert.notNull(entityType, "entityType must not be null");
-		if (!StringUtils.hasText(tableAlias)) {
-			throw new IllegalArgumentException("tableAlias has no value");
-		}
-		String cacheKey = entityType.getName() + "-" + tableAlias.trim();
+		InternalUtils.validateTableAlias(tableAlias);
+		String cacheKey = entityType.getName() + "-" + tableAlias;
 		String columnsSql = entitySqlColumnsAliasCache.get(cacheKey);
 		if (columnsSql == null) {
 			String tablePrefix = tableAlias + ".";
@@ -207,9 +204,7 @@ class FindOperation {
 
 	public String getBeanFriendlySqlColumns(Class<?> entityType, String tableAlias) {
 		Assert.notNull(entityType, "entityType must not be null");
-		if (!StringUtils.hasText(tableAlias)) {
-			throw new IllegalArgumentException("tableAlias has no value");
-		}
+		InternalUtils.validateTableAlias(tableAlias);
 		String tablePrefix = tableAlias + ".";
 		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
 		StringJoiner sj = new StringJoiner(", ", " ", " ");
@@ -235,6 +230,7 @@ class FindOperation {
 	}
 
 	public String getMultiEntitySqlColumns(MultiEntity multiEntity) {
+		StringBuilder sb = new StringBuilder(128);
 		StringJoiner sj = new StringJoiner(", ", " ", " ");
 		for (Map.Entry<Class<?>, String> entry : multiEntity.getEntities().entrySet()) {
 			String tablePrefix = entry.getValue() + ".";
@@ -250,12 +246,13 @@ class FindOperation {
 	@SuppressWarnings("rawtypes")
 	public ResultSetExtractor<Map<Class, List>> resultSetExtractor(MultiEntity multiEntity) {
 		int offset = 1;
-		Map<Class, List> tempMap = new LinkedHashMap<>();
+		Map<Class, List> tempResultMap = new LinkedHashMap<>();
 		Map<Class, EntityRowMapper> mapRowMappers = new LinkedHashMap<>();
 		for (Map.Entry<Class<?>, String> entry : multiEntity.getEntities().entrySet()) {
-			tempMap.put(entry.getKey(), new ArrayList());
+			tempResultMap.put(entry.getKey(), new ArrayList());
 			TableMapping tableMapping = sjmSupport.getTableMapping(entry.getKey());
-			mapRowMappers.put(entry.getKey(), newEntityRowMapper(entry.getKey(), offset));
+			mapRowMappers.put(entry.getKey(),
+					new EntityRowMapper(tableMapping, sjmSupport.getConversionService(), offset));
 			offset += tableMapping.getPropertyMappings().length;
 		}
 
@@ -268,13 +265,12 @@ class FindOperation {
 					for (Map.Entry<Class, EntityRowMapper> entry : mapRowMappers.entrySet()) {
 						EntityRowMapper rowMapper = entry.getValue();
 						Object obj = rowMapper.mapRow(rs, rowCnt);
-						// add to list
-						tempMap.get(entry.getKey()).add(obj);
+						tempResultMap.get(entry.getKey()).add(obj);
 					}
 					rowCnt++;
 				}
 				Map<Class, List> resultMap = new HashMap<>();
-				for (Map.Entry<Class, List> entry : tempMap.entrySet()) {
+				for (Map.Entry<Class, List> entry : tempResultMap.entrySet()) {
 					resultMap.put(entry.getKey(), distinctById(entry.getKey(), entry.getValue()));
 				}
 				return resultMap;
@@ -334,11 +330,6 @@ class FindOperation {
 			return values;
 		}
 		return set;
-	}
-
-	private <T> EntityRowMapper<T> newEntityRowMapper(Class<T> entityType, int offset) {
-		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
-		return new EntityRowMapper<>(tableMapping, sjmSupport.getConversionService(), offset);
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })

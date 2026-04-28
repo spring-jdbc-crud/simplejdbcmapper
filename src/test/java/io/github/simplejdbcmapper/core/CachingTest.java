@@ -249,6 +249,7 @@ class CachingTest {
 
 		Employee emp = new Employee();
 		emp.setId(Integer.valueOf(1));
+		emp.setFirstName("abc");
 		emp.setLastName("xyz");
 		sjm.update(emp);
 		assertEquals(3, cache.size());

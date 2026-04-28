@@ -158,6 +158,45 @@ public class SimpleJdbcMapperUtils {
 		}
 	}
 
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static <T, U> void populateHasManyThrough(List<T> mainObjList, List<U> relatedObjList,
+			String mainObjIdProperty, String relatedObjIdProperty, AssociativeJoiner joiner,
+			String mainObjHasManyPropertyName) {
+		// Assert.notNull(mainObjJoinPropertyNameTheId, "mainObjJoinPropertyNameTheId
+		// must not be null");
+		// Assert.notNull(relatedObjJoinPropertyNameTheForeignKey,
+		// "relatedObjJoinPropertyNameTheForeignKey must not be null");
+		Assert.notNull(mainObjHasManyPropertyName, "mainObjHasManyPropertyName must not be null");
+		if (CollectionUtils.isEmpty(mainObjList) || CollectionUtils.isEmpty(relatedObjList)) {
+			return;
+		}
+		// relatedObjId - relatedObj
+		Map<Object, Object> idToRelatedObjMap = new HashMap<>();
+		for (U relatedObj : relatedObjList) {
+			if (relatedObj != null) {
+				BeanWrapper bwRelatedObj = PropertyAccessorFactory.forBeanPropertyAccess(relatedObj);
+				Object idValue = bwRelatedObj.getPropertyValue(relatedObjIdProperty);
+				if (idValue != null) {
+					idToRelatedObjMap.put(idValue, relatedObj);
+				}
+			}
+		}
+		for (T mainObj : mainObjList) {
+			if (mainObj != null) {
+				BeanWrapper bwMainObj = PropertyAccessorFactory.forBeanPropertyAccess(mainObj);
+				Object mainObjIdValue = bwMainObj.getPropertyValue(mainObjIdProperty);
+				List relatedObjIdList = joiner.getRelatedObjIds(mainObjIdValue);
+				if (!CollectionUtils.isEmpty(relatedObjIdList)) {
+					List list = new ArrayList();
+					for (Object relatedObjId : relatedObjIdList) {
+						list.add(idToRelatedObjMap.get(relatedObjId));
+					}
+					bwMainObj.setPropertyValue(mainObjHasManyPropertyName, list);
+				}
+			}
+		}
+	}
+
 	/**
 	 * Splits the list into multiple lists by chunk size. Can be used to split the
 	 * sql IN clauses since some databases have a limitation on 'IN' clause entries

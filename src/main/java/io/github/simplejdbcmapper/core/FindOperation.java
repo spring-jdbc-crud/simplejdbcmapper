@@ -266,7 +266,6 @@ class FindOperation {
 				int rowCnt = 1;
 				while (rs.next()) {
 					for (Map.Entry<Class, EntityRowMapper> entry : mapRowMappers.entrySet()) {
-						System.out.println("rowMapper: " + entry.getValue());
 						EntityRowMapper rowMapper = entry.getValue();
 						Object obj = rowMapper.mapRow(rs, rowCnt);
 						// add to list

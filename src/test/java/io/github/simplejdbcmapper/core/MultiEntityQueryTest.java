@@ -23,14 +23,14 @@ class MultiEntityQueryTest {
 	@Test
 	void OrderHasManyOrderLinesWhichHasOneProduct_success() {
 
-		MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol")
-				.add(Product.class, "p");
+		MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol").add(Product.class,
+				"p");
 
 		String sql = """
 				SELECT %s
-				from orders o
-				join order_line ol on ol.order_id = o.order_id
-				join product p on p.product_id = ol.product_id
+				FROM orders o
+				JOIN order_line ol ON ol.order_id = o.order_id
+				JOIN product p o ON p.product_id = ol.product_id
 				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
 
 		@SuppressWarnings("rawtypes")

@@ -117,4 +117,5 @@ public final class EntityRowMapper<T> implements RowMapper<T> {
 		}
 		return obj;
 	}
+
 }

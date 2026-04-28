@@ -1,17 +1,18 @@
 package io.github.simplejdbcmapper.core;
 
-public class MultiEntity {
-	private EntityEntry[] entries;
+import java.util.LinkedHashMap;
+import java.util.Map;
 
-	public MultiEntity(EntityEntry... entries) {
-		if (entries.length == 0) {
-			throw new IllegalArgumentException("no entries provided");
-		}
-		this.entries = entries;
+public class MultiEntity {
+	private final Map<Class<?>, String> entities = new LinkedHashMap<>();
+
+	public MultiEntity add(Class<?> entityType, String tableAlias) {
+		entities.put(entityType, tableAlias);
+		return this;
 	}
 
-	public EntityEntry[] getEntries() {
-		return entries;
+	public Map<Class<?>, String> getEntities() {
+		return entities;
 	}
 
 }

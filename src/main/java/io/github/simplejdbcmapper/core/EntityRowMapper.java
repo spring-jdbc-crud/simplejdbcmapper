@@ -80,15 +80,17 @@ import io.github.simplejdbcmapper.exception.MapperException;
 public final class EntityRowMapper<T> implements RowMapper<T> {
 	private final ConversionService conversionService;
 	private final PropertyMapping[] propertyMappings;
-	private final int columnCount;
 	private final Constructor<T> mappedObjConstructor;
+	private final int startIndex;
+	private final int endIndex;
 
 	@SuppressWarnings("unchecked")
-	EntityRowMapper(TableMapping tableMapping, ConversionService conversionService) {
+	EntityRowMapper(TableMapping tableMapping, ConversionService conversionService, int offset) {
 		this.conversionService = conversionService;
 		this.propertyMappings = tableMapping.getPropertyMappings();
-		this.columnCount = propertyMappings.length;
 		this.mappedObjConstructor = tableMapping.getMappedObjConstructor();
+		this.startIndex = offset;
+		this.endIndex = propertyMappings.length + offset - 1;
 	}
 
 	@Override
@@ -99,9 +101,8 @@ public final class EntityRowMapper<T> implements RowMapper<T> {
 			boolean[] typedValueExtracted = { true };
 			// since the columns sql was generated using the property mappings the resultset
 			// columns will be in same order.
-			// resultset indexes start at 1.
-			for (int index = 1; index <= columnCount; index++) {
-				PropertyMapping propMapping = propertyMappings[index - 1];
+			for (int index = startIndex; index <= endIndex; index++) {
+				PropertyMapping propMapping = propertyMappings[index - startIndex];
 				Object value = InternalUtils.getResultSetValue(rs, index, propMapping.getResultSetType(),
 						propMapping.getPropertyType(), typedValueExtracted);
 				if (typedValueExtracted[0] || value == null) {

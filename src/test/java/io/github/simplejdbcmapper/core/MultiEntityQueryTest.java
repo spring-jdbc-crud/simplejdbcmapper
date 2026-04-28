@@ -23,8 +23,8 @@ class MultiEntityQueryTest {
 	@Test
 	void OrderHasManyOrderLinesWhichHasOneProduct_success() {
 
-		MultiEntity multiEntity = new MultiEntity(new EntityEntry(Order.class, "o"),
-				new EntityEntry(OrderLine.class, "ol"), new EntityEntry(Product.class, "p"));
+		MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol")
+				.add(Product.class, "p");
 
 		String sql = """
 				SELECT %s
@@ -42,6 +42,7 @@ class MultiEntityQueryTest {
 
 		SimpleJdbcMapperUtils.populateHasMany(orders, orderLines, "orderId", "orderId", "orderLines");
 		SimpleJdbcMapperUtils.populateHasOne(orderLines, products, "productId", "productId", "product");
+
 	}
 
 }

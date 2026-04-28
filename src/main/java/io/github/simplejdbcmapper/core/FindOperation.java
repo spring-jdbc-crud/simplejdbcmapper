@@ -187,7 +187,7 @@ class FindOperation {
 
 	public <T> EntityRowMapper<T> newEntityRowMapper(Class<T> entityType) {
 		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
-		return new EntityRowMapper<>(tableMapping, sjmSupport.getConversionService());
+		return new EntityRowMapper<>(tableMapping, sjmSupport.getConversionService(), 1);
 	}
 
 	public String getBeanFriendlySqlColumns(Class<?> entityType) {
@@ -236,10 +236,10 @@ class FindOperation {
 
 	public String getMultiEntitySqlColumns(MultiEntity multiEntity) {
 		StringJoiner sj = new StringJoiner(", ", " ", " ");
-		for (EntityEntry entry : multiEntity.getEntries()) {
-			String tablePrefix = entry.getTableAlias() + ".";
-			String colPrefix = entry.getTableAlias() + "_";
-			TableMapping tableMapping = sjmSupport.getTableMapping(entry.getEntityType());
+		for (Map.Entry<Class<?>, String> entry : multiEntity.getEntities().entrySet()) {
+			String tablePrefix = entry.getValue() + ".";
+			String colPrefix = entry.getValue() + "_";
+			TableMapping tableMapping = sjmSupport.getTableMapping(entry.getKey());
 			for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {
 				sj.add(tablePrefix + propMapping.getColumnName() + " AS " + colPrefix + propMapping.getColumnName());
 			}
@@ -251,13 +251,11 @@ class FindOperation {
 	public ResultSetExtractor<Map<Class, List>> resultSetExtractor(MultiEntity multiEntity) {
 		int offset = 1;
 		Map<Class, List> tempMap = new LinkedHashMap<>();
-		EntityEntry[] meEntries = multiEntity.getEntries();
-		Map<Class, MultiEntityRowMapper> mapRowMappers = new LinkedHashMap<>();
-		for (EntityEntry meEntry : meEntries) {
-			List list = new ArrayList();
-			tempMap.put(meEntry.getEntityType(), list);
-			TableMapping tableMapping = sjmSupport.getTableMapping(meEntry.getEntityType());
-			mapRowMappers.put(meEntry.getEntityType(), newMultiEntityRowMapper(meEntry.getEntityType(), offset));
+		Map<Class, EntityRowMapper> mapRowMappers = new LinkedHashMap<>();
+		for (Map.Entry<Class<?>, String> entry : multiEntity.getEntities().entrySet()) {
+			tempMap.put(entry.getKey(), new ArrayList());
+			TableMapping tableMapping = sjmSupport.getTableMapping(entry.getKey());
+			mapRowMappers.put(entry.getKey(), newEntityRowMapper(entry.getKey(), offset));
 			offset += tableMapping.getPropertyMappings().length;
 		}
 
@@ -265,14 +263,16 @@ class FindOperation {
 			@SuppressWarnings("unchecked")
 			@Override
 			public Map<Class, List> extractData(ResultSet rs) throws SQLException, DataAccessException {
+				int rowCnt = 1;
 				while (rs.next()) {
-					for (Map.Entry<Class, MultiEntityRowMapper> entry : mapRowMappers.entrySet()) {
+					for (Map.Entry<Class, EntityRowMapper> entry : mapRowMappers.entrySet()) {
 						System.out.println("rowMapper: " + entry.getValue());
-						MultiEntityRowMapper rowMapper = entry.getValue();
-						Object obj = rowMapper.mapRow(rs);
+						EntityRowMapper rowMapper = entry.getValue();
+						Object obj = rowMapper.mapRow(rs, rowCnt);
 						// add to list
 						tempMap.get(entry.getKey()).add(obj);
 					}
+					rowCnt++;
 				}
 				Map<Class, List> resultMap = new HashMap<>();
 				for (Map.Entry<Class, List> entry : tempMap.entrySet()) {
@@ -337,9 +337,9 @@ class FindOperation {
 		return set;
 	}
 
-	private <T> MultiEntityRowMapper<T> newMultiEntityRowMapper(Class<T> entityType, int offset) {
+	private <T> EntityRowMapper<T> newEntityRowMapper(Class<T> entityType, int offset) {
 		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
-		return new MultiEntityRowMapper<>(tableMapping, sjmSupport.getConversionService(), offset);
+		return new EntityRowMapper<>(tableMapping, sjmSupport.getConversionService(), offset);
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })

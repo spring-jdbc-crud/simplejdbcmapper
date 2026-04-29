@@ -158,50 +158,6 @@ public class SimpleJdbcMapperUtils {
 		}
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	public static <T, U> void populateHasManyThrough(List<T> mainObjList, List<U> relatedObjList,
-			String mainObjIdProperty, String relatedObjIdProperty, IntermediateJoiner intermediateJoiner,
-			String mainObjHasManyProperty) {
-		Assert.notNull(mainObjIdProperty, "mainObjIdProperty must not be null");
-		Assert.notNull(relatedObjIdProperty, "relatedObjIdProperty must not be null");
-		Assert.notNull(intermediateJoiner, "intermediateJoiner must not be null");
-		Assert.notNull(mainObjHasManyProperty, "mainObjHasManyProperty must not be null");
-
-		if (CollectionUtils.isEmpty(mainObjList) || CollectionUtils.isEmpty(relatedObjList)) {
-			return;
-		}
-		// relatedObjId - relatedObj
-		Map<Object, Object> idToRelatedObjMap = new HashMap<>();
-		for (U relatedObj : relatedObjList) {
-			if (relatedObj != null) {
-				BeanWrapper bwRelatedObj = PropertyAccessorFactory.forBeanPropertyAccess(relatedObj);
-				Object idValue = bwRelatedObj.getPropertyValue(relatedObjIdProperty);
-				if (idValue != null) {
-					idToRelatedObjMap.put(idValue, relatedObj);
-				}
-			}
-		}
-		for (T mainObj : mainObjList) {
-			if (mainObj != null) {
-				BeanWrapper bwMainObj = PropertyAccessorFactory.forBeanPropertyAccess(mainObj);
-				Object mainObjIdValue = bwMainObj.getPropertyValue(mainObjIdProperty);
-				List relatedObjIdList = intermediateJoiner.getRelatedObjIds(mainObjIdValue);
-				if (!CollectionUtils.isEmpty(relatedObjIdList)) {
-					List list = new ArrayList();
-					for (Object relatedObjId : relatedObjIdList) {
-						Object relatedObj = idToRelatedObjMap.get(relatedObjId);
-						if (relatedObj != null) {
-							list.add(relatedObj);
-						}
-					}
-					if (!CollectionUtils.isEmpty(relatedObjList)) {
-						bwMainObj.setPropertyValue(mainObjHasManyProperty, list);
-					}
-				}
-			}
-		}
-	}
-
 	/**
 	 * Splits the list into multiple lists by chunk size. Can be used to split the
 	 * sql IN clauses since some databases have a limitation on 'IN' clause entries

@@ -5,6 +5,8 @@ import java.util.Map;
 
 import org.springframework.util.Assert;
 
+import io.github.simplejdbcmapper.exception.MapperException;
+
 public class MultiEntity {
 	private final Map<Class<?>, String> entities = new LinkedHashMap<>();
 
@@ -21,6 +23,9 @@ public class MultiEntity {
 	}
 
 	public Map<Class<?>, String> getEntities() {
+		if (entities.size() < 2) {
+			throw new MapperException("MultiEntity should have 2 or more entities configured.");
+		}
 		return entities;
 	}
 

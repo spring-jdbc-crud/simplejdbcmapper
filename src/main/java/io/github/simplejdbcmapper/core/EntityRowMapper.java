@@ -16,7 +16,10 @@ package io.github.simplejdbcmapper.core;
 import java.lang.reflect.Constructor;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.SQLFeatureNotSupportedException;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.support.JdbcUtils;
@@ -79,6 +82,8 @@ import io.github.simplejdbcmapper.exception.MapperException;
  * @author Antony Joseph
  */
 public final class EntityRowMapper<T> implements RowMapper<T> {
+	private static final Logger logger = LoggerFactory.getLogger(EntityRowMapper.class);
+
 	private final ConversionService conversionService;
 	private final PropertyMapping[] propertyMappings;
 	private final Constructor<T> mappedObjConstructor;
@@ -194,8 +199,13 @@ public final class EntityRowMapper<T> implements RowMapper<T> {
 			// Some unknown type desired -> rely on getObject.
 			try {
 				return rs.getObject(index, requiredType);
-			} catch (Exception ex) {
-				// jdbc driver does not support
+			} catch (SQLFeatureNotSupportedException | AbstractMethodError ex) {
+				logger.debug("JDBC driver does not support JDBC 4.1 'getObject(int, Class)' method", ex);
+			} catch (SQLException ex) {
+				if (logger.isDebugEnabled()) {
+					logger.debug("JDBC driver has limited support for 'getObject(int, Class)' with column type: "
+							+ requiredType.getName(), ex);
+				}
 			}
 			typedValueExtracted[0] = false;
 

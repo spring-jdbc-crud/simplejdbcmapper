@@ -11,6 +11,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringJoiner;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.util.CollectionUtils;
@@ -18,6 +20,7 @@ import org.springframework.util.CollectionUtils;
 import io.github.simplejdbcmapper.exception.MapperException;
 
 public class MultiEntitySupport {
+	private static final Logger logger = LoggerFactory.getLogger(MultiEntitySupport.class);
 
 	private final SimpleJdbcMapperSupport sjmSupport;
 
@@ -50,7 +53,9 @@ public class MultiEntitySupport {
 		for (Class<?> entityType : multiEntity.getEntities().keySet()) {
 			tempResultMap.put(entityType, new ArrayList());
 			TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
-			mapRowMappers.put(entityType, new EntityRowMapper(tableMapping, sjmSupport.getConversionService(), offset));
+			EntityRowMapper rowMapper = new EntityRowMapper(tableMapping, sjmSupport.getConversionService(), offset);
+			logger.debug("EntityRowMapper: " + rowMapper);
+			mapRowMappers.put(entityType, rowMapper);
 			offset += tableMapping.getPropertyMappings().length;
 		}
 

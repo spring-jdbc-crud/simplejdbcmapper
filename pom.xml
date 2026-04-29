@@ -51,7 +51,6 @@
     </issueManagement>
 	
 	<dependencies>
-		<!-- This is the only dependency needed for SimpleJdbcMapper -->
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-jdbc</artifactId>

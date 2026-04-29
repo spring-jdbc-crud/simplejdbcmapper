@@ -31,6 +31,8 @@ public class ToMany implements ToManySpec, ThroughSpec, PopulateSpec {
 
 	private IntermediateJoiner intermediateJoiner;
 
+	private String relationshipType = "hasMany";
+
 	private ToMany(List<?> mainObjList, List<?> relatedObjList) {
 		this.mainObjList = mainObjList;
 		this.relatedObjList = relatedObjList;
@@ -69,17 +71,6 @@ public class ToMany implements ToManySpec, ThroughSpec, PopulateSpec {
 		return this;
 	}
 
-	public void populate(String mainObjPropertyToPopulate) {
-		Assert.notNull(mainObjPropertyToPopulate, "mainObjPropertyToPopulate must not be null");
-		if (bwMainObj != null && !bwMainObj.isReadableProperty(mainObjPropertyToPopulate)) {
-			throw new IllegalArgumentException("invalid argument. Property name " + mainObjPropertyToPopulate
-					+ " does not readable for " + bwMainObj.getWrappedClass().getName());
-		}
-
-		this.mainObjPropertyToPopulate = mainObjPropertyToPopulate;
-		populateHasMany();
-	}
-
 	public ThroughSpec through(List<?> intermediateList, String fkPropertyToMainObjId,
 			String fkPropertyToRelatedObjId) {
 		Assert.notNull(fkPropertyToMainObjId, "fkPropertyToMainObjId must not be null");
@@ -100,6 +91,8 @@ public class ToMany implements ToManySpec, ThroughSpec, PopulateSpec {
 
 		this.intermediateJoiner = new IntermediateJoiner(intermediateList, fkPropertyToMainObjId,
 				fkPropertyToRelatedObjId);
+
+		this.relationshipType = "hasManyThrough";
 		return this;
 	}
 
@@ -120,6 +113,22 @@ public class ToMany implements ToManySpec, ThroughSpec, PopulateSpec {
 		this.mainObjIdProperty = mainObjIdProperty;
 		this.relatedObjIdProperty = relatedObjIdProperty;
 		return this;
+	}
+
+	public void populate(String mainObjPropertyToPopulate) {
+		Assert.notNull(mainObjPropertyToPopulate, "mainObjPropertyToPopulate must not be null");
+		if (bwMainObj != null && !bwMainObj.isReadableProperty(mainObjPropertyToPopulate)) {
+			throw new IllegalArgumentException("invalid argument. Property name " + mainObjPropertyToPopulate
+					+ " does not readable for " + bwMainObj.getWrappedClass().getName());
+		}
+
+		this.mainObjPropertyToPopulate = mainObjPropertyToPopulate;
+
+		if ("hasMany".equals(relationshipType)) {
+			populateHasMany();
+		} else {
+			populateHasManyThrough();
+		}
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -193,7 +202,6 @@ public class ToMany implements ToManySpec, ThroughSpec, PopulateSpec {
 	}
 
 	class IntermediateJoiner {
-
 		@SuppressWarnings("rawtypes")
 		// key: mainObjIdValue,
 		// value: list of relatedObjIdValues
@@ -202,8 +210,11 @@ public class ToMany implements ToManySpec, ThroughSpec, PopulateSpec {
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		public IntermediateJoiner(List<?> intermediateList, String fkPropertyToMainObjId,
 				String fkPropertyToRelatedObjId) {
-			for (Object assocObj : intermediateList) {
-				BeanWrapper bw = new BeanWrapperImpl(assocObj);
+			if (CollectionUtils.isEmpty(intermediateList)) {
+				return;
+			}
+			for (Object intermediateObj : intermediateList) {
+				BeanWrapper bw = new BeanWrapperImpl(intermediateObj);
 				Object mainObjIdValue = bw.getPropertyValue(fkPropertyToMainObjId);
 				Object relatedObjIdValue = bw.getPropertyValue(fkPropertyToRelatedObjId);
 				if (mainObjIdMap.containsKey(mainObjIdValue)) {

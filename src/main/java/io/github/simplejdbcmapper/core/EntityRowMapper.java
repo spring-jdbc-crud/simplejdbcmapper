@@ -217,4 +217,9 @@ public final class EntityRowMapper<T> implements RowMapper<T> {
 		return (rs.wasNull() ? null : value);
 	}
 
+	@Override
+	public String toString() {
+		return mappedObjConstructor.getName() + " startIndex: " + startIndex + " endIndex: " + endIndex;
+	}
+
 }

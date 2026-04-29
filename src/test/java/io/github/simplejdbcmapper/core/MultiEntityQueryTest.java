@@ -44,20 +44,9 @@ class MultiEntityQueryTest {
 		List<OrderLine> orderLines = resultMap.get(OrderLine.class);
 		List<Product> products = resultMap.get(Product.class);
 
-		// SimpleJdbcMapperUtils.populateHasMany(orders, orderLines, "orderId",
-		// "orderId", "orderLines");
-
 		Relationship.mainList(orders).toManyList(orderLines).joinOn("orderId", "orderId").populate("orderLines");
 
 		Relationship.mainList(orderLines).toOneList(products).joinOn("productId", "productId").populate("product");
-
-		// Relationship.mainList(orderLines).toOneList(products).joinOn(sql,
-		// sql).populate(sql);
-		// Relationship.type(Order.class).hasOne(Product.class).join(sql,
-		// sql).populate(sql)
-
-		// SimpleJdbcMapperUtils.populateHasOne(orderLines, products, "productId",
-		// "productId", "product");
 
 	}
 
@@ -82,9 +71,8 @@ class MultiEntityQueryTest {
 		List<EmployeeSkill> employeeSkillList = resultMap.get(EmployeeSkill.class);
 		List<Skill> skills = resultMap.get(Skill.class);
 
-		// SimpleJdbcMapperUtils.populateHasManyThrough(employees, skills, "id", "id",
-		// new IntermediateJoiner(employeeSkillList, "employeeId", "skillId"),
-		// "skills");
+		Relationship.mainList(employees).toManyList(skills).through(employeeSkillList, "employeeId", "skillId")
+				.ids("id", "id").populate("skills");
 
 	}
 

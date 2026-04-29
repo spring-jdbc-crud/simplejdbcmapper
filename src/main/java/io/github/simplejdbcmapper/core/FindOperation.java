@@ -22,6 +22,8 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringJoiner;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.SqlParameterValue;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -36,6 +38,8 @@ import io.github.simplejdbcmapper.exception.MapperException;
  * @author Antony Joseph
  */
 class FindOperation {
+	private static final Logger logger = LoggerFactory.getLogger(FindOperation.class);
+
 	private final SimpleJdbcMapperSupport sjmSupport;
 
 	private final SimpleCache<Class<?>, String> findByIdSqlCache = new SimpleCache<>();
@@ -178,7 +182,10 @@ class FindOperation {
 
 	public <T> EntityRowMapper<T> newEntityRowMapper(Class<T> entityType) {
 		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
-		return new EntityRowMapper<>(tableMapping, sjmSupport.getConversionService(), 1);
+		EntityRowMapper<T> rowMapper = new EntityRowMapper<>(tableMapping, sjmSupport.getConversionService(), 1);
+
+		logger.debug("EntityRowMapper: " + rowMapper);
+		return rowMapper;
 	}
 
 	public String getBeanFriendlySqlColumns(Class<?> entityType) {

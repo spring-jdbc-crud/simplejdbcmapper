@@ -12,7 +12,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-public class ToMany implements ToManySpec, ThroughSpec {
+public class ToMany implements ToManySpec, ThroughSpec, PopulateSpec {
 
 	private String matchOnMainObjProperty;
 	private String matchOnRelatedObjProperty;
@@ -36,7 +36,7 @@ public class ToMany implements ToManySpec, ThroughSpec {
 		return new ToMany(mainObjList, relatedObjList);
 	}
 
-	public ToManySpec joinOn(String mainObjIdProperty, String relatedObjFkProperty) {
+	public PopulateSpec joinOn(String mainObjIdProperty, String relatedObjFkProperty) {
 		Assert.notNull(mainObjIdProperty, "mainObjIdProperty must not be null");
 		Assert.notNull(relatedObjFkProperty, "relatedObjFkProperty must not be null");
 
@@ -45,10 +45,10 @@ public class ToMany implements ToManySpec, ThroughSpec {
 		return this;
 	}
 
-	public ToManySpec populate(String mainObjPropertyToPopulate) {
+	public void populate(String mainObjPropertyToPopulate) {
 		Assert.notNull(mainObjPropertyToPopulate, "mainObjPropertyToPopulate must not be null");
 		this.mainObjPropertyToPopulate = mainObjPropertyToPopulate;
-		return this;
+		populateHasMany();
 	}
 
 	public ThroughSpec through(List<?> intermediateList, String fkPropertyToMainObjId,
@@ -58,23 +58,16 @@ public class ToMany implements ToManySpec, ThroughSpec {
 		return this;
 	}
 
-	public ThroughSpec ids(String mainObjIdProperty, String relatedObjIdProperty) {
+	public PopulateSpec ids(String mainObjIdProperty, String relatedObjIdProperty) {
 		this.mainObjIdProperty = mainObjIdProperty;
 		this.relatedObjIdProperty = relatedObjIdProperty;
 		return this;
 	}
 
-	public <T, U> void build(List<T> mainObjList, List<U> relatedObjList) {
-		populateHasMany(mainObjList, relatedObjList);
-	}
-
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	<T, U> void populateHasMany(List<T> mainObjList, List<U> relatedObjList) {
-		if (CollectionUtils.isEmpty(mainObjList) || CollectionUtils.isEmpty(relatedObjList)) {
-			return;
-		}
-		Map<Object, List<U>> foreignKeyToListMap = new HashMap<>();
-		for (U relatedObj : relatedObjList) {
+	private void populateHasMany() {
+		Map<Object, List<Object>> foreignKeyToListMap = new HashMap<>();
+		for (Object relatedObj : relatedObjList) {
 			if (relatedObj != null) {
 				BeanWrapper bwRelatedObj = PropertyAccessorFactory.forBeanPropertyAccess(relatedObj);
 				Object foreignKeyPropertyValue = bwRelatedObj.getPropertyValue(matchOnRelatedObjProperty);
@@ -90,7 +83,7 @@ public class ToMany implements ToManySpec, ThroughSpec {
 				}
 			}
 		}
-		for (T mainObj : mainObjList) {
+		for (Object mainObj : mainObjList) {
 			if (mainObj != null) {
 				BeanWrapper bwMainObj = PropertyAccessorFactory.forBeanPropertyAccess(mainObj);
 				Object idPropertyValue = bwMainObj.getPropertyValue(matchOnMainObjProperty);

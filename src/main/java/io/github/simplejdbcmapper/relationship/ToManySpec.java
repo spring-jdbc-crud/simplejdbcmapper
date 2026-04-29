@@ -4,12 +4,7 @@ import java.util.List;
 
 public interface ToManySpec {
 
-	ToManySpec joinOn(String mainObjIdProperty, String relatedObjFkProperty);
-
-	ToManySpec populate(String propertyToPopulateOnMainObj);
+	PopulateSpec joinOn(String mainObjIdProperty, String relatedObjFkProperty);
 
 	ThroughSpec through(List<?> intermediateList, String fkPropertyToMainObjId, String fkPropertyToelatedObjId);
-
-	<T, U> void build(List<T> mainObjList, List<U> relatedObjList);
-
 }

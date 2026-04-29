@@ -20,6 +20,8 @@ import java.util.function.Supplier;
 
 import javax.sql.DataSource;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
@@ -41,6 +43,8 @@ import org.springframework.util.Assert;
  * @author Antony Joseph
  */
 public final class SimpleJdbcMapper {
+
+	private static final Logger logger = LoggerFactory.getLogger(SimpleJdbcMapper.class);
 
 	private SimpleJdbcMapperSupport simpleJdbcMapperSupport;
 
@@ -579,6 +583,7 @@ public final class SimpleJdbcMapper {
 		updateOperation = null;
 		deleteOperation = null;
 		multiEntitySupport = null;
+		logger.info("SimpleJdbcMapper has been shutdown.");
 	}
 
 }

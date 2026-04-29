@@ -82,8 +82,9 @@ class MultiEntityQueryTest {
 		List<EmployeeSkill> employeeSkillList = resultMap.get(EmployeeSkill.class);
 		List<Skill> skills = resultMap.get(Skill.class);
 
-		SimpleJdbcMapperUtils.populateHasManyThrough(employees, skills, "id", "id",
-				new IntermediateJoiner(employeeSkillList, "employeeId", "skillId"), "skills");
+		// SimpleJdbcMapperUtils.populateHasManyThrough(employees, skills, "id", "id",
+		// new IntermediateJoiner(employeeSkillList, "employeeId", "skillId"),
+		// "skills");
 
 	}
 

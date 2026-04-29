@@ -57,6 +57,12 @@
 			<artifactId>spring-boot-starter-jdbc</artifactId>
 			<scope>provided</scope>
 		</dependency>
+		
+		<dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
 
 		<!-- All dependencies below this line are for testing and deployment -->
 		<dependency>

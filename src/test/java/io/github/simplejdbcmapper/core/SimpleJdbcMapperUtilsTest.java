@@ -7,6 +7,7 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -15,9 +16,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import io.github.simplejdbcmapper.model.Employee;
+import io.github.simplejdbcmapper.model.EmployeeSkill;
 import io.github.simplejdbcmapper.model.Order;
 import io.github.simplejdbcmapper.model.OrderLine;
 import io.github.simplejdbcmapper.model.Product;
+import io.github.simplejdbcmapper.model.Skill;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -163,6 +167,64 @@ class SimpleJdbcMapperUtilsTest {
 		Assertions.assertThrows(Exception.class, () -> {
 			SimpleJdbcMapperUtils.populateHasMany(orders, orderLines, "orderId", "orderId", "status");
 		});
+	}
+
+	@Test
+	void populateHasManyThrough_failure() {
+		MultiEntity multiEntity = new MultiEntity().add(Employee.class, "emp").add(EmployeeSkill.class, "es")
+				.add(Skill.class, "s");
+
+		String sql = """
+				SELECT %s
+				FROM employee emp
+				LEFT JOIN  employee_skill es ON emp.id = es.employee_id
+				LEFT JOIN skill s ON es.skill_id = s.id
+				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
+
+		@SuppressWarnings("rawtypes")
+		Map<Class, List> resultMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
+
+		List<Employee> employees = resultMap.get(Employee.class);
+		List<EmployeeSkill> employeeSkillList = resultMap.get(EmployeeSkill.class);
+		List<Skill> skills = resultMap.get(Skill.class);
+
+		IntermediateJoiner intermediateJoiner = new IntermediateJoiner(employeeSkillList, "employeeId", "skillId");
+
+		// SimpleJdbcMapperUtils.populateHasManyThrough(employees, skills, "id", "id",
+		// assocJoiner, "skills");
+
+		Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			SimpleJdbcMapperUtils.populateHasManyThrough(employees, skills, null, "id", intermediateJoiner, "skills");
+		});
+		assertTrue(exception.getMessage().contains("mainObjIdProperty must not be null"));
+
+		exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			SimpleJdbcMapperUtils.populateHasManyThrough(employees, skills, "id", null, intermediateJoiner, "skills");
+		});
+		assertTrue(exception.getMessage().contains("relatedObjIdProperty must not be null"));
+
+		exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			SimpleJdbcMapperUtils.populateHasManyThrough(employees, skills, "id", "id", null, "skills");
+		});
+		assertTrue(exception.getMessage().contains("intermediateJoiner must not be null"));
+
+		exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			SimpleJdbcMapperUtils.populateHasManyThrough(employees, skills, "id", "id", intermediateJoiner, null);
+		});
+		assertTrue(exception.getMessage().contains("mainObjHasManyProperty must not be null"));
+
+		Assertions.assertThrows(Exception.class, () -> {
+			SimpleJdbcMapperUtils.populateHasManyThrough(employees, skills, "x", "id", intermediateJoiner, "skills");
+		});
+
+		Assertions.assertThrows(Exception.class, () -> {
+			SimpleJdbcMapperUtils.populateHasManyThrough(employees, skills, "id", "x", intermediateJoiner, "skills");
+		});
+
+		Assertions.assertThrows(Exception.class, () -> {
+			SimpleJdbcMapperUtils.populateHasManyThrough(employees, skills, "id", "id", intermediateJoiner, "x");
+		});
+
 	}
 
 	@Test

@@ -10,13 +10,13 @@ import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.util.Assert;
 import org.springframework.util.StringUtils;
 
-public class AssociativeJoiner {
+public class IntermediateJoiner {
 
 	@SuppressWarnings("rawtypes")
 	private Map<Object, List> mainObjIdMap = new HashMap<>();
 
 	@SuppressWarnings({ "unchecked", "rawtypes" })
-	public AssociativeJoiner(List<?> associativeList, String mainObjIdProperty, String relatedObjIdProperty) {
+	public IntermediateJoiner(List<?> associativeList, String mainObjIdProperty, String relatedObjIdProperty) {
 		Assert.notNull(associativeList, "associativeList cannot be null");
 		if (!StringUtils.hasText(mainObjIdProperty)) {
 			throw new IllegalArgumentException("mainObjIdProperty has no value");

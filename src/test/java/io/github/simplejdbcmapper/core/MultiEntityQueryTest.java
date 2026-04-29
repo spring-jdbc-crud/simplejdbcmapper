@@ -32,8 +32,8 @@ class MultiEntityQueryTest {
 		String sql = """
 				SELECT %s
 				FROM orders o
-				JOIN order_line ol ON ol.order_id = o.order_id
-				JOIN product p ON p.product_id = ol.product_id
+				LEFT JOIN order_line ol ON  o.order_id = ol.order_id
+				LEFT JOIN product p ON ol.product_id = p.product_id
 				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
 
 		@SuppressWarnings("rawtypes")
@@ -58,8 +58,8 @@ class MultiEntityQueryTest {
 		String sql = """
 				SELECT %s
 				FROM employee emp
-				LEFT JOIN  employee_skill es ON es.employee_id = emp.id
-				LEFT JOIN skill s ON s.id = es.skill_id
+				LEFT JOIN  employee_skill es ON emp.id = es.employee_id
+				LEFT JOIN skill s ON es.skill_id = s.id
 				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
 
 		@SuppressWarnings("rawtypes")
@@ -70,7 +70,7 @@ class MultiEntityQueryTest {
 		List<Skill> skills = resultMap.get(Skill.class);
 
 		SimpleJdbcMapperUtils.populateHasManyThrough(employees, skills, "id", "id",
-				new AssociativeJoiner(employeeSkillList, "employeeId", "skillId"), "skills");
+				new IntermediateJoiner(employeeSkillList, "employeeId", "skillId"), "skills");
 
 	}
 

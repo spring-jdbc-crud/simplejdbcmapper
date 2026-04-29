@@ -104,6 +104,7 @@ public final class EntityRowMapper<T> implements RowMapper<T> {
 			// since the columns sql was generated using the property mappings the resultset
 			// columns will be in same order.
 			for (int index = startIndex; index <= endIndex; index++) {
+				// propertyMappings index always starts at 0
 				PropertyMapping propMapping = propertyMappings[index - startIndex];
 				Object value = getResultSetValue(rs, index, propMapping.getResultSetType(),
 						propMapping.getPropertyType(), typedValueExtracted);

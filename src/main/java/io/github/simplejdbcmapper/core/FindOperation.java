@@ -230,7 +230,6 @@ class FindOperation {
 	}
 
 	public String getMultiEntitySqlColumns(MultiEntity multiEntity) {
-		StringBuilder sb = new StringBuilder(128);
 		StringJoiner sj = new StringJoiner(", ", " ", " ");
 		for (Map.Entry<Class<?>, String> entry : multiEntity.getEntities().entrySet()) {
 			String tablePrefix = entry.getValue() + ".";
@@ -265,7 +264,9 @@ class FindOperation {
 					for (Map.Entry<Class, EntityRowMapper> entry : mapRowMappers.entrySet()) {
 						EntityRowMapper rowMapper = entry.getValue();
 						Object obj = rowMapper.mapRow(rs, rowCnt);
-						tempResultMap.get(entry.getKey()).add(obj);
+						if (obj != null) {
+							tempResultMap.get(entry.getKey()).add(obj);
+						}
 					}
 					rowCnt++;
 				}

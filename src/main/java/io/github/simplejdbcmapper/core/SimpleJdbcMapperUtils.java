@@ -160,13 +160,13 @@ public class SimpleJdbcMapperUtils {
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	public static <T, U> void populateHasManyThrough(List<T> mainObjList, List<U> relatedObjList,
-			String mainObjIdProperty, String relatedObjIdProperty, AssociativeJoiner joiner,
-			String mainObjHasManyPropertyName) {
-		// Assert.notNull(mainObjJoinPropertyNameTheId, "mainObjJoinPropertyNameTheId
-		// must not be null");
-		// Assert.notNull(relatedObjJoinPropertyNameTheForeignKey,
-		// "relatedObjJoinPropertyNameTheForeignKey must not be null");
-		Assert.notNull(mainObjHasManyPropertyName, "mainObjHasManyPropertyName must not be null");
+			String mainObjIdProperty, String relatedObjIdProperty, IntermediateJoiner intermediateJoiner,
+			String mainObjHasManyProperty) {
+		Assert.notNull(mainObjIdProperty, "mainObjIdProperty must not be null");
+		Assert.notNull(relatedObjIdProperty, "relatedObjIdProperty must not be null");
+		Assert.notNull(intermediateJoiner, "intermediateJoiner must not be null");
+		Assert.notNull(mainObjHasManyProperty, "mainObjHasManyProperty must not be null");
+
 		if (CollectionUtils.isEmpty(mainObjList) || CollectionUtils.isEmpty(relatedObjList)) {
 			return;
 		}
@@ -185,13 +185,18 @@ public class SimpleJdbcMapperUtils {
 			if (mainObj != null) {
 				BeanWrapper bwMainObj = PropertyAccessorFactory.forBeanPropertyAccess(mainObj);
 				Object mainObjIdValue = bwMainObj.getPropertyValue(mainObjIdProperty);
-				List relatedObjIdList = joiner.getRelatedObjIds(mainObjIdValue);
+				List relatedObjIdList = intermediateJoiner.getRelatedObjIds(mainObjIdValue);
 				if (!CollectionUtils.isEmpty(relatedObjIdList)) {
 					List list = new ArrayList();
 					for (Object relatedObjId : relatedObjIdList) {
-						list.add(idToRelatedObjMap.get(relatedObjId));
+						Object relatedObj = idToRelatedObjMap.get(relatedObjId);
+						if (relatedObj != null) {
+							list.add(relatedObj);
+						}
 					}
-					bwMainObj.setPropertyValue(mainObjHasManyPropertyName, list);
+					if (!CollectionUtils.isEmpty(relatedObjList)) {
+						bwMainObj.setPropertyValue(mainObjHasManyProperty, list);
+					}
 				}
 			}
 		}

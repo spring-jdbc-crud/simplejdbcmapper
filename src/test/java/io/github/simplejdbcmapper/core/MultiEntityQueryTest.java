@@ -15,6 +15,7 @@ import io.github.simplejdbcmapper.model.Order;
 import io.github.simplejdbcmapper.model.OrderLine;
 import io.github.simplejdbcmapper.model.Product;
 import io.github.simplejdbcmapper.model.Skill;
+import io.github.simplejdbcmapper.relationship.Relationship;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -43,8 +44,17 @@ class MultiEntityQueryTest {
 		List<OrderLine> orderLines = resultMap.get(OrderLine.class);
 		List<Product> products = resultMap.get(Product.class);
 
-		SimpleJdbcMapperUtils.populateHasMany(orders, orderLines, "orderId", "orderId", "orderLines");
-		SimpleJdbcMapperUtils.populateHasOne(orderLines, products, "productId", "productId", "product");
+		// SimpleJdbcMapperUtils.populateHasMany(orders, orderLines, "orderId",
+		// "orderId", "orderLines");
+
+		Relationship.mainList(orders).toManyList(orderLines).joinOn("orderId", "orderId").populate("orderLines");
+
+		Relationship.mainList(orderLines).toOneList(products).joinOn("productId", "productId").populate("product");
+		// Relationship.type(Order.class).hasOne(Product.class).join(sql,
+		// sql).populate(sql)
+
+		// SimpleJdbcMapperUtils.populateHasOne(orderLines, products, "productId",
+		// "productId", "product");
 
 	}
 

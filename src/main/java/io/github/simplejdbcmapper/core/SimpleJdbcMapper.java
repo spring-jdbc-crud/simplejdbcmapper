@@ -52,6 +52,8 @@ public final class SimpleJdbcMapper {
 
 	private DeleteOperation deleteOperation;
 
+	private MultiEntitySupport multiEntitySupport;
+
 	/**
 	 * Constructor.
 	 *
@@ -85,6 +87,7 @@ public final class SimpleJdbcMapper {
 		this.findOperation = new FindOperation(simpleJdbcMapperSupport);
 		this.updateOperation = new UpdateOperation(simpleJdbcMapperSupport);
 		this.deleteOperation = new DeleteOperation(simpleJdbcMapperSupport);
+		this.multiEntitySupport = new MultiEntitySupport(simpleJdbcMapperSupport);
 	}
 
 	/**
@@ -358,12 +361,12 @@ public final class SimpleJdbcMapper {
 	}
 
 	public String getMultiEntitySqlColumns(MultiEntity multiEntity) {
-		return findOperation.getMultiEntitySqlColumns(multiEntity);
+		return multiEntitySupport.getMultiEntitySqlColumns(multiEntity);
 	}
 
 	@SuppressWarnings("rawtypes")
 	public ResultSetExtractor<Map<Class, List>> resultSetExtractor(MultiEntity multiEntity) {
-		return findOperation.resultSetExtractor(multiEntity);
+		return multiEntitySupport.resultSetExtractor(multiEntity);
 	}
 
 	/**
@@ -575,6 +578,7 @@ public final class SimpleJdbcMapper {
 		findOperation = null;
 		updateOperation = null;
 		deleteOperation = null;
+		multiEntitySupport = null;
 	}
 
 }

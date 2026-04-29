@@ -56,4 +56,15 @@ public class TestUtils {
 			throw new RuntimeException(e);
 		}
 	}
+
+	public static MultiEntitySupport getMultiEntitySupport(SimpleJdbcMapper sjm) {
+		try {
+			Field field = sjm.getClass().getDeclaredField("multiEntitySupport");
+			field.setAccessible(true);
+
+			return (MultiEntitySupport) field.get(sjm);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
 }

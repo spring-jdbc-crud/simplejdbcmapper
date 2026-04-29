@@ -132,7 +132,7 @@ class InternalUtils {
 		if (!StringUtils.hasText(tableAlias)) {
 			throw new IllegalArgumentException("tableAlias has no value");
 		}
-		if (InternalUtils.isAlphanumeric(tableAlias)) {
+		if (isAlphanumeric(tableAlias)) {
 			if (!Character.isLetter(tableAlias.charAt(0))) {
 				throw new IllegalArgumentException("tableAlias should start with an alphabet.");
 			}

@@ -260,6 +260,7 @@ class SimpleJdbcMapperTest {
 		assertNull(TestUtils.getInsertOperation(sjm));
 		assertNull(TestUtils.getUpdateOperation(sjm));
 		assertNull(TestUtils.getDeleteOperation(sjm));
+		assertNull(TestUtils.getMultiEntitySupport(sjm));
 
 	}
 

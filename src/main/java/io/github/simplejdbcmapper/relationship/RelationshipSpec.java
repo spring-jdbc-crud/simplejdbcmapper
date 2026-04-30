@@ -2,10 +2,10 @@ package io.github.simplejdbcmapper.relationship;
 
 import java.util.List;
 
-public interface RelationshipSpec {
+public interface RelationshipSpec<T> {
 
-	ToOneSpec toOneList(List<?> relatedObjList);
+	<U> ToOneSpec<T, U> toOneList(List<U> relatedObjList);
 
-	ToManySpec toManyList(List<?> relatedObjList);
+	<U> ToManySpec<T, U> toManyList(List<U> relatedObjList);
 
 }

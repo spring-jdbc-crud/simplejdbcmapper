@@ -2,23 +2,23 @@ package io.github.simplejdbcmapper.relationship;
 
 import java.util.List;
 
-public class Relationship implements RelationshipSpec {
+public class Relationship<T> implements RelationshipSpec<T> {
 
-	private List<?> mainObjList;
+	private List<T> mainObjList;
 
-	private Relationship(List<?> mainObjList) {
+	private Relationship(List<T> mainObjList) {
 		this.mainObjList = mainObjList;
 	}
 
-	public static RelationshipSpec mainList(List<?> mainObjList) {
-		return new Relationship(mainObjList);
+	public static <T> RelationshipSpec<T> mainList(List<T> mainObjList) {
+		return new Relationship<>(mainObjList);
 	}
 
-	public ToOneSpec toOneList(List<?> relatedObjList) {
+	public <U> ToOneSpec<T, U> toOneList(List<U> relatedObjList) {
 		return ToOne.toOne(mainObjList, relatedObjList);
 	}
 
-	public ToManySpec toManyList(List<?> relatedObjList) {
+	public <U> ToManySpec<T, U> toManyList(List<U> relatedObjList) {
 		return ToMany.toMany(mainObjList, relatedObjList);
 	}
 

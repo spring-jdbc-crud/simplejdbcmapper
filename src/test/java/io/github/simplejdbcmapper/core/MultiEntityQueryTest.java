@@ -52,7 +52,7 @@ class MultiEntityQueryTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	void employeeHasManySkillsThroughAssociativeTable_success() {
+	void employeeHasManySkillsThroughIntermediateTable_success() {
 
 		MultiEntity multiEntity = new MultiEntity().add(Employee.class, "emp").add(EmployeeSkill.class, "es")
 				.add(Skill.class, "s");

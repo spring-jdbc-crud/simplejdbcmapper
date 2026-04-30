@@ -85,14 +85,17 @@ class MultiEntitySupport {
 					for (EntityExtractor entityExtractor : entityExtractorList) {
 						EntityRowMapper rowMapper = entityExtractor.rowMapper();
 						Object obj = rowMapper.mapRow(rs, rowCnt);
-						try {
-							Object id = entityExtractor.idReadMethod().invoke(obj);
-							if (entityExtractor.idSet().add(id)) {
-								// not a duplicate
-								entityExtractor.result().add(obj);
+						if (obj != null) {
+							// duplicate processing
+							try {
+								Object id = entityExtractor.idReadMethod().invoke(obj);
+								if (id != null && entityExtractor.idSet().add(id)) {
+									// not a duplicate
+									entityExtractor.result().add(obj);
+								}
+							} catch (Exception e) {
+								throw new MapperException(e);
 							}
-						} catch (Exception e) {
-							throw new MapperException(e);
 						}
 					}
 					rowCnt++;

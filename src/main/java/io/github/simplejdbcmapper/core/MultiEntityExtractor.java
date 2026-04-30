@@ -101,8 +101,8 @@ class MultiEntityExtractor {
 					rowCnt++;
 				}
 				Map<Class, List> resultMap = new HashMap<>();
-				for (EntityExtractor eExtractor : entityExtractorList) {
-					resultMap.put(eExtractor.entityType, eExtractor.result());
+				for (EntityExtractor entityExtractor : entityExtractorList) {
+					resultMap.put(entityExtractor.entityType, entityExtractor.result());
 				}
 				return resultMap;
 			}

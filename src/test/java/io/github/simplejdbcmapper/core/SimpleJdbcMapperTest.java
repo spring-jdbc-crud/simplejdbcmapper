@@ -247,7 +247,7 @@ class SimpleJdbcMapperTest {
 	void getPropertyToColumnMappings_Test() {
 		Map<String, String> map = sjm.getPropertyToColumnMappings(Product.class);
 		assertEquals(9, map.size());
-		assertTrue(map.containsKey("productId"));
+		assertTrue(map.containsKey("cost"));
 	}
 
 	// Order of tests causing problem. Address it another day. It works when run on

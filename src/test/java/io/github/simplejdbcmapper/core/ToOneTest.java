@@ -28,7 +28,7 @@ class ToOneTest {
 		List<Product> products = sjm.findAll(Product.class);
 
 		Exception exception = Assertions.assertThrows(Exception.class, () -> {
-			Relationship.mainList(orderLines).toOneList(products).joinOn(null, "productId");
+			Relationship.mainList(orderLines).toOneList(products).joinOn(null, "id");
 		});
 		assertTrue(exception.getMessage().contains("mainObjJoinProperty must not be null"));
 
@@ -38,7 +38,7 @@ class ToOneTest {
 		assertTrue(exception.getMessage().contains("relatedObjJoinProperty must not be null"));
 
 		exception = Assertions.assertThrows(Exception.class, () -> {
-			Relationship.mainList(orderLines).toOneList(products).joinOn("x", "productId");
+			Relationship.mainList(orderLines).toOneList(products).joinOn("x", "id");
 		});
 		assertTrue(exception.getMessage().contains("Invalid argument. Property name "));
 
@@ -48,7 +48,7 @@ class ToOneTest {
 		assertTrue(exception.getMessage().contains("Invalid argument. Property name "));
 
 		assertDoesNotThrow(() -> {
-			Relationship.mainList(null).toOneList(products).joinOn("x", "productId");
+			Relationship.mainList(null).toOneList(products).joinOn("x", "id");
 		});
 
 		assertDoesNotThrow(() -> {
@@ -63,17 +63,17 @@ class ToOneTest {
 		List<Product> products = sjm.findAll(Product.class);
 
 		Exception exception = Assertions.assertThrows(Exception.class, () -> {
-			Relationship.mainList(orderLines).toOneList(products).joinOn("orderLineId", "productId").populate(null);
+			Relationship.mainList(orderLines).toOneList(products).joinOn("productId", "id").populate(null);
 		});
 		assertTrue(exception.getMessage().contains("mainObjPropertyToPopulate must not be null"));
 
 		exception = Assertions.assertThrows(Exception.class, () -> {
-			Relationship.mainList(orderLines).toOneList(products).joinOn("orderLineId", "productId").populate("x");
+			Relationship.mainList(orderLines).toOneList(products).joinOn("productId", "id").populate("x");
 		});
 		assertTrue(exception.getMessage().contains("Invalid argument. Property name"));
 
 		assertDoesNotThrow(() -> {
-			Relationship.mainList(null).toOneList(products).joinOn("orderLineId", "productId").populate("x");
+			Relationship.mainList(null).toOneList(products).joinOn("productId", "id").populate("x");
 		});
 
 	}

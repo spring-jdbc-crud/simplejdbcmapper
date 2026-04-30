@@ -34,7 +34,7 @@ class MultiEntityQueryTest {
 				SELECT %s
 				FROM orders o
 				LEFT JOIN order_line ol ON  o.id = ol.order_id
-				LEFT JOIN product p ON ol.product_id = p.product_id
+				LEFT JOIN product p ON ol.product_id = p.id
 				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
 
 		@SuppressWarnings("rawtypes")
@@ -46,7 +46,7 @@ class MultiEntityQueryTest {
 
 		Relationship.mainList(orders).toManyList(orderLines).joinOn("id", "orderId").populate("orderLines");
 
-		Relationship.mainList(orderLines).toOneList(products).joinOn("productId", "productId").populate("product");
+		Relationship.mainList(orderLines).toOneList(products).joinOn("productId", "id").populate("product");
 
 	}
 

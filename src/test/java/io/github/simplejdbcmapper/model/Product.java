@@ -14,7 +14,7 @@ import io.github.simplejdbcmapper.annotation.Version;
 @Table(name = "product")
 public class Product {
 	@Id
-	private Integer productId;
+	private Integer id;
 	@Column
 	private String name;
 	@Column
@@ -37,12 +37,12 @@ public class Product {
 	@Version
 	private Integer version;
 
-	public Integer getProductId() {
-		return productId;
+	public Integer getId() {
+		return id;
 	}
 
-	public void setProductId(Integer id) {
-		this.productId = id;
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 	public String getName() {

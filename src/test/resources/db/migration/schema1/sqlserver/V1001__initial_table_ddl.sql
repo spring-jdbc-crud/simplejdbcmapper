@@ -31,7 +31,7 @@ CREATE TABLE schema1.customer (
 );
 
 CREATE TABLE schema1.product (
-	product_id int NOT NULL,
+	id int NOT NULL,
 	name varchar(100) NOT NULL,
 	cost numeric(10,3) NULL,
 	description varchar(100) NULL,
@@ -41,7 +41,7 @@ CREATE TABLE schema1.product (
 	updated_by varchar(100) NULL,
 	version int NULL,
 	non_model_column varchar(100),
-	CONSTRAINT product_pk PRIMARY KEY (product_id)
+	CONSTRAINT product_pk PRIMARY KEY (id)
 );
 
 

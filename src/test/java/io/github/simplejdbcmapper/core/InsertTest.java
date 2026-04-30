@@ -102,7 +102,7 @@ class InsertTest {
 	@Test
 	void insert_WithManualIntegerId_Test() {
 		Product product = new Product();
-		product.setProductId(1001);
+		product.setId(1001);
 		product.setName("hat");
 		product.setCost(12.25);
 
@@ -121,7 +121,7 @@ class InsertTest {
 
 		// requery and check
 		product = sjm.findById(Product.class, 1001);
-		assertNotNull(product.getProductId());
+		assertNotNull(product.getId());
 		assertEquals("hat", product.getName());
 		assertEquals(12.25, product.getCost());
 		if (sjmSupport.getRecordAuditedBySupplier() != null) {
@@ -176,7 +176,7 @@ class InsertTest {
 	@Test
 	void insert_typeMismatch_Test() {
 		ProductMismatchType product = new ProductMismatchType();
-		product.setProductId(8650);
+		product.setId(8650);
 
 		Person person = new Person();
 		person.setPersonId("p1");

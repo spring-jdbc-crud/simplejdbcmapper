@@ -243,7 +243,7 @@ class UpdateTest {
 	@Test
 	void updateSpecificProperties_propertiesCountLargerThanCacheableSize_success() {
 		ProductWithNoAuditFields product = new ProductWithNoAuditFields();
-		product.setProductId(801);
+		product.setId(801);
 		product.setName("p-801");
 		product.setCost(4.75);
 		sjm.insert(product);
@@ -255,7 +255,7 @@ class UpdateTest {
 		sjm.updateSpecificProperties(product, "cost", "name", "version", "createdOn");
 
 		ProductWithNoAuditFields productWithNoAuditFields = sjm.findById(ProductWithNoAuditFields.class,
-				product.getProductId());
+				product.getId());
 		assertEquals(1, productWithNoAuditFields.getVersion());
 		assertNotNull(productWithNoAuditFields.getCreatedOn());
 

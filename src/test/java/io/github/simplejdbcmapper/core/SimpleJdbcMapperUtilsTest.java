@@ -30,23 +30,23 @@ class SimpleJdbcMapperUtilsTest {
 	void populateHasOne_success() {
 
 		assertDoesNotThrow(() -> {
-			SimpleJdbcMapperUtils.populateHasOne(new ArrayList<Integer>(), null, "productId", "productId", "product");
+			SimpleJdbcMapperUtils.populateHasOne(new ArrayList<Integer>(), null, "productId", "id", "product");
 		});
 
 		assertDoesNotThrow(() -> {
-			SimpleJdbcMapperUtils.populateHasOne(null, new ArrayList<Integer>(), "productId", "productId", "product");
+			SimpleJdbcMapperUtils.populateHasOne(null, new ArrayList<Integer>(), "productId", "id", "product");
 		});
 
 		List<OrderLine> lines = sjm.findAll(OrderLine.class);
 		List<Integer> productIdList = lines.stream().map(OrderLine::getProductId).toList();
-		List<Product> products = sjm.findByPropertyValues(Product.class, "productId", productIdList);
+		List<Product> products = sjm.findByPropertyValues(Product.class, "id", productIdList);
 
 		// make sure populateHasOne can handle null entries in lists
 		lines.add(null);
 		products.add(null);
-		SimpleJdbcMapperUtils.populateHasOne(lines, products, "productId", "productId", "product");
+		SimpleJdbcMapperUtils.populateHasOne(lines, products, "productId", "id", "product");
 		assertNotNull(lines.get(0).getProduct());
-		assertEquals(lines.get(0).getProduct().getProductId(), lines.get(0).getProductId());
+		assertEquals(lines.get(0).getProduct().getId(), lines.get(0).getProductId());
 
 	}
 
@@ -54,12 +54,11 @@ class SimpleJdbcMapperUtilsTest {
 	void populateHasOne_failure() {
 		List<OrderLine> lines = sjm.findAll(OrderLine.class);
 		List<Integer> productIdList = lines.stream().map(OrderLine::getProductId).toList();
-		String sql = "SELECT " + sjm.getBeanFriendlySqlColumns(Product.class)
-				+ " FROM product WHERE product_id in (:ids)";
+		String sql = "SELECT " + sjm.getBeanFriendlySqlColumns(Product.class) + " FROM product WHERE id in (:ids)";
 		List<Product> products = sjm.getJdbcClient().sql(sql).param("ids", productIdList).query(Product.class).list();
 
 		Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
-			SimpleJdbcMapperUtils.populateHasOne(lines, products, null, "productId", "product");
+			SimpleJdbcMapperUtils.populateHasOne(lines, products, null, "id", "product");
 		});
 		assertTrue(exception.getMessage().contains("mainObjJoinPropertyNameTheForeignKey must not be null"));
 
@@ -69,12 +68,12 @@ class SimpleJdbcMapperUtilsTest {
 		assertTrue(exception2.getMessage().contains("relatedObjJoinPropertyNameTheId must not be null"));
 
 		Exception exception3 = Assertions.assertThrows(IllegalArgumentException.class, () -> {
-			SimpleJdbcMapperUtils.populateHasOne(lines, products, "productId", "productId", null);
+			SimpleJdbcMapperUtils.populateHasOne(lines, products, "productId", "id", null);
 		});
 		assertTrue(exception3.getMessage().contains("mainObjHasOnePropertyName must not be null"));
 
 		Assertions.assertThrows(Exception.class, () -> {
-			SimpleJdbcMapperUtils.populateHasOne(lines, products, "x", "productId", "product");
+			SimpleJdbcMapperUtils.populateHasOne(lines, products, "x", "id", "product");
 		});
 
 		Assertions.assertThrows(Exception.class, () -> {
@@ -82,12 +81,12 @@ class SimpleJdbcMapperUtilsTest {
 		});
 
 		Assertions.assertThrows(Exception.class, () -> {
-			SimpleJdbcMapperUtils.populateHasOne(lines, products, "productId", "productId", "x");
+			SimpleJdbcMapperUtils.populateHasOne(lines, products, "productId", "id", "x");
 		});
 
 		// 'status' type is not Product
 		Assertions.assertThrows(Exception.class, () -> {
-			SimpleJdbcMapperUtils.populateHasOne(lines, products, "productId", "productId", "status");
+			SimpleJdbcMapperUtils.populateHasOne(lines, products, "productId", "id", "status");
 		});
 
 	}

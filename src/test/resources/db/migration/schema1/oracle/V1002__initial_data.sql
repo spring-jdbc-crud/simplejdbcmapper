@@ -74,5 +74,57 @@ INSERT INTO SCHEMA1.person
 VALUES( 'person101', 'mike', 'smith');
 
 
+INSERT INTO schema1.employee
+(last_name, first_name)
+VALUES ('emp1 last', 'emp1 first');
+
+INSERT INTO schema1.employee
+(last_name, first_name)
+VALUES ('emp2 last', 'emp2 first');
+
+INSERT INTO schema1.employee
+(last_name, first_name)
+VALUES ('emp2 last', 'emp2 first');
+
+INSERT INTO schema1.employee
+(last_name, first_name)
+VALUES ('emp3 last', 'emp3 first');
+
+INSERT INTO schema1.skill
+(name)
+VALUES ('java');
+
+INSERT INTO schema1.skill
+(name)
+VALUES ('spring');
+
+INSERT INTO schema1.skill
+(name)
+VALUES ('typescript');
+
+INSERT INTO schema1.skill
+(name)
+VALUES ('ruby');
+
+
+INSERT INTO schema1.employee_skill
+(employee_id, skill_id)
+VALUES (1, 1);
+
+INSERT INTO schema1.employee_skill
+(employee_id, skill_id)
+VALUES (1, 2);
+
+INSERT INTO schema1.employee_skill
+(employee_id, skill_id)
+VALUES (3, 2);
+
+INSERT INTO schema1.employee_skill
+(employee_id, skill_id)
+VALUES (3, 3);
+
+INSERT INTO schema1.employee_skill
+(employee_id, skill_id)
+VALUES (3, 4);
 
 

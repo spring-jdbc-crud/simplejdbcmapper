@@ -108,7 +108,7 @@ class TableMappingTest {
 			SimpleJdbcMapper sjm = new SimpleJdbcMapper(dataSource, null, "schema1");
 			SimpleJdbcMapperSupport sjmSupport = TestUtils.getSimpleJdbcMapperSupport(sjm);
 			TableMapping tm = sjmSupport.getTableMapping(Product.class);
-			assertNotNull(tm.getPropertyMappingByColumnName("product_id"));
+			assertNotNull(tm.getPropertyMappingByColumnName("id"));
 		}
 	}
 

@@ -13,12 +13,12 @@
  */
 package io.github.simplejdbcmapper.core;
 
+import java.lang.reflect.Method;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -28,7 +28,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
-import org.springframework.util.CollectionUtils;
 
 import io.github.simplejdbcmapper.exception.MapperException;
 
@@ -64,16 +63,16 @@ class MultiEntitySupport {
 	@SuppressWarnings("rawtypes")
 	public ResultSetExtractor<Map<Class, List>> resultSetExtractor(MultiEntity multiEntity) {
 		int offset = 1;
-		Map<Class, List> tempResultMap = new LinkedHashMap<>();
-		Map<Class, EntityRowMapper> mapRowMappers = new LinkedHashMap<>();
+		List<EntityExtractor> entityExtractorList = new ArrayList<>();
 		for (Class<?> entityType : multiEntity.getEntities().keySet()) {
-			tempResultMap.put(entityType, new ArrayList());
 			TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
 			EntityRowMapper rowMapper = new EntityRowMapper(tableMapping, sjmSupport.getConversionService(), offset);
 			if (logger.isDebugEnabled()) {
 				logger.debug("EntityRowMapper: " + rowMapper);
 			}
-			mapRowMappers.put(entityType, rowMapper);
+			Method idReadMethod = tableMapping.getIdPropertyMapping().getReadMethod();
+			entityExtractorList
+					.add(new EntityExtractor(entityType, rowMapper, new ArrayList(), idReadMethod, new HashSet()));
 			offset += tableMapping.getPropertyMappings().length;
 		}
 
@@ -83,43 +82,33 @@ class MultiEntitySupport {
 			public Map<Class, List> extractData(ResultSet rs) throws SQLException, DataAccessException {
 				int rowCnt = 1;
 				while (rs.next()) {
-					for (Map.Entry<Class, EntityRowMapper> entry : mapRowMappers.entrySet()) {
-						EntityRowMapper rowMapper = entry.getValue();
+					for (EntityExtractor entityExtractor : entityExtractorList) {
+						EntityRowMapper rowMapper = entityExtractor.rowMapper();
 						Object obj = rowMapper.mapRow(rs, rowCnt);
-						tempResultMap.get(entry.getKey()).add(obj);
+						try {
+							Object id = entityExtractor.idReadMethod().invoke(obj);
+							if (entityExtractor.idSet().add(id)) {
+								// not a duplicate
+								entityExtractor.result().add(obj);
+							}
+						} catch (Exception e) {
+							throw new MapperException(e);
+						}
 					}
 					rowCnt++;
 				}
 				Map<Class, List> resultMap = new HashMap<>();
-				for (Map.Entry<Class, List> entry : tempResultMap.entrySet()) {
-					resultMap.put(entry.getKey(), distinctById(entry.getKey(), entry.getValue()));
+				for (EntityExtractor eExtractor : entityExtractorList) {
+					resultMap.put(eExtractor.entityType, eExtractor.result());
 				}
 				return resultMap;
 			}
 		};
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private List distinctById(Class entityType, List list) {
-		List resultList = new ArrayList();
-		if (!CollectionUtils.isEmpty(list)) {
-			Set set = new HashSet();
-			TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
-			PropertyMapping idPropMapping = tableMapping.getIdPropertyMapping();
-			for (Object entityObj : list) {
-				try {
-					if (entityObj != null) {
-						Object id = idPropMapping.getReadMethod().invoke(entityObj);
-						if (id != null && set.add(id)) {
-							resultList.add(entityObj);
-						}
-					}
-				} catch (Exception e) {
-					throw new MapperException(e);
-				}
-			}
-		}
-		return resultList;
+	@SuppressWarnings("rawtypes")
+	record EntityExtractor(Class<?> entityType, EntityRowMapper<?> rowMapper, List result, Method idReadMethod,
+			Set idSet) {
 	}
 
 }

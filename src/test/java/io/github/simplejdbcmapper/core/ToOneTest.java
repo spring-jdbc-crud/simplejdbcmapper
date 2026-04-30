@@ -23,7 +23,7 @@ class ToOneTest {
 	private SimpleJdbcMapper sjm;
 
 	@Test
-	void toOne_validation_test() {
+	void toOne_joinOn_validation_test() {
 		List<OrderLine> orderLines = sjm.findAll(OrderLine.class);
 		List<Product> products = sjm.findAll(Product.class);
 
@@ -55,7 +55,14 @@ class ToOneTest {
 			Relationship.mainList(orderLines).toOneList(null).joinOn("orderLineId", "x");
 		});
 
-		exception = Assertions.assertThrows(Exception.class, () -> {
+	}
+
+	@Test
+	void toOne_populate_validation_test() {
+		List<OrderLine> orderLines = sjm.findAll(OrderLine.class);
+		List<Product> products = sjm.findAll(Product.class);
+
+		Exception exception = Assertions.assertThrows(Exception.class, () -> {
 			Relationship.mainList(orderLines).toOneList(products).joinOn("orderLineId", "productId").populate(null);
 		});
 		assertTrue(exception.getMessage().contains("mainObjPropertyToPopulate must not be null"));

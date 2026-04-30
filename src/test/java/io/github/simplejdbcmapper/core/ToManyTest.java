@@ -26,13 +26,9 @@ class ToManyTest {
 	private SimpleJdbcMapper sjm;
 
 	@Test
-	void toMany_validation_test() {
+	void toMany_joinOn_validation_test() {
 		List<Order> orders = sjm.findAll(Order.class);
 		List<OrderLine> orderLines = sjm.findAll(OrderLine.class);
-
-		List<Employee> employees = sjm.findAll(Employee.class);
-		List<Skill> skills = sjm.findAll(Skill.class);
-		List<EmployeeSkill> employeeSkillList = sjm.findAll(EmployeeSkill.class);
 
 		Exception exception = Assertions.assertThrows(Exception.class, () -> {
 			Relationship.mainList(orders).toManyList(orderLines).joinOn(null, "orderId");
@@ -54,7 +50,15 @@ class ToManyTest {
 		});
 		assertTrue(exception.getMessage().contains("Invalid argument. Property name"));
 
-		exception = Assertions.assertThrows(Exception.class, () -> {
+	}
+
+	@Test
+	void toMany_through_validation_test() {
+		List<Employee> employees = sjm.findAll(Employee.class);
+		List<Skill> skills = sjm.findAll(Skill.class);
+		List<EmployeeSkill> employeeSkillList = sjm.findAll(EmployeeSkill.class);
+
+		Exception exception = Assertions.assertThrows(Exception.class, () -> {
 			Relationship.mainList(employees).toManyList(skills).through(employeeSkillList, null, "skillId");
 		});
 		assertTrue(exception.getMessage().contains("fkPropertyToMainObjId must not be null"));
@@ -82,7 +86,15 @@ class ToManyTest {
 			Relationship.mainList(employees).toManyList(skills).through(null, "employeeId", "x");
 		});
 
-		exception = Assertions.assertThrows(Exception.class, () -> {
+	}
+
+	@Test
+	void toMany_ids_validation_test() {
+		List<Employee> employees = sjm.findAll(Employee.class);
+		List<Skill> skills = sjm.findAll(Skill.class);
+		List<EmployeeSkill> employeeSkillList = sjm.findAll(EmployeeSkill.class);
+
+		Exception exception = Assertions.assertThrows(Exception.class, () -> {
 			Relationship.mainList(employees).toManyList(skills).through(employeeSkillList, "employeeId", "skillId")
 					.ids(null, "id");
 		});
@@ -115,8 +127,15 @@ class ToManyTest {
 			Relationship.mainList(employees).toManyList(null).through(employeeSkillList, "employeeId", "skillId")
 					.ids("id", "x");
 		});
+	}
 
-		exception = Assertions.assertThrows(Exception.class, () -> {
+	@Test
+	void toMany_populate_validation_test() {
+		List<Employee> employees = sjm.findAll(Employee.class);
+		List<Skill> skills = sjm.findAll(Skill.class);
+		List<EmployeeSkill> employeeSkillList = sjm.findAll(EmployeeSkill.class);
+
+		Exception exception = Assertions.assertThrows(Exception.class, () -> {
 			Relationship.mainList(employees).toManyList(skills).through(employeeSkillList, "employeeId", "skillId")
 					.ids("id", "id").populate(null);
 		});
@@ -132,6 +151,5 @@ class ToManyTest {
 			Relationship.mainList(null).toManyList(skills).through(employeeSkillList, "employeeId", "skillId")
 					.ids("id", "id").populate("x");
 		});
-
 	}
 }

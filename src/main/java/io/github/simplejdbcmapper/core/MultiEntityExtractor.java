@@ -34,21 +34,22 @@ import io.github.simplejdbcmapper.exception.MapperException;
 /**
  * @author Antony Joseph
  */
-class MultiEntitySupport {
-	private static final Logger logger = LoggerFactory.getLogger(MultiEntitySupport.class);
+class MultiEntityExtractor {
+	private static final Logger logger = LoggerFactory.getLogger(MultiEntityExtractor.class);
 
 	private final SimpleJdbcMapperSupport sjmSupport;
 
-	public MultiEntitySupport(SimpleJdbcMapperSupport sjmSupport) {
+	public MultiEntityExtractor(SimpleJdbcMapperSupport sjmSupport) {
 		this.sjmSupport = sjmSupport;
 	}
 
 	public String getMultiEntitySqlColumns(MultiEntity multiEntity) {
-		StringBuilder sb = new StringBuilder(126);
+		StringBuilder sb = new StringBuilder(64);
 		StringJoiner sj = new StringJoiner(", ", " ", " ");
 		for (Map.Entry<Class<?>, String> entry : multiEntity.getEntries()) {
-			String tablePrefix = entry.getValue() + ".";
-			String colPrefix = entry.getValue() + "_";
+			String tableAlias = entry.getValue();
+			String tablePrefix = tableAlias + ".";
+			String colPrefix = tableAlias + "_";
 			TableMapping tableMapping = sjmSupport.getTableMapping(entry.getKey());
 			for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {
 				sb.append(tablePrefix).append(propMapping.getColumnName()).append(" AS ").append(colPrefix)
@@ -85,18 +86,16 @@ class MultiEntitySupport {
 				while (rs.next()) {
 					for (EntityExtractor entityExtractor : entityExtractorList) {
 						EntityRowMapper rowMapper = entityExtractor.rowMapper();
+						// rowMapper will always return an object
 						Object obj = rowMapper.mapRow(rs, rowCnt);
-						if (obj != null) {
-							// duplicate processing
-							try {
-								Object id = entityExtractor.idReadMethod().invoke(obj);
-								if (id != null && entityExtractor.idSet().add(id)) {
-									// not a duplicate
-									entityExtractor.result().add(obj);
-								}
-							} catch (Exception e) {
-								throw new MapperException(e);
+						try {
+							Object id = entityExtractor.idReadMethod().invoke(obj);
+							if (id != null && entityExtractor.idSet().add(id)) {
+								// not a duplicate
+								entityExtractor.result().add(obj);
 							}
+						} catch (Exception e) {
+							throw new MapperException(e);
 						}
 					}
 					rowCnt++;

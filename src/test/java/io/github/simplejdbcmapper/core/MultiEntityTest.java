@@ -1,5 +1,6 @@
 package io.github.simplejdbcmapper.core;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import org.junit.jupiter.api.Assertions;
@@ -19,7 +20,7 @@ class MultiEntityTest {
 	private SimpleJdbcMapper sjm;
 
 	@Test
-	void MultiEntity_failure() {
+	void MultiEntity_test() {
 		Exception exception = Assertions.assertThrows(Exception.class, () -> {
 			new MultiEntity().add(null, "t1");
 		});
@@ -55,6 +56,10 @@ class MultiEntityTest {
 			sjm.getMultiEntitySqlColumns(me);
 		});
 		assertTrue(exception.getMessage().contains("MultiEntity should have 2 or more entities configured"));
+
+		assertDoesNotThrow(() -> {
+			new MultiEntity().add(Order.class, "t1").add(Order.class, "t2");
+		});
 
 	}
 }

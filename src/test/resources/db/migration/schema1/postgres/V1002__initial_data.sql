@@ -1,15 +1,19 @@
 
 INSERT INTO schema1.orders
 (order_date, customer_id, status, created_on, created_by, updated_on, updated_by, version)
-VALUES('2020-06-20 00:00:00.000', 1, 'IN PROCESS', '2020-06-20 00:00:00.000', 'system', '2020-06-20 00:00:00.000', 'system', 1);
+VALUES('2026-01-20 00:00:00.000', 1, 'IN PROCESS', '2026-01-20 00:00:00.000', 'system', '2026-01-20 00:00:00.000', 'system', 1);
 
 INSERT INTO schema1.orders
 (order_date, customer_id, status, created_on, created_by, updated_on, updated_by,  version)
-VALUES('2020-06-20 00:00:00.000', 2, 'IN PROCESS', '2020-06-20 00:00:00.000', 'system', '2020-06-20 00:00:00.000', 'system', 1);
+VALUES('2026-02-20 00:00:00.000', 2, 'IN PROCESS', '2026-02-20 00:00:00.000', 'system', '2026-02-20 00:00:00.000', 'system', 1);
 
 INSERT INTO schema1.orders
 (order_date, created_on, created_by, updated_on, updated_by,  version)
-VALUES('2020-06-20 00:00:00.000', '2020-06-20 00:00:00.000', 'system', '2020-06-20 00:00:00.000', 'system', 1);
+VALUES('2026-03-20 00:00:00.000', '2026-03-20 00:00:00.000', 'system', '2026-03-20 00:00:00.000', 'system', 1);
+
+INSERT INTO schema1.orders
+(order_date, customer_id, status, created_on, created_by, updated_on, updated_by,  version)
+VALUES('2026-04-20 00:00:00.000', 3, 'IN PROCESS', '2026-04-20 00:00:00.000', 'system', '2020-04-20 00:00:00.000', 'system', 1);
 
 INSERT INTO schema1.order_line
 (order_id, product_id, num_of_units)
@@ -22,6 +26,10 @@ VALUES(1, 2, 5);
 INSERT INTO schema1.order_line
 (order_id, product_id, num_of_units)
 VALUES(2, 3, 1);
+
+INSERT INTO schema1.order_line
+(order_id)
+VALUES(4);
 
 
 INSERT INTO schema1.customer
@@ -82,11 +90,11 @@ VALUES ('emp2 last', 'emp2 first');
 
 INSERT INTO schema1.employee
 (last_name, first_name)
-VALUES ('emp2 last', 'emp2 first');
+VALUES ('emp3 last', 'emp3 first');
 
 INSERT INTO schema1.employee
 (last_name, first_name)
-VALUES ('emp3 last', 'emp3 first');
+VALUES ('emp4 last', 'emp4 first');
 
 INSERT INTO schema1.skill
 (name)
@@ -124,8 +132,6 @@ VALUES (3, 3);
 INSERT INTO schema1.employee_skill
 (employee_id, skill_id)
 VALUES (3, 4);
-
-
 
 
 

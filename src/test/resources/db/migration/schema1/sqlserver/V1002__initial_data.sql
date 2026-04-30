@@ -1,15 +1,19 @@
 
 INSERT INTO schema1.orders
 (order_date, customer_id, status, created_on, created_by, updated_on, updated_by, version)
-VALUES('20200620 00:00:00', 1, 'IN PROCESS', '20200620 00:00:00', 'system', '20200620 00:00:00', 'system', 1);
+VALUES('20260120 00:00:00', 1, 'IN PROCESS', '20260120 00:00:00', 'system', '20260120 00:00:00', 'system', 1);
 
 INSERT INTO schema1.orders
 (order_date, customer_id, status, created_on, created_by, updated_on, updated_by,  version)
-VALUES('20200620 00:00:00', 2, 'IN PROCESS',  '20200620 00:00:00', 'system', '20200620 00:00:00', 'system', 1);
+VALUES('20260220 00:00:00', 2, 'IN PROCESS',  '20260220 00:00:00', 'system', '20260220 00:00:00', 'system', 1);
 
 INSERT INTO schema1.orders
 (order_date, created_on, created_by, updated_on, updated_by,  version)
-VALUES('20200620 00:00:00', '20200620 00:00:00', 'system', '20200620 00:00:00', 'system', 1);
+VALUES('20260320 00:00:00', '20260320 00:00:00', 'system', '20260320 00:00:00', 'system', 1);
+
+INSERT INTO schema1.orders
+(order_date, created_on, created_by, updated_on, updated_by,  version)
+VALUES('20260420 00:00:00', '20260420 00:00:00', 'system', '20260420 00:00:00', 'system', 1);
 
 INSERT INTO schema1.order_line
 (order_id, product_id, num_of_units)
@@ -23,10 +27,14 @@ INSERT INTO schema1.order_line
 (order_id, product_id, num_of_units)
 VALUES(2, 3, 1);
 
+INSERT INTO schema1.order_line
+(order_id)
+VALUES(4);
 
 INSERT INTO schema1.customer
 (first_name, last_name)
 VALUES( 'tony', 'joe');
+
 INSERT INTO schema1.customer
 (first_name, last_name)
 VALUES('jane', 'doe');
@@ -84,11 +92,11 @@ VALUES ('emp2 last', 'emp2 first');
 
 INSERT INTO schema1.employee
 (last_name, first_name)
-VALUES ('emp2 last', 'emp2 first');
+VALUES ('emp3 last', 'emp3 first');
 
 INSERT INTO schema1.employee
 (last_name, first_name)
-VALUES ('emp3 last', 'emp3 first');
+VALUES ('emp4 last', 'emp4 first');
 
 INSERT INTO schema1.skill
 (name)

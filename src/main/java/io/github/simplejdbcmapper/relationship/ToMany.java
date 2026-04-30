@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
@@ -142,9 +141,11 @@ public class ToMany implements ToManySpec, ThroughSpec, PopulateSpec {
 			if (mainObj != null) {
 				BeanWrapper bwMainObj = PropertyAccessorFactory.forBeanPropertyAccess(mainObj);
 				Object idPropertyValue = bwMainObj.getPropertyValue(mainObjIdProperty);
-				if (idPropertyValue != null) {
-					bwMainObj.setPropertyValue(mainObjPropertyToPopulate, foreignKeyToListMap.get(idPropertyValue));
+				List populaterList = foreignKeyToListMap.get(idPropertyValue);
+				if (populaterList == null) {
+					populaterList = new ArrayList();
 				}
+				bwMainObj.setPropertyValue(mainObjPropertyToPopulate, populaterList);
 			}
 		}
 	}
@@ -159,9 +160,9 @@ public class ToMany implements ToManySpec, ThroughSpec, PopulateSpec {
 		for (Object relatedObj : relatedObjList) {
 			if (relatedObj != null) {
 				BeanWrapper bwRelatedObj = PropertyAccessorFactory.forBeanPropertyAccess(relatedObj);
-				Object idValue = bwRelatedObj.getPropertyValue(relatedObjIdProperty);
-				if (idValue != null) {
-					idToRelatedObjMap.put(idValue, relatedObj);
+				Object relatedObjIdValue = bwRelatedObj.getPropertyValue(relatedObjIdProperty);
+				if (relatedObjIdValue != null) {
+					idToRelatedObjMap.put(relatedObjIdValue, relatedObj);
 				}
 			}
 		}
@@ -169,19 +170,17 @@ public class ToMany implements ToManySpec, ThroughSpec, PopulateSpec {
 			if (mainObj != null) {
 				BeanWrapper bwMainObj = PropertyAccessorFactory.forBeanPropertyAccess(mainObj);
 				Object mainObjIdValue = bwMainObj.getPropertyValue(mainObjIdProperty);
-				List relatedObjIdList = intermediateJoiner.getRelatedObjIds(mainObjIdValue);
-				if (!CollectionUtils.isEmpty(relatedObjIdList)) {
-					List list = new ArrayList();
-					for (Object relatedObjId : relatedObjIdList) {
+				List relatedObjIdListFromJoiner = intermediateJoiner.getRelatedObjIds(mainObjIdValue);
+				List populaterList = new ArrayList();
+				if (!CollectionUtils.isEmpty(relatedObjIdListFromJoiner)) {
+					for (Object relatedObjId : relatedObjIdListFromJoiner) {
 						Object relatedObj = idToRelatedObjMap.get(relatedObjId);
 						if (relatedObj != null) {
-							list.add(relatedObj);
+							populaterList.add(relatedObj);
 						}
 					}
-					if (!CollectionUtils.isEmpty(relatedObjList)) {
-						bwMainObj.setPropertyValue(mainObjPropertyToPopulate, list);
-					}
 				}
+				bwMainObj.setPropertyValue(mainObjPropertyToPopulate, populaterList);
 			}
 		}
 	}
@@ -192,7 +191,7 @@ public class ToMany implements ToManySpec, ThroughSpec, PopulateSpec {
 		if (!CollectionUtils.isEmpty(mainObjList)) {
 			for (Object obj : mainObjList) {
 				if (obj != null) {
-					bw = new BeanWrapperImpl(obj);
+					bw = PropertyAccessorFactory.forBeanPropertyAccess(obj);
 					break;
 				}
 			}
@@ -213,15 +212,17 @@ public class ToMany implements ToManySpec, ThroughSpec, PopulateSpec {
 				return;
 			}
 			for (Object intermediateObj : intermediateList) {
-				BeanWrapper bw = new BeanWrapperImpl(intermediateObj);
+				BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(intermediateObj);
 				Object mainObjIdValue = bw.getPropertyValue(fkPropertyToMainObjId);
 				Object relatedObjIdValue = bw.getPropertyValue(fkPropertyToRelatedObjId);
-				if (mainObjIdMap.containsKey(mainObjIdValue)) {
-					mainObjIdMap.get(mainObjIdValue).add(relatedObjIdValue);
-				} else {
-					List list = new ArrayList();
-					list.add(relatedObjIdValue);
-					mainObjIdMap.put(mainObjIdValue, list);
+				if (mainObjIdValue != null && relatedObjIdValue != null) {
+					if (mainObjIdMap.containsKey(mainObjIdValue)) {
+						mainObjIdMap.get(mainObjIdValue).add(relatedObjIdValue);
+					} else {
+						List list = new ArrayList();
+						list.add(relatedObjIdValue);
+						mainObjIdMap.put(mainObjIdValue, list);
+					}
 				}
 			}
 

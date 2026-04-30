@@ -1,15 +1,20 @@
 
 INSERT INTO SCHEMA1.orders
 (order_date, customer_id, status, created_on, created_by, updated_on, updated_by, version)
-VALUES(to_timestamp('2020-06-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'),  1, 'IN PROCESS', to_timestamp('2020-06-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', to_timestamp('2020-06-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', 1);
+VALUES(to_timestamp('2026-01-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'),  1, 'IN PROCESS', to_timestamp('2026-01-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', to_timestamp('2026-01-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', 1);
 
 INSERT INTO SCHEMA1.orders
 (order_date, customer_id, status, created_on, created_by, updated_on, updated_by,  version)
-VALUES(to_timestamp('2020-06-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'),  2, 'IN PROCESS',to_timestamp('2020-06-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', to_timestamp('2020-06-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', 1);
+VALUES(to_timestamp('2026-02-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'),  2, 'IN PROCESS',to_timestamp('2026-02-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', to_timestamp('2026-02-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', 1);
 
 INSERT INTO SCHEMA1.orders
 (order_date, created_on, created_by, updated_on, updated_by,  version)
-VALUES(to_timestamp('2020-06-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), to_timestamp('2020-06-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', to_timestamp('2020-06-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', 1);
+VALUES(to_timestamp('2026-03-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), to_timestamp('2026-03-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', to_timestamp('2026-03-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', 1);
+
+INSERT INTO SCHEMA1.orders
+(order_date, created_on, created_by, updated_on, updated_by,  version)
+VALUES(to_timestamp('2026-04-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), to_timestamp('2026-04-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', to_timestamp('2026-04-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', 1);
+
 
 INSERT INTO SCHEMA1.order_line
 (order_id, product_id, num_of_units)
@@ -22,6 +27,10 @@ VALUES(1, 2, 5);
 INSERT INTO SCHEMA1.order_line
 (order_id, product_id, num_of_units)
 VALUES(2, 3, 1);
+
+INSERT INTO SCHEMA1.order_line
+(order_id)
+VALUES(4);
 
 
 INSERT INTO SCHEMA1.customer
@@ -84,11 +93,11 @@ VALUES ('emp2 last', 'emp2 first');
 
 INSERT INTO schema1.employee
 (last_name, first_name)
-VALUES ('emp2 last', 'emp2 first');
+VALUES ('emp3 last', 'emp3 first');
 
 INSERT INTO schema1.employee
 (last_name, first_name)
-VALUES ('emp3 last', 'emp3 first');
+VALUES ('emp4 last', 'emp4 first');
 
 INSERT INTO schema1.skill
 (name)

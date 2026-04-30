@@ -129,7 +129,7 @@ class UpdateTest {
 	@Test
 	void update_nullIdFailure_Test() {
 		Customer customer = sjm.findById(Customer.class, 1);
-		customer.setCustomerId(null);
+		customer.setId(null);
 		Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
 			sjm.update(customer);
 		});
@@ -208,7 +208,7 @@ class UpdateTest {
 		customer.setFirstName("aaa");
 		sjm.updateSpecificProperties(customer, "lastName", "firstName");
 
-		customer = sjm.findById(Customer.class, customer.getCustomerId());
+		customer = sjm.findById(Customer.class, customer.getId());
 		assertEquals("bbb", customer.getLastName());
 		assertEquals("aaa", customer.getFirstName());
 

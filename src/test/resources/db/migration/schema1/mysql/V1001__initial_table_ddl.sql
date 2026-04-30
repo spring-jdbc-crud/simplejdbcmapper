@@ -22,11 +22,11 @@ CREATE TABLE schema1.order_line (
 );
 
 CREATE TABLE schema1.customer (
-	customer_id integer NOT NULL AUTO_INCREMENT,
+	id integer NOT NULL AUTO_INCREMENT,
 	first_name varchar(100),
 	last_name varchar(100) NOT NULL,
 	non_model_column varchar(100),
-	CONSTRAINT customer_pk PRIMARY KEY (customer_id)
+	CONSTRAINT customer_pk PRIMARY KEY (id)
 );
 
 CREATE TABLE schema1.product (

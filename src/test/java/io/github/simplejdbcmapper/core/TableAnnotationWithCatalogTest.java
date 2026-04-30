@@ -35,7 +35,7 @@ class TableAnnotationWithCatalogTest {
 			customer.setLastName("xyz");
 			sjm.update(customer);
 
-			CustomerCatalogSchema1 customer1 = sjm.findById(CustomerCatalogSchema1.class, customer.getCustomerId());
+			CustomerCatalogSchema1 customer1 = sjm.findById(CustomerCatalogSchema1.class, customer.getId());
 
 			assertNotNull(customer1);
 			assertEquals("xyz", customer1.getLastName());

@@ -22,11 +22,11 @@ CREATE TABLE SCHEMA1.order_line (
 );
 
 CREATE TABLE SCHEMA1.customer (
-	customer_id NUMBER GENERATED ALWAYS AS IDENTITY,
+	id NUMBER GENERATED ALWAYS AS IDENTITY,
 	first_name varchar(100),
 	last_name varchar(100) NOT NULL,
 	non_model_column varchar(100),
-	CONSTRAINT customer_pk PRIMARY KEY (customer_id)
+	CONSTRAINT customer_pk PRIMARY KEY (id)
 );
 
 CREATE TABLE SCHEMA1.product (

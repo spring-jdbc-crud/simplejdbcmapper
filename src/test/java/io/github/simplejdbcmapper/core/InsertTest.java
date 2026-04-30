@@ -78,9 +78,9 @@ class InsertTest {
 
 		sjm.insert(customer);
 
-		Customer customer1 = sjm.findById(Customer.class, customer.getCustomerId());
+		Customer customer1 = sjm.findById(Customer.class, customer.getId());
 
-		assertNotNull(customer1.getCustomerId());
+		assertNotNull(customer1.getId());
 		assertEquals("aaa", customer1.getFirstName());
 		assertEquals("bbb", customer1.getLastName());
 	}

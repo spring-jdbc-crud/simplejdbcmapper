@@ -35,7 +35,7 @@ import io.github.simplejdbcmapper.exception.MapperException;
 /**
  * @author Antony Joseph
  */
-public class MultiEntitySupport {
+class MultiEntitySupport {
 	private static final Logger logger = LoggerFactory.getLogger(MultiEntitySupport.class);
 
 	private final SimpleJdbcMapperSupport sjmSupport;

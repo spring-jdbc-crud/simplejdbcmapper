@@ -40,7 +40,7 @@ public class ToMany implements ToManySpec, ThroughSpec, PopulateSpec {
 		bwRelatedObj = getBeanWrapper(relatedObjList);
 	}
 
-	public static ToManySpec toMany(List<?> mainObjList, List<?> relatedObjList) {
+	static ToManySpec toMany(List<?> mainObjList, List<?> relatedObjList) {
 		return new ToMany(mainObjList, relatedObjList);
 	}
 

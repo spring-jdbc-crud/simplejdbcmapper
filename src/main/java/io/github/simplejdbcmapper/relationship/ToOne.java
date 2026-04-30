@@ -30,7 +30,7 @@ public class ToOne implements ToOneSpec, PopulateSpec {
 		bwRelatedObj = getBeanWrapper(relatedObjList);
 	}
 
-	public static ToOneSpec toOne(List<?> mainObjList, List<?> relatedObjList) {
+	static ToOneSpec toOne(List<?> mainObjList, List<?> relatedObjList) {
 		return new ToOne(mainObjList, relatedObjList);
 	}
 

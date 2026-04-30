@@ -63,28 +63,14 @@ class MultiEntityExtractor {
 
 	@SuppressWarnings("rawtypes")
 	public ResultSetExtractor<Map<Class, List>> resultSetExtractor(MultiEntity multiEntity) {
-		int offset = 1;
-		List<EntityExtractor> entityExtractorList = new ArrayList<>();
-		for (Map.Entry<Class<?>, String> entry : multiEntity.getEntries()) {
-			Class<?> entityType = entry.getKey();
-			TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
-			EntityRowMapper rowMapper = new EntityRowMapper(tableMapping, sjmSupport.getConversionService(), offset);
-			if (logger.isDebugEnabled()) {
-				logger.debug("EntityRowMapper: " + rowMapper);
-			}
-			Method idReadMethod = tableMapping.getIdPropertyMapping().getReadMethod();
-			entityExtractorList
-					.add(new EntityExtractor(entityType, rowMapper, new ArrayList(), idReadMethod, new HashSet()));
-			offset += tableMapping.getPropertyMappings().length;
-		}
-
+		List<EntityExtractor> entityExtractors = getEntityExtractors(multiEntity);
 		return new ResultSetExtractor<Map<Class, List>>() {
 			@SuppressWarnings("unchecked")
 			@Override
 			public Map<Class, List> extractData(ResultSet rs) throws SQLException, DataAccessException {
 				int rowCnt = 1;
 				while (rs.next()) {
-					for (EntityExtractor entityExtractor : entityExtractorList) {
+					for (EntityExtractor entityExtractor : entityExtractors) {
 						EntityRowMapper rowMapper = entityExtractor.rowMapper();
 						// rowMapper will always return an object
 						Object obj = rowMapper.mapRow(rs, rowCnt);
@@ -101,12 +87,31 @@ class MultiEntityExtractor {
 					rowCnt++;
 				}
 				Map<Class, List> resultMap = new HashMap<>();
-				for (EntityExtractor entityExtractor : entityExtractorList) {
+				for (EntityExtractor entityExtractor : entityExtractors) {
 					resultMap.put(entityExtractor.entityType, entityExtractor.result());
 				}
 				return resultMap;
 			}
 		};
+	}
+
+	@SuppressWarnings("rawtypes")
+	List<EntityExtractor> getEntityExtractors(MultiEntity multiEntity) {
+		int offset = 1;
+		List<EntityExtractor> entityExtractors = new ArrayList<>();
+		for (Map.Entry<Class<?>, String> entry : multiEntity.getEntries()) {
+			Class<?> entityType = entry.getKey();
+			TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
+			EntityRowMapper rowMapper = new EntityRowMapper(tableMapping, sjmSupport.getConversionService(), offset);
+			if (logger.isDebugEnabled()) {
+				logger.debug("EntityRowMapper: " + rowMapper);
+			}
+			Method idReadMethod = tableMapping.getIdPropertyMapping().getReadMethod();
+			entityExtractors
+					.add(new EntityExtractor(entityType, rowMapper, new ArrayList(), idReadMethod, new HashSet()));
+			offset += tableMapping.getPropertyMappings().length;
+		}
+		return entityExtractors;
 	}
 
 	@SuppressWarnings("rawtypes")

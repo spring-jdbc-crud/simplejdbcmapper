@@ -1,6 +1,6 @@
 
 CREATE TABLE schema1.orders(
-    order_id bigint IDENTITY(1,1) NOT NULL,
+    id bigint IDENTITY(1,1) NOT NULL,
 	order_date datetime NULL,
 	customer_id int NULL,
 	status varchar(100) NULL,
@@ -10,7 +10,7 @@ CREATE TABLE schema1.orders(
 	updated_by varchar(100) NULL,
 	version int NULL,
 	non_model_column varchar(100),
-	CONSTRAINT order_pk PRIMARY KEY (order_id)
+	CONSTRAINT order_pk PRIMARY KEY (id)
 );
 
 CREATE TABLE schema1.order_line (

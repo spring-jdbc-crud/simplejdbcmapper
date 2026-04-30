@@ -204,7 +204,7 @@ class CachingTest {
 		cache.clear();
 
 		Order ord = new Order();
-		ord.setOrderId(801l);
+		ord.setId(801l);
 		sjm.delete(ord);
 		assertEquals(1, cache.size());
 

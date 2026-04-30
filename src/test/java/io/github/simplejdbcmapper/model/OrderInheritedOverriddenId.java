@@ -10,7 +10,7 @@ public class OrderInheritedOverriddenId extends OrderIdBaseClass {
 
 	// The annotation in on super class and since this hides it annotation
 	// validation should throw exception
-	private Long orderId;
+	private Long id;
 
 	@Column
 	private LocalDateTime orderDate;
@@ -26,13 +26,13 @@ public class OrderInheritedOverriddenId extends OrderIdBaseClass {
 	}
 
 	@Override
-	public Long getOrderId() {
-		return orderId;
+	public Long getId() {
+		return id;
 	}
 
 	@Override
-	public void setOrderId(Long orderId) {
-		this.orderId = orderId;
+	public void setId(Long orderId) {
+		this.id = orderId;
 	}
 
 	public Integer getCustomerId() {

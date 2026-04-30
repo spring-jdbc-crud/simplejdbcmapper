@@ -103,31 +103,31 @@ class SimpleJdbcMapperUtilsTest {
 			SimpleJdbcMapperUtils.populateHasMany(null, new ArrayList<Integer>(), "orderId", "orderId", "orderLines");
 		});
 
-		String sql0 = "SELECT " + sjm.getBeanFriendlySqlColumns(Order.class) + " FROM orders order by order_id";
+		String sql0 = "SELECT " + sjm.getBeanFriendlySqlColumns(Order.class) + " FROM orders order by id";
 		List<Order> orders = sjm.getJdbcClient().sql(sql0).query(Order.class).list();
 
-		List<Long> orderIdList = orders.stream().map(Order::getOrderId).toList();
+		List<Long> orderIdList = orders.stream().map(Order::getId).toList();
 
 		List<OrderLine> orderLines = sjm.findByPropertyValues(OrderLine.class, "orderId", orderIdList);
 
 		// make sure populateHasMany() can handle null entries in lists
 		orders.add(null);
 		orderLines.add(null);
-		SimpleJdbcMapperUtils.populateHasMany(orders, orderLines, "orderId", "orderId", "orderLines");
+		SimpleJdbcMapperUtils.populateHasMany(orders, orderLines, "id", "orderId", "orderLines");
 
 		assertEquals(2, orders.get(0).getOrderLines().size());
-		assertEquals(orders.get(0).getOrderId(), orders.get(0).getOrderLines().get(0).getOrderId());
-		assertEquals(orders.get(0).getOrderId(), orders.get(0).getOrderLines().get(1).getOrderId());
+		assertEquals(orders.get(0).getId(), orders.get(0).getOrderLines().get(0).getOrderId());
+		assertEquals(orders.get(0).getId(), orders.get(0).getOrderLines().get(1).getOrderId());
 
 		assertEquals(1, orders.get(1).getOrderLines().size());
-		assertEquals(orders.get(1).getOrderId(), orders.get(1).getOrderLines().get(0).getOrderId());
+		assertEquals(orders.get(1).getId(), orders.get(1).getOrderLines().get(0).getOrderId());
 
 	}
 
 	@Test
 	void populateHasMany_failure() {
 		List<Order> orders = sjm.findAll(Order.class);
-		List<Long> orderIdList = orders.stream().map(Order::getOrderId).toList();
+		List<Long> orderIdList = orders.stream().map(Order::getId).toList();
 		String sql = "SELECT " + sjm.getBeanFriendlySqlColumns(OrderLine.class)
 				+ " FROM order_line WHERE order_id in (:ids)";
 		List<OrderLine> orderLines = sjm.getJdbcClient().sql(sql).param("ids", orderIdList).query(OrderLine.class)

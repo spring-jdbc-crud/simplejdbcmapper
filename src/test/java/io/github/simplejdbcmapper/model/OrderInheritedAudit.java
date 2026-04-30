@@ -10,7 +10,7 @@ import io.github.simplejdbcmapper.annotation.Table;
 @Table(name = "orders")
 public class OrderInheritedAudit extends OrderAuditBaseClass {
 	@Id(type = IdType.AUTO_GENERATED)
-	private Long orderId;
+	private Long id;
 
 	@Column
 	private LocalDateTime orderDate;
@@ -21,12 +21,12 @@ public class OrderInheritedAudit extends OrderAuditBaseClass {
 	@Column
 	private String status;
 
-	public Long getOrderId() {
-		return orderId;
+	public Long getId() {
+		return id;
 	}
 
-	public void setOrderId(Long orderId) {
-		this.orderId = orderId;
+	public void setId(Long orderId) {
+		this.id = orderId;
 	}
 
 	public LocalDateTime getOrderDate() {

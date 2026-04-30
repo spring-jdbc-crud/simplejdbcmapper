@@ -154,7 +154,7 @@ class UpdateTest {
 		Order order = sjm.findById(Order.class, 1);
 
 		Exception exception = Assertions.assertThrows(MapperException.class, () -> {
-			sjm.updateSpecificProperties(order, "orderId");
+			sjm.updateSpecificProperties(order, "id");
 		});
 		assertTrue(exception.getMessage().contains("cannot be updated"));
 

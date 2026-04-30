@@ -1,5 +1,5 @@
 CREATE TABLE SCHEMA1.orders (
-	order_id NUMBER GENERATED ALWAYS AS IDENTITY,
+	id NUMBER GENERATED ALWAYS AS IDENTITY,
 	order_date timestamp NULL,
 	customer_id NUMBER NULL,
 	status varchar(100) NULL,
@@ -9,7 +9,7 @@ CREATE TABLE SCHEMA1.orders (
 	updated_by varchar(100) NULL,
 	version NUMBER NULL,
 	non_model_column varchar(100),
-	CONSTRAINT order_pk PRIMARY KEY (order_id)
+	CONSTRAINT order_pk PRIMARY KEY (id)
 );
 
 CREATE TABLE SCHEMA1.order_line (

@@ -55,8 +55,8 @@ class InsertTest {
 		assertEquals(1, order.getVersion());
 
 		// requery and test.
-		order = sjm.findById(Order.class, order.getOrderId());
-		assertNotNull(order.getOrderId());
+		order = sjm.findById(Order.class, order.getId());
+		assertNotNull(order.getId());
 		assertNotNull(order.getOrderDate());
 		if (sjmSupport.getRecordAuditedOnSupplier() != null) {
 			assertNotNull(order.getCreatedOn());
@@ -88,7 +88,7 @@ class InsertTest {
 	@Test
 	void insert_withNonNullIdFailure_Test() {
 		Order order = new Order();
-		order.setOrderId(2002L);
+		order.setId(2002L);
 		order.setOrderDate(LocalDateTime.now());
 		order.setCustomerId(2);
 

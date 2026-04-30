@@ -17,7 +17,7 @@ import io.github.simplejdbcmapper.annotation.Version;
 @Table(name = "orders")
 public class Order {
 	@Id(type = IdType.AUTO_GENERATED)
-	private Long orderId;
+	private Long id;
 	@Column
 	private LocalDateTime orderDate;
 
@@ -46,12 +46,12 @@ public class Order {
 
 	private List<OrderLine> orderLines = new ArrayList<>();
 
-	public Long getOrderId() {
-		return orderId;
+	public Long getId() {
+		return id;
 	}
 
-	public void setOrderId(Long id) {
-		this.orderId = id;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public LocalDateTime getOrderDate() {

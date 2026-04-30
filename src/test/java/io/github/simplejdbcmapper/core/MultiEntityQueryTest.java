@@ -33,7 +33,7 @@ class MultiEntityQueryTest {
 		String sql = """
 				SELECT %s
 				FROM orders o
-				LEFT JOIN order_line ol ON  o.order_id = ol.order_id
+				LEFT JOIN order_line ol ON  o.id = ol.order_id
 				LEFT JOIN product p ON ol.product_id = p.product_id
 				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
 
@@ -44,7 +44,7 @@ class MultiEntityQueryTest {
 		List<OrderLine> orderLines = resultMap.get(OrderLine.class);
 		List<Product> products = resultMap.get(Product.class);
 
-		Relationship.mainList(orders).toManyList(orderLines).joinOn("orderId", "orderId").populate("orderLines");
+		Relationship.mainList(orders).toManyList(orderLines).joinOn("id", "orderId").populate("orderLines");
 
 		Relationship.mainList(orderLines).toOneList(products).joinOn("productId", "productId").populate("product");
 

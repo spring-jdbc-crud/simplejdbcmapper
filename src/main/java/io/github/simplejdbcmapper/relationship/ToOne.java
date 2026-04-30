@@ -26,16 +26,8 @@ public class ToOne implements ToOneSpec, PopulateSpec {
 	private ToOne(List<?> mainObjList, List<?> relatedObjList) {
 		this.mainObjList = mainObjList;
 		this.relatedObjList = relatedObjList;
-
-		if (!CollectionUtils.isEmpty(mainObjList)) {
-			Object obj = mainObjList.get(0);
-			bwMainObj = new BeanWrapperImpl(obj);
-		}
-
-		if (!CollectionUtils.isEmpty(relatedObjList)) {
-			Object obj = relatedObjList.get(0);
-			bwRelatedObj = new BeanWrapperImpl(obj);
-		}
+		bwMainObj = getBeanWrapper(mainObjList);
+		bwRelatedObj = getBeanWrapper(relatedObjList);
 	}
 
 	public static ToOneSpec toOne(List<?> mainObjList, List<?> relatedObjList) {
@@ -47,12 +39,12 @@ public class ToOne implements ToOneSpec, PopulateSpec {
 		Assert.notNull(relatedObjIdProperty, "relatedObjIdProperty must not be null");
 
 		if (bwMainObj != null && !bwMainObj.isReadableProperty(mainObjFkProperty)) {
-			throw new IllegalArgumentException("invalid argument. Property name " + mainObjFkProperty
+			throw new IllegalArgumentException("Invalid argument. Property name " + mainObjFkProperty
 					+ " does not exist for " + bwMainObj.getWrappedClass().getName());
 		}
 
 		if (bwRelatedObj != null && !bwRelatedObj.isReadableProperty(relatedObjIdProperty)) {
-			throw new IllegalArgumentException("invalid argument. Property name " + relatedObjIdProperty
+			throw new IllegalArgumentException("Invalid argument. Property name " + relatedObjIdProperty
 					+ " does not exist for " + bwMainObj.getWrappedClass().getName());
 		}
 
@@ -64,7 +56,7 @@ public class ToOne implements ToOneSpec, PopulateSpec {
 	public void populate(String mainObjPropertyToPopulate) {
 		Assert.notNull(mainObjPropertyToPopulate, "mainObjPropertyToPopulate must not be null");
 		if (bwMainObj != null && !bwMainObj.isReadableProperty(mainObjPropertyToPopulate)) {
-			throw new IllegalArgumentException("invalid argument. Property name " + mainObjPropertyToPopulate
+			throw new IllegalArgumentException("Invalid argument. Property name " + mainObjPropertyToPopulate
 					+ " does not exist for " + bwMainObj.getWrappedClass().getName());
 		}
 		this.mainObjPropertyToPopulate = mainObjPropertyToPopulate;
@@ -95,6 +87,20 @@ public class ToOne implements ToOneSpec, PopulateSpec {
 				}
 			}
 		}
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private BeanWrapper getBeanWrapper(List mainObjList) {
+		BeanWrapper bw = null;
+		if (!CollectionUtils.isEmpty(mainObjList)) {
+			for (Object obj : mainObjList) {
+				if (obj != null) {
+					bw = new BeanWrapperImpl(obj);
+					break;
+				}
+			}
+		}
+		return bw;
 	}
 
 }

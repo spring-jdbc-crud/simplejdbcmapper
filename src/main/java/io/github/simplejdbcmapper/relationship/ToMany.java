@@ -36,16 +36,8 @@ public class ToMany implements ToManySpec, ThroughSpec, PopulateSpec {
 	private ToMany(List<?> mainObjList, List<?> relatedObjList) {
 		this.mainObjList = mainObjList;
 		this.relatedObjList = relatedObjList;
-
-		if (!CollectionUtils.isEmpty(mainObjList)) {
-			Object obj = mainObjList.get(0);
-			bwMainObj = new BeanWrapperImpl(obj);
-		}
-
-		if (!CollectionUtils.isEmpty(relatedObjList)) {
-			Object obj = relatedObjList.get(0);
-			bwRelatedObj = new BeanWrapperImpl(obj);
-		}
+		bwMainObj = getBeanWrapper(mainObjList);
+		bwRelatedObj = getBeanWrapper(relatedObjList);
 	}
 
 	public static ToManySpec toMany(List<?> mainObjList, List<?> relatedObjList) {
@@ -57,12 +49,12 @@ public class ToMany implements ToManySpec, ThroughSpec, PopulateSpec {
 		Assert.notNull(relatedObjFkProperty, "relatedObjFkProperty must not be null");
 
 		if (bwMainObj != null && !bwMainObj.isReadableProperty(mainObjIdProperty)) {
-			throw new IllegalArgumentException("invalid argument. Property name " + mainObjIdProperty
+			throw new IllegalArgumentException("Invalid argument. Property name " + mainObjIdProperty
 					+ " does not exist for " + bwMainObj.getWrappedClass().getName());
 		}
 
 		if (bwRelatedObj != null && !bwRelatedObj.isReadableProperty(relatedObjFkProperty)) {
-			throw new IllegalArgumentException("invalid argument. Property name " + relatedObjFkProperty
+			throw new IllegalArgumentException("Invalid argument. Property name " + relatedObjFkProperty
 					+ " does not exist for " + bwMainObj.getWrappedClass().getName());
 		}
 
@@ -76,17 +68,14 @@ public class ToMany implements ToManySpec, ThroughSpec, PopulateSpec {
 		Assert.notNull(fkPropertyToMainObjId, "fkPropertyToMainObjId must not be null");
 		Assert.notNull(fkPropertyToRelatedObjId, "fkPropertyToRelatedObjId must not be null");
 
-		if (!CollectionUtils.isEmpty(intermediateList)) {
-			Object obj = intermediateList.get(0);
-			BeanWrapper bw = new BeanWrapperImpl(obj);
-			if (!bw.isReadableProperty(fkPropertyToMainObjId)) {
-				throw new IllegalArgumentException("invalid argument. Property name " + fkPropertyToMainObjId
-						+ " does not exist for " + obj.getClass().getName());
-			}
-			if (!bw.isReadableProperty(fkPropertyToRelatedObjId)) {
-				throw new IllegalArgumentException("invalid argument. Property name " + fkPropertyToRelatedObjId
-						+ " does not exist for " + obj.getClass().getName());
-			}
+		BeanWrapper bw = getBeanWrapper(intermediateList);
+		if (bw != null && !bw.isReadableProperty(fkPropertyToMainObjId)) {
+			throw new IllegalArgumentException("Invalid argument. Property name " + fkPropertyToMainObjId
+					+ " does not exist for " + bw.getWrappedClass().getName());
+		}
+		if (bw != null && !bw.isReadableProperty(fkPropertyToRelatedObjId)) {
+			throw new IllegalArgumentException("Invalid argument. Property name " + fkPropertyToRelatedObjId
+					+ " does not exist for " + bw.getWrappedClass().getName());
 		}
 
 		this.intermediateJoiner = new IntermediateJoiner(intermediateList, fkPropertyToMainObjId,
@@ -97,16 +86,14 @@ public class ToMany implements ToManySpec, ThroughSpec, PopulateSpec {
 	}
 
 	public PopulateSpec ids(String mainObjIdProperty, String relatedObjIdProperty) {
-
 		Assert.notNull(mainObjIdProperty, "mainObjIdProperty must not be null");
 		Assert.notNull(relatedObjIdProperty, "relatedObjIdProperty must not be null");
-
 		if (bwMainObj != null && !bwMainObj.isReadableProperty(mainObjIdProperty)) {
-			throw new IllegalArgumentException("invalid argument. Property name " + mainObjIdProperty
+			throw new IllegalArgumentException("Invalid argument. Property name " + mainObjIdProperty
 					+ " does not exist for " + bwMainObj.getWrappedClass().getName());
 		}
 		if (bwRelatedObj != null && !bwRelatedObj.isReadableProperty(relatedObjIdProperty)) {
-			throw new IllegalArgumentException("invalid argument. Property name " + relatedObjIdProperty
+			throw new IllegalArgumentException("Invalid argument. Property name " + relatedObjIdProperty
 					+ " does not exist for " + bwRelatedObj.getWrappedClass().getName());
 		}
 
@@ -118,12 +105,10 @@ public class ToMany implements ToManySpec, ThroughSpec, PopulateSpec {
 	public void populate(String mainObjPropertyToPopulate) {
 		Assert.notNull(mainObjPropertyToPopulate, "mainObjPropertyToPopulate must not be null");
 		if (bwMainObj != null && !bwMainObj.isReadableProperty(mainObjPropertyToPopulate)) {
-			throw new IllegalArgumentException("invalid argument. Property name " + mainObjPropertyToPopulate
-					+ " does not readable for " + bwMainObj.getWrappedClass().getName());
+			throw new IllegalArgumentException("Invalid argument. Property name " + mainObjPropertyToPopulate
+					+ " does not exist for " + bwMainObj.getWrappedClass().getName());
 		}
-
 		this.mainObjPropertyToPopulate = mainObjPropertyToPopulate;
-
 		if ("hasMany".equals(relationshipType)) {
 			populateHasMany();
 		} else {
@@ -199,6 +184,20 @@ public class ToMany implements ToManySpec, ThroughSpec, PopulateSpec {
 				}
 			}
 		}
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	private BeanWrapper getBeanWrapper(List mainObjList) {
+		BeanWrapper bw = null;
+		if (!CollectionUtils.isEmpty(mainObjList)) {
+			for (Object obj : mainObjList) {
+				if (obj != null) {
+					bw = new BeanWrapperImpl(obj);
+					break;
+				}
+			}
+		}
+		return bw;
 	}
 
 	class IntermediateJoiner {

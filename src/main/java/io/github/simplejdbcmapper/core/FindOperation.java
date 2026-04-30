@@ -183,8 +183,9 @@ class FindOperation {
 	public <T> EntityRowMapper<T> newEntityRowMapper(Class<T> entityType) {
 		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
 		EntityRowMapper<T> rowMapper = new EntityRowMapper<>(tableMapping, sjmSupport.getConversionService(), 1);
-
-		logger.debug("EntityRowMapper: " + rowMapper);
+		if (logger.isDebugEnabled()) {
+			logger.debug("EntityRowMapper: " + rowMapper);
+		}
 		return rowMapper;
 	}
 

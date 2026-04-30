@@ -2,8 +2,6 @@ package io.github.simplejdbcmapper.relationship;
 
 import java.util.List;
 
-import org.springframework.util.Assert;
-
 public class Relationship implements RelationshipSpec {
 
 	private List<?> mainObjList;
@@ -13,7 +11,6 @@ public class Relationship implements RelationshipSpec {
 	}
 
 	public static RelationshipSpec mainList(List<?> mainObjList) {
-		Assert.notNull(mainObjList, "mainObjList cannot be null");
 		return new Relationship(mainObjList);
 	}
 

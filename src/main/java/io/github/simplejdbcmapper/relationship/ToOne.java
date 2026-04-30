@@ -11,8 +11,8 @@ import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 public class ToOne implements ToOneSpec, PopulateSpec {
-	private String matchOnMainObjProperty;
-	private String matchOnRelatedObjProperty;
+	private String mainObjJoinProperty;
+	private String relatedObjJoinProperty;
 
 	private String mainObjPropertyToPopulate;
 
@@ -34,22 +34,22 @@ public class ToOne implements ToOneSpec, PopulateSpec {
 		return new ToOne(mainObjList, relatedObjList);
 	}
 
-	public PopulateSpec joinOn(String mainObjFkProperty, String relatedObjIdProperty) {
-		Assert.notNull(mainObjFkProperty, "mainObjFkProperty must not be null");
-		Assert.notNull(relatedObjIdProperty, "relatedObjIdProperty must not be null");
+	public PopulateSpec joinOn(String mainObjJoinProperty, String relatedObjJoinProperty) {
+		Assert.notNull(mainObjJoinProperty, "mainObjJoinProperty must not be null");
+		Assert.notNull(relatedObjJoinProperty, "relatedObjJoinProperty must not be null");
 
-		if (bwMainObj != null && !bwMainObj.isReadableProperty(mainObjFkProperty)) {
-			throw new IllegalArgumentException("Invalid argument. Property name " + mainObjFkProperty
+		if (bwMainObj != null && !bwMainObj.isReadableProperty(mainObjJoinProperty)) {
+			throw new IllegalArgumentException("Invalid argument. Property name " + mainObjJoinProperty
 					+ " does not exist for " + bwMainObj.getWrappedClass().getName());
 		}
 
-		if (bwRelatedObj != null && !bwRelatedObj.isReadableProperty(relatedObjIdProperty)) {
-			throw new IllegalArgumentException("Invalid argument. Property name " + relatedObjIdProperty
+		if (bwRelatedObj != null && !bwRelatedObj.isReadableProperty(relatedObjJoinProperty)) {
+			throw new IllegalArgumentException("Invalid argument. Property name " + relatedObjJoinProperty
 					+ " does not exist for " + bwMainObj.getWrappedClass().getName());
 		}
 
-		this.matchOnMainObjProperty = mainObjFkProperty;
-		this.matchOnRelatedObjProperty = relatedObjIdProperty;
+		this.mainObjJoinProperty = mainObjJoinProperty;
+		this.relatedObjJoinProperty = relatedObjJoinProperty;
 		return this;
 	}
 
@@ -71,7 +71,7 @@ public class ToOne implements ToOneSpec, PopulateSpec {
 		for (Object relatedObj : relatedObjList) {
 			if (relatedObj != null) {
 				BeanWrapper bwRelatedObj = PropertyAccessorFactory.forBeanPropertyAccess(relatedObj);
-				Object idPropertyValue = bwRelatedObj.getPropertyValue(matchOnRelatedObjProperty);
+				Object idPropertyValue = bwRelatedObj.getPropertyValue(relatedObjJoinProperty);
 				if (idPropertyValue != null) {
 					idToRelatedObjMap.put(idPropertyValue, relatedObj);
 				}
@@ -80,7 +80,7 @@ public class ToOne implements ToOneSpec, PopulateSpec {
 		for (Object mainObj : mainObjList) {
 			if (mainObj != null) {
 				BeanWrapper bwMainObj = PropertyAccessorFactory.forBeanPropertyAccess(mainObj);
-				Object foreignKeyPropertyValue = bwMainObj.getPropertyValue(matchOnMainObjProperty);
+				Object foreignKeyPropertyValue = bwMainObj.getPropertyValue(mainObjJoinProperty);
 				if (foreignKeyPropertyValue != null) {
 					bwMainObj.setPropertyValue(mainObjPropertyToPopulate,
 							idToRelatedObjMap.get(foreignKeyPropertyValue));

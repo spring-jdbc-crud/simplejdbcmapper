@@ -6,5 +6,5 @@ public interface ToManySpec {
 
 	PopulateSpec joinOn(String mainObjIdProperty, String relatedObjFkProperty);
 
-	ThroughSpec through(List<?> intermediateList, String fkPropertyToMainObjId, String fkPropertyToelatedObjId);
+	ThroughSpec through(List<?> intermediateList, String fkPropertyToMainObjId, String fkPropertyToRelatedObjId);
 }

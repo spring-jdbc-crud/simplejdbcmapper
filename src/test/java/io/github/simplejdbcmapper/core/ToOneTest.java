@@ -30,12 +30,12 @@ class ToOneTest {
 		Exception exception = Assertions.assertThrows(Exception.class, () -> {
 			Relationship.mainList(orderLines).toOneList(products).joinOn(null, "productId");
 		});
-		assertTrue(exception.getMessage().contains("mainObjFkProperty must not be null"));
+		assertTrue(exception.getMessage().contains("mainObjJoinProperty must not be null"));
 
 		exception = Assertions.assertThrows(Exception.class, () -> {
 			Relationship.mainList(orderLines).toOneList(products).joinOn("orderLineId", null);
 		});
-		assertTrue(exception.getMessage().contains("relatedObjIdProperty must not be null"));
+		assertTrue(exception.getMessage().contains("relatedObjJoinProperty must not be null"));
 
 		exception = Assertions.assertThrows(Exception.class, () -> {
 			Relationship.mainList(orderLines).toOneList(products).joinOn("x", "productId");

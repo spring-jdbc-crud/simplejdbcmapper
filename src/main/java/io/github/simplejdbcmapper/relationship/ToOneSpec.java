@@ -1,5 +1,5 @@
 package io.github.simplejdbcmapper.relationship;
 
 public interface ToOneSpec {
-	PopulateSpec joinOn(String mainObjFkProperty, String relatedObjIdProperty);
+	PopulateSpec joinOn(String mainObjJoinProperty, String relatedObjJoinProperty);
 }

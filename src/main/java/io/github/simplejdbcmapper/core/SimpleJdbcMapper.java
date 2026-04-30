@@ -583,7 +583,7 @@ public final class SimpleJdbcMapper {
 		updateOperation = null;
 		deleteOperation = null;
 		multiEntitySupport = null;
-		logger.info("SimpleJdbcMapper shutdown completed.");
+		logger.info("SimpleJdbcMapper shutdown completed. " + this);
 	}
 
 }

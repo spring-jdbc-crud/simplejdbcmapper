@@ -13,7 +13,8 @@
  */
 package io.github.simplejdbcmapper.core;
 
-import java.util.LinkedHashMap;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.util.Assert;
@@ -24,25 +25,29 @@ import io.github.simplejdbcmapper.exception.MapperException;
  * @author Antony Joseph
  */
 public class MultiEntity {
-	private final Map<Class<?>, String> entities = new LinkedHashMap<>();
+	private final List<Map.Entry<Class<?>, String>> entries = new ArrayList<>();
 
 	public MultiEntity add(Class<?> entityType, String tableAlias) {
 		Assert.notNull(entityType, "entityType must not be null");
 		InternalUtils.validateTableAlias(tableAlias);
-
-		if (entities.containsValue(tableAlias)) {
-			throw new IllegalArgumentException("duplicate tableAlias " + tableAlias);
-		}
-
-		entities.put(entityType, tableAlias);
+		checkDuplicateAlias(tableAlias);
+		entries.add(Map.entry(entityType, tableAlias));
 		return this;
 	}
 
-	public Map<Class<?>, String> getEntities() {
-		if (entities.size() < 2) {
+	List<Map.Entry<Class<?>, String>> getEntries() {
+		if (entries.size() < 2) {
 			throw new MapperException("MultiEntity should have 2 or more entities configured.");
 		}
-		return entities;
+		return entries;
+	}
+
+	private void checkDuplicateAlias(String tableAlias) {
+		for (Map.Entry<Class<?>, String> entry : entries) {
+			if (entry.getValue().equals(tableAlias)) {
+				throw new IllegalArgumentException("duplicate tableAlias " + tableAlias);
+			}
+		}
 	}
 
 }

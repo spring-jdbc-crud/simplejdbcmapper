@@ -46,7 +46,7 @@ class MultiEntitySupport {
 	public String getMultiEntitySqlColumns(MultiEntity multiEntity) {
 		StringBuilder sb = new StringBuilder(126);
 		StringJoiner sj = new StringJoiner(", ", " ", " ");
-		for (Map.Entry<Class<?>, String> entry : multiEntity.getEntities().entrySet()) {
+		for (Map.Entry<Class<?>, String> entry : multiEntity.getEntries()) {
 			String tablePrefix = entry.getValue() + ".";
 			String colPrefix = entry.getValue() + "_";
 			TableMapping tableMapping = sjmSupport.getTableMapping(entry.getKey());
@@ -64,7 +64,8 @@ class MultiEntitySupport {
 	public ResultSetExtractor<Map<Class, List>> resultSetExtractor(MultiEntity multiEntity) {
 		int offset = 1;
 		List<EntityExtractor> entityExtractorList = new ArrayList<>();
-		for (Class<?> entityType : multiEntity.getEntities().keySet()) {
+		for (Map.Entry<Class<?>, String> entry : multiEntity.getEntries()) {
+			Class<?> entityType = entry.getKey();
 			TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
 			EntityRowMapper rowMapper = new EntityRowMapper(tableMapping, sjmSupport.getConversionService(), offset);
 			if (logger.isDebugEnabled()) {

@@ -1,7 +1,6 @@
 package io.github.simplejdbcmapper.core;
 
 import java.util.List;
-import java.util.Map;
 
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -23,7 +22,6 @@ class MultiEntityQueryTest {
 	@Autowired
 	private SimpleJdbcMapper sjm;
 
-	@SuppressWarnings("unchecked")
 	@Test
 	void OrderHasManyOrderLinesWhichHasOneProduct_success() {
 
@@ -37,11 +35,11 @@ class MultiEntityQueryTest {
 				LEFT JOIN product p ON ol.product_id = p.id
 				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
 
-		Map<Class, List> resultMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
+		ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 
-		List<?> orders = resultMap.get(Order.class);
-		List<OrderLine> orderLines = resultMap.get(OrderLine.class);
-		List<Product> products = resultMap.get(Product.class);
+		List<Order> orders = resultListMap.getList(Order.class);
+		List<OrderLine> orderLines = resultListMap.getList(OrderLine.class);
+		List<Product> products = resultListMap.getList(Product.class);
 
 		Relationship.mainList(orders).toManyList(orderLines).joinOn("id", "orderId").populate("orderLines");
 
@@ -49,7 +47,6 @@ class MultiEntityQueryTest {
 
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	void employeeHasManySkillsThroughIntermediateTable_success() {
 
@@ -63,12 +60,11 @@ class MultiEntityQueryTest {
 				LEFT JOIN skill s ON es.skill_id = s.id
 				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
 
-		@SuppressWarnings("rawtypes")
-		Map<Class, List> resultMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
+		ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 
-		List<Employee> employees = resultMap.get(Employee.class);
-		List<EmployeeSkill> employeeSkillList = resultMap.get(EmployeeSkill.class);
-		List<Skill> skills = resultMap.get(Skill.class);
+		List<Employee> employees = resultListMap.getList(Employee.class);
+		List<EmployeeSkill> employeeSkillList = resultListMap.getList(EmployeeSkill.class);
+		List<Skill> skills = resultListMap.getList(Skill.class);
 
 		Relationship.mainList(employees).toManyList(skills).through(employeeSkillList, "employeeId", "skillId")
 				.ids("id", "id").populate("skills");

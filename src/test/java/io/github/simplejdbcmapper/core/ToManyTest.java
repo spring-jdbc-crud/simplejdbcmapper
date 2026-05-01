@@ -6,7 +6,6 @@ import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
-import java.util.Map;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -171,11 +170,10 @@ class ToManyTest {
 				ORDER BY o.id, ol.order_line_id
 				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
 
-		@SuppressWarnings("rawtypes")
-		Map<Class, List> resultMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
+		ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 
-		List<Order> orders = resultMap.get(Order.class);
-		List<OrderLine> orderLines = resultMap.get(OrderLine.class);
+		List<Order> orders = resultListMap.getList(Order.class);
+		List<OrderLine> orderLines = resultListMap.getList(OrderLine.class);
 
 		Relationship.mainList(orders).toManyList(orderLines).joinOn("id", "orderId").populate("orderLines");
 
@@ -205,10 +203,10 @@ class ToManyTest {
 				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
 
 		@SuppressWarnings("rawtypes")
-		Map<Class, List> resultMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
+		ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 
-		List<Order> orders = resultMap.get(Order.class);
-		List<OrderLine> orderLines = resultMap.get(OrderLine.class);
+		List<Order> orders = resultListMap.getList(Order.class);
+		List<OrderLine> orderLines = resultListMap.getList(OrderLine.class);
 
 		orders.add(1, null);
 
@@ -236,11 +234,10 @@ class ToManyTest {
 				ORDER BY o.id, ol.order_line_id
 				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
 
-		@SuppressWarnings("rawtypes")
-		Map<Class, List> resultMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
+		ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 
-		List<Order> orders = resultMap.get(Order.class);
-		List<OrderLine> orderLines = resultMap.get(OrderLine.class);
+		List<Order> orders = resultListMap.getList(Order.class);
+		List<OrderLine> orderLines = resultListMap.getList(OrderLine.class);
 
 		orders.add(1, new Order());
 
@@ -268,11 +265,10 @@ class ToManyTest {
 				ORDER BY o.id, ol.order_line_id
 				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
 
-		@SuppressWarnings("rawtypes")
-		Map<Class, List> resultMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
+		ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 
-		List<Order> orders = resultMap.get(Order.class);
-		List<OrderLine> orderLines = resultMap.get(OrderLine.class);
+		List<Order> orders = resultListMap.getList(Order.class);
+		List<OrderLine> orderLines = resultListMap.getList(OrderLine.class);
 
 		assertDoesNotThrow(() -> {
 			Relationship.mainList(null).toManyList(orderLines).joinOn("id", "orderId").populate("orderLines");
@@ -301,11 +297,11 @@ class ToManyTest {
 				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
 
 		@SuppressWarnings("rawtypes")
-		Map<Class, List> resultMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
+		ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 
-		List<Order> orders = resultMap.get(Order.class);
-		List<OrderLine> orderLines = resultMap.get(OrderLine.class);
-		List<Product> products = resultMap.get(Product.class);
+		List<Order> orders = resultListMap.getList(Order.class);
+		List<OrderLine> orderLines = resultListMap.getList(OrderLine.class);
+		List<Product> products = resultListMap.getList(Product.class);
 
 		Relationship.mainList(orders).toManyList(orderLines).joinOn("id", "orderId").populate("orderLines");
 		Relationship.mainList(orderLines).toOneList(products).joinOn("productId", "id").populate("product");
@@ -341,12 +337,11 @@ class ToManyTest {
 				ORDER BY emp.id, s.id
 				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
 
-		@SuppressWarnings("rawtypes")
-		Map<Class, List> resultMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
+		ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 
-		List<Employee> employees = resultMap.get(Employee.class);
-		List<EmployeeSkill> employeeSkillList = resultMap.get(EmployeeSkill.class);
-		List<Skill> skills = resultMap.get(Skill.class);
+		List<Employee> employees = resultListMap.getList(Employee.class);
+		List<EmployeeSkill> employeeSkillList = resultListMap.getList(EmployeeSkill.class);
+		List<Skill> skills = resultListMap.getList(Skill.class);
 
 		Relationship.mainList(employees).toManyList(skills).through(employeeSkillList, "employeeId", "skillId")
 				.ids("id", "id").populate("skills");
@@ -380,14 +375,14 @@ class ToManyTest {
 				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
 
 		@SuppressWarnings("rawtypes")
-		Map<Class, List> resultMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
+		ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 
-		List<Employee> employees = resultMap.get(Employee.class);
+		List<Employee> employees = resultListMap.getList(Employee.class);
 		employees.add(1, null);
-		List<EmployeeSkill> employeeSkillList = resultMap.get(EmployeeSkill.class);
+		List<EmployeeSkill> employeeSkillList = resultListMap.getList(EmployeeSkill.class);
 		employeeSkillList.add(0, null);
 
-		List<Skill> skills = resultMap.get(Skill.class);
+		List<Skill> skills = resultListMap.getList(Skill.class);
 		skills.add(2, null);
 
 		Relationship.mainList(employees).toManyList(skills).through(employeeSkillList, "employeeId", "skillId")
@@ -414,14 +409,14 @@ class ToManyTest {
 				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
 
 		@SuppressWarnings("rawtypes")
-		Map<Class, List> resultMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
+		ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 
-		List<Employee> employees = resultMap.get(Employee.class);
+		List<Employee> employees = resultListMap.getList(Employee.class);
 		employees.add(1, new Employee());
-		List<EmployeeSkill> employeeSkillList = resultMap.get(EmployeeSkill.class);
+		List<EmployeeSkill> employeeSkillList = resultListMap.getList(EmployeeSkill.class);
 		employeeSkillList.add(0, new EmployeeSkill());
 
-		List<Skill> skills = resultMap.get(Skill.class);
+		List<Skill> skills = resultListMap.getList(Skill.class);
 		skills.add(2, new Skill());
 
 		Relationship.mainList(employees).toManyList(skills).through(employeeSkillList, "employeeId", "skillId")
@@ -448,11 +443,11 @@ class ToManyTest {
 				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
 
 		@SuppressWarnings("rawtypes")
-		Map<Class, List> resultMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
+		ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 
-		List<Employee> employees = resultMap.get(Employee.class);
-		List<EmployeeSkill> employeeSkillList = resultMap.get(EmployeeSkill.class);
-		List<Skill> skills = resultMap.get(Skill.class);
+		List<Employee> employees = resultListMap.getList(Employee.class);
+		List<EmployeeSkill> employeeSkillList = resultListMap.getList(EmployeeSkill.class);
+		List<Skill> skills = resultListMap.getList(Skill.class);
 
 		assertDoesNotThrow(() -> {
 			Relationship.mainList(null).toManyList(skills).through(employeeSkillList, "employeeId", "skillId")

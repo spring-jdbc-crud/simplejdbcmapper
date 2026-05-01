@@ -368,8 +368,7 @@ public final class SimpleJdbcMapper {
 		return multiEntityExtractor.getMultiEntitySqlColumns(multiEntity);
 	}
 
-	@SuppressWarnings("rawtypes")
-	public ResultSetExtractor<Map<Class, List>> resultSetExtractor(MultiEntity multiEntity) {
+	public ResultSetExtractor<ResultListMap> resultSetExtractor(MultiEntity multiEntity) {
 		return multiEntityExtractor.resultSetExtractor(multiEntity);
 	}
 

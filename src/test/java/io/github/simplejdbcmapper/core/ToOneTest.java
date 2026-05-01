@@ -7,7 +7,6 @@ import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -231,11 +230,10 @@ class ToOneTest {
 				ORDER BY ol.order_line_id;
 				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
 
-		@SuppressWarnings("rawtypes")
-		Map<Class, List> resultMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
+		ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 
-		List<OrderLine> orderLines = resultMap.get(OrderLine.class);
-		List<Product> products = resultMap.get(Product.class);
+		List<OrderLine> orderLines = resultListMap.getList(OrderLine.class);
+		List<Product> products = resultListMap.getList(Product.class);
 		Relationship.mainList(orderLines).toOneList(products).joinOn("productId", "id").populate("product");
 
 		assertEquals(4, orderLines.size());

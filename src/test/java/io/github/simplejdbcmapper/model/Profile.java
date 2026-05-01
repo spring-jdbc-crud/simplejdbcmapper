@@ -1,17 +1,13 @@
 package io.github.simplejdbcmapper.model;
 
-import io.github.simplejdbcmapper.annotation.Column;
-import io.github.simplejdbcmapper.annotation.Id;
-import io.github.simplejdbcmapper.annotation.Table;
-
-@Table(name = "profile")
 public class Profile {
-	@Id
 	private Integer id;
-	@Column
-	private String address;
 
-	private Person person;
+	private String theme;
+
+	private Integer userId;
+
+	private User user;
 
 	public Integer getId() {
 		return id;
@@ -21,20 +17,28 @@ public class Profile {
 		this.id = id;
 	}
 
-	public String getAddress() {
-		return address;
+	public Integer getUserId() {
+		return userId;
 	}
 
-	public void setAddress(String address) {
-		this.address = address;
+	public void setUserId(Integer userId) {
+		this.userId = userId;
 	}
 
-	public Person getPerson() {
-		return person;
+	public User getUser() {
+		return user;
 	}
 
-	public void setPerson(Person person) {
-		this.person = person;
+	public void setUser(User user) {
+		this.user = user;
+	}
+
+	public String getTheme() {
+		return theme;
+	}
+
+	public void setTheme(String theme) {
+		this.theme = theme;
 	}
 
 }

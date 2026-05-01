@@ -159,6 +159,39 @@ class ToManyTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
+	void OrderHasManyOrderLines_success() {
+
+		MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol");
+
+		String sql = """
+				SELECT %s
+				FROM orders o
+				LEFT JOIN order_line ol ON  o.id = ol.order_id
+				WHERE o.id <= 4
+				ORDER BY o.id, ol.order_line_id
+				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
+
+		@SuppressWarnings("rawtypes")
+		Map<Class, List> resultMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
+
+		List<Order> orders = resultMap.get(Order.class);
+		List<OrderLine> orderLines = resultMap.get(OrderLine.class);
+
+		Relationship.mainList(orders).toManyList(orderLines).joinOn("id", "orderId").populate("orderLines");
+
+		assertEquals(4, orders.size());
+		assertEquals(2, orders.get(0).getOrderLines().size(), "ord 1 lines count failed");
+		assertEquals(0, orders.get(2).getOrderLines().size(), "ord 3 lines count failed");
+		assertEquals(1, orders.get(3).getOrderLines().size(), "ord 4 lines count failed");
+
+		assertEquals(5, orders.get(0).getOrderLines().get(1).getNumOfUnits(), "ord 1 OrderLine 2 num_of_units failed");
+
+		assertEquals(1, orders.get(1).getOrderLines().get(0).getNumOfUnits(), "ord 2 OrderLine 3 num_of_units failed");
+
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
 	void OrderHasManyOrderLinesWhichHasOneProduct_success() {
 
 		MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol").add(Product.class,

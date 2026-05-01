@@ -5,7 +5,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
@@ -67,25 +66,33 @@ public class ToOne<T, U> implements ToOneSpec<T, U>, PopulateSpec {
 		if (CollectionUtils.isEmpty(mainObjList) || CollectionUtils.isEmpty(relatedObjList)) {
 			return;
 		}
-		Map<Object, U> idToRelatedObjMap = new HashMap<>();
-		for (U relatedObj : relatedObjList) {
-			if (relatedObj != null) {
-				BeanWrapper bwRelatedObj = PropertyAccessorFactory.forBeanPropertyAccess(relatedObj);
-				Object idPropertyValue = bwRelatedObj.getPropertyValue(relatedObjJoinProperty);
-				if (idPropertyValue != null) {
-					idToRelatedObjMap.put(idPropertyValue, relatedObj);
-				}
-			}
-		}
+
+		Map<Object, BeanWrapper> joinPropToMainObjBwMap = new HashMap<>();
 		for (T mainObj : mainObjList) {
 			if (mainObj != null) {
 				BeanWrapper bwMainObj = PropertyAccessorFactory.forBeanPropertyAccess(mainObj);
-				Object foreignKeyPropertyValue = bwMainObj.getPropertyValue(mainObjJoinProperty);
-				if (foreignKeyPropertyValue != null) {
-					bwMainObj.setPropertyValue(mainObjPropertyToPopulate,
-							idToRelatedObjMap.get(foreignKeyPropertyValue));
+				Object mainObjJoinPropertyValue = bwMainObj.getPropertyValue(mainObjJoinProperty);
+				if (mainObjJoinPropertyValue != null) {
+					joinPropToMainObjBwMap.put(mainObjJoinPropertyValue, bwMainObj);
 				}
 			}
+		}
+
+		Map<Object, U> joinPropToRelatedObjMap = new HashMap<>();
+		for (U relatedObj : relatedObjList) {
+			if (relatedObj != null) {
+				BeanWrapper bwRelatedObj = PropertyAccessorFactory.forBeanPropertyAccess(relatedObj);
+				Object relatedObjJoinPropertyValue = bwRelatedObj.getPropertyValue(relatedObjJoinProperty);
+				if (relatedObjJoinPropertyValue != null) {
+					joinPropToRelatedObjMap.put(relatedObjJoinPropertyValue, relatedObj);
+				}
+			}
+		}
+		for (Map.Entry<Object, BeanWrapper> entry : joinPropToMainObjBwMap.entrySet()) {
+			Object mainObjJoinPropertyValue = entry.getKey();
+			BeanWrapper bwMainObj = entry.getValue();
+			U relatedObj = joinPropToRelatedObjMap.get(mainObjJoinPropertyValue);
+			bwMainObj.setPropertyValue(mainObjPropertyToPopulate, relatedObj);
 		}
 	}
 
@@ -94,7 +101,7 @@ public class ToOne<T, U> implements ToOneSpec<T, U>, PopulateSpec {
 		if (!CollectionUtils.isEmpty(list)) {
 			for (Object obj : list) {
 				if (obj != null) {
-					bw = new BeanWrapperImpl(obj);
+					bw = PropertyAccessorFactory.forBeanPropertyAccess(obj);
 					break;
 				}
 			}

@@ -12,7 +12,8 @@ Just by annotating the models that you would use with JdbcTemplate/JdbcClient, y
 [Example code](#example-code)  
 [JDK and Spring version requirements](#jdk-and-spring-version-requirements)  
 [Spring bean configuration for SimpleJdbcMapper](#spring-bean-configuration-for-simplejdbcmapper)  
-[Annotations](#annotations)  
+[Annotations](#annotations)   
+[Populating relationships from custom queries](#populating-relationships-from-custom-queries)   
 [BLOB CLOB mapping](#blob-clob-mapping)  
 [Enum mapping](#enum-mapping)  
 [Configuration for auto assigning @CreatedBy, @UpdateBy, @CreatedOn, @UpdatedOn](#configuration-for-auto-assigning-createdby-updateby-createdon-updatedon)  
@@ -26,16 +27,17 @@ Just by annotating the models that you would use with JdbcTemplate/JdbcClient, y
 ## Features
 1. One liners for CRUD
 2. Simple configuration similar to Jdbctemplate/JdbClient configuration.
-3. Helper methods to construct SQL for the mapped objects that can be used with Spring row mappers like BeanPropertyRowMapper, SimplePropertyRowMapper, which avoids writing custom row mappers.
-4. Auto assign properties
+3. Helper methods to populate relationships from mutli-table queries
+4. Methods to construct SQL for the mapped objects that can be used with Spring row mappers like BeanPropertyRowMapper, SimplePropertyRowMapper, which avoids writing custom row mappers.
+5. Auto assign properties
     * auto assign audited  by (created by, updated by) by providing a Supplier
     * auto assign audited on (created on, updated on) by providing a Supplier
     * optimistic locking feature for updates using versioning.
-5. Transaction management is the same as in Spring applications since the library is using JdbcTemplate behind the scenes.
-5. To log the SQL statements use the same SQL logging configurations as Spring. See the logging section further below.
-7. Tests are run against PostgreSQL, MySQL, Oracle, SQLServer. Should work with other databases.
+6. Transaction management is the same as in Spring applications since the library is using JdbcTemplate behind the scenes.
+7. To log the SQL statements use the same SQL logging configurations as Spring. See the logging section further below.
+8. Tests are run against PostgreSQL, MySQL, Oracle, SQLServer. Should work with other databases.
 [![CI SimpleJdbcMapper](https://github.com/spring-jdbc-crud/simplejdbcmapper/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/spring-jdbc-crud/simplejdbcmapper/actions/workflows/ci.yml)
-8. Only dependency is Spring JDBC libraries. No other external dependencies.
+9. Only dependency is Spring JDBC libraries. No other external dependencies.
  
 
 ## Example code
@@ -412,6 +414,119 @@ class Product {
   
 }
 ```
+## Populating relationships from custom queries
+
+###ToMany relationship:
+Order has many OrderLine. Code and explanation below:
+
+```  
+  // Define the multiple mapped entities you want to select. Explanation on the next step.
+  MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol");
+  
+  /* 
+     Get the columns for your 'SELECT' using sjm.getMultiEntitySqlColumns(multiEntity). For the method to generate the columns 
+     sql correctly, the table alias argument for each entity in 'MultiEntity' should match exactly the table aliases in 
+     your custom query. In this case 'o' for Order.class which has been mapped to  the 'orders' table and
+     'ol' for OrderLine.class which has been mapped to 'order_line' table.
+     Creating the SQL using java String blocks makes the queries quite readable.
+  */
+  String sql = """
+      SELECT %s
+      FROM orders o
+      LEFT JOIN order_line ol ON  o.id = ol.order_id
+      WHERE o.total_amount >= ?
+      ORDER BY o.order_date DESC, ol.order_line_id
+   """.formatted(sjm.getMultiEntitySqlColumns(multiEntity));
+   
+   // Use the framework ResultExtrator sjm.resultSetExtractor(multiEntity) with JdbcTemplate to extract the data for the 
+   // multiple entities.
+   ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity), someAmount); 
+   
+    // Get the individual result list for each entity
+   List<Order> orders = resultListMap.getList(Order.class);
+   List<OrderLine> orderLines = resultListMap.getList(OrderLine.class);
+   
+   /*
+     Now that you have the individual lists, use the Relationship api to populate the 'orderLines' property of 'order' objects
+     in the 'orders' list. In this case since its a toMany relationship we are using 'toManyList()'.
+     Last method in the api chain is 'populate()'.  The main list 'orders' will get modified in place (ie no new list is created).
+   */
+   Relationship.mainList(orders).toManyList(orderLines).joinOn("id", "orderId").populate("orderLines");
+```
+1. The columns sql generated from sjm.getMultiEntitySqlColumns(multiEntity) and the framework ResultSetExtractor work together. The extractor expects columns in a specific order so do not modify the columns string in any way.
+2. The extractor returns results for each entity with no duplicates ie unique by ID.
+3. The main list is modified in place ie no new list is created.
+4. Relationship class works with the lists provided and does not access database or use SimpleJdbcMapper.
+5. The property being populated by toManyList() has to be always of type ArrayList. In the above example order.orderLines has to be ArrayList.
+6. In the example there was only one query parameter so JdbcTemplate was used. If you have many parameters you can use NamedParameterJdbcTemplate with the frameworks ResultSetExtractor.
+7. Multi-entity processing can handle more than one relationship.
+
+
+### Multiple relationships with one query
+Use Multi-entity processing to populate multiple relationships. 
+
+Order hasMany OrderLines
+OrderLine hasOne Product
+
+```
+  // define your entities. The aliases should exactly match the aliases used in the query.
+  MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol").add(Product.class,"p");
+  
+  // build your custom sql using the columns sql from sjm.getMultiEntitySqlColumns(multiEntity)
+  String sql = """
+      SELECT %s
+      FROM orders o
+      LEFT JOIN order_line ol ON  o.id = ol.order_id
+      LEFT JOIN product p ON ol.product_id = p.id
+      WHERE o.total_amount >= ? 
+      ORDER BY o.order_date DESC, ol.order_line_id
+      """.formatted(sjm.getMultiEntitySqlColumns(multiEntity));
+ 
+ // Use JdbcTemplate with the framework extractor to extract results for the entities.
+  ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity), someAmount);
+  
+  // Get the results list for each entity
+  List<Order> orders = resultListMap.getList(Order.class);
+  List<OrderLine> orderLines = resultListMap.getList(OrderLine.class);
+  List<Product> products = resultListMap.getList(Product.class);
+   
+  // like previous example populate the orderLines collection using toManyList().
+  Relationship.mainList(orders).toManyList(orderLines).joinOn("id", "orderId").populate("orderLines");
+  /*
+    populate the toOne relationship, the 'product' property on OrderLine using toOneList(). 
+    Now  orders has is 'orderLines' populated and OrderLine has its 'product' property populate.
+  */
+  Relationship.mainList(orderLines).toOneList(products).joinOn("productId", "id").populate("product");
+```
+### ToMany relationship through an intermediate table
+Employee has many skills through intermediate table 'employee_skill'
+
+```
+  // Define the entities. The intermediate table needs to be selected also
+  MultiEntity multiEntity = new MultiEntity().add(Employee.class, "emp").add(EmployeeSkill.class, "es").add(Skill.class, "s");
+  
+  // build your custom sql using the columns sql from sjm.getMultiEntitySqlColumns(multiEntity)
+  String sql = """
+      SELECT %s
+      FROM employee emp
+      LEFT JOIN  employee_skill es ON emp.id = es.employee_id
+      LEFT JOIN skill s ON es.skill_id = s.id
+      WHERE emp.id <= 4
+      ORDER BY emp.id, s.id
+  """.formatted(sjm.getMultiEntitySqlColumns(multiEntity));
+  
+    // Use JdbcTemplate with the framework extractor to extract results for the entities.
+    ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
+    
+     // Get the results list for each entity
+    List<Employee> employees = resultListMap.getList(Employee.class);
+    List<EmployeeSkill> employeeSkillList = resultListMap.getList(EmployeeSkill.class);
+    List<Skill> skills = resultListMap.getList(Skill.class);
+    
+    // populate employee.skills property. Here we are using toManyList() with through(). 
+    Relationship.mainList(employees).toManyList(skills).through(employeeSkillList, "employeeId", "skillId").ids("id", "id").populate("skills");
+```
+
 
 ## BLOB CLOB mapping
 

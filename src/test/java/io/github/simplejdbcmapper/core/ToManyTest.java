@@ -156,7 +156,6 @@ class ToManyTest {
 		});
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	void OrderToManyOrderLines_success() {
 
@@ -188,7 +187,38 @@ class ToManyTest {
 
 	}
 
-	@SuppressWarnings("unchecked")
+	@Test
+	void OrderToManyOrderLinesWithProduct_success() {
+
+		MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol").add(Product.class,
+				"");
+
+		String sql = """
+				SELECT %s
+				FROM orders o
+				LEFT JOIN order_line ol ON  o.id = ol.order_id
+				WHERE o.id <= 4
+				ORDER BY o.id, ol.order_line_id
+				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
+
+		ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
+
+		List<Order> orders = resultListMap.getList(Order.class);
+		List<OrderLine> orderLines = resultListMap.getList(OrderLine.class);
+
+		Relationship.mainList(orders).toManyList(orderLines).joinOn("id", "orderId").populate("orderLines");
+
+		assertEquals(4, orders.size());
+		assertEquals(2, orders.get(0).getOrderLines().size(), "ord 1 lines count failed");
+		assertEquals(0, orders.get(2).getOrderLines().size(), "ord 3 lines count failed");
+		assertEquals(1, orders.get(3).getOrderLines().size(), "ord 4 lines count failed");
+
+		assertEquals(5, orders.get(0).getOrderLines().get(1).getNumOfUnits(), "ord 1 OrderLine 2 num_of_units failed");
+
+		assertEquals(1, orders.get(1).getOrderLines().get(0).getNumOfUnits(), "ord 2 OrderLine 3 num_of_units failed");
+
+	}
+
 	@Test
 	void ToMany_null_entry_tests() {
 
@@ -202,7 +232,6 @@ class ToManyTest {
 				ORDER BY o.id, ol.order_line_id
 				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
 
-		@SuppressWarnings("rawtypes")
 		ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 
 		List<Order> orders = resultListMap.getList(Order.class);
@@ -220,7 +249,6 @@ class ToManyTest {
 
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	void ToMany_NoPropertyValues_entry_tests() {
 
@@ -251,7 +279,6 @@ class ToManyTest {
 
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	void ToMany_null_list_tests() {
 
@@ -280,7 +307,6 @@ class ToManyTest {
 
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	void OrderToManyOrderLinesWhichHasOneProduct_success() {
 
@@ -296,7 +322,6 @@ class ToManyTest {
 				ORDER BY o.id, ol.order_line_id
 				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
 
-		@SuppressWarnings("rawtypes")
 		ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 
 		List<Order> orders = resultListMap.getList(Order.class);
@@ -321,7 +346,6 @@ class ToManyTest {
 
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	void employeeToManySkillsThroughIntermediateTable_success() {
 
@@ -358,7 +382,6 @@ class ToManyTest {
 
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	void toManyThrough_null_entries_test() {
 
@@ -374,7 +397,6 @@ class ToManyTest {
 				ORDER BY emp.id, s.id
 				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
 
-		@SuppressWarnings("rawtypes")
 		ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 
 		List<Employee> employees = resultListMap.getList(Employee.class);
@@ -392,7 +414,6 @@ class ToManyTest {
 
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	void ToManyThrough_no_propertyValues_entry_test() {
 
@@ -408,7 +429,6 @@ class ToManyTest {
 				ORDER BY emp.id, s.id
 				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
 
-		@SuppressWarnings("rawtypes")
 		ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 
 		List<Employee> employees = resultListMap.getList(Employee.class);
@@ -426,7 +446,6 @@ class ToManyTest {
 
 	}
 
-	@SuppressWarnings("unchecked")
 	@Test
 	void ToManyThrough_null_lists_test() {
 
@@ -442,7 +461,6 @@ class ToManyTest {
 				ORDER BY emp.id, s.id
 				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
 
-		@SuppressWarnings("rawtypes")
 		ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 
 		List<Employee> employees = resultListMap.getList(Employee.class);

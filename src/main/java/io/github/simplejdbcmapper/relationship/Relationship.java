@@ -3,7 +3,9 @@ package io.github.simplejdbcmapper.relationship;
 import java.util.List;
 
 /**
- * The starting point for any relationship assignment
+ * The starting point for any relationship assignment. It works with the lists
+ * provided and depending on the arguments to the fluent api methods, populates
+ * the target property.
  * 
  * @param <T> the type of the main list
  */

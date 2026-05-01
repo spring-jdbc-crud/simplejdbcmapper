@@ -19,7 +19,7 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Helper class to avoid user needing to cast lists. See
+ * This holds the results from a multi-entity query. See
  * {@link io.github.simplejdbcmapper.core.SimpleJdbcMapper#resultSetExtractor}
  *
  * @author Antony Joseph

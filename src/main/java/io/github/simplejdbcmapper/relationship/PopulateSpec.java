@@ -14,14 +14,15 @@
 package io.github.simplejdbcmapper.relationship;
 
 /**
- * The PopulateSpec the last method in the fluent api.
+ * The populate specification for the last method in the fluent api which
+ * triggers processing of the relationship.
  * 
  * @author Antony Joseph
  */
 public interface PopulateSpec {
 	/**
-	 * This is the last method of the fluent api flow. Once invoked the relationship
-	 * gets processed and the target property gets set.
+	 * Once invoked the relationship gets processed and the target property gets
+	 * set.
 	 * 
 	 * <p>
 	 * For a toMany relationship the target property always has to be an ArrayList.

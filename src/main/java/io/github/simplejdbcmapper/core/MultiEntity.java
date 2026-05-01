@@ -22,8 +22,8 @@ import org.springframework.util.Assert;
 import io.github.simplejdbcmapper.exception.MapperException;
 
 /**
- * Used in multi entity processing. Information in the class is used to generate
- * the multi-entity sql columns and for the frameworks resultSetExtractorr
+ * Used in multi-entity processing. Holds information used to generate the
+ * multi-entity columns sql and for the frameworks resultSetExtractor
  * 
  * @author Antony Joseph
  */

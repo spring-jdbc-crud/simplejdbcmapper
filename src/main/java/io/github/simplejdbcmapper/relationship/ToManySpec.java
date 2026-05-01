@@ -36,7 +36,7 @@ public interface ToManySpec<T, U> {
 	PopulateSpec joinOn(String mainObjIdProperty, String relatedObjFkProperty);
 
 	/**
-	 * The through information when defining a toMany relationship through an
+	 * The 'through' information when defining a toMany relationship through an
 	 * intermediate table
 	 * 
 	 * @param intermediateList         The intermediate table list

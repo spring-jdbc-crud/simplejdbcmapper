@@ -19,7 +19,10 @@ import java.util.List;
  * The starting point for any relationship assignment. It works with the lists
  * provided and depending on the arguments to the fluent api methods, populates
  * the target property. The last method in the fluent flow is populate() which
- * triggers the processing
+ * triggers the processing.
+ * 
+ * <p>
+ * Processing does not access the database or use SimpleJdbcMapper.
  * 
  * @author Antony Joseph
  */
@@ -32,7 +35,8 @@ public class Relationship<T> implements RelationshipSpec<T> {
 	}
 
 	/**
-	 * Start of creating a relationship
+	 * Start of creating a relationship. The main object is the object whose
+	 * property will be populated using the fluent api.
 	 * 
 	 * @param <T>         the main object type
 	 * @param mainObjList the main object list

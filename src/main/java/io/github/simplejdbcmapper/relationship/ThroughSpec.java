@@ -14,8 +14,8 @@
 package io.github.simplejdbcmapper.relationship;
 
 /**
- * The Through specification. The through information when defining a toMany
- * relationship through an intermediate table.
+ * The Through specification for a toMany relationship through an intermediate
+ * table.
  * 
  * @author Antony Joseph
  */
@@ -23,7 +23,7 @@ public interface ThroughSpec {
 	/**
 	 * The id property names whose values are used to match the corresponding
 	 * property values of properties configured in the through() method
-	 * (intermediate table info)
+	 * (intermediate table info) of the relationship
 	 * 
 	 * @param mainObjIdProperty
 	 * @param relatedObjIdProperty

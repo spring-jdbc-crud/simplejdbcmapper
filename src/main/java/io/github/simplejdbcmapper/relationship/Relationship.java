@@ -1,3 +1,16 @@
+/*
+ * Copyright 2025-present the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ *
+ * https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package io.github.simplejdbcmapper.relationship;
 
 import java.util.List;
@@ -5,9 +18,10 @@ import java.util.List;
 /**
  * The starting point for any relationship assignment. It works with the lists
  * provided and depending on the arguments to the fluent api methods, populates
- * the target property.
+ * the target property. The last method in the fluent flow is populate() which
+ * triggers the processing
  * 
- * @param <T> the type of the main list
+ * @author Antony Joseph
  */
 public class Relationship<T> implements RelationshipSpec<T> {
 
@@ -20,7 +34,7 @@ public class Relationship<T> implements RelationshipSpec<T> {
 	/**
 	 * Start of creating a relationship
 	 * 
-	 * @param <T>
+	 * @param <T>         the main object type
 	 * @param mainObjList the main object list
 	 * @return A relationship
 	 */
@@ -31,7 +45,6 @@ public class Relationship<T> implements RelationshipSpec<T> {
 	/**
 	 * A toOne relationship
 	 * 
-	 * @param <T>            the type of the main object
 	 * @param <U>            the type of the related object
 	 * 
 	 * @param relatedObjList the list of related objects
@@ -44,10 +57,11 @@ public class Relationship<T> implements RelationshipSpec<T> {
 	/**
 	 * A toMany relationship
 	 * 
-	 * @param <T>            the type of the main object
 	 * @param <U>            the type of the related object
 	 * 
 	 * @param relatedObjList the list of related objects
+	 * 
+	 * @return The ToManySpec
 	 */
 	public <U> ToManySpec<T, U> toManyList(List<U> relatedObjList) {
 		return ToMany.toMany(mainObjList, relatedObjList);

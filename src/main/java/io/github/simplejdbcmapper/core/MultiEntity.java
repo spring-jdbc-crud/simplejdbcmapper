@@ -22,11 +22,22 @@ import org.springframework.util.Assert;
 import io.github.simplejdbcmapper.exception.MapperException;
 
 /**
+ * Used in multi entity processing. Information in the class is used to generate
+ * the multi-entity sql columns and for the frameworks resultSetExtractorr
+ * 
  * @author Antony Joseph
  */
 public class MultiEntity {
 	private final List<Map.Entry<Class<?>, String>> entries = new ArrayList<>();
 
+	/**
+	 * Used add entities for multi-entity processing.
+	 * 
+	 * @param entityType The entityType
+	 * @param tableAlias The table alias for the entity which is used when
+	 *                   generating the columns sql
+	 * @return the MultiEntity
+	 */
 	public MultiEntity add(Class<?> entityType, String tableAlias) {
 		Assert.notNull(entityType, "entityType must not be null");
 		InternalUtils.validateTableAlias(tableAlias);

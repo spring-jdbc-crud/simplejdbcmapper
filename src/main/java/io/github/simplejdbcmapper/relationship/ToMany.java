@@ -1,3 +1,16 @@
+/*
+ * Copyright 2025-present the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ *
+ * https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package io.github.simplejdbcmapper.relationship;
 
 import java.util.ArrayList;
@@ -10,6 +23,15 @@ import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
+/**
+ * This handles the toMany relationship including toMany through an intermediate
+ * table.
+ * 
+ * @param <T> The main object type
+ * @param <U> The related object type
+ * 
+ * @author Antony Joseph
+ */
 public class ToMany<T, U> implements ToManySpec<T, U>, ThroughSpec, PopulateSpec {
 
 	private String mainObjIdProperty;
@@ -151,7 +173,7 @@ public class ToMany<T, U> implements ToManySpec<T, U>, ThroughSpec, PopulateSpec
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	void populateToManyThrough() {
+	private void populateToManyThrough() {
 		if (CollectionUtils.isEmpty(mainObjList) || CollectionUtils.isEmpty(relatedObjList)) {
 			return;
 		}
@@ -230,7 +252,7 @@ public class ToMany<T, U> implements ToManySpec<T, U>, ThroughSpec, PopulateSpec
 		}
 
 		@SuppressWarnings("rawtypes")
-		public List getRelatedObjIds(Object mainObjId) {
+		List getRelatedObjIds(Object mainObjId) {
 			return mainObjIdMap.get(mainObjId);
 		}
 	}

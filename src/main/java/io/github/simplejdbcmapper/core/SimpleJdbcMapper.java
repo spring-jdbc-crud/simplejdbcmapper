@@ -370,28 +370,8 @@ public final class SimpleJdbcMapper {
 
 	/**
 	 * 
-	 * 
-	 * 
-	 * Example usage:
-	 * 
-	 * <pre>
-	 * MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol");
-	 * 
-	 * String sql = """
-	 * 		SELECT %s
-	 * 		FROM orders o
-	 * 		LEFT JOIN order_line ol ON  o.id = ol.order_id
-	 * 		WHERE o.total_amount >= ?
-	 * 		ORDER BY o.order_date
-	 * 		""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
-	 * 
-	 * ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity), someAmount);
-	 * 
-	 * List<Order> orders = resultListMap.getList(Order.class);
-	 * List<OrderLine> orderLines = resultListMap.getList(OrderLine.class);
-	 * 
-	 * </pre>
-	 * 
+	 * @param multiEntity The holds information of the entities that need to be
+	 *                    extracted from the query ResultSet
 	 * @return a Spring ResultSetExtractor that can be used with
 	 *         JdbcTemplate/JdbcClient
 	 */

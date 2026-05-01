@@ -511,7 +511,6 @@ Employee has many skills through intermediate table 'employee_skill'
       FROM employee emp
       LEFT JOIN  employee_skill es ON emp.id = es.employee_id
       LEFT JOIN skill s ON es.skill_id = s.id
-      WHERE emp.id <= 4
       ORDER BY emp.id, s.id
   """.formatted(sjm.getMultiEntitySqlColumns(multiEntity));
   
@@ -520,7 +519,7 @@ Employee has many skills through intermediate table 'employee_skill'
     
      // Get the results list for each entity
     List<Employee> employees = resultListMap.getList(Employee.class);
-    List<EmployeeSkill> employeeSkillList = resultListMap.getList(EmployeeSkill.class);
+    List<EmployeeSkill> employeeSkillList = resultListMap.getList(EmployeeSkill.class); // intermediat table info
     List<Skill> skills = resultListMap.getList(Skill.class);
     
     // populate employee.skills property. Here we are using toManyList() with through(). 

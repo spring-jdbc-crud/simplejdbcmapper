@@ -25,17 +25,25 @@ import org.springframework.util.CollectionUtils;
 
 /**
  * 
- * Some utility methods.
+ * @deprecated Use {@link io.github.simplejdbcmapper.relationship.Relationship}
+ *             instead.
+ *             <p>
+ *             Some utility methods.
  * 
  * @author Antony Joseph
  */
+@Deprecated(since = "2.3.0", forRemoval = true)
 public class SimpleJdbcMapperUtils {
 	/**
-	 * Assigns the 'hasOne' property of the main object with the related object that
-	 * matches 'relatedObjJoinPropertyNameTheId' and
-	 * 'mainObjJoinPropertyNameTheForeignKey'.
 	 * 
-	 * <pre>
+	 * @deprecated As of release 2.3.0, Replaced by
+	 *             {@link io.github.simplejdbcmapper.relationship.Relationship#toOneList}
+	 *             <p>
+	 *             Assigns the 'hasOne' property of the main object with the related
+	 *             object that matches 'relatedObjJoinPropertyNameTheId' and
+	 *             'mainObjJoinPropertyNameTheForeignKey'.
+	 * 
+	 *             <pre>
 	 * Example use case: 
 	 * 1) Query for a list of employees
 	 * 2) Query the departments for these employees. (Could use {@link io.github.simplejdbcmapper.core.SimpleJdbcMapper#findByPropertyValues} for this)
@@ -90,11 +98,15 @@ public class SimpleJdbcMapperUtils {
 	}
 
 	/**
-	 * Assigns the 'hasMany' property of the main object with the list of related
-	 * objects that match 'mainObjJoinPropertyNameTheId' and
-	 * 'relatedObjJoinPropertyNameTheForeignKey'.
 	 * 
-	 * <pre>
+	 * @deprecated As of release 2.3.0, Replaced by
+	 *             {@link io.github.simplejdbcmapper.relationship.Relationship#toManyList}
+	 *             <p>
+	 *             Assigns the 'hasMany' property of the main object with the list
+	 *             of related objects that match 'mainObjJoinPropertyNameTheId' and
+	 *             'relatedObjJoinPropertyNameTheForeignKey'.
+	 * 
+	 *             <pre>
 	 * Example use case could be: 
 	 * 1) Query to get a list of employees
 	 * 2) Query the skills of these employees. (Could use {@link io.github.simplejdbcmapper.core.SimpleJdbcMapper#findByPropertyValues} for this)
@@ -159,9 +171,13 @@ public class SimpleJdbcMapperUtils {
 	}
 
 	/**
-	 * Splits the list into multiple lists by chunk size. Can be used to split the
-	 * sql IN clauses since some databases have a limitation on 'IN' clause entries
-	 * and size
+	 * @deprecated As of release 2.3.0, Will be removed in a future major release.
+	 *             If you need it please go ahead and make a copy of it.
+	 *             <p>
+	 * 
+	 *             Splits the list into multiple lists by chunk size. Can be used to
+	 *             split the sql IN clauses since some databases have a limitation
+	 *             on 'IN' clause entries and size
 	 *
 	 * @param <T>       the type of list
 	 * @param list      the list to chunk

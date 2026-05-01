@@ -15,8 +15,8 @@ CREATE TABLE SCHEMA1.orders (
 CREATE TABLE SCHEMA1.order_line (
 	order_line_id NUMBER GENERATED ALWAYS AS IDENTITY,
 	order_id NUMBER NOT NULL,
-	product_id NUMBER NOT NULL,
-	num_of_units NUMBER NULL,
+	product_id NUMBER,
+	num_of_units NUMBER,
 	non_model_column varchar(100),
 	CONSTRAINT order_line_pk PRIMARY KEY (order_line_id)
 );

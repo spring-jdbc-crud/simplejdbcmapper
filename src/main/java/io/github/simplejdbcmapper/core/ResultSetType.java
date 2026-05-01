@@ -18,8 +18,8 @@ import java.sql.Blob;
 import java.sql.Clob;
 
 /**
- * This enum is there because we want the switch statements in the
- * EntityRowMapper to be compiled into a 'tableswitch' by java (which it does).
+ * enum for switch statements in the EntityRowMapper so it can be compiled into
+ * a 'tableswitch' by java (which it does).
  *
  * @author Antony Joseph
  */

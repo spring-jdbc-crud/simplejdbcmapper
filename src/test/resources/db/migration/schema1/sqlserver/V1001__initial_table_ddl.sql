@@ -16,8 +16,8 @@ CREATE TABLE schema1.orders(
 CREATE TABLE schema1.order_line (
 	order_line_id int IDENTITY(1,1) NOT NULL,
 	order_id int NOT NULL,
-	product_id int NOT NULL,
-	num_of_units int NULL,
+	product_id int,
+	num_of_units int,
 	non_model_column varchar(100),
 	CONSTRAINT order_line_pk PRIMARY KEY (order_line_id)
 );

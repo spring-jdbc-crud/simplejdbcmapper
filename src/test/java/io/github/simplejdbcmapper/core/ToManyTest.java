@@ -159,7 +159,7 @@ class ToManyTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	void OrderHasManyOrderLines_success() {
+	void OrderToManyOrderLines_success() {
 
 		MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol");
 
@@ -192,7 +192,101 @@ class ToManyTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	void OrderHasManyOrderLinesWhichHasOneProduct_success() {
+	void ToMany_null_entry_tests() {
+
+		MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol");
+
+		String sql = """
+				SELECT %s
+				FROM orders o
+				LEFT JOIN order_line ol ON  o.id = ol.order_id
+				WHERE o.id <= 4
+				ORDER BY o.id, ol.order_line_id
+				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
+
+		@SuppressWarnings("rawtypes")
+		Map<Class, List> resultMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
+
+		List<Order> orders = resultMap.get(Order.class);
+		List<OrderLine> orderLines = resultMap.get(OrderLine.class);
+
+		orders.add(1, null);
+
+		orderLines.add(1, null);
+
+		Relationship.mainList(orders).toManyList(orderLines).joinOn("id", "orderId").populate("orderLines");
+
+		assertEquals(5, orders.get(0).getOrderLines().get(1).getNumOfUnits());
+
+		assertEquals(1, orders.get(2).getOrderLines().get(0).getNumOfUnits());
+
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	void ToMany_NoPropertyValues_entry_tests() {
+
+		MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol");
+
+		String sql = """
+				SELECT %s
+				FROM orders o
+				LEFT JOIN order_line ol ON  o.id = ol.order_id
+				WHERE o.id <= 4
+				ORDER BY o.id, ol.order_line_id
+				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
+
+		@SuppressWarnings("rawtypes")
+		Map<Class, List> resultMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
+
+		List<Order> orders = resultMap.get(Order.class);
+		List<OrderLine> orderLines = resultMap.get(OrderLine.class);
+
+		orders.add(1, new Order());
+
+		orderLines.add(1, new OrderLine());
+
+		Relationship.mainList(orders).toManyList(orderLines).joinOn("id", "orderId").populate("orderLines");
+
+		assertEquals(5, orders.get(0).getOrderLines().get(1).getNumOfUnits());
+
+		assertEquals(1, orders.get(2).getOrderLines().get(0).getNumOfUnits());
+
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	void ToMany_null_list_tests() {
+
+		MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol");
+
+		String sql = """
+				SELECT %s
+				FROM orders o
+				LEFT JOIN order_line ol ON  o.id = ol.order_id
+				WHERE o.id <= 4
+				ORDER BY o.id, ol.order_line_id
+				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
+
+		@SuppressWarnings("rawtypes")
+		Map<Class, List> resultMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
+
+		List<Order> orders = resultMap.get(Order.class);
+		List<OrderLine> orderLines = resultMap.get(OrderLine.class);
+
+		assertDoesNotThrow(() -> {
+			Relationship.mainList(null).toManyList(orderLines).joinOn("id", "orderId").populate("orderLines");
+		});
+
+		assertDoesNotThrow(() -> {
+			Relationship.mainList(orders).toManyList(null).joinOn("id", "orderId").populate("orderLines");
+		});
+
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	void OrderToManyOrderLinesWhichHasOneProduct_success() {
 
 		MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol").add(Product.class,
 				"p");
@@ -233,7 +327,7 @@ class ToManyTest {
 
 	@SuppressWarnings("unchecked")
 	@Test
-	void employeeHasManySkillsThroughIntermediateTable_success() {
+	void employeeToManySkillsThroughIntermediateTable_success() {
 
 		MultiEntity multiEntity = new MultiEntity().add(Employee.class, "emp").add(EmployeeSkill.class, "es")
 				.add(Skill.class, "s");
@@ -266,6 +360,114 @@ class ToManyTest {
 		assertEquals("java", employees.get(0).getSkills().get(0).getName(), "emp id 1 first skill failed");
 
 		assertEquals("ruby", employees.get(2).getSkills().get(2).getName(), "emp id 2 last skill failed");
+
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	void toManyThrough_null_entries_test() {
+
+		MultiEntity multiEntity = new MultiEntity().add(Employee.class, "emp").add(EmployeeSkill.class, "es")
+				.add(Skill.class, "s");
+
+		String sql = """
+				SELECT %s
+				FROM employee emp
+				LEFT JOIN  employee_skill es ON emp.id = es.employee_id
+				LEFT JOIN skill s ON es.skill_id = s.id
+				WHERE emp.id <= 4
+				ORDER BY emp.id, s.id
+				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
+
+		@SuppressWarnings("rawtypes")
+		Map<Class, List> resultMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
+
+		List<Employee> employees = resultMap.get(Employee.class);
+		employees.add(1, null);
+		List<EmployeeSkill> employeeSkillList = resultMap.get(EmployeeSkill.class);
+		employeeSkillList.add(0, null);
+
+		List<Skill> skills = resultMap.get(Skill.class);
+		skills.add(2, null);
+
+		Relationship.mainList(employees).toManyList(skills).through(employeeSkillList, "employeeId", "skillId")
+				.ids("id", "id").populate("skills");
+
+		assertEquals("ruby", employees.get(3).getSkills().get(2).getName());
+
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	void ToManyThrough_no_propertyValues_entry_test() {
+
+		MultiEntity multiEntity = new MultiEntity().add(Employee.class, "emp").add(EmployeeSkill.class, "es")
+				.add(Skill.class, "s");
+
+		String sql = """
+				SELECT %s
+				FROM employee emp
+				LEFT JOIN  employee_skill es ON emp.id = es.employee_id
+				LEFT JOIN skill s ON es.skill_id = s.id
+				WHERE emp.id <= 4
+				ORDER BY emp.id, s.id
+				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
+
+		@SuppressWarnings("rawtypes")
+		Map<Class, List> resultMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
+
+		List<Employee> employees = resultMap.get(Employee.class);
+		employees.add(1, new Employee());
+		List<EmployeeSkill> employeeSkillList = resultMap.get(EmployeeSkill.class);
+		employeeSkillList.add(0, new EmployeeSkill());
+
+		List<Skill> skills = resultMap.get(Skill.class);
+		skills.add(2, new Skill());
+
+		Relationship.mainList(employees).toManyList(skills).through(employeeSkillList, "employeeId", "skillId")
+				.ids("id", "id").populate("skills");
+
+		assertEquals("ruby", employees.get(3).getSkills().get(2).getName());
+
+	}
+
+	@SuppressWarnings("unchecked")
+	@Test
+	void ToManyThrough_null_lists_test() {
+
+		MultiEntity multiEntity = new MultiEntity().add(Employee.class, "emp").add(EmployeeSkill.class, "es")
+				.add(Skill.class, "s");
+
+		String sql = """
+				SELECT %s
+				FROM employee emp
+				LEFT JOIN  employee_skill es ON emp.id = es.employee_id
+				LEFT JOIN skill s ON es.skill_id = s.id
+				WHERE emp.id <= 4
+				ORDER BY emp.id, s.id
+				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
+
+		@SuppressWarnings("rawtypes")
+		Map<Class, List> resultMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
+
+		List<Employee> employees = resultMap.get(Employee.class);
+		List<EmployeeSkill> employeeSkillList = resultMap.get(EmployeeSkill.class);
+		List<Skill> skills = resultMap.get(Skill.class);
+
+		assertDoesNotThrow(() -> {
+			Relationship.mainList(null).toManyList(skills).through(employeeSkillList, "employeeId", "skillId")
+					.ids("id", "id").populate("skills");
+		});
+
+		assertDoesNotThrow(() -> {
+			Relationship.mainList(employees).toManyList(null).through(employeeSkillList, "employeeId", "skillId")
+					.ids("id", "id").populate("skills");
+		});
+
+		assertDoesNotThrow(() -> {
+			Relationship.mainList(employees).toManyList(skills).through(null, "employeeId", "skillId").ids("id", "id")
+					.populate("skills");
+		});
 
 	}
 

@@ -109,14 +109,14 @@ public class ToMany<T, U> implements ToManySpec<T, U>, ThroughSpec, PopulateSpec
 		}
 		this.mainObjPropertyToPopulate = mainObjPropertyToPopulate;
 		if ("hasMany".equals(relationshipType)) {
-			populateHasMany();
+			populateToMany();
 		} else {
-			populateHasManyThrough();
+			populateToManyThrough();
 		}
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private void populateHasMany() {
+	private void populateToMany() {
 		if (CollectionUtils.isEmpty(mainObjList) || CollectionUtils.isEmpty(relatedObjList)) {
 			return;
 		}
@@ -151,7 +151,7 @@ public class ToMany<T, U> implements ToManySpec<T, U>, ThroughSpec, PopulateSpec
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	void populateHasManyThrough() {
+	void populateToManyThrough() {
 		if (CollectionUtils.isEmpty(mainObjList) || CollectionUtils.isEmpty(relatedObjList)) {
 			return;
 		}
@@ -211,16 +211,18 @@ public class ToMany<T, U> implements ToManySpec<T, U>, ThroughSpec, PopulateSpec
 				return;
 			}
 			for (Object intermediateObj : intermediateList) {
-				BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(intermediateObj);
-				Object mainObjIdValue = bw.getPropertyValue(fkPropertyToMainObjId);
-				Object relatedObjIdValue = bw.getPropertyValue(fkPropertyToRelatedObjId);
-				if (mainObjIdValue != null && relatedObjIdValue != null) {
-					if (mainObjIdMap.containsKey(mainObjIdValue)) {
-						mainObjIdMap.get(mainObjIdValue).add(relatedObjIdValue);
-					} else {
-						List list = new ArrayList();
-						list.add(relatedObjIdValue);
-						mainObjIdMap.put(mainObjIdValue, list);
+				if (intermediateObj != null) {
+					BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(intermediateObj);
+					Object fkToMainObjIdValue = bw.getPropertyValue(fkPropertyToMainObjId);
+					Object fkToRelatedObjIdValue = bw.getPropertyValue(fkPropertyToRelatedObjId);
+					if (fkToMainObjIdValue != null && fkToRelatedObjIdValue != null) {
+						if (mainObjIdMap.containsKey(fkToMainObjIdValue)) {
+							mainObjIdMap.get(fkToMainObjIdValue).add(fkToRelatedObjIdValue);
+						} else {
+							List list = new ArrayList();
+							list.add(fkToRelatedObjIdValue);
+							mainObjIdMap.put(fkToMainObjIdValue, list);
+						}
 					}
 				}
 			}

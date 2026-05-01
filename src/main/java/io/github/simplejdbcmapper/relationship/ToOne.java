@@ -59,10 +59,10 @@ public class ToOne<T, U> implements ToOneSpec<T, U>, PopulateSpec {
 					+ " does not exist for " + bwMainObj.getWrappedClass().getName());
 		}
 		this.mainObjPropertyToPopulate = mainObjPropertyToPopulate;
-		populateHasOne();
+		populateToOne();
 	}
 
-	private void populateHasOne() {
+	private void populateToOne() {
 		if (CollectionUtils.isEmpty(mainObjList) || CollectionUtils.isEmpty(relatedObjList)) {
 			return;
 		}

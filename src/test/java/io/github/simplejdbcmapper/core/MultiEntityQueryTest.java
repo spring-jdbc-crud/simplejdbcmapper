@@ -37,10 +37,9 @@ class MultiEntityQueryTest {
 				LEFT JOIN product p ON ol.product_id = p.id
 				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
 
-		@SuppressWarnings("rawtypes")
 		Map<Class, List> resultMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 
-		List<Order> orders = resultMap.get(Order.class);
+		List<?> orders = resultMap.get(Order.class);
 		List<OrderLine> orderLines = resultMap.get(OrderLine.class);
 		List<Product> products = resultMap.get(Product.class);
 

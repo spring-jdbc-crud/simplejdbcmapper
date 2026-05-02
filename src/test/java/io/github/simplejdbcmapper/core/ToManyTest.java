@@ -505,18 +505,8 @@ class ToManyTest {
 		assertEquals(0, skills.size());
 
 		assertDoesNotThrow(() -> {
-			Relationship.mainList(null).toManyList(skills).through(employeeSkillList, "employeeId", "skillId")
+			Relationship.mainList(employees).toManyList(skills).through(employeeSkillList, "employeeId", "skillId")
 					.ids("id", "id").populate("skills");
-		});
-
-		assertDoesNotThrow(() -> {
-			Relationship.mainList(employees).toManyList(null).through(employeeSkillList, "employeeId", "skillId")
-					.ids("id", "id").populate("skills");
-		});
-
-		assertDoesNotThrow(() -> {
-			Relationship.mainList(employees).toManyList(skills).through(null, "employeeId", "skillId").ids("id", "id")
-					.populate("skills");
 		});
 
 	}

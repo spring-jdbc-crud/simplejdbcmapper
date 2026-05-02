@@ -57,12 +57,12 @@ public class TestUtils {
 		}
 	}
 
-	public static MultiEntityExtractor getMultiEntitySupport(SimpleJdbcMapper sjm) {
+	public static MultiEntityExtractorTest getMultiEntitySupport(SimpleJdbcMapper sjm) {
 		try {
 			Field field = sjm.getClass().getDeclaredField("multiEntitySupport");
 			field.setAccessible(true);
 
-			return (MultiEntityExtractor) field.get(sjm);
+			return (MultiEntityExtractorTest) field.get(sjm);
 		} catch (Exception e) {
 			throw new RuntimeException(e);
 		}

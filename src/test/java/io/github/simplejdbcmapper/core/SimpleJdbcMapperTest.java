@@ -246,7 +246,7 @@ class SimpleJdbcMapperTest {
 	@Test
 	void getPropertyToColumnMappings_Test() {
 		Map<String, String> map = sjm.getPropertyToColumnMappings(Product.class);
-		assertEquals(9, map.size());
+		assertEquals(10, map.size());
 		assertTrue(map.containsKey("cost"));
 	}
 

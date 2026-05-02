@@ -16,6 +16,9 @@ public class OrderLine {
 	@Column
 	private Integer numOfUnits;
 
+	@Column
+	private String lastMappedCol;
+
 	private Order order;
 
 	private Product product;
@@ -77,4 +80,13 @@ public class OrderLine {
 	public void setStatus(String status) {
 		this.status = status;
 	}
+
+	public String getLastMappedCol() {
+		return lastMappedCol;
+	}
+
+	public void setLastMappedCol(String lastMappedCol) {
+		this.lastMappedCol = lastMappedCol;
+	}
+
 }

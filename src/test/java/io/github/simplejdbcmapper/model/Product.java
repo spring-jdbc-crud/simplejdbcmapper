@@ -37,6 +37,9 @@ public class Product {
 	@Version
 	private Integer version;
 
+	@Column
+	private String lastMappedCol;
+
 	public Integer getId() {
 		return id;
 	}
@@ -107,6 +110,14 @@ public class Product {
 
 	public void setDescription(String description) {
 		this.description = description;
+	}
+
+	public String getLastMappedCol() {
+		return lastMappedCol;
+	}
+
+	public void setLastMappedCol(String lastMappedCol) {
+		this.lastMappedCol = lastMappedCol;
 	}
 
 }

@@ -456,7 +456,7 @@ Order has many OrderLine. Code and explanation below:
 1. The columns sql generated from sjm.getMultiEntitySqlColumns(multiEntity) and the framework ResultSetExtractor work together. The extractor expects columns in a specific order, so absolutely do not modify the columns sql string.
 2. The extractor returns results for each entity with no duplicates ie unique by ID.
 3. The main list is modified in place ie no new list is created.
-4. Relationship class works with the lists provided and does not access database or use SimpleJdbcMapper.
+4. Relationship works with the information provided to it by the fluent api. It does the access database or use SimpleJdbcMapper.
 5. The property being populated by toManyList() has to be always of type ArrayList. In the above example order.orderLines has to be ArrayList.
 6. In the example there was only one query parameter so JdbcTemplate was used. If you have many parameters you can use NamedParameterJdbcTemplate with the framework's ResultSetExtractor.
 7. Multi-entity processing can handle more than one relationship.
@@ -529,11 +529,11 @@ Employee has many skills through intermediate table 'employee_skill'
 ```
 
 ### Mix and match results from multiple queries to populate relationships.
-The Relationship api is agnostic of where the results are from. This means that we can use results from multiple queries to populate relationships. We will use a previous example:
+The Relationship api is agnostic of where the lists provided to it are from. This means that we can use results from multiple queries to populate relationships. We will use a previous example:
 Order has many OrderLines  - Will do this in one query
 OrderLine has one Product  - Will do this in another query 
 
-From the results of the queries we will populate the relationships.
+From the results of these 2 queries we will populate the relationships.
 
 
 ```  
@@ -552,9 +552,8 @@ From the results of the queries we will populate the relationships.
    // get the productId list from orderlines.
    List<Long> pproductIdList = orderLines.stream().map(OrderLine::getProductId).toList();
    List<Product> products = sjm.findByPropertyValues(Product.class, "id", productIdList);  
-   
-   // Now you have orders and its corresponding orderLines and products corresponding to orderLines
-   // the toMany relationship populates order.orderLines property
+  
+   // The toMany relationship populates order.orderLines property
    Relationship.mainList(orders).toManyList(orderLines).joinOn("id", "orderId").populate("orderLines");
    // the toOne relationship populates orderLine.product.
    Relationship.mainList(orderLines).toOneList(products).joinOn("productId", "id").populate("product");

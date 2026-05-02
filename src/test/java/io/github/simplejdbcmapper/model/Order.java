@@ -42,9 +42,14 @@ public class Order {
 	@Version
 	private Integer version;
 
+	@Column
+	private String lastMappedCol;
+
 	private Customer customer;
 
 	private List<OrderLine> orderLines = new ArrayList<>();
+
+	private Person person;
 
 	public Long getId() {
 		return id;
@@ -142,5 +147,12 @@ public class Order {
 		this.person = person;
 	}
 
-	private Person person;
+	public String getLastMappedCol() {
+		return lastMappedCol;
+	}
+
+	public void setLastMappedCol(String lastMappedCol) {
+		this.lastMappedCol = lastMappedCol;
+	}
+
 }

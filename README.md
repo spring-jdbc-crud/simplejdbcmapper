@@ -458,8 +458,9 @@ class Product {
 3. Objects in the main list whose property is going to be set are modified in place ie no new list is created.
 4. [Relationship](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/o/github/simplejdbcmapper/relationship/package-summary.html) works with the information provided by the fluent API. It does not access the database or use SimpleJdbcMapper.
 5. The collection property on the main object being populated by toManyList() **always has to be of type 'List'**. In the above example order.orderLines has to be of type List.
-6. In the example, there was only one query parameter so JdbcTemplate was used. If you have many parameters you can use NamedParameterJdbcTemplate with the framework's ResultSetExtractor.
-7. Multi-entity processing can handle more than one relationship.
+7. Make sure when using the Relationship api the **type of the java properties being matched are exactly the same**. If the types are different, for example one is Long and the other is Integer, equals() will fail and you won't get the expected results. In the above example both properties for joinOn()  have to be the exactly the same type. 
+8. In the example, there was only one query parameter so JdbcTemplate was used. If you have many parameters you can use NamedParameterJdbcTemplate with the framework's ResultSetExtractor.
+9. Multi-entity processing can handle more than one relationship.
 
 
 ### 2.Multiple relationships with one query
@@ -498,6 +499,8 @@ Use Multi-entity processing to populate multiple relationships:
   */
   Relationship.mainList(orderLines).toOneList(products).joinOn("productId", "id").populate("product");
 ```
+1. Make sure both the joinOn() properties have the same java type.
+
 ### 3.ToMany relationship through an intermediate table (one side of many to many)
 - Employee has many Skill through intermediate table 'employee_skill'
 
@@ -525,6 +528,7 @@ Use Multi-entity processing to populate multiple relationships:
     // populate employee.skills property. Here we are using toManyList() with through(). 
     Relationship.mainList(employees).toManyList(skills).through(employeeSkillList, "employeeId", "skillId").ids("id", "id").populate("skills");
 ```
+1. For the above case all 4 properties EmployeeSkill.employeeId, EmployeeSkill.skillId (through()) , Employee.id, Skill.id (ids()) all have to be exactly the same java type.
 
 ### 4.Mix and match results from multiple queries to populate relationships.
 The Relationship api is agnostic of where the lists provided to it are from. This means that we can use results from multiple queries to populate relationships. We will use a previous example:  

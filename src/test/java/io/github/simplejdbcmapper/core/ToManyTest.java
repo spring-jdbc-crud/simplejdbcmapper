@@ -196,7 +196,7 @@ class ToManyTest {
 				SELECT %s
 				FROM orders o
 				LEFT JOIN order_line ol ON  o.id = ol.order_id
-				WHERE o.id < 0
+				WHERE o.id <= 4
 				ORDER BY o.id, ol.order_line_id
 				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
 
@@ -353,7 +353,7 @@ class ToManyTest {
 				LEFT JOIN  employee_skill es ON emp.id = es.employee_id
 				LEFT JOIN skill s ON es.skill_id = s.id
 				WHERE emp.id <= 4
-				ORDER BY emp.id, s.id
+				ORDER BY emp.id, s.name
 				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
 
 		ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
@@ -373,7 +373,7 @@ class ToManyTest {
 
 		assertEquals("java", employees.get(0).getSkills().get(0).getName(), "emp id 1 first skill failed");
 
-		assertEquals("ruby", employees.get(2).getSkills().get(2).getName(), "emp id 2 last skill failed");
+		assertEquals("typescript", employees.get(2).getSkills().get(2).getName(), "emp id 2 last skill failed");
 
 	}
 

@@ -16,7 +16,7 @@ package io.github.simplejdbcmapper.relationship;
 import java.util.List;
 
 /**
- * A relationship specification for populating a target property.
+ * A relationship specification.
  * 
  * @author Antony Joseph
  */

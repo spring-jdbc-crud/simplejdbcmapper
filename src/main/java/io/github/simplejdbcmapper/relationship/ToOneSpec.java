@@ -10,8 +10,8 @@ package io.github.simplejdbcmapper.relationship;
  */
 public interface ToOneSpec<T, U> {
 	/**
-	 * The properties on each list whose values should be matched to populate the
-	 * toOne relationship
+	 * The properties on the two lists whose values should be matched to populate
+	 * the toOne relationship
 	 * 
 	 * @param mainObjJoinProperty    The main object property for matching
 	 * @param relatedObjJoinProperty The related object property for matching

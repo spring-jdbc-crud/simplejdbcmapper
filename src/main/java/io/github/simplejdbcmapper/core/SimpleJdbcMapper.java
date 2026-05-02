@@ -364,16 +364,61 @@ public final class SimpleJdbcMapper {
 		return findOperation.getEntitySqlColumns(entityType, tableAlias);
 	}
 
+	/**
+	 * Gets the columns sql for multi-entity processing.
+	 * 
+	 * For the following multi-entity:
+	 * 
+	 * <pre>
+	 * new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol")
+	 * </pre>
+	 * 
+	 * this will generate columns sql like below:
+	 * 
+	 * <pre>
+	 * o.id AS o_id, o.order_date AS o_order_date, ol.id AS ol_id, ol.product_id AS
+	 * ol_product_id  ...
+	 * </pre>
+	 * 
+	 * It's good practice to keep the table aliases short and succinct.
+	 * 
+	 * @param multiEntity the MultiEntity
+	 * @return columns sql string
+	 */
 	public String getMultiEntitySqlColumns(MultiEntity multiEntity) {
 		return multiEntityExtractor.getMultiEntitySqlColumns(multiEntity);
 	}
 
 	/**
+	 * The ResultSeExtractor for multiple entities.
+	 * 
+	 * For more details, see the <a href=
+	 * "https://github.com/spring-jdbc-crud/simplejdbcmapper#populating-relationships-from-custom-queries">documentation</a>
+	 * <p>
+	 * Example code:
+	 * 
+	 * <pre>
+	 * // Define the multiple mapped entities you want to select.
+	 * MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol");
+	 * // build sql using columns sql from getMultiEntitySqlColumns()
+	 * String sql = """
+	 * 		   SELECT %s
+	 * 		   FROM orders o
+	 * 		   LEFT JOIN order_line ol ON  o.id = ol.order_id
+	 * 		   WHERE o.total_amount >= ?
+	 * 		   ORDER BY o.order_date DESC, ol.order_line_id
+	 * 		""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
+	 * 
+	 * // Use this method with JdbcTemplate to extract the data for the multiple entities. 
+	 * ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity), someAmount);
+	 * 
+	 * </pre>
+	 * 
 	 * 
 	 * @param multiEntity The holds information of the entities that need to be
 	 *                    extracted from the query ResultSet
 	 * @return a Spring ResultSetExtractor that can be used with
-	 *         JdbcTemplate/JdbcClient
+	 *         JdbcTemplate/NamedParameterJdbcClient
 	 */
 	public ResultSetExtractor<ResultListMap> resultSetExtractor(MultiEntity multiEntity) {
 		return multiEntityExtractor.resultSetExtractor(multiEntity);

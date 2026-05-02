@@ -82,7 +82,7 @@ class MultiEntityExtractor {
 								entityExtractor.result().add(obj);
 							}
 						} catch (Exception e) {
-							throw new MapperException(e);
+							throw new MapperException(e.getMessage(), e);
 						}
 					}
 					rowCnt++;

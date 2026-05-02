@@ -188,6 +188,33 @@ class ToManyTest {
 	}
 
 	@Test
+	void toMany_withNoResultRecords_Test() {
+
+		MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol");
+
+		String sql = """
+				SELECT %s
+				FROM orders o
+				LEFT JOIN order_line ol ON  o.id = ol.order_id
+				WHERE o.id < 0
+				ORDER BY o.id, ol.order_line_id
+				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
+
+		ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
+
+		List<Order> orders = resultListMap.getList(Order.class);
+		List<OrderLine> orderLines = resultListMap.getList(OrderLine.class);
+
+		assertEquals(0, orders.size());
+		assertEquals(0, orderLines.size());
+
+		assertDoesNotThrow(() -> {
+			Relationship.mainList(orders).toManyList(orderLines).joinOn("id", "orderId").populate("orderLines");
+		});
+
+	}
+
+	@Test
 	void ToMany_null_entry_tests() {
 
 		MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol");
@@ -434,6 +461,48 @@ class ToManyTest {
 		List<Employee> employees = resultListMap.getList(Employee.class);
 		List<EmployeeSkill> employeeSkillList = resultListMap.getList(EmployeeSkill.class);
 		List<Skill> skills = resultListMap.getList(Skill.class);
+
+		assertDoesNotThrow(() -> {
+			Relationship.mainList(null).toManyList(skills).through(employeeSkillList, "employeeId", "skillId")
+					.ids("id", "id").populate("skills");
+		});
+
+		assertDoesNotThrow(() -> {
+			Relationship.mainList(employees).toManyList(null).through(employeeSkillList, "employeeId", "skillId")
+					.ids("id", "id").populate("skills");
+		});
+
+		assertDoesNotThrow(() -> {
+			Relationship.mainList(employees).toManyList(skills).through(null, "employeeId", "skillId").ids("id", "id")
+					.populate("skills");
+		});
+
+	}
+
+	@Test
+	void ToManyThrough_NoRecords_test() {
+
+		MultiEntity multiEntity = new MultiEntity().add(Employee.class, "emp").add(EmployeeSkill.class, "es")
+				.add(Skill.class, "s");
+
+		String sql = """
+				SELECT %s
+				FROM employee emp
+				LEFT JOIN  employee_skill es ON emp.id = es.employee_id
+				LEFT JOIN skill s ON es.skill_id = s.id
+				WHERE emp.id < 0
+				ORDER BY emp.id, s.id
+				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
+
+		ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
+
+		List<Employee> employees = resultListMap.getList(Employee.class);
+		List<EmployeeSkill> employeeSkillList = resultListMap.getList(EmployeeSkill.class);
+		List<Skill> skills = resultListMap.getList(Skill.class);
+
+		assertEquals(0, employees.size());
+		assertEquals(0, employeeSkillList.size());
+		assertEquals(0, skills.size());
 
 		assertDoesNotThrow(() -> {
 			Relationship.mainList(null).toManyList(skills).through(employeeSkillList, "employeeId", "skillId")

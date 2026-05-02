@@ -457,7 +457,7 @@ class Product {
 2. The extractor returns results for each entity with no duplicates(ie unique by ID) in [ResultListMap](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/io.github.simplejdbcmapper.core.ResultListMap)
 3. Objects in the main list are modified in place ie no new list is created.
 4. [Relationship](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/o/github/simplejdbcmapper/relationship/package-summary.html) works with the information provided by its fluent API. It does not access the database or use SimpleJdbcMapper.
-5. The collection property being populated by toManyList() **always has to be of type 'List'**. In the above example order.orderLines has to be of type List.
+5. The collection property on the main object being populated by toManyList() **always has to be of type 'List'**. In the above example order.orderLines has to be of type List.
 6. In the example there was only one query parameter so JdbcTemplate was used. If you have many parameters you can use NamedParameterJdbcTemplate with the framework's ResultSetExtractor.
 7. Multi-entity processing can handle more than one relationship.
 

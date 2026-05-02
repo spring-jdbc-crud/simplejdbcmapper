@@ -3,7 +3,7 @@
 
 A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations by making them less verbose. Use it as needed and keep using JdbcTemplate/JdbcClient for other functionality.
 
-Just by annotating the models that you would use with JdbcTemplate/JdbcClient, you get single-line CRUD. For custom queries which retrieve mapped objects, you can use row mappers like Spring's BeanPropertyRowMapper/SimplePropertyRowMapper or the framework's EntityRowMapper to get the results without writing custom row mappers.
+Just by annotating the models that you would use with JdbcTemplate/JdbcClient, you get single-line CRUD. Provides helper methods to populate relationships from custom queries.
 
 [Javadoc](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/index.html) | [Demo Application](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper) | [Dzone Article](https://dzone.com/articles/using-simplejdbcmapper-with-spring)
 
@@ -28,7 +28,7 @@ Just by annotating the models that you would use with JdbcTemplate/JdbcClient, y
 1. One liners for CRUD
 2. Simple configuration similar to Jdbctemplate/JdbClient configuration.
 3. Helper methods to populate relationships from mutli-table queries
-4. Methods to construct SQL for the mapped objects that can be used with Spring row mappers like BeanPropertyRowMapper, SimplePropertyRowMapper, which avoids writing custom row mappers.
+4. Method to construct SQL for the mapped objects that can be used with Spring row mappers like BeanPropertyRowMapper, SimplePropertyRowMapper or the framework's EntityRowMapper which avoids writing custom row mappers.
 5. Auto assign properties
     * auto assign audited  by (created by, updated by) by providing a Supplier
     * auto assign audited on (created on, updated on) by providing a Supplier
@@ -424,11 +424,11 @@ class Product {
   MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol");
   
   /* 
-     Get the columns for your 'SELECT' using getMultiEntitySqlColumns(multiEntity). For the method to generate the columns 
+     Get the columns for your 'SELECT' using getMultiEntitySqlColumns(). For the method to generate the columns 
      sql correctly, the table alias argument for each entity in 'MultiEntity' should match exactly the table aliases in 
      your custom query. In this case 'o' for Order.class which has been mapped to the 'orders' table and
      'ol' for OrderLine.class which has been mapped to 'order_line' table.
-     Creating the SQL using java String blocks makes the queries quite readable.
+     Creating the SQL using java String blocks makes the queries more readable.
   */
   String sql = """
       SELECT %s
@@ -454,7 +454,7 @@ class Product {
    */
    Relationship.mainList(orders).toManyList(orderLines).joinOn("id", "orderId").populate("orderLines");
 ```
-1. The columns sql generated from [getMultiEntitySqlColumns(multiEntity)](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#resultSetExtractor%28io.github.simplejdbcmapper.core.MultiEntity%29) and the framework [ResultSetExtractor](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#resultSetExtractor%28io.github.simplejdbcmapper.core.MultiEntity%29) work together. The extractor expects columns in a specific order, so ***absolutely do not modify the columns sql string***.
+1. The columns sql generated from [getMultiEntitySqlColumns()](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#resultSetExtractor%28io.github.simplejdbcmapper.core.MultiEntity%29) and the framework [ResultSetExtractor](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#resultSetExtractor%28io.github.simplejdbcmapper.core.MultiEntity%29) work together. The extractor expects columns in a specific order, so ***absolutely do not modify the columns sql string***.
 2. The extractor returns results for each entity with no duplicates ie unique by ID.
 3. The main list is modified in place ie no new list is created.
 4. [Relationship](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/o/github/simplejdbcmapper/relationship/package-summary.html) works with the information provided to it by the fluent api. It does not access the database or use SimpleJdbcMapper.

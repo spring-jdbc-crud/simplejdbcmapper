@@ -105,23 +105,27 @@ public final class EntityRowMapper<T> implements RowMapper<T> {
 		T obj = null;
 		try {
 			obj = mappedObjConstructor.newInstance();
-			boolean[] typedValueExtracted = { true };
-			// since the columns sql was generated using the property mappings the resultset
-			// columns will be in same order.
-			for (int index = startIndex; index <= endIndex; index++) {
-				// propertyMappings index starts at 0
-				PropertyMapping propMapping = propertyMappings[index - startIndex];
-				Object value = getResultSetValue(rs, index, propMapping.getResultSetType(),
-						propMapping.getPropertyType(), typedValueExtracted);
+		} catch (Exception e) {
+			throw new MapperException(e.getMessage(), e);
+		}
+		boolean[] typedValueExtracted = { true };
+		// since the columns sql was generated using the property mappings the resultset
+		// columns will be in same order.
+		for (int index = startIndex; index <= endIndex; index++) {
+			// propertyMappings index starts at 0
+			PropertyMapping propMapping = propertyMappings[index - startIndex];
+			Object value = getResultSetValue(rs, index, propMapping.getResultSetType(), propMapping.getPropertyType(),
+					typedValueExtracted);
+			try {
 				if (typedValueExtracted[0] || value == null) {
 					propMapping.getWriteMethod().invoke(obj, value);
 				} else {
 					propMapping.getWriteMethod().invoke(obj,
 							conversionService.convert(value, propMapping.getPropertyType()));
 				}
+			} catch (Exception e) {
+				throw new MapperException(e.getMessage(), e);
 			}
-		} catch (Exception e) {
-			throw new MapperException(e.getMessage(), e);
 		}
 		return obj;
 	}
@@ -134,7 +138,7 @@ public final class EntityRowMapper<T> implements RowMapper<T> {
 	 * java compiled the switch statement into a 'tableswitch' which means the
 	 * program will jump directly to the correct 'case' block in one step.
 	 */
-	public static Object getResultSetValue(ResultSet rs, int index, ResultSetType resultSetType, Class<?> requiredType,
+	private Object getResultSetValue(ResultSet rs, int index, ResultSetType resultSetType, Class<?> requiredType,
 			boolean[] typedValueExtracted) throws SQLException {
 		typedValueExtracted[0] = true;
 		Object value;

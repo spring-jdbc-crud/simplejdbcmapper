@@ -23,7 +23,16 @@ public interface ThroughSpec {
 	/**
 	 * The id property names whose values are used to match the corresponding
 	 * property values of properties configured in the through() method
-	 * (intermediate table info) of the relationship
+	 * (intermediate table info) of the relationship.
+	 * 
+	 * <b>The java type of both the properties have to be exactly the same.</b>
+	 * <p>
+	 * The types should also exactly match the types of the properties in
+	 * {@link io.github.simplejdbcmapper.relationship.ToManySpec#through(List<?>
+	 * intermediateList, String fkPropertyToMainObjId, String
+	 * fkPropertyToRelatedObjId)}
+	 * 
+	 * 
 	 * 
 	 * @param mainObjIdProperty
 	 * @param relatedObjIdProperty

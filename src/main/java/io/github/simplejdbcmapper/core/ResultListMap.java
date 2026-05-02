@@ -27,10 +27,24 @@ import java.util.Map;
 public class ResultListMap {
 	private final Map<Class<?>, List<?>> map = new HashMap<>();
 
+	/**
+	 * Add a list by type
+	 * 
+	 * @param <T>  the type
+	 * @param type the type
+	 * @param list the list
+	 */
 	public <T> void putList(Class<T> type, List<T> list) {
 		map.put(type, list);
 	}
 
+	/**
+	 * Get a list by type
+	 * 
+	 * @param <T>  the
+	 * @param type The type
+	 * @return The list for the type
+	 */
 	@SuppressWarnings("unchecked")
 	public <T> List<T> getList(Class<T> type) {
 		return (List<T>) map.get(type);

@@ -25,7 +25,7 @@ import io.github.simplejdbcmapper.exception.MapperException;
  * Used in multi-entity processing. Holds information used to generate the
  * multi-entity columns sql using
  * {@link io.github.simplejdbcmapper.core.SimpleJdbcMapper#getMultiEntitySqlColumns}
- * and for the framework's
+ * and for the framework's ResultSetExtractor
  * {@link io.github.simplejdbcmapper.core.SimpleJdbcMapper#resultSetExtractor}
  * 
  * @author Antony Joseph
@@ -34,7 +34,7 @@ public class MultiEntity {
 	private final List<Map.Entry<Class<?>, String>> entries = new ArrayList<>();
 
 	/**
-	 * Used add entities for multi-entity processing.
+	 * Add entities for multi-entity processing.
 	 * 
 	 * @param entityType The entityType
 	 * @param tableAlias The table alias for the entity which is used when

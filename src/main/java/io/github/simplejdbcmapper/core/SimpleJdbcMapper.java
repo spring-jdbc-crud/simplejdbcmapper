@@ -259,8 +259,8 @@ public final class SimpleJdbcMapper {
 	 * either
 	 * 
 	 * <pre>
-	 * getEntitySqlColumns({@code Class<?>} entityType) or
-	 * getEntitySqlColumns({@code Class<?>} entityType, String tableAlias).
+	 * {@link #getEntitySqlColumns(Class<?> entityType)} or
+	 * {@link #getEntitySqlColumns(Class<?> entityType, String tableAlias)}
 	 * </pre>
 	 * 
 	 * <p>
@@ -321,8 +321,7 @@ public final class SimpleJdbcMapper {
 	 * "somecolumn, some_other_column, last_name"
 	 * </pre>
 	 *
-	 * See
-	 * {@link io.github.simplejdbcmapper.core.SimpleJdbcMapper#newEntityRowMapper}
+	 * See {@link #newEntityRowMapper}
 	 * 
 	 * @param entityType the type
 	 * @return comma separated select column string
@@ -352,8 +351,7 @@ public final class SimpleJdbcMapper {
 	 * "t1.somecolumn, t1.someothercolumn, t1.last_name"
 	 * </pre>
 	 * 
-	 * See
-	 * {@link io.github.simplejdbcmapper.core.SimpleJdbcMapper#newEntityRowMapper}
+	 * See {@link #newEntityRowMapper}
 	 * 
 	 * @param entityType the type
 	 * @param tableAlias the table alias
@@ -390,9 +388,16 @@ public final class SimpleJdbcMapper {
 	}
 
 	/**
-	 * The ResultSeExtractor for multiple entities.
-	 * 
-	 * For more details, see the <a href=
+	 * The ResultSeExtractor for multiple entities. The results are returned in
+	 * {@link io.github.simplejdbcmapper.core.ResultListMap}
+	 * <p>
+	 * The result list in ResultListMap for each entity will be <b>Unique by ID</b>
+	 * , ie there will no duplicate records for that entity.
+	 * <p>
+	 * It will handle the cases where the column to property mappings do not follow
+	 * the underscore to camel case naming convention.
+	 * <p>
+	 * For more details on its use see the <a href=
 	 * "https://github.com/spring-jdbc-crud/simplejdbcmapper#populating-relationships-from-custom-queries">documentation</a>
 	 * <p>
 	 * Example code:
@@ -418,7 +423,8 @@ public final class SimpleJdbcMapper {
 	 * @param multiEntity The holds information of the entities that need to be
 	 *                    extracted from the query ResultSet
 	 * @return a Spring ResultSetExtractor that can be used with
-	 *         JdbcTemplate/NamedParameterJdbcClient
+	 *         JdbcTemplate/NamedParameterJdbcTemplate and the results are returned
+	 *         in ResultListMap
 	 */
 	public ResultSetExtractor<ResultListMap> resultSetExtractor(MultiEntity multiEntity) {
 		return multiEntityExtractor.resultSetExtractor(multiEntity);

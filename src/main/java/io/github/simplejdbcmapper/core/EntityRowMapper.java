@@ -38,8 +38,8 @@ import io.github.simplejdbcmapper.exception.MapperException;
  * either
  * 
  * <pre>
- * getEntitySqlColumns({@code Class<?>} entityType) or
- * getEntitySqlColumns({@code Class<?>} entityType, String tableAlias).
+ * {@link io.github.simplejdbcmapper.core.SimpleJdbcMapper#getEntitySqlColumns(Class<?> entityType)} or
+ * {@link io.github.simplejdbcmapper.core.SimpleJdbcMapper#getEntitySqlColumns(Class<?> entityType, String tableAlias)}
  * </pre>
  * 
  * <p>

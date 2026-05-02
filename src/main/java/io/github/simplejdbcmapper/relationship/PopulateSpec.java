@@ -25,7 +25,7 @@ public interface PopulateSpec {
 	 * set.
 	 * 
 	 * <p>
-	 * For a toMany relationship the target property always has to be an ArrayList.
+	 * For a toMany relationship the target property <b>always has to be a List</b>.
 	 * 
 	 * @param propertyToPopulateOnMainObj the target property on the main object
 	 *                                    which needs to be populated.

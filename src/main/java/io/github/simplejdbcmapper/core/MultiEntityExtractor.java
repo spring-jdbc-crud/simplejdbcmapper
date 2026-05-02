@@ -90,7 +90,7 @@ class MultiEntityExtractor {
 
 				ResultListMap result = new ResultListMap();
 				for (EntityExtractor entityExtractor : entityExtractors) {
-					result.putList(entityExtractor.entityType, entityExtractor.result());
+					result.putList(entityExtractor.entityType(), entityExtractor.result());
 				}
 				return result;
 			}
@@ -123,7 +123,7 @@ class MultiEntityExtractor {
 	}
 
 	@SuppressWarnings("rawtypes")
-	record EntityExtractor(Class entityType, EntityRowMapper<?> rowMapper, List result, Method idReadMethod,
+	record EntityExtractor(Class<?> entityType, EntityRowMapper<?> rowMapper, List result, Method idReadMethod,
 			Set idSet) {
 	}
 

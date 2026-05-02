@@ -1,36 +1,36 @@
 
 INSERT INTO SCHEMA1.orders
-(order_date, customer_id, status, created_on, created_by, updated_on, updated_by, version)
-VALUES(to_timestamp('2026-01-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'),  1, 'IN PROCESS', to_timestamp('2026-01-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', to_timestamp('2026-01-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', 1);
+(order_date, customer_id, status, created_on, created_by, updated_on, updated_by, version, last_mapped_col)
+VALUES(to_timestamp('2026-01-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'),  1, 'IN PROCESS', to_timestamp('2026-01-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', to_timestamp('2026-01-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', 1, 'order last col');
 
 INSERT INTO SCHEMA1.orders
-(order_date, customer_id, status, created_on, created_by, updated_on, updated_by,  version)
-VALUES(to_timestamp('2026-02-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'),  2, 'IN PROCESS',to_timestamp('2026-02-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', to_timestamp('2026-02-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', 1);
+(order_date, customer_id, status, created_on, created_by, updated_on, updated_by,  version, last_mapped_col)
+VALUES(to_timestamp('2026-02-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'),  2, 'IN PROCESS',to_timestamp('2026-02-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', to_timestamp('2026-02-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', 1, 'order last col');
 
 INSERT INTO SCHEMA1.orders
-(order_date, created_on, created_by, updated_on, updated_by,  version)
-VALUES(to_timestamp('2026-03-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), to_timestamp('2026-03-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', to_timestamp('2026-03-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', 1);
+(order_date, created_on, created_by, updated_on, updated_by,  version, last_mapped_col)
+VALUES(to_timestamp('2026-03-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), to_timestamp('2026-03-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', to_timestamp('2026-03-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', 1, 'order last col');
 
 INSERT INTO SCHEMA1.orders
-(order_date, created_on, created_by, updated_on, updated_by,  version)
-VALUES(to_timestamp('2026-04-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), to_timestamp('2026-04-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', to_timestamp('2026-04-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', 1);
+(order_date, created_on, created_by, updated_on, updated_by,  version, last_mapped_col)
+VALUES(to_timestamp('2026-04-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), to_timestamp('2026-04-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', to_timestamp('2026-04-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', 1, 'order last col');
 
 
 INSERT INTO SCHEMA1.order_line
-(order_id, product_id, num_of_units)
-VALUES(1, 1, 10);
+(order_id, product_id, num_of_units, last_mapped_col)
+VALUES(1, 1, 10, 'orderline last col');
 
 INSERT INTO SCHEMA1.order_line
-(order_id, product_id, num_of_units)
-VALUES(1, 2, 5);
+(order_id, product_id, num_of_units, last_mapped_col)
+VALUES(1, 2, 5, 'orderline last col');
 
 INSERT INTO SCHEMA1.order_line
-(order_id, product_id, num_of_units)
-VALUES(2, 3, 1);
+(order_id, product_id, num_of_units, last_mapped_col)
+VALUES(2, 3, 1, 'orderline last col');
 
 INSERT INTO SCHEMA1.order_line
-(order_id)
-VALUES(4);
+(order_id, last_mapped_col)
+VALUES(4, 'orderline last col');
 
 
 INSERT INTO SCHEMA1.customer
@@ -53,29 +53,29 @@ INSERT INTO SCHEMA1.customer
 VALUES(null, 'customer 5 last name whose first name is null');
 
 INSERT INTO SCHEMA1.product
-(id, name, cost, description, created_on, created_by, updated_on, updated_by, version)
-VALUES(1, 'shoes', 95.00,'some description', to_timestamp('2020-06-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', to_timestamp('2020-06-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', 1);
+(id, name, cost, description, created_on, created_by, updated_on, updated_by, version, last_mapped_col)
+VALUES(1, 'shoes', 95.00,'some description', to_timestamp('2020-06-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', to_timestamp('2020-06-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', 1, 'product last col');
 
 INSERT INTO SCHEMA1.product
-(id, name, cost, created_on, created_by, updated_on, updated_by, version)
-VALUES(2, 'socks', 4.55,to_timestamp('2020-06-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', to_timestamp('2020-06-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', 1);
+(id, name, cost, created_on, created_by, updated_on, updated_by, version, last_mapped_col)
+VALUES(2, 'socks', 4.55,to_timestamp('2020-06-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', to_timestamp('2020-06-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', 1, 'product last col');
 
 INSERT INTO SCHEMA1.product
-(id, name, cost, created_on, created_by, updated_on, updated_by, version)
-VALUES(3, 'laces', 1.25,to_timestamp('2020-06-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', to_timestamp('2020-06-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', 1);
+(id, name, cost, created_on, created_by, updated_on, updated_by, version, last_mapped_col)
+VALUES(3, 'laces', 1.25,to_timestamp('2020-06-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', to_timestamp('2020-06-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', 1, 'product last col');
 
 INSERT INTO SCHEMA1.product
-(id, name, cost, created_on, created_by, updated_on, updated_by, version)
-VALUES(4, 'product4 for delete test', 1.25,to_timestamp('2020-06-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', to_timestamp('2020-06-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', 1);
+(id, name, cost, created_on, created_by, updated_on, updated_by, version, last_mapped_col)
+VALUES(4, 'product4 for delete test', 1.25,to_timestamp('2020-06-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', to_timestamp('2020-06-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', 1, 'product last col');
 
 INSERT INTO SCHEMA1.product
-(id, name, cost, created_on, created_by, updated_on, updated_by, version)
-VALUES(5, 'product5 for delete test', 1.25,to_timestamp('2020-06-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', to_timestamp('2020-06-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', 1);
+(id, name, cost, created_on, created_by, updated_on, updated_by, version, last_mapped_col)
+VALUES(5, 'product5 for delete test', 1.25,to_timestamp('2020-06-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', to_timestamp('2020-06-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', 1, 'product last col');
 
 
 INSERT INTO SCHEMA1.product
-(id, name, cost, created_on, created_by, updated_on, updated_by, version)
-VALUES(6, 'product 6 update test', 2.45,to_timestamp('2020-06-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', to_timestamp('2020-06-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', 1);
+(id, name, cost, created_on, created_by, updated_on, updated_by, version, last_mapped_col)
+VALUES(6, 'product 6 update test', 2.45,to_timestamp('2020-06-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', to_timestamp('2020-06-20 00:00:00', 'YYYY-MM-DD HH24:MI:SS'), 'system', 1, 'product last col');
 
 
 INSERT INTO SCHEMA1.person

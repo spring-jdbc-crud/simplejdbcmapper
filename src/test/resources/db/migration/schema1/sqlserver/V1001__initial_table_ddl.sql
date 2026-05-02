@@ -9,6 +9,7 @@ CREATE TABLE schema1.orders(
 	updated_on datetime NULL,
 	updated_by varchar(100) NULL,
 	version int NULL,
+	last_mapped_col varchar(100),
 	non_model_column varchar(100),
 	CONSTRAINT order_pk PRIMARY KEY (id)
 );
@@ -18,6 +19,7 @@ CREATE TABLE schema1.order_line (
 	order_id int NOT NULL,
 	product_id int,
 	num_of_units int,
+	last_mapped_col varchar(100),
 	non_model_column varchar(100),
 	CONSTRAINT order_line_pk PRIMARY KEY (order_line_id)
 );
@@ -40,6 +42,7 @@ CREATE TABLE schema1.product (
 	updated_on datetime NULL,
 	updated_by varchar(100) NULL,
 	version int NULL,
+	last_mapped_col varchar(100),
 	non_model_column varchar(100),
 	CONSTRAINT product_pk PRIMARY KEY (id)
 );

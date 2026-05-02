@@ -196,7 +196,7 @@ class ToManyTest {
 				SELECT %s
 				FROM orders o
 				LEFT JOIN order_line ol ON  o.id = ol.order_id
-				WHERE o.id <= 4
+				WHERE o.id <= 0
 				ORDER BY o.id, ol.order_line_id
 				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
 

@@ -9,7 +9,6 @@ CREATE TABLE schema1.orders (
 	updated_by varchar(100) NULL,
 	version integer NULL,
 	last_mapped_col varchar(100),
-	non_model_column varchar(100),
 	CONSTRAINT order_pk PRIMARY KEY (id)
 );
 
@@ -19,7 +18,6 @@ CREATE TABLE schema1.order_line (
 	product_id integer,
 	num_of_units integer,
 	last_mapped_col varchar(100),
-	non_model_column varchar(100),
 	CONSTRAINT order_line_pk PRIMARY KEY (order_line_id)
 );
 
@@ -27,7 +25,6 @@ CREATE TABLE schema1.customer (
 	id serial NOT NULL,
 	first_name varchar(100),
 	last_name varchar(100) NOT NULL,
-	non_model_column varchar(100),
 	CONSTRAINT customer_pk PRIMARY KEY (id)
 );
 
@@ -42,7 +39,6 @@ CREATE TABLE schema1.product (
 	updated_by varchar(100) NULL,
 	version integer NULL,
 	last_mapped_col varchar(100),
-	non_model_column varchar(100),
 	CONSTRAINT product_pk PRIMARY KEY (id)
 );
 
@@ -56,7 +52,6 @@ CREATE TABLE schema1.person (
 	updated_on timestamp NULL,
 	updated_by varchar(100) NULL,
 	version integer NULL,
-	non_model_column varchar(100),
 	CONSTRAINT person_pk PRIMARY KEY (person_id)
 );
 
@@ -88,8 +83,6 @@ CREATE TABLE schema1.type_check (
    java_sql_time_data time,
    java_sql_timestamp_data TIMESTAMP,
    number_data float8,
-   non_model_column varchar(100),
-   non_model_offset_date_time timestamptz,
    CONSTRAINT type_check_pk PRIMARY KEY (id)
 );
 

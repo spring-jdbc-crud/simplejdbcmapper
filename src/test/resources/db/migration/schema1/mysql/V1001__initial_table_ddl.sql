@@ -9,7 +9,6 @@ CREATE TABLE schema1.orders (
 	updated_by varchar(100) NULL,
 	version integer NULL,
 	last_mapped_col varchar(100),
-	non_model_column varchar(100),
 	CONSTRAINT order_pk PRIMARY KEY (id)
 );
 
@@ -19,7 +18,6 @@ CREATE TABLE schema1.order_line (
 	product_id integer,
 	num_of_units integer,
 	last_mapped_col varchar(100),
-	non_model_column varchar(100),
 	CONSTRAINT order_line_pk PRIMARY KEY (order_line_id)
 );
 
@@ -27,7 +25,6 @@ CREATE TABLE schema1.customer (
 	id integer NOT NULL AUTO_INCREMENT,
 	first_name varchar(100),
 	last_name varchar(100) NOT NULL,
-	non_model_column varchar(100),
 	CONSTRAINT customer_pk PRIMARY KEY (id)
 );
 
@@ -42,7 +39,6 @@ CREATE TABLE schema1.product (
 	updated_by varchar(100) NULL,
 	version integer NULL,
 	last_mapped_col varchar(100),
-	non_model_column varchar(100),
 	CONSTRAINT product_pk PRIMARY KEY (id)
 );
 
@@ -56,7 +52,6 @@ CREATE TABLE schema1.person (
 	updated_on timestamp NULL,
 	updated_by varchar(100) NULL,
 	version integer NULL,
-	non_model_column varchar(100),
 	CONSTRAINT person_pk PRIMARY KEY (person_id)
 );
 
@@ -77,7 +72,6 @@ CREATE TABLE schema1.type_check (
    offset_date_time_data timestamp,
    byte_data tinyint,
    string_enum varchar(100),
-   non_model_column varchar(100),
    CONSTRAINT type_check_pk PRIMARY KEY (id)
 );
 
@@ -121,15 +115,4 @@ CREATE TABLE schema1.employee_skill (
 	skill_id integer,
 	CONSTRAINT employee_skill_pk PRIMARY KEY (id)
 );
-
-
-
-
-
-
-
-
-
-
-
 

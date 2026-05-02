@@ -10,7 +10,6 @@ CREATE TABLE schema1.orders(
 	updated_by varchar(100) NULL,
 	version int NULL,
 	last_mapped_col varchar(100),
-	non_model_column varchar(100),
 	CONSTRAINT order_pk PRIMARY KEY (id)
 );
 
@@ -20,7 +19,6 @@ CREATE TABLE schema1.order_line (
 	product_id int,
 	num_of_units int,
 	last_mapped_col varchar(100),
-	non_model_column varchar(100),
 	CONSTRAINT order_line_pk PRIMARY KEY (order_line_id)
 );
 
@@ -28,7 +26,6 @@ CREATE TABLE schema1.customer (
 	id int IDENTITY(1,1) NOT NULL,
 	first_name varchar(100),
 	last_name varchar(100) NOT NULL,
-	non_model_column varchar(100),
 	CONSTRAINT customer_pk PRIMARY KEY (id)
 );
 
@@ -43,7 +40,6 @@ CREATE TABLE schema1.product (
 	updated_by varchar(100) NULL,
 	version int NULL,
 	last_mapped_col varchar(100),
-	non_model_column varchar(100),
 	CONSTRAINT product_pk PRIMARY KEY (id)
 );
 
@@ -57,7 +53,6 @@ CREATE TABLE schema1.person (
 	updated_on datetime NULL,
 	updated_by varchar(100) NULL,
 	version int NULL,
-	non_model_column varchar(100),
 	CONSTRAINT person_pk PRIMARY KEY (person_id)
 );
 
@@ -70,7 +65,6 @@ CREATE TABLE schema1.type_check (
    big_decimal_data numeric(10,2),
    boolean_val bit,
    string_enum varchar(100),
-   non_model_column varchar(100),
    offset_date_time_data datetimeoffset,
    image VARBINARY(MAX),
    clob_data VARCHAR(MAX)
@@ -123,16 +117,5 @@ GO
 CREATE VIEW schema1.person_view AS
 SELECT person_id, first_name, last_name
 FROM schema1.person;
-
-
-
-
-
-
-
-
-
-
-
 
 

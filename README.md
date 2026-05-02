@@ -449,16 +449,15 @@ class Product {
    /*
      Now that you have the individual lists, use the Relationship api to populate the 'orderLines' property of 'order' objects
      in the 'orders' list. In this case since its a toMany relationship we are using 'toManyList()'.
-     Last method in the api chain is 'populate()' which triggers the processing.  
-     The main list 'orders' will get modified in place (ie no new list is created).
    */
    Relationship.mainList(orders).toManyList(orderLines).joinOn("id", "orderId").populate("orderLines");
 ```
+1. When creating an instance of [MultiEntity](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/io.github.simplejdbcmapper.core.MultiEntity) make sure the table aliases **exactly match** what you have in your custom query. Its a good practice to keep the table aliases short and succinct.
 1. The columns sql generated from [getMultiEntitySqlColumns()](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#resultSetExtractor%28io.github.simplejdbcmapper.core.MultiEntity%29) and the framework [ResultSetExtractor](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#resultSetExtractor%28io.github.simplejdbcmapper.core.MultiEntity%29) work together. The extractor expects columns in a specific order, so ***absolutely do not modify the columns sql string***.
-2. The extractor returns results for each entity with no duplicates ie unique by ID.
-3. The main list is modified in place ie no new list is created.
-4. [Relationship](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/o/github/simplejdbcmapper/relationship/package-summary.html) works with the information provided to it by the fluent api. It does not access the database or use SimpleJdbcMapper.
-5. The collection property being populated by toManyList() has to be **always of type 'List'**. In the above example order.orderLines has to be of type List.
+2. The extractor returns results for each entity with no duplicates(ie unique by ID) in [ResultListMap](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/io.github.simplejdbcmapper.core.ResultListMap)
+3. Objects in the main list are modified in place ie no new list is created.
+4. [Relationship](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/o/github/simplejdbcmapper/relationship/package-summary.html) works with the information provided by its fluent API. It does not access the database or use SimpleJdbcMapper.
+5. The collection property being populated by toManyList() **always has to be of type 'List'**. In the above example order.orderLines has to be of type List.
 6. In the example there was only one query parameter so JdbcTemplate was used. If you have many parameters you can use NamedParameterJdbcTemplate with the framework's ResultSetExtractor.
 7. Multi-entity processing can handle more than one relationship.
 
@@ -564,7 +563,7 @@ From the results of these 2 queries we will populate the relationships.
 
 ## BLOB CLOB mapping
 
--  Binary large object database columns should be mapped to java type byte[].  
+-  Binary large object database columns should be mapped to java type **byte[]**.  
 No other java type is supported. The 'sqlType' attribute of the @Column annotation with the following values are considered as Binary Large Objects by SimpleJdbcMapper:  
 Types.BLOB  
 Types.ARRAY  
@@ -573,7 +572,7 @@ Types.VARBINARY
 
 Use the pertinent SQL type for your database and database column type. 
 
--  Character large object database columns should be mapped to java type String. No other java types are supported.  
+-  Character large object database columns should be mapped to java type **String**. No other java types are supported.  
 The 'sqlType' attribute of the @Column annotation with the following values are considered as Character Large Objects by SimpeJdbcMapper:  
 Types.CLOB  
 Types.NCLOB  

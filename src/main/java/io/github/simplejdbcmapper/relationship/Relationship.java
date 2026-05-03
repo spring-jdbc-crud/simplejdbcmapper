@@ -13,7 +13,13 @@
  */
 package io.github.simplejdbcmapper.relationship;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.List;
+
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.ReflectionUtils;
+import org.springframework.util.StringUtils;
 
 /**
  * The starting point for any relationship assignment. It works with the lists
@@ -27,6 +33,10 @@ import java.util.List;
  * @author Antony Joseph
  */
 public class Relationship<T> implements RelationshipSpec<T> {
+
+	public static final String IS_PREFIX = "is";
+	public static final String GET_PREFIX = "get";
+	public static final String SET_PREFIX = "set";
 
 	private List<T> mainObjList;
 
@@ -69,6 +79,49 @@ public class Relationship<T> implements RelationshipSpec<T> {
 	 */
 	public <U> ToManySpec<T, U> toManyList(List<U> relatedObjList) {
 		return ToMany.toMany(mainObjList, relatedObjList);
+	}
+
+	static Method getReadMethod(List<?> list, String propertyName) {
+		if (!CollectionUtils.isEmpty(list)) {
+			for (Object obj : list) {
+				if (obj != null) {
+					Method m = ReflectionUtils.findMethod(obj.getClass(),
+							Relationship.GET_PREFIX + StringUtils.capitalize(propertyName));
+					if (m == null) {
+						m = ReflectionUtils.findMethod(obj.getClass(),
+								Relationship.IS_PREFIX + StringUtils.capitalize(propertyName));
+					}
+					if (m == null) {
+						throw new IllegalArgumentException("Invalid argument. Property name " + propertyName
+								+ " does not exist for " + obj.getClass().getName());
+					}
+					return m;
+				}
+			}
+		}
+		return null;
+	}
+
+	static Method getWriteMethod(List<?> list, String propertyName) {
+		if (!CollectionUtils.isEmpty(list)) {
+			for (Object obj : list) {
+				if (obj != null) {
+					Field field = ReflectionUtils.findField(obj.getClass(), propertyName);
+					if (field == null) {
+						throw new IllegalArgumentException("Invalid argument. Property name " + propertyName
+								+ " does not exist for " + obj.getClass().getName());
+					}
+					Method m = ReflectionUtils.findMethod(obj.getClass(),
+							Relationship.SET_PREFIX + StringUtils.capitalize(propertyName), field.getType());
+					if (m == null) {
+						throw new IllegalArgumentException("Invalid argument. Property name " + propertyName
+								+ " does not exist for " + obj.getClass().getName());
+					}
+					return m;
+				}
+			}
+		}
+		return null;
 	}
 
 }

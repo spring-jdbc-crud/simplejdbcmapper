@@ -31,7 +31,6 @@ import io.github.simplejdbcmapper.exception.MapperException;
  * @author Antony Joseph
  */
 class InternalUtils {
-
 	public static Integer javaTypeToSqlParameterType(Class<?> entityType) {
 		if (entityType.isEnum()) {
 			return Types.VARCHAR;

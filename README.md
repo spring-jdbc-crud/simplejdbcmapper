@@ -546,14 +546,14 @@ From the results of these 2 queries we will populate the relationships.
       FROM orders o
       LEFT JOIN order_line ol ON  o.id = ol.order_id
       WHERE o.total_amount >= ?
-      ORDER BY o.order_date DESC, ol.order_line_id
+      ORDER BY o.order_date DESC, ol.id
    """.formatted(sjm.getMultiEntitySqlColumns(multiEntity));
    ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity), someAmount); 
    List<Order> orders = resultListMap.getList(Order.class);
    List<OrderLine> orderLines = resultListMap.getList(OrderLine.class);
    
    // get the productId list from orderLines list
-   List<Long> productIdList = orderLines.stream().map(OrderLine::getProductId).toList();
+   List<Integer> productIdList = orderLines.stream().map(OrderLine::getProductId).toList();
    
    // Second query. findByPropertyValues() uses an IN clause so even if there are duplicate product ids we are fine.
    List<Product> products = sjm.findByPropertyValues(Product.class, "id", productIdList);  

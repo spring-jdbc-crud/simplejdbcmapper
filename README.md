@@ -479,7 +479,7 @@ Use Multi-entity processing to populate multiple relationships:
       LEFT JOIN order_line ol ON  o.id = ol.order_id
       LEFT JOIN product p ON ol.product_id = p.id
       WHERE o.total_amount >= ? 
-      ORDER BY o.order_date DESC, ol.order_line_id
+      ORDER BY o.order_date DESC, ol.id
       """.formatted(sjm.getMultiEntitySqlColumns(multiEntity));
  
  // Use JdbcTemplate with the framework extractor to execute the query and extract results

@@ -28,7 +28,7 @@ public class ResultListMap {
 	private final Map<Class<?>, List<?>> map = new HashMap<>();
 
 	/**
-	 * Add a list by type
+	 * Add a result list by type
 	 * 
 	 * @param <T>  the type
 	 * @param type the type
@@ -39,7 +39,7 @@ public class ResultListMap {
 	}
 
 	/**
-	 * Get a list by type
+	 * Get a result list by type
 	 * 
 	 * @param <T>  the
 	 * @param type The type

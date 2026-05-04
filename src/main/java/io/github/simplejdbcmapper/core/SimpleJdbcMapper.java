@@ -391,7 +391,7 @@ public final class SimpleJdbcMapper {
 	/**
 	 * The ResultSeExtractor for multiple entities. The results are returned in
 	 * {@link io.github.simplejdbcmapper.core.ResultListMap}. It expects the columns
-	 * sql to be always be generated using {@link #getMultiEntitySqlColumns}.
+	 * sql to <b>always</b> be generated using {@link #getMultiEntitySqlColumns}.
 	 * <p>
 	 * The result list in ResultListMap for each entity will be <b>Unique by ID</b>
 	 * , ie there will no duplicate records for that entity.

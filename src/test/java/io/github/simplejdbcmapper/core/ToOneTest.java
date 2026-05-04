@@ -291,6 +291,31 @@ class ToOneTest {
 	}
 
 	@Test
+	void toOne_withMultiEntityPositionSwitched_test() {
+		// Product first then Orderline
+		MultiEntity multiEntity = new MultiEntity().add(Product.class, "p").add(OrderLine.class, "ol");
+
+		String sql = """
+				SELECT %s
+				FROM order_line ol
+				LEFT JOIN product p ON ol.product_id = p.id
+				WHERE ol.order_line_id <= 4
+				ORDER BY ol.order_line_id;
+				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
+
+		ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
+
+		List<OrderLine> orderLines = resultListMap.getList(OrderLine.class);
+		List<Product> products = resultListMap.getList(Product.class);
+		Relationship.mainList(orderLines).toOneList(products).joinOn("productId", "id").populate("product");
+
+		assertEquals(4, orderLines.size());
+		assertEquals("laces", orderLines.get(2).getProduct().getName(), "line3 product name failed");
+		assertNull(orderLines.get(3).getProduct(), "line3 product expected to be null failed");
+
+	}
+
+	@Test
 	void toOne_NoResults_test() {
 		MultiEntity multiEntity = new MultiEntity().add(OrderLine.class, "ol").add(Product.class, "p");
 

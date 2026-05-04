@@ -66,5 +66,9 @@ class MultiEntityTest {
 			new MultiEntity().add(Order.class, "t1_").add(Order.class, "_t2");
 		});
 
+		assertDoesNotThrow(() -> {
+			new MultiEntity().add(Order.class, "t1_2").add(Order.class, "__t2");
+		});
+
 	}
 }

@@ -92,8 +92,8 @@ public class Relationship implements RelationshipSpec {
 								Relationship.IS_PREFIX + StringUtils.capitalize(propertyName));
 					}
 					if (m == null) {
-						throw new IllegalArgumentException("Invalid argument. Property name " + propertyName
-								+ " does not exist for " + obj.getClass().getName());
+						throw new IllegalArgumentException("Invalid argument. Could not find a getter for "
+								+ obj.getClass().getName() + "." + propertyName);
 					}
 					return m;
 				}
@@ -114,8 +114,8 @@ public class Relationship implements RelationshipSpec {
 					Method m = ReflectionUtils.findMethod(obj.getClass(),
 							Relationship.SET_PREFIX + StringUtils.capitalize(propertyName), field.getType());
 					if (m == null) {
-						throw new IllegalArgumentException("Invalid argument. Property name " + propertyName
-								+ " does not exist for " + obj.getClass().getName());
+						throw new IllegalArgumentException("Invalid argument. Could not find setter for "
+								+ obj.getClass().getName() + "." + propertyName);
 					}
 					return m;
 				}

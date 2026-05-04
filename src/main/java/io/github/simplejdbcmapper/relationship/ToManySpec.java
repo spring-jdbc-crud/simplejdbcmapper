@@ -23,7 +23,7 @@ import java.util.List;
  * 
  * @author Antony Joseph
  */
-public interface ToManySpec<T, U> {
+public interface ToManySpec {
 
 	/**
 	 * The properties on each list whose values should be matched to populate the

@@ -31,7 +31,7 @@ import io.github.simplejdbcmapper.exception.MapperException;
  * 
  * @author Antony Joseph
  */
-public class ToOne<T, U> implements ToOneSpec<T, U>, PopulateSpec {
+public class ToOne<T, U> implements ToOneSpec, PopulateSpec {
 
 	private Method mainObjJoinPropertyReadMethod;
 	private Method relatedObjJoinPropertyReadMethod;
@@ -46,7 +46,7 @@ public class ToOne<T, U> implements ToOneSpec<T, U>, PopulateSpec {
 		this.relatedObjList = relatedObjList;
 	}
 
-	static <T, U> ToOneSpec<T, U> toOne(List<T> mainObjList, List<U> relatedObjList) {
+	static <T, U> ToOneSpec toOne(List<T> mainObjList, List<U> relatedObjList) {
 		return new ToOne<>(mainObjList, relatedObjList);
 	}
 

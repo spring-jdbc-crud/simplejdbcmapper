@@ -8,7 +8,7 @@ package io.github.simplejdbcmapper.relationship;
  * 
  * @author Antony Joseph
  */
-public interface ToOneSpec<T, U> {
+public interface ToOneSpec {
 	/**
 	 * The properties on the two lists whose values should be matched to populate
 	 * the toOne relationship. <b>The java type of both the properties have to be

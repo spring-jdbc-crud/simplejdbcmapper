@@ -50,7 +50,7 @@ class MultiEntityExtractorTest {
 
 		// check extractor only returns unique ids.
 		Set<Long> seen = new HashSet<>();
-		Set<Long> duplicates = orders.stream().map(o -> o.getId()).filter(id -> !seen.add(id))
+		Set<Long> duplicates = orders.stream().map(Order::getId).filter(id -> !seen.add(id))
 				.collect(Collectors.toSet());
 		assertEquals(0, duplicates.size());
 

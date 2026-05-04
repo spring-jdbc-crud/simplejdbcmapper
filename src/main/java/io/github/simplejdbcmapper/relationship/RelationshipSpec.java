@@ -20,7 +20,7 @@ import java.util.List;
  * 
  * @author Antony Joseph
  */
-public interface RelationshipSpec<T> {
+public interface RelationshipSpec {
 
 	/**
 	 * A toOne relationship
@@ -29,7 +29,7 @@ public interface RelationshipSpec<T> {
 	 * 
 	 * @param relatedObjList the list of related objects
 	 */
-	<U> ToOneSpec<T, U> toOneList(List<U> relatedObjList);
+	<U> ToOneSpec toOneList(List<U> relatedObjList);
 
 	/**
 	 * A toMany relationship
@@ -38,6 +38,6 @@ public interface RelationshipSpec<T> {
 	 * 
 	 * @param relatedObjList the list of related objects
 	 */
-	<U> ToManySpec<T, U> toManyList(List<U> relatedObjList);
+	<U> ToManySpec toManyList(List<U> relatedObjList);
 
 }

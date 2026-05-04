@@ -32,15 +32,15 @@ import org.springframework.util.StringUtils;
  * 
  * @author Antony Joseph
  */
-public class Relationship<T> implements RelationshipSpec<T> {
+public class Relationship implements RelationshipSpec {
 
 	static final String IS_PREFIX = "is";
 	static final String GET_PREFIX = "get";
 	static final String SET_PREFIX = "set";
 
-	private List<T> mainObjList;
+	private List<?> mainObjList;
 
-	private Relationship(List<T> mainObjList) {
+	private Relationship(List<?> mainObjList) {
 		this.mainObjList = mainObjList;
 	}
 
@@ -52,8 +52,8 @@ public class Relationship<T> implements RelationshipSpec<T> {
 	 * @param mainObjList the main object list
 	 * @return A relationship
 	 */
-	public static <T> RelationshipSpec<T> mainList(List<T> mainObjList) {
-		return new Relationship<>(mainObjList);
+	public static <T> RelationshipSpec mainList(List<T> mainObjList) {
+		return new Relationship(mainObjList);
 	}
 
 	/**
@@ -64,7 +64,7 @@ public class Relationship<T> implements RelationshipSpec<T> {
 	 * @param relatedObjList the list of related objects
 	 * 
 	 */
-	public <U> ToOneSpec<T, U> toOneList(List<U> relatedObjList) {
+	public <U> ToOneSpec toOneList(List<U> relatedObjList) {
 		return ToOne.toOne(mainObjList, relatedObjList);
 	}
 
@@ -77,7 +77,7 @@ public class Relationship<T> implements RelationshipSpec<T> {
 	 * 
 	 * @return The ToManySpec
 	 */
-	public <U> ToManySpec<T, U> toManyList(List<U> relatedObjList) {
+	public <U> ToManySpec toManyList(List<U> relatedObjList) {
 		return ToMany.toMany(mainObjList, relatedObjList);
 	}
 

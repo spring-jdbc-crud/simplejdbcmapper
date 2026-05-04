@@ -33,7 +33,7 @@ import io.github.simplejdbcmapper.exception.MapperException;
  * 
  * @author Antony Joseph
  */
-public class ToMany<T, U> implements ToManySpec<T, U>, ThroughSpec, PopulateSpec {
+public class ToMany<T, U> implements ToManySpec, ThroughSpec, PopulateSpec {
 
 	private Method mainObjIdPropertyReadMethod;
 
@@ -56,7 +56,7 @@ public class ToMany<T, U> implements ToManySpec<T, U>, ThroughSpec, PopulateSpec
 		this.relatedObjList = relatedObjList;
 	}
 
-	static <T, U> ToManySpec<T, U> toMany(List<T> mainObjList, List<U> relatedObjList) {
+	static <T, U> ToManySpec toMany(List<T> mainObjList, List<U> relatedObjList) {
 		return new ToMany<>(mainObjList, relatedObjList);
 	}
 

@@ -49,7 +49,7 @@ public class ToMany<T, U> implements ToManySpec, ThroughSpec, PopulateSpec {
 
 	private IntermediateJoiner intermediateJoiner;
 
-	private String relationshipType = "hasMany";
+	private String relationshipType = "toMany";
 
 	private ToMany(List<T> mainObjList, List<U> relatedObjList) {
 		this.mainObjList = mainObjList;
@@ -86,7 +86,7 @@ public class ToMany<T, U> implements ToManySpec, ThroughSpec, PopulateSpec {
 		this.intermediateJoiner = new IntermediateJoiner(intermediateList, fkPropertyToMainObjId,
 				fkPropertyToRelatedObjId);
 
-		this.relationshipType = "hasManyThrough";
+		this.relationshipType = "toManyThrough";
 		return this;
 	}
 
@@ -104,7 +104,7 @@ public class ToMany<T, U> implements ToManySpec, ThroughSpec, PopulateSpec {
 		Assert.notNull(mainObjPropertyToPopulate, "mainObjPropertyToPopulate must not be null");
 		this.mainObjPropertyToPopulateWriteMethod = Relationship.getWriteMethod(mainObjList, mainObjPropertyToPopulate);
 
-		if ("hasMany".equals(relationshipType)) {
+		if ("toMany".equals(relationshipType)) {
 			populateToMany();
 		} else {
 			populateToManyThrough();
@@ -205,13 +205,13 @@ public class ToMany<T, U> implements ToManySpec, ThroughSpec, PopulateSpec {
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		public IntermediateJoiner(List<?> intermediateList, String fkPropertyToMainObjId,
 				String fkPropertyToRelatedObjId) {
+			if (CollectionUtils.isEmpty(intermediateList)) {
+				return;
+			}
 			Method fkPropertyToMainObjIdReadMethod = Relationship.getReadMethod(intermediateList,
 					fkPropertyToMainObjId);
 			Method fkPropertyToRelatedObjIdReadMethod = Relationship.getReadMethod(intermediateList,
 					fkPropertyToRelatedObjId);
-			if (CollectionUtils.isEmpty(intermediateList)) {
-				return;
-			}
 			try {
 				for (Object intermediateObj : intermediateList) {
 					if (intermediateObj != null) {

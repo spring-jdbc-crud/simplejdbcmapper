@@ -530,13 +530,12 @@ Use Multi-entity processing to populate multiple relationships:
 ```
 1. For the above case all 4 properties EmployeeSkill.employeeId, EmployeeSkill.skillId (through()) , Employee.id, Skill.id (ids()) all have to be exactly the same java type.
 
-### 4.Mix and match results from multiple queries to populate relationships.
+### 4.Using multiple queries to populate relationships.
 The Relationship api is agnostic of where the lists provided to it are from. This means that we can use results from multiple queries to populate relationships. We will use a previous example:  
 - Order has many OrderLine  - Will do this in one query  
 - OrderLine has one Product  - Will do this in another query   
 
 From the results of these 2 queries we will populate the relationships.
-
 
 ```  
   // first query

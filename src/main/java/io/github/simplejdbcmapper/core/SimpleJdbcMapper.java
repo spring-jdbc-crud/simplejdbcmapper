@@ -640,7 +640,7 @@ public final class SimpleJdbcMapper {
 		updateOperation = null;
 		deleteOperation = null;
 		multiEntityExtractor = null;
-		logger.info("SimpleJdbcMapper shutdown completed. " + this);
+		logger.info("SimpleJdbcMapper shutdown completed. {}", this);
 	}
 
 }

@@ -47,7 +47,7 @@ class MultiEntityTest {
 		assertTrue(exception.getMessage().contains("tableAlias should start with an alphabet"));
 
 		exception = Assertions.assertThrows(Exception.class, () -> {
-			MultiEntity me = new MultiEntity().add(Order.class, "t1").add(OrderLine.class, "t1");
+			new MultiEntity().add(Order.class, "t1").add(OrderLine.class, "t1");
 		});
 		assertTrue(exception.getMessage().contains("duplicate tableAlias"));
 

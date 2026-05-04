@@ -103,18 +103,17 @@ public class ToMany<T, U> implements ToManySpec<T, U>, ThroughSpec, PopulateSpec
 		}
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private void populateToMany() {
 		if (CollectionUtils.isEmpty(mainObjList) || CollectionUtils.isEmpty(relatedObjList)) {
 			return;
 		}
 		try {
 			Map<Object, List<U>> foreignKeyToListMap = new HashMap<>();
-			for (Object relatedObj : relatedObjList) {
+			for (U relatedObj : relatedObjList) {
 				if (relatedObj != null) {
 					Object foreignKeyPropertyValue = relatedObjFkPropertyReadMethod.invoke(relatedObj);
 					if (foreignKeyPropertyValue != null) {
-						List list = foreignKeyToListMap.get(foreignKeyPropertyValue);
+						List<U> list = foreignKeyToListMap.get(foreignKeyPropertyValue);
 						if (list == null) {
 							list = new ArrayList<>();
 							list.add(relatedObj);
@@ -127,10 +126,10 @@ public class ToMany<T, U> implements ToManySpec<T, U>, ThroughSpec, PopulateSpec
 			}
 			for (T mainObj : mainObjList) {
 				if (mainObj != null) {
-					Object idPropertyValue = mainObjIdPropertyReadMethod.invoke(mainObj);
-					List populaterList = foreignKeyToListMap.get(idPropertyValue);
+					Object mainObjIdPropertyValue = mainObjIdPropertyReadMethod.invoke(mainObj);
+					List<U> populaterList = foreignKeyToListMap.get(mainObjIdPropertyValue);
 					if (populaterList == null) {
-						populaterList = new ArrayList();
+						populaterList = new ArrayList<>();
 					}
 					mainObjPropertyToPopulateWriteMethod.invoke(mainObj, populaterList);
 				}
@@ -160,10 +159,10 @@ public class ToMany<T, U> implements ToManySpec<T, U>, ThroughSpec, PopulateSpec
 				if (mainObj != null) {
 					Object mainObjIdValue = mainObjIdPropertyReadMethod.invoke(mainObj);
 					List relatedObjIdListFromJoiner = intermediateJoiner.getRelatedObjIds(mainObjIdValue);
-					List populaterList = new ArrayList();
+					List<U> populaterList = new ArrayList<>();
 					if (!CollectionUtils.isEmpty(relatedObjIdListFromJoiner)) {
 						for (Object relatedObjId : relatedObjIdListFromJoiner) {
-							Object relatedObj = idToRelatedObjMap.get(relatedObjId);
+							U relatedObj = idToRelatedObjMap.get(relatedObjId);
 							if (relatedObj != null) {
 								populaterList.add(relatedObj);
 							}
@@ -186,13 +185,10 @@ public class ToMany<T, U> implements ToManySpec<T, U>, ThroughSpec, PopulateSpec
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		public IntermediateJoiner(List<?> intermediateList, String fkPropertyToMainObjId,
 				String fkPropertyToRelatedObjId) {
-
 			Method fkPropertyToMainObjIdReadMethod = Relationship.getReadMethod(intermediateList,
 					fkPropertyToMainObjId);
-
 			Method fkPropertyToRelatedObjIdReadMethod = Relationship.getReadMethod(intermediateList,
 					fkPropertyToRelatedObjId);
-
 			if (CollectionUtils.isEmpty(intermediateList)) {
 				return;
 			}
@@ -200,7 +196,6 @@ public class ToMany<T, U> implements ToManySpec<T, U>, ThroughSpec, PopulateSpec
 				for (Object intermediateObj : intermediateList) {
 					if (intermediateObj != null) {
 						Object fkToMainObjIdValue = fkPropertyToMainObjIdReadMethod.invoke(intermediateObj);
-
 						Object fkToRelatedObjIdValue = fkPropertyToRelatedObjIdReadMethod.invoke(intermediateObj);
 						if (fkToMainObjIdValue != null && fkToRelatedObjIdValue != null) {
 							if (mainObjIdMap.containsKey(fkToMainObjIdValue)) {
@@ -216,7 +211,6 @@ public class ToMany<T, U> implements ToManySpec<T, U>, ThroughSpec, PopulateSpec
 			} catch (Exception e) {
 				throw new MapperException(e.getMessage(), e);
 			}
-
 		}
 
 		@SuppressWarnings("rawtypes")

@@ -1,7 +1,6 @@
 package io.github.simplejdbcmapper.core;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.HashSet;
 import java.util.List;
@@ -53,7 +52,7 @@ class MultiEntityExtractorTest {
 		Set<Long> seen = new HashSet<>();
 		Set<Long> duplicates = orders.stream().map(o -> o.getId()).filter(id -> !seen.add(id))
 				.collect(Collectors.toSet());
-		assertTrue(duplicates.size() == 0);
+		assertEquals(0, duplicates.size());
 
 	}
 

@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Relationship.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">simplejdbcmapper</a> &gt; <a href="index.source.html" class="el_package">io.github.simplejdbcmapper.relationship</a> &gt; <span class="el_source">Relationship.java</span></div><h1>Relationship.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2025-present the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ *
+ * https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
+ */
+package io.github.simplejdbcmapper.relationship;
+
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.List;
+
+import org.springframework.util.CollectionUtils;
+import org.springframework.util.ReflectionUtils;
+import org.springframework.util.StringUtils;
+
+/**
+ * The starting point for any relationship assignment. It works with the lists
+ * provided and depending on the arguments to the api methods, populates the
+ * target property. The terminal method in the api flow is populate() which
+ * triggers the processing.
+ * 
+ * &lt;p&gt;
+ * Processing does not access the database or use SimpleJdbcMapper.
+ * 
+ * @author Antony Joseph
+ */
+public class Relationship implements RelationshipSpec {
+
+	static final String IS_PREFIX = &quot;is&quot;;
+	static final String GET_PREFIX = &quot;get&quot;;
+	static final String SET_PREFIX = &quot;set&quot;;
+
+	private List&lt;?&gt; mainObjList;
+
+<span class="fc" id="L43">	private Relationship(List&lt;?&gt; mainObjList) {</span>
+<span class="fc" id="L44">		this.mainObjList = mainObjList;</span>
+<span class="fc" id="L45">	}</span>
+
+	/**
+	 * Start of creating a relationship. The main object is the object whose
+	 * property will be populated using the api.
+	 * 
+	 * @param &lt;T&gt;         the main object type
+	 * @param mainObjList the main object list
+	 * @return A relationship
+	 */
+	public static &lt;T&gt; RelationshipSpec mainList(List&lt;T&gt; mainObjList) {
+<span class="fc" id="L56">		return new Relationship(mainObjList);</span>
+	}
+
+	/**
+	 * A toOne relationship
+	 * 
+	 * @param &lt;U&gt;            the type of the related object
+	 * 
+	 * @param relatedObjList the list of related objects
+	 * 
+	 */
+	public &lt;U&gt; ToOneSpec toOneList(List&lt;U&gt; relatedObjList) {
+<span class="fc" id="L68">		return ToOne.toOne(mainObjList, relatedObjList);</span>
+	}
+
+	/**
+	 * A toMany relationship
+	 * 
+	 * @param &lt;U&gt;            the type of the related object
+	 * 
+	 * @param relatedObjList the list of related objects
+	 * 
+	 * @return The ToManySpec
+	 */
+	public &lt;U&gt; ToManySpec toManyList(List&lt;U&gt; relatedObjList) {
+<span class="fc" id="L81">		return ToMany.toMany(mainObjList, relatedObjList);</span>
+	}
+
+	static Method getReadMethod(List&lt;?&gt; list, String propertyName) {
+<span class="fc bfc" id="L85" title="All 2 branches covered.">		if (!CollectionUtils.isEmpty(list)) {</span>
+<span class="pc bpc" id="L86" title="1 of 2 branches missed.">			for (Object obj : list) {</span>
+<span class="fc bfc" id="L87" title="All 2 branches covered.">				if (obj != null) {</span>
+<span class="fc" id="L88">					Method m = ReflectionUtils.findMethod(obj.getClass(),</span>
+<span class="fc" id="L89">							Relationship.GET_PREFIX + StringUtils.capitalize(propertyName));</span>
+<span class="fc bfc" id="L90" title="All 2 branches covered.">					if (m == null) {</span>
+<span class="fc" id="L91">						m = ReflectionUtils.findMethod(obj.getClass(),</span>
+<span class="fc" id="L92">								Relationship.IS_PREFIX + StringUtils.capitalize(propertyName));</span>
+					}
+<span class="fc bfc" id="L94" title="All 2 branches covered.">					if (m == null) {</span>
+<span class="fc" id="L95">						throw new IllegalArgumentException(&quot;Invalid argument. Could not find getter for &quot;</span>
+<span class="fc" id="L96">								+ obj.getClass().getName() + &quot;.&quot; + propertyName);</span>
+					}
+<span class="fc" id="L98">					return m;</span>
+				}
+<span class="fc" id="L100">			}</span>
+		}
+<span class="fc" id="L102">		return null;</span>
+	}
+
+	static Method getWriteMethod(List&lt;?&gt; list, String propertyName) {
+<span class="fc bfc" id="L106" title="All 2 branches covered.">		if (!CollectionUtils.isEmpty(list)) {</span>
+<span class="pc bpc" id="L107" title="1 of 2 branches missed.">			for (Object obj : list) {</span>
+<span class="fc bfc" id="L108" title="All 2 branches covered.">				if (obj != null) {</span>
+<span class="fc" id="L109">					Field field = ReflectionUtils.findField(obj.getClass(), propertyName);</span>
+<span class="fc bfc" id="L110" title="All 2 branches covered.">					if (field == null) {</span>
+<span class="fc" id="L111">						throw new IllegalArgumentException(&quot;Invalid argument. Property name &quot; + propertyName</span>
+<span class="fc" id="L112">								+ &quot; does not exist for &quot; + obj.getClass().getName());</span>
+					}
+<span class="fc" id="L114">					Method m = ReflectionUtils.findMethod(obj.getClass(),</span>
+<span class="fc" id="L115">							Relationship.SET_PREFIX + StringUtils.capitalize(propertyName), field.getType());</span>
+<span class="pc bpc" id="L116" title="1 of 2 branches missed.">					if (m == null) {</span>
+<span class="nc" id="L117">						throw new IllegalArgumentException(&quot;Invalid argument. Could not find setter for &quot;</span>
+<span class="nc" id="L118">								+ obj.getClass().getName() + &quot;.&quot; + propertyName);</span>
+					}
+<span class="fc" id="L120">					return m;</span>
+				}
+<span class="fc" id="L122">			}</span>
+		}
+<span class="fc" id="L124">		return null;</span>
+	}
+
+	static Class&lt;?&gt; getPropertyType(List&lt;?&gt; list, String propertyName) {
+<span class="pc bpc" id="L128" title="1 of 2 branches missed.">		if (!CollectionUtils.isEmpty(list)) {</span>
+<span class="pc bpc" id="L129" title="1 of 2 branches missed.">			for (Object obj : list) {</span>
+<span class="fc bfc" id="L130" title="All 2 branches covered.">				if (obj != null) {</span>
+<span class="fc" id="L131">					Field field = ReflectionUtils.findField(obj.getClass(), propertyName);</span>
+<span class="pc bpc" id="L132" title="1 of 2 branches missed.">					if (field != null) {</span>
+<span class="fc" id="L133">						return field.getType();</span>
+					}
+				}
+<span class="fc" id="L136">			}</span>
+		}
+<span class="nc" id="L138">		return null;</span>
+	}
+
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 2877df09e3f7969051484c7d89139e582cc77e39 2026-05-04T17:19:11</div></body></html>

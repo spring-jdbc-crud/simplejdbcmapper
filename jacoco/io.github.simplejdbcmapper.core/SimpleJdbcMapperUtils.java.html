@@ -25,20 +25,28 @@ import org.springframework.util.CollectionUtils;
 
 /**
  * 
- * Some utility methods.
+ * @deprecated Use {@link io.github.simplejdbcmapper.relationship.Relationship}
+ *             instead.
+ *             &lt;p&gt;
+ *             Some utility methods.
  * 
  * @author Antony Joseph
  */
+@Deprecated(since = &quot;2.3.0&quot;, forRemoval = true)
 public class SimpleJdbcMapperUtils {
 	/**
-	 * Assigns the 'hasOne' property of the main object with the related object that
-	 * matches 'relatedObjJoinPropertyNameTheId' and
-	 * 'mainObjJoinPropertyNameTheForeignKey'.
 	 * 
-	 * &lt;pre&gt;
+	 * @deprecated As of release 2.3.0, Replaced by
+	 *             {@link io.github.simplejdbcmapper.relationship.Relationship#toOneList}
+	 *             &lt;p&gt;
+	 *             Assigns the 'hasOne' property of the main object with the related
+	 *             object that matches 'relatedObjJoinPropertyNameTheId' and
+	 *             'mainObjJoinPropertyNameTheForeignKey'.
+	 * 
+	 *             &lt;pre&gt;
 	 * Example use case: 
 	 * 1) Query for a list of employees
-	 * 2) Query the departments for these employees. (Could use sjm.findByPropertyValues() for this)
+	 * 2) Query the departments for these employees. (Could use {@link io.github.simplejdbcmapper.core.SimpleJdbcMapper#findByPropertyValues} for this)
 	 * 3) Use populateHasOne() to populate the employee.department property
 	 * &lt;/pre&gt;
 	 * 
@@ -61,43 +69,47 @@ public class SimpleJdbcMapperUtils {
 	public static &lt;T, U&gt; void populateHasOne(List&lt;T&gt; mainObjList, List&lt;U&gt; relatedObjList,
 			String mainObjJoinPropertyNameTheForeignKey, String relatedObjJoinPropertyNameTheId,
 			String mainObjHasOnePropertyName) {
-<span class="fc" id="L64">		Assert.notNull(mainObjJoinPropertyNameTheForeignKey, &quot;mainObjJoinPropertyNameTheForeignKey must not be null&quot;);</span>
-<span class="fc" id="L65">		Assert.notNull(relatedObjJoinPropertyNameTheId, &quot;relatedObjJoinPropertyNameTheId must not be null&quot;);</span>
-<span class="fc" id="L66">		Assert.notNull(mainObjHasOnePropertyName, &quot;mainObjHasOnePropertyName must not be null&quot;);</span>
-<span class="pc bpc" id="L67" title="1 of 4 branches missed.">		if (CollectionUtils.isEmpty(mainObjList) || CollectionUtils.isEmpty(relatedObjList)) {</span>
-<span class="fc" id="L68">			return;</span>
+<span class="fc" id="L72">		Assert.notNull(mainObjJoinPropertyNameTheForeignKey, &quot;mainObjJoinPropertyNameTheForeignKey must not be null&quot;);</span>
+<span class="fc" id="L73">		Assert.notNull(relatedObjJoinPropertyNameTheId, &quot;relatedObjJoinPropertyNameTheId must not be null&quot;);</span>
+<span class="fc" id="L74">		Assert.notNull(mainObjHasOnePropertyName, &quot;mainObjHasOnePropertyName must not be null&quot;);</span>
+<span class="pc bpc" id="L75" title="1 of 4 branches missed.">		if (CollectionUtils.isEmpty(mainObjList) || CollectionUtils.isEmpty(relatedObjList)) {</span>
+<span class="fc" id="L76">			return;</span>
 		}
-<span class="fc" id="L70">		Map&lt;Object, U&gt; idToRelatedObjMap = new HashMap&lt;&gt;();</span>
-<span class="fc bfc" id="L71" title="All 2 branches covered.">		for (U relatedObj : relatedObjList) {</span>
-<span class="fc bfc" id="L72" title="All 2 branches covered.">			if (relatedObj != null) {</span>
-<span class="fc" id="L73">				BeanWrapper bwRelatedObj = PropertyAccessorFactory.forBeanPropertyAccess(relatedObj);</span>
-<span class="fc" id="L74">				Object idPropertyValue = bwRelatedObj.getPropertyValue(relatedObjJoinPropertyNameTheId);</span>
-<span class="pc bpc" id="L75" title="1 of 2 branches missed.">				if (idPropertyValue != null) {</span>
-<span class="fc" id="L76">					idToRelatedObjMap.put(idPropertyValue, relatedObj);</span>
+<span class="fc" id="L78">		Map&lt;Object, U&gt; idToRelatedObjMap = new HashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L79" title="All 2 branches covered.">		for (U relatedObj : relatedObjList) {</span>
+<span class="fc bfc" id="L80" title="All 2 branches covered.">			if (relatedObj != null) {</span>
+<span class="fc" id="L81">				BeanWrapper bwRelatedObj = PropertyAccessorFactory.forBeanPropertyAccess(relatedObj);</span>
+<span class="fc" id="L82">				Object idPropertyValue = bwRelatedObj.getPropertyValue(relatedObjJoinPropertyNameTheId);</span>
+<span class="pc bpc" id="L83" title="1 of 2 branches missed.">				if (idPropertyValue != null) {</span>
+<span class="fc" id="L84">					idToRelatedObjMap.put(idPropertyValue, relatedObj);</span>
 				}
 			}
-<span class="fc" id="L79">		}</span>
-<span class="fc bfc" id="L80" title="All 2 branches covered.">		for (T mainObj : mainObjList) {</span>
-<span class="fc bfc" id="L81" title="All 2 branches covered.">			if (mainObj != null) {</span>
-<span class="fc" id="L82">				BeanWrapper bwMainObj = PropertyAccessorFactory.forBeanPropertyAccess(mainObj);</span>
-<span class="fc" id="L83">				Object foreignKeyPropertyValue = bwMainObj.getPropertyValue(mainObjJoinPropertyNameTheForeignKey);</span>
-<span class="pc bpc" id="L84" title="1 of 2 branches missed.">				if (foreignKeyPropertyValue != null) {</span>
-<span class="fc" id="L85">					bwMainObj.setPropertyValue(mainObjHasOnePropertyName,</span>
-<span class="fc" id="L86">							idToRelatedObjMap.get(foreignKeyPropertyValue));</span>
+<span class="fc" id="L87">		}</span>
+<span class="fc bfc" id="L88" title="All 2 branches covered.">		for (T mainObj : mainObjList) {</span>
+<span class="fc bfc" id="L89" title="All 2 branches covered.">			if (mainObj != null) {</span>
+<span class="fc" id="L90">				BeanWrapper bwMainObj = PropertyAccessorFactory.forBeanPropertyAccess(mainObj);</span>
+<span class="fc" id="L91">				Object foreignKeyPropertyValue = bwMainObj.getPropertyValue(mainObjJoinPropertyNameTheForeignKey);</span>
+<span class="fc bfc" id="L92" title="All 2 branches covered.">				if (foreignKeyPropertyValue != null) {</span>
+<span class="fc" id="L93">					bwMainObj.setPropertyValue(mainObjHasOnePropertyName,</span>
+<span class="fc" id="L94">							idToRelatedObjMap.get(foreignKeyPropertyValue));</span>
 				}
 			}
-<span class="fc" id="L89">		}</span>
-<span class="fc" id="L90">	}</span>
+<span class="fc" id="L97">		}</span>
+<span class="fc" id="L98">	}</span>
 
 	/**
-	 * Assigns the 'hasMany' property of the main object with the list of related
-	 * objects that match 'mainObjJoinPropertyNameTheId' and
-	 * 'relatedObjJoinPropertyNameTheForeignKey'.
 	 * 
-	 * &lt;pre&gt;
+	 * @deprecated As of release 2.3.0, Replaced by
+	 *             {@link io.github.simplejdbcmapper.relationship.Relationship#toManyList}
+	 *             &lt;p&gt;
+	 *             Assigns the 'hasMany' property of the main object with the list
+	 *             of related objects that match 'mainObjJoinPropertyNameTheId' and
+	 *             'relatedObjJoinPropertyNameTheForeignKey'.
+	 * 
+	 *             &lt;pre&gt;
 	 * Example use case could be: 
 	 * 1) Query to get a list of employees
-	 * 2) Query the skills of these employees. (Could use sjm.findByPropertyValues() for this)
+	 * 2) Query the skills of these employees. (Could use {@link io.github.simplejdbcmapper.core.SimpleJdbcMapper#findByPropertyValues} for this)
 	 * 3) Use populateHasMany() to populate the employee.skills property
 	 * &lt;/pre&gt;
 	 * 
@@ -123,45 +135,49 @@ public class SimpleJdbcMapperUtils {
 	public static &lt;T, U&gt; void populateHasMany(List&lt;T&gt; mainObjList, List&lt;U&gt; relatedObjList,
 			String mainObjJoinPropertyNameTheId, String relatedObjJoinPropertyNameTheForeignKey,
 			String mainObjHasManyPropertyName) {
-<span class="fc" id="L126">		Assert.notNull(mainObjJoinPropertyNameTheId, &quot;mainObjJoinPropertyNameTheId must not be null&quot;);</span>
-<span class="fc" id="L127">		Assert.notNull(relatedObjJoinPropertyNameTheForeignKey,</span>
+<span class="fc" id="L138">		Assert.notNull(mainObjJoinPropertyNameTheId, &quot;mainObjJoinPropertyNameTheId must not be null&quot;);</span>
+<span class="fc" id="L139">		Assert.notNull(relatedObjJoinPropertyNameTheForeignKey,</span>
 				&quot;relatedObjJoinPropertyNameTheForeignKey must not be null&quot;);
-<span class="fc" id="L129">		Assert.notNull(mainObjHasManyPropertyName, &quot;mainObjHasManyPropertyName must not be null&quot;);</span>
-<span class="pc bpc" id="L130" title="1 of 4 branches missed.">		if (CollectionUtils.isEmpty(mainObjList) || CollectionUtils.isEmpty(relatedObjList)) {</span>
-<span class="fc" id="L131">			return;</span>
+<span class="fc" id="L141">		Assert.notNull(mainObjHasManyPropertyName, &quot;mainObjHasManyPropertyName must not be null&quot;);</span>
+<span class="pc bpc" id="L142" title="1 of 4 branches missed.">		if (CollectionUtils.isEmpty(mainObjList) || CollectionUtils.isEmpty(relatedObjList)) {</span>
+<span class="fc" id="L143">			return;</span>
 		}
-<span class="fc" id="L133">		Map&lt;Object, List&lt;U&gt;&gt; foreignKeyToListMap = new HashMap&lt;&gt;();</span>
-<span class="fc bfc" id="L134" title="All 2 branches covered.">		for (U relatedObj : relatedObjList) {</span>
-<span class="fc bfc" id="L135" title="All 2 branches covered.">			if (relatedObj != null) {</span>
-<span class="fc" id="L136">				BeanWrapper bwRelatedObj = PropertyAccessorFactory.forBeanPropertyAccess(relatedObj);</span>
-<span class="fc" id="L137">				Object foreignKeyPropertyValue = bwRelatedObj.getPropertyValue(relatedObjJoinPropertyNameTheForeignKey);</span>
-<span class="pc bpc" id="L138" title="1 of 2 branches missed.">				if (foreignKeyPropertyValue != null) {</span>
-<span class="fc" id="L139">					List&lt;U&gt; list = foreignKeyToListMap.get(foreignKeyPropertyValue);</span>
-<span class="fc bfc" id="L140" title="All 2 branches covered.">					if (list == null) {</span>
-<span class="fc" id="L141">						list = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L142">						list.add(relatedObj);</span>
-<span class="fc" id="L143">						foreignKeyToListMap.put(foreignKeyPropertyValue, list);</span>
+<span class="fc" id="L145">		Map&lt;Object, List&lt;U&gt;&gt; foreignKeyToListMap = new HashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L146" title="All 2 branches covered.">		for (U relatedObj : relatedObjList) {</span>
+<span class="fc bfc" id="L147" title="All 2 branches covered.">			if (relatedObj != null) {</span>
+<span class="fc" id="L148">				BeanWrapper bwRelatedObj = PropertyAccessorFactory.forBeanPropertyAccess(relatedObj);</span>
+<span class="fc" id="L149">				Object foreignKeyPropertyValue = bwRelatedObj.getPropertyValue(relatedObjJoinPropertyNameTheForeignKey);</span>
+<span class="pc bpc" id="L150" title="1 of 2 branches missed.">				if (foreignKeyPropertyValue != null) {</span>
+<span class="fc" id="L151">					List&lt;U&gt; list = foreignKeyToListMap.get(foreignKeyPropertyValue);</span>
+<span class="fc bfc" id="L152" title="All 2 branches covered.">					if (list == null) {</span>
+<span class="fc" id="L153">						list = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L154">						list.add(relatedObj);</span>
+<span class="fc" id="L155">						foreignKeyToListMap.put(foreignKeyPropertyValue, list);</span>
 					} else {
-<span class="fc" id="L145">						list.add(relatedObj);</span>
+<span class="fc" id="L157">						list.add(relatedObj);</span>
 					}
 				}
 			}
-<span class="fc" id="L149">		}</span>
-<span class="fc bfc" id="L150" title="All 2 branches covered.">		for (T mainObj : mainObjList) {</span>
-<span class="fc bfc" id="L151" title="All 2 branches covered.">			if (mainObj != null) {</span>
-<span class="fc" id="L152">				BeanWrapper bwMainObj = PropertyAccessorFactory.forBeanPropertyAccess(mainObj);</span>
-<span class="fc" id="L153">				Object idPropertyValue = bwMainObj.getPropertyValue(mainObjJoinPropertyNameTheId);</span>
-<span class="pc bpc" id="L154" title="1 of 2 branches missed.">				if (idPropertyValue != null) {</span>
-<span class="fc" id="L155">					bwMainObj.setPropertyValue(mainObjHasManyPropertyName, foreignKeyToListMap.get(idPropertyValue));</span>
+<span class="fc" id="L161">		}</span>
+<span class="fc bfc" id="L162" title="All 2 branches covered.">		for (T mainObj : mainObjList) {</span>
+<span class="fc bfc" id="L163" title="All 2 branches covered.">			if (mainObj != null) {</span>
+<span class="fc" id="L164">				BeanWrapper bwMainObj = PropertyAccessorFactory.forBeanPropertyAccess(mainObj);</span>
+<span class="fc" id="L165">				Object idPropertyValue = bwMainObj.getPropertyValue(mainObjJoinPropertyNameTheId);</span>
+<span class="pc bpc" id="L166" title="1 of 2 branches missed.">				if (idPropertyValue != null) {</span>
+<span class="fc" id="L167">					bwMainObj.setPropertyValue(mainObjHasManyPropertyName, foreignKeyToListMap.get(idPropertyValue));</span>
 				}
 			}
-<span class="fc" id="L158">		}</span>
-<span class="fc" id="L159">	}</span>
+<span class="fc" id="L170">		}</span>
+<span class="fc" id="L171">	}</span>
 
 	/**
-	 * Splits the list into multiple lists by chunk size. Can be used to split the
-	 * sql IN clauses since some databases have a limitation on 'IN' clause entries
-	 * and size
+	 * @deprecated As of release 2.3.0, Will be removed in a future major release.
+	 *             If you need it please go ahead and make a copy of it.
+	 *             &lt;p&gt;
+	 * 
+	 *             Splits the list into multiple lists by chunk size. Can be used to
+	 *             split the sql IN clauses since some databases have a limitation
+	 *             on 'IN' clause entries and size
 	 *
 	 * @param &lt;T&gt;       the type of list
 	 * @param list      the list to chunk
@@ -169,16 +185,16 @@ public class SimpleJdbcMapperUtils {
 	 * @return Collection of lists broken down by chunkSize
 	 */
 	public static &lt;T&gt; List&lt;List&lt;T&gt;&gt; chunkList(List&lt;T&gt; list, int chunkSize) {
-<span class="fc" id="L172">		List&lt;List&lt;T&gt;&gt; chunks = new ArrayList&lt;&gt;();</span>
-<span class="pc bpc" id="L173" title="1 of 2 branches missed.">		if (list != null) {</span>
-<span class="fc bfc" id="L174" title="All 2 branches covered.">			for (int i = 0; i &lt; list.size(); i += chunkSize) {</span>
-<span class="fc" id="L175">				chunks.add(list.subList(i, Math.min(i + chunkSize, list.size())));</span>
+<span class="fc" id="L188">		List&lt;List&lt;T&gt;&gt; chunks = new ArrayList&lt;&gt;();</span>
+<span class="pc bpc" id="L189" title="1 of 2 branches missed.">		if (list != null) {</span>
+<span class="fc bfc" id="L190" title="All 2 branches covered.">			for (int i = 0; i &lt; list.size(); i += chunkSize) {</span>
+<span class="fc" id="L191">				chunks.add(list.subList(i, Math.min(i + chunkSize, list.size())));</span>
 			}
 		}
-<span class="fc" id="L178">		return chunks;</span>
+<span class="fc" id="L194">		return chunks;</span>
 	}
 
 	private SimpleJdbcMapperUtils() {
 	}
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 96908ea3c02b6fa9bbf985263d2a7690ee91cbdd 2026-04-24T17:30:26</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 2877df09e3f7969051484c7d89139e582cc77e39 2026-05-04T17:19:11</div></body></html>

@@ -18,54 +18,56 @@ import java.sql.Blob;
 import java.sql.Clob;
 
 /**
- * This enum is there because we want the switch statements in the
- * EntityRowMapper to be compiled into a 'tableswitch' by java (which it does).
+ * enum for switch statements in the EntityRowMapper so it can be compiled into
+ * a 'tableswitch' by java (which it does).
+ *
+ * @author Antony Joseph
  */
-<span class="fc" id="L24">enum ResultSetType {</span>
+<span class="fc" id="L26">enum ResultSetType {</span>
 
-<span class="fc" id="L26">	UNKNOWN, BIGDECIMAL, BLOB, BOOLEAN, BYTEARRAY, BYTE, CLOB, DATE, DOUBLE, ENUM, FLOAT, INTEGER, LONG, NUMBER, SHORT,</span>
-<span class="fc" id="L27">	STRING, TIMESTAMP, TIME, UTILDATE;</span>
+<span class="fc" id="L28">	UNKNOWN, BIGDECIMAL, BLOB, BOOLEAN, BYTEARRAY, BYTE, CLOB, DATE, DOUBLE, ENUM, FLOAT, INTEGER, LONG, NUMBER, SHORT,</span>
+<span class="fc" id="L29">	STRING, TIMESTAMP, TIME, UTILDATE;</span>
 
 	public static ResultSetType getResultSetType(Class&lt;?&gt; type) {
-<span class="fc bfc" id="L30" title="All 2 branches covered.">		if (BigDecimal.class == type) {</span>
-<span class="fc" id="L31">			return BIGDECIMAL;</span>
-<span class="fc bfc" id="L32" title="All 2 branches covered.">		} else if (Blob.class == type) {</span>
-<span class="fc" id="L33">			return BLOB;</span>
-<span class="fc bfc" id="L34" title="All 2 branches covered.">		} else if (Boolean.class == type) {</span>
-<span class="fc" id="L35">			return BOOLEAN;</span>
-<span class="fc bfc" id="L36" title="All 2 branches covered.">		} else if (byte[].class == type) {</span>
-<span class="fc" id="L37">			return BYTEARRAY;</span>
-<span class="fc bfc" id="L38" title="All 2 branches covered.">		} else if (Byte.class == type) {</span>
-<span class="fc" id="L39">			return BYTE;</span>
-<span class="fc bfc" id="L40" title="All 2 branches covered.">		} else if (Clob.class == type) {</span>
-<span class="fc" id="L41">			return CLOB;</span>
-<span class="fc bfc" id="L42" title="All 2 branches covered.">		} else if (java.sql.Date.class == type) {</span>
-<span class="fc" id="L43">			return DATE;</span>
-<span class="fc bfc" id="L44" title="All 2 branches covered.">		} else if (Double.class == type) {</span>
-<span class="fc" id="L45">			return DOUBLE;</span>
-<span class="fc bfc" id="L46" title="All 2 branches covered.">		} else if (type.isEnum()) {</span>
-<span class="fc" id="L47">			return ENUM;</span>
-<span class="fc bfc" id="L48" title="All 2 branches covered.">		} else if (Float.class == type) {</span>
-<span class="fc" id="L49">			return FLOAT;</span>
-<span class="fc bfc" id="L50" title="All 2 branches covered.">		} else if (Integer.class == type) {</span>
-<span class="fc" id="L51">			return INTEGER;</span>
-<span class="fc bfc" id="L52" title="All 2 branches covered.">		} else if (Long.class == type) {</span>
-<span class="fc" id="L53">			return LONG;</span>
-<span class="fc bfc" id="L54" title="All 2 branches covered.">		} else if (Number.class == type) {</span>
-<span class="fc" id="L55">			return NUMBER;</span>
-<span class="fc bfc" id="L56" title="All 2 branches covered.">		} else if (Short.class == type) {</span>
-<span class="fc" id="L57">			return SHORT;</span>
-<span class="fc bfc" id="L58" title="All 2 branches covered.">		} else if (String.class == type) {</span>
-<span class="fc" id="L59">			return STRING;</span>
-<span class="fc bfc" id="L60" title="All 2 branches covered.">		} else if (java.sql.Timestamp.class == type) {</span>
-<span class="fc" id="L61">			return TIMESTAMP;</span>
-<span class="fc bfc" id="L62" title="All 2 branches covered.">		} else if (java.sql.Time.class == type) {</span>
-<span class="fc" id="L63">			return TIME;</span>
-<span class="fc bfc" id="L64" title="All 2 branches covered.">		} else if (java.util.Date.class == type) {</span>
-<span class="fc" id="L65">			return UTILDATE;</span>
+<span class="fc bfc" id="L32" title="All 2 branches covered.">		if (BigDecimal.class == type) {</span>
+<span class="fc" id="L33">			return BIGDECIMAL;</span>
+<span class="fc bfc" id="L34" title="All 2 branches covered.">		} else if (Blob.class == type) {</span>
+<span class="fc" id="L35">			return BLOB;</span>
+<span class="fc bfc" id="L36" title="All 2 branches covered.">		} else if (Boolean.class == type) {</span>
+<span class="fc" id="L37">			return BOOLEAN;</span>
+<span class="fc bfc" id="L38" title="All 2 branches covered.">		} else if (byte[].class == type) {</span>
+<span class="fc" id="L39">			return BYTEARRAY;</span>
+<span class="fc bfc" id="L40" title="All 2 branches covered.">		} else if (Byte.class == type) {</span>
+<span class="fc" id="L41">			return BYTE;</span>
+<span class="fc bfc" id="L42" title="All 2 branches covered.">		} else if (Clob.class == type) {</span>
+<span class="fc" id="L43">			return CLOB;</span>
+<span class="fc bfc" id="L44" title="All 2 branches covered.">		} else if (java.sql.Date.class == type) {</span>
+<span class="fc" id="L45">			return DATE;</span>
+<span class="fc bfc" id="L46" title="All 2 branches covered.">		} else if (Double.class == type) {</span>
+<span class="fc" id="L47">			return DOUBLE;</span>
+<span class="fc bfc" id="L48" title="All 2 branches covered.">		} else if (type.isEnum()) {</span>
+<span class="fc" id="L49">			return ENUM;</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">		} else if (Float.class == type) {</span>
+<span class="fc" id="L51">			return FLOAT;</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">		} else if (Integer.class == type) {</span>
+<span class="fc" id="L53">			return INTEGER;</span>
+<span class="fc bfc" id="L54" title="All 2 branches covered.">		} else if (Long.class == type) {</span>
+<span class="fc" id="L55">			return LONG;</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">		} else if (Number.class == type) {</span>
+<span class="fc" id="L57">			return NUMBER;</span>
+<span class="fc bfc" id="L58" title="All 2 branches covered.">		} else if (Short.class == type) {</span>
+<span class="fc" id="L59">			return SHORT;</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">		} else if (String.class == type) {</span>
+<span class="fc" id="L61">			return STRING;</span>
+<span class="fc bfc" id="L62" title="All 2 branches covered.">		} else if (java.sql.Timestamp.class == type) {</span>
+<span class="fc" id="L63">			return TIMESTAMP;</span>
+<span class="fc bfc" id="L64" title="All 2 branches covered.">		} else if (java.sql.Time.class == type) {</span>
+<span class="fc" id="L65">			return TIME;</span>
+<span class="fc bfc" id="L66" title="All 2 branches covered.">		} else if (java.util.Date.class == type) {</span>
+<span class="fc" id="L67">			return UTILDATE;</span>
 		}
-<span class="fc" id="L67">		return UNKNOWN;</span>
+<span class="fc" id="L69">		return UNKNOWN;</span>
 	}
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 96908ea3c02b6fa9bbf985263d2a7690ee91cbdd 2026-04-24T17:30:26</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 2877df09e3f7969051484c7d89139e582cc77e39 2026-05-04T17:19:11</div></body></html>

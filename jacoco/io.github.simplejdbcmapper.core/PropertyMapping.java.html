@@ -26,15 +26,15 @@ class PropertyMapping {
 
 	private Class&lt;?&gt; propertyType;
 
-	private Method writeMethod; // writeMethod for property to be set by reflection
+	private Method writeMethod;
+
+	private Method readMethod;
 
 	private ResultSetType resultSetType;
 
 	private String columnName;
 
 	private Integer columnSqlType;
-
-	private Integer columnOverriddenSqlType;
 
 <span class="fc" id="L39">	private boolean isEnum = false;</span>
 
@@ -54,135 +54,128 @@ class PropertyMapping {
 
 <span class="fc" id="L55">	private boolean characterLargeObject = false;</span>
 
-	public PropertyMapping(String propertyName, Class&lt;?&gt; propertyType, String columnName, Integer columnSqlType) {
-<span class="fc" id="L58">		this(propertyName, propertyType, columnName, columnSqlType, null);</span>
-<span class="fc" id="L59">	}</span>
-
-	public PropertyMapping(String propertyName, Class&lt;?&gt; propertyType, String columnName, Integer columnSqlType,
-<span class="fc" id="L62">			Integer columnOverriddenSqlType) {</span>
-<span class="pc bpc" id="L63" title="3 of 6 branches missed.">		if (propertyName == null || propertyType == null || columnName == null) {</span>
-<span class="nc" id="L64">			throw new IllegalArgumentException(&quot;propertyName, propertyType, columnName must not be null&quot;);</span>
+<span class="fc" id="L57">	public PropertyMapping(String propertyName, Class&lt;?&gt; propertyType, String columnName, Integer columnSqlType) {</span>
+<span class="pc bpc" id="L58" title="3 of 6 branches missed.">		if (propertyName == null || propertyType == null || columnName == null) {</span>
+<span class="nc" id="L59">			throw new IllegalArgumentException(&quot;propertyName, propertyType, columnName must not be null&quot;);</span>
 		}
-<span class="fc" id="L66">		this.propertyName = propertyName;</span>
-<span class="fc" id="L67">		this.propertyType = propertyType;</span>
+<span class="fc" id="L61">		this.propertyName = propertyName;</span>
+<span class="fc" id="L62">		this.propertyType = propertyType;</span>
 		// column names stored in lower case always. No plans to support case sensitive
 		// table column names or column names with spaces in them
-<span class="fc" id="L70">		this.columnName = InternalUtils.toLowerCase(columnName);</span>
-<span class="fc" id="L71">		this.columnSqlType = columnSqlType;</span>
-<span class="fc" id="L72">		this.columnOverriddenSqlType = columnOverriddenSqlType;</span>
-<span class="fc" id="L73">		isEnum = propertyType.isEnum();</span>
-<span class="fc" id="L74">		determineBlobClob();</span>
-<span class="fc" id="L75">	}</span>
+<span class="fc" id="L65">		this.columnName = InternalUtils.toLowerCase(columnName);</span>
+<span class="fc" id="L66">		this.columnSqlType = columnSqlType;</span>
+<span class="fc" id="L67">		isEnum = propertyType.isEnum();</span>
+<span class="fc" id="L68">		determineBlobClob();</span>
+<span class="fc" id="L69">	}</span>
 
 	public int getColumnSqlType() {
-<span class="fc" id="L78">		return columnSqlType;</span>
-	}
-
-	public Integer getColumnOverriddenSqlType() {
-<span class="nc" id="L82">		return columnOverriddenSqlType;</span>
+<span class="fc" id="L72">		return columnSqlType;</span>
 	}
 
 	public String getPropertyName() {
-<span class="fc" id="L86">		return propertyName;</span>
+<span class="fc" id="L76">		return propertyName;</span>
 	}
 
 	public Class&lt;?&gt; getPropertyType() {
-<span class="fc" id="L90">		return this.propertyType;</span>
+<span class="fc" id="L80">		return this.propertyType;</span>
 	}
 
 	public String getColumnName() {
-<span class="fc" id="L94">		return columnName;</span>
+<span class="fc" id="L84">		return columnName;</span>
 	}
 
 	public boolean isIdAnnotation() {
-<span class="fc" id="L98">		return idAnnotation;</span>
+<span class="fc" id="L88">		return idAnnotation;</span>
 	}
 
 	public void setIdAnnotation(boolean idAnnotation) {
-<span class="fc" id="L102">		this.idAnnotation = idAnnotation;</span>
-<span class="fc" id="L103">	}</span>
+<span class="fc" id="L92">		this.idAnnotation = idAnnotation;</span>
+<span class="fc" id="L93">	}</span>
 
 	public boolean isCreatedOnAnnotation() {
-<span class="fc" id="L106">		return createdOnAnnotation;</span>
+<span class="fc" id="L96">		return createdOnAnnotation;</span>
 	}
 
 	public void setCreatedOnAnnotation(boolean createdOnAnnotation) {
-<span class="fc" id="L110">		this.createdOnAnnotation = createdOnAnnotation;</span>
-<span class="fc" id="L111">	}</span>
+<span class="fc" id="L100">		this.createdOnAnnotation = createdOnAnnotation;</span>
+<span class="fc" id="L101">	}</span>
 
 	public boolean isUpdatedOnAnnotation() {
-<span class="fc" id="L114">		return updatedOnAnnotation;</span>
+<span class="fc" id="L104">		return updatedOnAnnotation;</span>
 	}
 
 	public void setUpdatedOnAnnotation(boolean updatedOnAnnotation) {
-<span class="fc" id="L118">		this.updatedOnAnnotation = updatedOnAnnotation;</span>
-<span class="fc" id="L119">	}</span>
+<span class="fc" id="L108">		this.updatedOnAnnotation = updatedOnAnnotation;</span>
+<span class="fc" id="L109">	}</span>
 
 	public boolean isVersionAnnotation() {
-<span class="fc" id="L122">		return versionAnnotation;</span>
+<span class="fc" id="L112">		return versionAnnotation;</span>
 	}
 
 	public void setVersionAnnotation(boolean versionAnnotation) {
-<span class="fc" id="L126">		this.versionAnnotation = versionAnnotation;</span>
-<span class="fc" id="L127">	}</span>
+<span class="fc" id="L116">		this.versionAnnotation = versionAnnotation;</span>
+<span class="fc" id="L117">	}</span>
 
 	public boolean isCreatedByAnnotation() {
-<span class="fc" id="L130">		return createdByAnnotation;</span>
+<span class="fc" id="L120">		return createdByAnnotation;</span>
 	}
 
 	public void setCreatedByAnnotation(boolean createdByAnnotation) {
-<span class="fc" id="L134">		this.createdByAnnotation = createdByAnnotation;</span>
-<span class="fc" id="L135">	}</span>
+<span class="fc" id="L124">		this.createdByAnnotation = createdByAnnotation;</span>
+<span class="fc" id="L125">	}</span>
 
 	public boolean isUpdatedByAnnotation() {
-<span class="fc" id="L138">		return updatedByAnnotation;</span>
+<span class="fc" id="L128">		return updatedByAnnotation;</span>
 	}
 
 	public void setUpdatedByAnnotation(boolean updatedByAnnotation) {
-<span class="fc" id="L142">		this.updatedByAnnotation = updatedByAnnotation;</span>
-<span class="fc" id="L143">	}</span>
-
-	public Integer getEffectiveSqlType() {
-<span class="fc bfc" id="L146" title="All 2 branches covered.">		return columnOverriddenSqlType == null ? columnSqlType : columnOverriddenSqlType;</span>
-	}
+<span class="fc" id="L132">		this.updatedByAnnotation = updatedByAnnotation;</span>
+<span class="fc" id="L133">	}</span>
 
 	public boolean isBinaryLargeObject() {
-<span class="fc" id="L150">		return binaryLargeObject;</span>
+<span class="fc" id="L136">		return binaryLargeObject;</span>
 	}
 
 	public boolean isCharacterLargeObject() {
-<span class="fc" id="L154">		return characterLargeObject;</span>
+<span class="fc" id="L140">		return characterLargeObject;</span>
 	}
 
 	public boolean isEnum() {
-<span class="fc" id="L158">		return isEnum;</span>
+<span class="fc" id="L144">		return isEnum;</span>
 	}
 
+	public Method getReadMethod() {
+<span class="fc" id="L148">		return readMethod;</span>
+	}
+
+	public void setReadMethod(Method readMethod) {
+<span class="fc" id="L152">		this.readMethod = readMethod;</span>
+<span class="fc" id="L153">	}</span>
+
 	public Method getWriteMethod() {
-<span class="fc" id="L162">		return writeMethod;</span>
+<span class="fc" id="L156">		return writeMethod;</span>
 	}
 
 	public void setWriteMethod(Method writeMethod) {
-<span class="fc" id="L166">		this.writeMethod = writeMethod;</span>
-<span class="fc" id="L167">	}</span>
+<span class="fc" id="L160">		this.writeMethod = writeMethod;</span>
+<span class="fc" id="L161">	}</span>
 
 	public ResultSetType getResultSetType() {
-<span class="fc" id="L170">		return resultSetType;</span>
+<span class="fc" id="L164">		return resultSetType;</span>
 	}
 
 	public void setResultSetType(ResultSetType resultSetType) {
-<span class="fc" id="L174">		this.resultSetType = resultSetType;</span>
-<span class="fc" id="L175">	}</span>
+<span class="fc" id="L168">		this.resultSetType = resultSetType;</span>
+<span class="fc" id="L169">	}</span>
 
 	private void determineBlobClob() {
-<span class="fc" id="L178">		Integer effectiveSqlType = getEffectiveSqlType();</span>
-<span class="pc bpc" id="L179" title="1 of 6 branches missed.">		if (effectiveSqlType != null &amp;&amp; (effectiveSqlType == Types.BLOB || effectiveSqlType == Types.ARRAY</span>
-<span class="pc bpc" id="L180" title="2 of 4 branches missed.">				|| effectiveSqlType == Types.LONGVARBINARY || effectiveSqlType == Types.VARBINARY)) {</span>
-<span class="fc" id="L181">			binaryLargeObject = true;</span>
-<span class="pc bpc" id="L182" title="1 of 6 branches missed.">		} else if (effectiveSqlType != null &amp;&amp; (effectiveSqlType == Types.CLOB || effectiveSqlType == Types.NCLOB</span>
-<span class="pc bpc" id="L183" title="1 of 4 branches missed.">				|| effectiveSqlType == Types.LONGVARCHAR || effectiveSqlType == Types.LONGNVARCHAR)) {</span>
-<span class="fc" id="L184">			characterLargeObject = true;</span>
+<span class="pc bpc" id="L172" title="1 of 6 branches missed.">		if (columnSqlType != null &amp;&amp; (columnSqlType == Types.BLOB || columnSqlType == Types.ARRAY</span>
+<span class="pc bpc" id="L173" title="1 of 4 branches missed.">				|| columnSqlType == Types.LONGVARBINARY || columnSqlType == Types.VARBINARY)) {</span>
+<span class="fc" id="L174">			binaryLargeObject = true;</span>
+<span class="pc bpc" id="L175" title="1 of 6 branches missed.">		} else if (columnSqlType != null &amp;&amp; (columnSqlType == Types.CLOB || columnSqlType == Types.NCLOB</span>
+<span class="pc bpc" id="L176" title="1 of 4 branches missed.">				|| columnSqlType == Types.LONGVARCHAR || columnSqlType == Types.LONGNVARCHAR)) {</span>
+<span class="fc" id="L177">			characterLargeObject = true;</span>
 		}
-<span class="fc" id="L186">	}</span>
+<span class="fc" id="L179">	}</span>
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 96908ea3c02b6fa9bbf985263d2a7690ee91cbdd 2026-04-24T17:30:26</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 2877df09e3f7969051484c7d89139e582cc77e39 2026-05-04T17:19:11</div></body></html>

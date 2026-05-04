@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ResultListMap.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">simplejdbcmapper</a> &gt; <a href="index.source.html" class="el_package">io.github.simplejdbcmapper.core</a> &gt; <span class="el_source">ResultListMap.java</span></div><h1>ResultListMap.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2025-present the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ *
+ * https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
+ */
+
+package io.github.simplejdbcmapper.core;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+/**
+ * This holds the results from a multi-entity query. See
+ * {@link io.github.simplejdbcmapper.core.SimpleJdbcMapper#resultSetExtractor}
+ *
+ * @author Antony Joseph
+ */
+<span class="fc" id="L27">public class ResultListMap {</span>
+<span class="fc" id="L28">	private final Map&lt;Class&lt;?&gt;, List&lt;?&gt;&gt; map = new HashMap&lt;&gt;();</span>
+
+	/**
+	 * Add a list by type
+	 * 
+	 * @param &lt;T&gt;  the type
+	 * @param type the type
+	 * @param list the list
+	 */
+	public &lt;T&gt; void putList(Class&lt;T&gt; type, List&lt;T&gt; list) {
+<span class="fc" id="L38">		map.put(type, list);</span>
+<span class="fc" id="L39">	}</span>
+
+	/**
+	 * Get a list by type
+	 * 
+	 * @param &lt;T&gt;  the
+	 * @param type The type
+	 * @return The list for the type
+	 */
+	@SuppressWarnings(&quot;unchecked&quot;)
+	public &lt;T&gt; List&lt;T&gt; getList(Class&lt;T&gt; type) {
+<span class="fc" id="L50">		return (List&lt;T&gt;) map.get(type);</span>
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 2877df09e3f7969051484c7d89139e582cc77e39 2026-05-04T17:19:11</div></body></html>

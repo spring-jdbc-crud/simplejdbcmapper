@@ -1,19 +1,19 @@
 # SimpleJdbcMapper #
-[![CI SimpleJdbcMapper](https://github.com/spring-jdbc-crud/simplejdbcmapper/actions/workflows/ci.yml/badge.svg)](https://github.com/spring-jdbc-crud/simplejdbcmapper/actions/workflows/ci.yml)  [![coverage](https://spring-jdbc-crud.github.io/simplejdbcmapper/jacoco/jacoco.svg)](https://spring-jdbc-crud.github.io/simplejdbcmapper/jacoco/index.html)  [![maven-central](https://img.shields.io/maven-central/v/io.github.spring-jdbc-crud/simplejdbcmapper)](https://central.sonatype.com/artifact/io.github.spring-jdbc-crud/simplejdbcmapper)  [![License](https://img.shields.io/:license-apache-brightgreen.svg)](https://central.sonatype.com/artifact/io.github.spring-jdbc-crud/simplejdbcmapper)
+[![CI SimpleJdbcMapper](https://github.com/spring-jdbc-crud/simplejdbcmapper/actions/workflows/ci.yml/badge.svg)](https://github.com/spring-jdbc-crud/simplejdbcmapper/actions/workflows/ci.yml)  [![coverage](https://spring-jdbc-crud.github.io/simplejdbcmapper/jacoco/jacoco.svg)](https://spring-jdbc-crud.github.io/simplejdbcmapper/jacoco/index.html)  [![maven-central](https://img.shields.io/maven-central/v/io.github.spring-jdbc-crud/simplejdbcmapper)](https://central.sonatype.com/artifact/io.github.spring-jdbc-crud/simplejdbcmapper)  [![License](https://img.shields.io/:license-apache-brightgreen.svg)](https://github.com/spring-jdbc-crud/simplejdbcmapper?tab=Apache-2.0-1-ov-file#readme)
 
 A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations by making them less verbose. Use it as needed and keep using JdbcTemplate/JdbcClient for other functionality.
 
-Just by annotating the models that you would use with JdbcTemplate/JdbcClient, you get single-line CRUD. Provides helper methods to populate relationships from custom queries.
+Just by annotating the models that you would use with JdbcTemplate/JdbcClient, you get single-line CRUD. For custom queries which retrieve mapped objects, you can use row mappers like Spring's BeanPropertyRowMapper/SimplePropertyRowMapper or the framework's EntityRowMapper to get the results without writing custom row mappers.
 
 [Javadoc](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/index.html) | [Demo Application](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper) | [Dzone Article](https://dzone.com/articles/using-simplejdbcmapper-with-spring)
 
 ## Table of contents
 [Features](#features)  
+[Maven Coordinates](#maven-coordinates)  
 [Example code](#example-code)  
 [JDK and Spring version requirements](#jdk-and-spring-version-requirements)  
 [Spring bean configuration for SimpleJdbcMapper](#spring-bean-configuration-for-simplejdbcmapper)  
-[Annotations](#annotations)   
-[Populating relationships from custom queries](#populating-relationships-from-custom-queries)   
+[Annotations](#annotations)  
 [BLOB CLOB mapping](#blob-clob-mapping)  
 [Enum mapping](#enum-mapping)  
 [Configuration for auto assigning @CreatedBy, @UpdateBy, @CreatedOn, @UpdatedOn](#configuration-for-auto-assigning-createdby-updateby-createdon-updatedon)  
@@ -27,18 +27,19 @@ Just by annotating the models that you would use with JdbcTemplate/JdbcClient, y
 ## Features
 1. One liners for CRUD
 2. Simple configuration similar to Jdbctemplate/JdbClient configuration.
-3. Helper methods to populate relationships from mutli-table queries
-4. Method to construct SQL for the mapped objects that can be used with Spring row mappers like BeanPropertyRowMapper, SimplePropertyRowMapper or the framework's EntityRowMapper which avoids writing custom row mappers.
-5. Auto assign properties
+3. Helper methods to construct SQL for the mapped objects that can be used with Spring row mappers like BeanPropertyRowMapper, SimplePropertyRowMapper or the framework's EntityRowMapper which avoids writing custom row mappers.
+4. Auto assign properties
     * auto assign audited  by (created by, updated by) by providing a Supplier
     * auto assign audited on (created on, updated on) by providing a Supplier
     * optimistic locking feature for updates using versioning.
-6. Transaction management is the same as in Spring applications since the library is using JdbcTemplate behind the scenes.
-7. To log the SQL statements use the same SQL logging configurations as Spring. See the logging section further below.
-8. Tests are run against PostgreSQL, MySQL, Oracle, SQLServer. Should work with other databases.
+5. Transaction management is the same as in Spring applications since the library is using JdbcTemplate behind the scenes.
+5. To log the SQL statements use the same SQL logging configurations as Spring. See the logging section further below.
+7. Tests are run against PostgreSQL, MySQL, Oracle, SQLServer. Should work with other databases.
 [![CI SimpleJdbcMapper](https://github.com/spring-jdbc-crud/simplejdbcmapper/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/spring-jdbc-crud/simplejdbcmapper/actions/workflows/ci.yml)
-9. Only dependency is Spring JDBC libraries. No other external dependencies.
+8. Only dependency is Spring JDBC libraries. No other external dependencies.
  
+## Maven Coordinates
+[![maven-central](https://img.shields.io/maven-central/v/io.github.spring-jdbc-crud/simplejdbcmapper)](https://central.sonatype.com/artifact/io.github.spring-jdbc-crud/simplejdbcmapper) 
 
 ## Example code
   ```java 
@@ -335,7 +336,7 @@ This will map the property to a column using the default naming convention of ca
 This will map the property to the column specified by the 'name' attribute.  **Note that column names with spaces are not supported.**  
 
 ***@Column(sqlType = somesqltype)***  
-SimpleJdbcMapper tries to infer the correct SQL type from the Java types but some times it cannot (mostly byte[] and database driver specific java types). In these cases explicitly declaring the SQL type is a best practice to ensure correctness, improve performance, and correctly handle NULL values. 
+SimpleJdbcMapper tries to infer the correct SQL type from the Java types but some times it cannot (mostly for byte[] and database driver specific types). In these cases explicitly declaring the SQL type is a best practice to ensure correctness, improve performance, and correctly handle NULL values. 
  
 To identify which properties in the mappings the SQL type is unknown do the following:
    - Turn on sql logging. (See logging section)
@@ -414,156 +415,10 @@ class Product {
   
 }
 ```
-## Populating relationships from custom queries
-
-### 1.ToMany relationship:
-- Order has many OrderLine
-
-```  
-  // Define the multiple mapped entities you want to select. Explanation on the next step.
-  MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol");
-  
-  /* 
-     Get the columns for your 'SELECT' using getMultiEntitySqlColumns(). For the method to generate the columns 
-     sql correctly, the table alias argument for each entity in 'MultiEntity' should match exactly the table aliases in 
-     your custom query. In this case 'o' for Order.class which has been mapped to the 'orders' table and
-     'ol' for OrderLine.class which has been mapped to 'order_line' table.
-     Creating the SQL using java String blocks makes the queries more readable.
-  */
-  String sql = """
-      SELECT %s
-      FROM orders o
-      LEFT JOIN order_line ol ON  o.id = ol.order_id
-      WHERE o.total_amount >= ?
-      ORDER BY o.order_date DESC, ol.id
-   """.formatted(sjm.getMultiEntitySqlColumns(multiEntity));
-   
-   // Use the framework ResultSetExtractor with JdbcTemplate to extract the data for the 
-   // multiple entities. The return value 'ResultListMap' holds the query results for the entities.
-   ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity), someAmount); 
-   
-    // Get the individual result list for each entity
-   List<Order> orders = resultListMap.getList(Order.class);
-   List<OrderLine> orderLines = resultListMap.getList(OrderLine.class);
-   
-   /*
-     Now that you have the individual lists, use the Relationship api to populate the 'orderLines' property of 'order' objects
-     in the 'orders' list. In this case since its a toMany relationship we are using 'toManyList()'.
-   */
-   Relationship.mainList(orders).toManyList(orderLines).joinOn("id", "orderId").populate("orderLines");
-```
-1. When creating an instance of [MultiEntity](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/io.github.simplejdbcmapper.core.MultiEntity) make sure the table aliases **exactly match** what you have in your custom query. 
-2. The columns sql generated by [getMultiEntitySqlColumns()](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#resultSetExtractor%28io.github.simplejdbcmapper.core.MultiEntity%29) and the [ResultSetExtractor](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#resultSetExtractor%28io.github.simplejdbcmapper.core.MultiEntity%29) work together. The extractor expects columns to be exactly in a specific order, so **absolutely do not modify the columns sql string**.
-3. The response from the extractor is [ResultListMap](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/io.github.simplejdbcmapper.core.ResultListMap). For each entity type it will have its corresponding results in a list. Each list will have entries **unique by ID** (ie no duplicates in each list). The extractor will handle the cases where the column to property mappings do not follow the underscore to camel case naming convention.
-4. Objects in the main list whose property is going to be set are modified in place ie no new list is created.
-5. [Relationship](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/o/github/simplejdbcmapper/relationship/package-summary.html) works with the information provided by the API. It does not access the database or use SimpleJdbcMapper.
-6. The collection property on the main object being populated by toManyList() **always has to be of type 'List'**. In the above example order.orderLines has to be of type List.
-7. In the example, there was only one query parameter so JdbcTemplate was used. If you have many parameters you can use NamedParameterJdbcTemplate with the framework's ResultSetExtractor.
-
-
-### 2.Multiple relationships with one query (toOne and toMany)
-Use Multi-entity processing to populate multiple relationships:  
-- Order has many OrderLine   
-- OrderLine has one Product
-
-```
-  // define your entities. The aliases should exactly match the aliases used in the query.
-  MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol").add(Product.class,"p");
-  
-  // build your custom sql using the columns sql from sjm.getMultiEntitySqlColumns(multiEntity)
-  String sql = """
-      SELECT %s
-      FROM orders o
-      LEFT JOIN order_line ol ON  o.id = ol.order_id
-      LEFT JOIN product p ON ol.product_id = p.id
-      WHERE o.total_amount >= ? 
-      ORDER BY o.order_date DESC, ol.id
-      """.formatted(sjm.getMultiEntitySqlColumns(multiEntity));
- 
- // Use JdbcTemplate with the framework extractor to execute the query and extract results
-  ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity), someAmount);
-  
-  // Get the results list for each entity
-  List<Order> orders = resultListMap.getList(Order.class);
-  List<OrderLine> orderLines = resultListMap.getList(OrderLine.class);
-  List<Product> products = resultListMap.getList(Product.class);
-   
-  // like previous example populate the orderLines collection using toManyList().
-  Relationship.mainList(orders).toManyList(orderLines).joinOn("id", "orderId").populate("orderLines");
-  
-  /*
-    populate  the 'product' property on OrderLine using toOneList() since its a toOne relationship. 
-    Now  orders has its 'orderLines' property populated and OrderLine has its 'product' property populate.
-  */
-  Relationship.mainList(orderLines).toOneList(products).joinOn("productId", "id").populate("product");
-```
-
-### 3.ToMany relationship through an intermediate table (one side of many to many)
-- Employee has many Skill through intermediate table 'employee_skill'
-
-```
-  // Define the entities. The intermediate table employe_skill (in this case corresponds to EmpolyeeSkill class) needs to be selected also.
-  MultiEntity multiEntity = new MultiEntity().add(Employee.class, "emp").add(EmployeeSkill.class, "es").add(Skill.class, "s");
-  
-  // build your custom sql using the columns sql from sjm.getMultiEntitySqlColumns(multiEntity)
-  String sql = """
-      SELECT %s
-      FROM employee emp
-      LEFT JOIN  employee_skill es ON emp.id = es.employee_id
-      LEFT JOIN skill s ON es.skill_id = s.id
-      ORDER BY emp.id, s.id
-  """.formatted(sjm.getMultiEntitySqlColumns(multiEntity));
-  
-    // Use JdbcTemplate with the framework extractor to extract results for the entities.
-    ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
-    
-     // Get the results list for each entity
-    List<Employee> employees = resultListMap.getList(Employee.class);
-    List<EmployeeSkill> employeeSkillList = resultListMap.getList(EmployeeSkill.class); // intermediate table info
-    List<Skill> skills = resultListMap.getList(Skill.class);
-    
-    // populate employee.skills property. Here we are using toManyList() with through(). 
-    Relationship.mainList(employees).toManyList(skills).through(employeeSkillList, "employeeId", "skillId").ids("id", "id").populate("skills");
-```
-1. For the above case the java type of EmployeeSkill.employeeId, and Employee.id should be same, as well as EmployeeSkill.skillId should be same as Skill.id.
-
-### 4.Using multiple queries to populate relationships.
-The Relationship api is agnostic of the source of the lists. Results from multiple queries can be used to populate relationships. 
-- Order has many OrderLine  - Will do this in one query  
-- OrderLine has one Product  - Will do this in another query   
-
-From the results of these 2 queries the relationships can be populated.
-
-```  
-  // first query
-  MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol");
-  String sql = """
-      SELECT %s
-      FROM orders o
-      LEFT JOIN order_line ol ON  o.id = ol.order_id
-      WHERE o.total_amount >= ?
-      ORDER BY o.order_date DESC, ol.id
-   """.formatted(sjm.getMultiEntitySqlColumns(multiEntity));
-   ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity), someAmount); 
-   List<Order> orders = resultListMap.getList(Order.class);
-   List<OrderLine> orderLines = resultListMap.getList(OrderLine.class);
-   
-   // get the productId list from orderLines list
-   List<Integer> productIdList = orderLines.stream().map(OrderLine::getProductId).toList();
-   
-   // Second query. findByPropertyValues() uses an IN clause so even if there are duplicate product ids we are fine.
-   List<Product> products = sjm.findByPropertyValues(Product.class, "id", productIdList);  
-  
-   // The toMany relationship populates order.orderLines
-   Relationship.mainList(orders).toManyList(orderLines).joinOn("id", "orderId").populate("orderLines");
-   // The toOne relationship populates orderLine.product.
-   Relationship.mainList(orderLines).toOneList(products).joinOn("productId", "id").populate("product");
-   
-```
 
 ## BLOB CLOB mapping
 
--  Binary large object database columns should be mapped to java type **byte[]**.  
+-  Binary large object database columns should be mapped to java type byte[].  
 No other java type is supported. The 'sqlType' attribute of the @Column annotation with the following values are considered as Binary Large Objects by SimpleJdbcMapper:  
 Types.BLOB  
 Types.ARRAY  
@@ -572,7 +427,7 @@ Types.VARBINARY
 
 Use the pertinent SQL type for your database and database column type. 
 
--  Character large object database columns should be mapped to java type **String**. No other java types are supported.  
+-  Character large object database columns should be mapped to java type String. No other java types are supported.  
 The 'sqlType' attribute of the @Column annotation with the following values are considered as Character Large Objects by SimpeJdbcMapper:  
 Types.CLOB  
 Types.NCLOB  
@@ -599,7 +454,7 @@ private String clobData;
 MySql:
 
 ``` 
-@Column(sqlType = Types.BLOB) // mapped to a 'blob' database column type
+@Column(sqlType = Types.LONGVARBINARY) // mapped to a 'blob' database column type
 private byte[] image;
 
 @Column(sqlType = Types.LONGVARCHAR) // mapped to a 'text' database column type
@@ -691,7 +546,7 @@ Use JdbcTemplate/JdbcClient directly to handle these cases.
 The 2.x release has removed the dependency on database table column meta-data for mapping totally.
 
 Difference from 1.x:  
-1. SimpleJdbcMapper 2.x tries to infer the correct SQL type from the Java types but some times it cannot (Mostly byte[] and database driver specific java types). In these cases explicitly declaring the SQL type is a best practice to ensure correctness, improve performance, and correctly handle NULL values. See documentation on @Column(sqlType="somesqltype") and BLOB/CLOB mapping further above on how to figure out and set the SQL type value.
+1. SimpleJdbcMapper 2.x tries to infer the correct SQL type from the Java types but some times it cannot (mostly for byte[] and database driver specific types). In these cases explicitly declaring the SQL type is a best practice to ensure correctness, improve performance, and correctly handle NULL values. See documentation on @Column(sqlType="somesqltype") and BLOB/CLOB mapping further above on how to figure out and set the SQL type value.
 2. Since 2.x does not use the database table column meta data, it cannot provide  detailed messages on what went wrong with a mapping. Mapping issues will surface through sql errors thrown, which is similar to what happens when using JdbcTemplate/JdbcClient directly.
 3. Primitives not supported. Use corresponding java wrapper classes in your mappings
 

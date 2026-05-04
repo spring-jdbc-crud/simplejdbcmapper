@@ -435,7 +435,7 @@ class Product {
       FROM orders o
       LEFT JOIN order_line ol ON  o.id = ol.order_id
       WHERE o.total_amount >= ?
-      ORDER BY o.order_date DESC, ol.order_line_id
+      ORDER BY o.order_date DESC, ol.id
    """.formatted(sjm.getMultiEntitySqlColumns(multiEntity));
    
    // Use the framework ResultSetExtractor with JdbcTemplate to extract the data for the 

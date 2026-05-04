@@ -18,9 +18,6 @@ import java.util.List;
 /**
  * Specification for the ToMany relationship
  * 
- * @param <T> The main object type
- * @param <U> The related object type
- * 
  * @author Antony Joseph
  */
 public interface ToManySpec {

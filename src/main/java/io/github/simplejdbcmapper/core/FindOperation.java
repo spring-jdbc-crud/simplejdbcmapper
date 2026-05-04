@@ -48,7 +48,7 @@ class FindOperation {
 
 	// Map key - classname-tableAlias
 	// value - the column sql string
-	private final SimpleCache<String, String> entitySqlColumnsAliasCache = new SimpleCache<>(5000);
+	private final SimpleCache<String, String> entitySqlColumnsAliasCache = new SimpleCache<>(3000);
 
 	public FindOperation(SimpleJdbcMapperSupport sjmSupport) {
 		this.sjmSupport = sjmSupport;

@@ -54,6 +54,16 @@ class MultiEntityExtractorTest {
 				.collect(Collectors.toSet());
 		assertEquals(0, duplicates.size());
 
+		Set<Integer> seen2 = new HashSet<>();
+		Set<Integer> duplicates2 = orderLines.stream().map(OrderLine::getOrderLineId).filter(id -> !seen2.add(id))
+				.collect(Collectors.toSet());
+		assertEquals(0, duplicates2.size());
+
+		Set<Integer> seen3 = new HashSet<>();
+		Set<Integer> duplicates3 = products.stream().map(Product::getId).filter(id -> !seen3.add(id))
+				.collect(Collectors.toSet());
+		assertEquals(0, duplicates3.size());
+
 	}
 
 }

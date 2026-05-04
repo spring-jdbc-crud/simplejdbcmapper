@@ -92,7 +92,7 @@ public class Relationship implements RelationshipSpec {
 								Relationship.IS_PREFIX + StringUtils.capitalize(propertyName));
 					}
 					if (m == null) {
-						throw new IllegalArgumentException("Invalid argument. Could not find a getter for "
+						throw new IllegalArgumentException("Invalid argument. Could not find getter for "
 								+ obj.getClass().getName() + "." + propertyName);
 					}
 					return m;

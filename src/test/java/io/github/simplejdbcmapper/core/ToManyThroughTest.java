@@ -43,12 +43,12 @@ class ToManyThroughTest {
 		exception = Assertions.assertThrows(Exception.class, () -> {
 			Relationship.mainList(employees).toManyList(skills).through(employeeSkillList, "x", "skillId");
 		});
-		assertTrue(exception.getMessage().contains("Invalid argument. Could not find a getter for"));
+		assertTrue(exception.getMessage().contains("Invalid argument. Could not find getter for"));
 
 		exception = Assertions.assertThrows(Exception.class, () -> {
 			Relationship.mainList(employees).toManyList(skills).through(employeeSkillList, "employeeId", "x");
 		});
-		assertTrue(exception.getMessage().contains("Invalid argument. Could not find a getter for"));
+		assertTrue(exception.getMessage().contains("Invalid argument. Could not find getter for"));
 
 		assertDoesNotThrow(() -> {
 			Relationship.mainList(employees).toManyList(skills).through(null, "x", "skillId");
@@ -82,13 +82,13 @@ class ToManyThroughTest {
 			Relationship.mainList(employees).toManyList(skills).through(employeeSkillList, "employeeId", "skillId")
 					.ids("x", "id");
 		});
-		assertTrue(exception.getMessage().contains("Invalid argument. Could not find a getter for"));
+		assertTrue(exception.getMessage().contains("Invalid argument. Could not find getter for"));
 
 		exception = Assertions.assertThrows(Exception.class, () -> {
 			Relationship.mainList(employees).toManyList(skills).through(employeeSkillList, "employeeId", "skillId")
 					.ids("id", "x");
 		});
-		assertTrue(exception.getMessage().contains("Invalid argument. Could not find a getter for"));
+		assertTrue(exception.getMessage().contains("Invalid argument. Could not find getter for"));
 
 		assertDoesNotThrow(() -> {
 			Relationship.mainList(null).toManyList(skills).through(employeeSkillList, "employeeId", "skillId").ids("x",

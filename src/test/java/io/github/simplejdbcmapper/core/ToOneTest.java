@@ -45,12 +45,12 @@ class ToOneTest {
 		exception = Assertions.assertThrows(Exception.class, () -> {
 			Relationship.mainList(orderLines).toOneList(products).joinOn("x", "id");
 		});
-		assertTrue(exception.getMessage().contains("Invalid argument. Could not find a getter for "));
+		assertTrue(exception.getMessage().contains("Invalid argument. Could not find getter for "));
 
 		exception = Assertions.assertThrows(Exception.class, () -> {
 			Relationship.mainList(orderLines).toOneList(products).joinOn("orderLineId", "x");
 		});
-		assertTrue(exception.getMessage().contains("Invalid argument. Could not find a getter for "));
+		assertTrue(exception.getMessage().contains("Invalid argument. Could not find getter for "));
 
 		assertDoesNotThrow(() -> {
 			Relationship.mainList(null).toOneList(products).joinOn("x", "id");

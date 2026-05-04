@@ -43,12 +43,12 @@ class ToManyTest {
 		exception = Assertions.assertThrows(Exception.class, () -> {
 			Relationship.mainList(orders).toManyList(orderLines).joinOn("x", "orderId");
 		});
-		assertTrue(exception.getMessage().contains("Invalid argument. Could not find a getter for"));
+		assertTrue(exception.getMessage().contains("Invalid argument. Could not find getter for"));
 
 		exception = Assertions.assertThrows(Exception.class, () -> {
 			Relationship.mainList(orders).toManyList(orderLines).joinOn("orderId", "x");
 		});
-		assertTrue(exception.getMessage().contains("Invalid argument. Could not find a getter for"));
+		assertTrue(exception.getMessage().contains("Invalid argument. Could not find getter for"));
 
 	}
 

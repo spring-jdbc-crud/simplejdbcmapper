@@ -123,20 +123,20 @@ class InternalUtils {
 		return str.toLowerCase(Locale.US);
 	}
 
-	public static boolean isAlphanumeric(String str) {
-		return str != null && str.matches("^[a-zA-Z0-9]*$");
+	public static boolean isAlphanumericPlusUnderscore(String str) {
+		return str != null && str.matches("^[a-zA-Z0-9_]*$");
 	}
 
 	public static void validateTableAlias(String tableAlias) {
 		if (!StringUtils.hasText(tableAlias)) {
 			throw new IllegalArgumentException("tableAlias has no value");
 		}
-		if (isAlphanumeric(tableAlias)) {
-			if (!Character.isLetter(tableAlias.charAt(0))) {
-				throw new IllegalArgumentException("tableAlias should start with an alphabet.");
+		if (isAlphanumericPlusUnderscore(tableAlias)) {
+			if (!Character.isLetter(tableAlias.charAt(0)) && tableAlias.charAt(0) != '_') {
+				throw new IllegalArgumentException("tableAlias should start with an alphabet or underscore.");
 			}
 		} else {
-			throw new IllegalArgumentException("tableAlias should be alphanumberic.");
+			throw new IllegalArgumentException("tableAlias should be alphanumberic and can include underscore.");
 		}
 	}
 

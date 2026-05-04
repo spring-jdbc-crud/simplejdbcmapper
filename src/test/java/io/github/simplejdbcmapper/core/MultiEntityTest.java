@@ -39,13 +39,14 @@ class MultiEntityTest {
 		exception = Assertions.assertThrows(Exception.class, () -> {
 			new MultiEntity().add(Order.class, "t.");
 		});
-		assertTrue(exception.getMessage().contains("tableAlias should be alphanumberic"));
+		assertTrue(exception.getMessage().contains("tableAlias should be alphanumberic and can include underscore"));
 
 		exception = Assertions.assertThrows(Exception.class, () -> {
 			new MultiEntity().add(Order.class, "1x");
 		});
-		assertTrue(exception.getMessage().contains("tableAlias should start with an alphabet"));
+		assertTrue(exception.getMessage().contains("tableAlias should start with an alphabet or underscore"));
 
+		// no duplicate table aliases
 		exception = Assertions.assertThrows(Exception.class, () -> {
 			new MultiEntity().add(Order.class, "t1").add(OrderLine.class, "t1");
 		});
@@ -59,6 +60,10 @@ class MultiEntityTest {
 
 		assertDoesNotThrow(() -> {
 			new MultiEntity().add(Order.class, "t1").add(Order.class, "t2");
+		});
+
+		assertDoesNotThrow(() -> {
+			new MultiEntity().add(Order.class, "t1_").add(Order.class, "_t2");
 		});
 
 	}

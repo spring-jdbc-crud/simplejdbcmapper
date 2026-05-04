@@ -545,6 +545,7 @@ From the results of these 2 queries the relationships can be populated.
       WHERE o.total_amount >= ?
       ORDER BY o.order_date DESC, ol.id
    """.formatted(sjm.getMultiEntitySqlColumns(multiEntity));
+   
    ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity), someAmount); 
    List<Order> orders = resultListMap.getList(Order.class);
    List<OrderLine> orderLines = resultListMap.getList(OrderLine.class);

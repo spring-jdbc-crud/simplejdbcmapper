@@ -175,6 +175,29 @@ class ToOneTest {
 	}
 
 	@Test
+	void toOne_PopulatePropertyExistsButWrongType_test() {
+		User user1 = new User();
+		user1.setId(1);
+		user1.setName("user1");
+
+		Profile profile1 = new Profile();
+		profile1.setId(1);
+		profile1.setTheme("theme for user1");
+		profile1.setUserId(1);
+
+		List<User> users = new ArrayList<>();
+		users.add(user1);
+
+		List<Profile> profiles = new ArrayList<>();
+		profiles.add(profile1);
+
+		Exception exception = Assertions.assertThrows(Exception.class, () -> {
+			Relationship.mainList(users).toOneList(profiles).joinOn("id", "userId").populate("name");
+		});
+		assertTrue(exception.getMessage().contains("argument type mismatch"));
+	}
+
+	@Test
 	void toOne_PropertyNull_test() {
 		User user1 = new User();
 		user1.setId(1);

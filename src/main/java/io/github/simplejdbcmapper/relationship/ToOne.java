@@ -96,7 +96,12 @@ public class ToOne<T, U> implements ToOneSpec, PopulateSpec {
 				Object mainObjJoinPropertyValue = entry.getKey();
 				Object mainObj = entry.getValue();
 				U relatedObj = joinPropToRelatedObjMap.get(mainObjJoinPropertyValue);
-				mainObjPropertyToPopulateWriteMethod.invoke(mainObj, relatedObj);
+				try {
+					mainObjPropertyToPopulateWriteMethod.invoke(mainObj, relatedObj);
+				} catch (Exception e) {
+					throw new MapperException(e.getMessage() + ". Invoking " + mainObjPropertyToPopulateWriteMethod
+							+ " with value " + relatedObj);
+				}
 			}
 		} catch (Exception e) {
 			throw new MapperException(e.getMessage(), e);

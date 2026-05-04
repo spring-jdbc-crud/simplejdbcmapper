@@ -56,7 +56,7 @@ class ToManyTest {
 	}
 
 	@Test
-	void toMany_through_validation_test() {
+	void toManythrough_through_validation_test() {
 		List<Employee> employees = sjm.findAll(Employee.class);
 		List<Skill> skills = sjm.findAll(Skill.class);
 		List<EmployeeSkill> employeeSkillList = sjm.findAll(EmployeeSkill.class);
@@ -92,7 +92,7 @@ class ToManyTest {
 	}
 
 	@Test
-	void toMany_ids_validation_test() {
+	void toManythrough_ids_validation_test() {
 		List<Employee> employees = sjm.findAll(Employee.class);
 		List<Skill> skills = sjm.findAll(Skill.class);
 		List<EmployeeSkill> employeeSkillList = sjm.findAll(EmployeeSkill.class);
@@ -133,7 +133,7 @@ class ToManyTest {
 	}
 
 	@Test
-	void toMany_populate_validation_test() {
+	void toManythrough_populate_validation_test() {
 		List<Employee> employees = sjm.findAll(Employee.class);
 		List<Skill> skills = sjm.findAll(Skill.class);
 		List<EmployeeSkill> employeeSkillList = sjm.findAll(EmployeeSkill.class);
@@ -154,6 +154,54 @@ class ToManyTest {
 			Relationship.mainList(null).toManyList(skills).through(employeeSkillList, "employeeId", "skillId")
 					.ids("id", "id").populate("x");
 		});
+
+		// type mismatch ie property exits but of different type
+		exception = Assertions.assertThrows(Exception.class, () -> {
+			Relationship.mainList(employees).toManyList(skills).through(employeeSkillList, "employeeId", "skillId")
+					.ids("id", "id").populate("lastName");
+		});
+		assertTrue(exception.getMessage().contains("argument type mismatch"));
+
+	}
+
+	@Test
+	void toMany_populate_validation_test() {
+
+		MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol");
+
+		String sql = """
+				SELECT %s
+				FROM orders o
+				LEFT JOIN order_line ol ON  o.id = ol.order_id
+				WHERE o.id <= 4
+				ORDER BY o.id, ol.order_line_id
+				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
+
+		ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
+
+		List<Order> orders = resultListMap.getList(Order.class);
+		List<OrderLine> orderLines = resultListMap.getList(OrderLine.class);
+
+		Exception exception = Assertions.assertThrows(Exception.class, () -> {
+			Relationship.mainList(orders).toManyList(orderLines).joinOn("id", "orderId").populate(null);
+		});
+		assertTrue(exception.getMessage().contains("mainObjPropertyToPopulate must not be null"));
+
+		exception = Assertions.assertThrows(Exception.class, () -> {
+			Relationship.mainList(orders).toManyList(orderLines).joinOn("id", "orderId").populate("x");
+		});
+		assertTrue(exception.getMessage().contains("Invalid argument. Property name"));
+
+		assertDoesNotThrow(() -> {
+			Relationship.mainList(null).toManyList(orderLines).joinOn("id", "orderId").populate("x");
+		});
+
+		// type mismatch ie property exits but of different type
+		exception = Assertions.assertThrows(Exception.class, () -> {
+			Relationship.mainList(orders).toManyList(orderLines).joinOn("id", "orderId").populate("customerId");
+		});
+		assertTrue(exception.getMessage().contains("argument type mismatch"));
+
 	}
 
 	@Test

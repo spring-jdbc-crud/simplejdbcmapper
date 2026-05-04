@@ -131,7 +131,12 @@ public class ToMany<T, U> implements ToManySpec, ThroughSpec, PopulateSpec {
 					if (populaterList == null) {
 						populaterList = new ArrayList<>();
 					}
-					mainObjPropertyToPopulateWriteMethod.invoke(mainObj, populaterList);
+					try {
+						mainObjPropertyToPopulateWriteMethod.invoke(mainObj, populaterList);
+					} catch (Exception e) {
+						throw new MapperException(e.getMessage() + ". Invoking " + mainObjPropertyToPopulateWriteMethod
+								+ " with value " + populaterList);
+					}
 				}
 			}
 		} catch (Exception e) {
@@ -168,7 +173,13 @@ public class ToMany<T, U> implements ToManySpec, ThroughSpec, PopulateSpec {
 							}
 						}
 					}
-					mainObjPropertyToPopulateWriteMethod.invoke(mainObj, populaterList);
+					try {
+						mainObjPropertyToPopulateWriteMethod.invoke(mainObj, populaterList);
+					} catch (Exception e) {
+						throw new MapperException(e.getMessage() + ". Invoking " + mainObjPropertyToPopulateWriteMethod
+								+ " with value " + populaterList);
+					}
+
 				}
 			}
 		} catch (Exception e) {

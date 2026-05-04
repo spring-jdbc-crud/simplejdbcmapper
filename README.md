@@ -9,8 +9,8 @@ Just by annotating the models that you would use with JdbcTemplate/JdbcClient, y
 
 ## Table of contents
 [Features](#features)  
-[Example code](#example-code)  
 [Maven coordinates](#maven-coordinates)  
+[Example code](#example-code)  
 [JDK and Spring version requirements](#jdk-and-spring-version-requirements)  
 [Spring bean configuration for SimpleJdbcMapper](#spring-bean-configuration-for-simplejdbcmapper)  
 [Annotations](#annotations)   

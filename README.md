@@ -10,6 +10,7 @@ Just by annotating the models that you would use with JdbcTemplate/JdbcClient, y
 ## Table of contents
 [Features](#features)  
 [Example code](#example-code)  
+[Maven coordinates](#maven-coordinates)  
 [JDK and Spring version requirements](#jdk-and-spring-version-requirements)  
 [Spring bean configuration for SimpleJdbcMapper](#spring-bean-configuration-for-simplejdbcmapper)  
 [Annotations](#annotations)   
@@ -39,6 +40,8 @@ Just by annotating the models that you would use with JdbcTemplate/JdbcClient, y
 [![CI SimpleJdbcMapper](https://github.com/spring-jdbc-crud/simplejdbcmapper/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/spring-jdbc-crud/simplejdbcmapper/actions/workflows/ci.yml)
 9. Only dependency is Spring JDBC libraries. No other external dependencies.
  
+## Maven coordinates
+[![maven-central](https://img.shields.io/maven-central/v/io.github.spring-jdbc-crud/simplejdbcmapper)](https://central.sonatype.com/artifact/io.github.spring-jdbc-crud/simplejdbcmapper) 
 
 ## Example code
   ```java 

@@ -88,11 +88,11 @@ class MultiEntityExtractor {
 <span class="fc" id="L88">					rowCnt++;</span>
 				}
 
-<span class="fc" id="L91">				ResultListMap result = new ResultListMap();</span>
+<span class="fc" id="L91">				ResultListMap resultListMap = new ResultListMap();</span>
 <span class="fc bfc" id="L92" title="All 2 branches covered.">				for (EntityExtractor entityExtractor : entityExtractors) {</span>
-<span class="fc" id="L93">					result.putList(entityExtractor.entityType(), entityExtractor.result());</span>
+<span class="fc" id="L93">					resultListMap.putList(entityExtractor.entityType(), entityExtractor.result());</span>
 <span class="fc" id="L94">				}</span>
-<span class="fc" id="L95">				return result;</span>
+<span class="fc" id="L95">				return resultListMap;</span>
 			}
 		};
 	}
@@ -128,4 +128,4 @@ class MultiEntityExtractor {
 	}
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 2877df09e3f7969051484c7d89139e582cc77e39 2026-05-04T17:19:11</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main cd86def67e02c15353b9fbb93a20a59fafa46000 2026-05-04T21:17:03</div></body></html>

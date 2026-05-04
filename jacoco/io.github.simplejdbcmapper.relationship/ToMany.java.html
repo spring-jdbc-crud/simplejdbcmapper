@@ -49,7 +49,7 @@ public class ToMany&lt;T, U&gt; implements ToManySpec, ThroughSpec, PopulateSpec
 
 	private IntermediateJoiner intermediateJoiner;
 
-<span class="fc" id="L52">	private String relationshipType = &quot;hasMany&quot;;</span>
+<span class="fc" id="L52">	private String relationshipType = &quot;toMany&quot;;</span>
 
 <span class="fc" id="L54">	private ToMany(List&lt;T&gt; mainObjList, List&lt;U&gt; relatedObjList) {</span>
 <span class="fc" id="L55">		this.mainObjList = mainObjList;</span>
@@ -86,7 +86,7 @@ public class ToMany&lt;T, U&gt; implements ToManySpec, ThroughSpec, PopulateSpec
 <span class="fc" id="L86">		this.intermediateJoiner = new IntermediateJoiner(intermediateList, fkPropertyToMainObjId,</span>
 				fkPropertyToRelatedObjId);
 
-<span class="fc" id="L89">		this.relationshipType = &quot;hasManyThrough&quot;;</span>
+<span class="fc" id="L89">		this.relationshipType = &quot;toManyThrough&quot;;</span>
 <span class="fc" id="L90">		return this;</span>
 	}
 
@@ -104,7 +104,7 @@ public class ToMany&lt;T, U&gt; implements ToManySpec, ThroughSpec, PopulateSpec
 <span class="fc" id="L104">		Assert.notNull(mainObjPropertyToPopulate, &quot;mainObjPropertyToPopulate must not be null&quot;);</span>
 <span class="fc" id="L105">		this.mainObjPropertyToPopulateWriteMethod = Relationship.getWriteMethod(mainObjList, mainObjPropertyToPopulate);</span>
 
-<span class="fc bfc" id="L107" title="All 2 branches covered.">		if (&quot;hasMany&quot;.equals(relationshipType)) {</span>
+<span class="fc bfc" id="L107" title="All 2 branches covered.">		if (&quot;toMany&quot;.equals(relationshipType)) {</span>
 <span class="fc" id="L108">			populateToMany();</span>
 		} else {
 <span class="fc" id="L110">			populateToManyThrough();</span>
@@ -205,13 +205,13 @@ public class ToMany&lt;T, U&gt; implements ToManySpec, ThroughSpec, PopulateSpec
 		@SuppressWarnings({ &quot;unchecked&quot;, &quot;rawtypes&quot; })
 		public IntermediateJoiner(List&lt;?&gt; intermediateList, String fkPropertyToMainObjId,
 <span class="fc" id="L207">				String fkPropertyToRelatedObjId) {</span>
-<span class="fc" id="L208">			Method fkPropertyToMainObjIdReadMethod = Relationship.getReadMethod(intermediateList,</span>
-					fkPropertyToMainObjId);
-<span class="fc" id="L210">			Method fkPropertyToRelatedObjIdReadMethod = Relationship.getReadMethod(intermediateList,</span>
-					fkPropertyToRelatedObjId);
-<span class="fc bfc" id="L212" title="All 2 branches covered.">			if (CollectionUtils.isEmpty(intermediateList)) {</span>
-<span class="fc" id="L213">				return;</span>
+<span class="fc bfc" id="L208" title="All 2 branches covered.">			if (CollectionUtils.isEmpty(intermediateList)) {</span>
+<span class="fc" id="L209">				return;</span>
 			}
+<span class="fc" id="L211">			Method fkPropertyToMainObjIdReadMethod = Relationship.getReadMethod(intermediateList,</span>
+					fkPropertyToMainObjId);
+<span class="fc" id="L213">			Method fkPropertyToRelatedObjIdReadMethod = Relationship.getReadMethod(intermediateList,</span>
+					fkPropertyToRelatedObjId);
 			try {
 <span class="fc bfc" id="L216" title="All 2 branches covered.">				for (Object intermediateObj : intermediateList) {</span>
 <span class="fc bfc" id="L217" title="All 2 branches covered.">					if (intermediateObj != null) {</span>
@@ -240,4 +240,4 @@ public class ToMany&lt;T, U&gt; implements ToManySpec, ThroughSpec, PopulateSpec
 		}
 	}
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 2877df09e3f7969051484c7d89139e582cc77e39 2026-05-04T17:19:11</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main cd86def67e02c15353b9fbb93a20a59fafa46000 2026-05-04T21:17:03</div></body></html>

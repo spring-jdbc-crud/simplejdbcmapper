@@ -88,11 +88,11 @@ class MultiEntityExtractor {
 					rowCnt++;
 				}
 
-				ResultListMap result = new ResultListMap();
+				ResultListMap resultListMap = new ResultListMap();
 				for (EntityExtractor entityExtractor : entityExtractors) {
-					result.putList(entityExtractor.entityType(), entityExtractor.result());
+					resultListMap.putList(entityExtractor.entityType(), entityExtractor.result());
 				}
-				return result;
+				return resultListMap;
 			}
 		};
 	}

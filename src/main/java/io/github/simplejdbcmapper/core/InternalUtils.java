@@ -21,7 +21,6 @@ import org.springframework.jdbc.core.StatementCreatorUtils;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.support.SqlBinaryValue;
 import org.springframework.jdbc.core.support.SqlCharacterValue;
-import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.util.StringUtils;
 
 import io.github.simplejdbcmapper.exception.MapperException;
@@ -32,7 +31,6 @@ import io.github.simplejdbcmapper.exception.MapperException;
  * @author Antony Joseph
  */
 class InternalUtils {
-
 	public static Integer javaTypeToSqlParameterType(Class<?> entityType) {
 		if (entityType.isEnum()) {
 			return Types.VARCHAR;
@@ -95,17 +93,6 @@ class InternalUtils {
 	}
 
 	/**
-	 * Converts underscore case to camel case. Ex: user_last_name gets converted to
-	 * userLastName.
-	 *
-	 * @param str underscore case string
-	 * @return the camel case string
-	 */
-	public static String toCamelCaseName(String str) {
-		return JdbcUtils.convertUnderscoreNameToPropertyName(str);
-	}
-
-	/**
 	 * Converts camel case to underscore case. Ex: userLastName gets converted to
 	 * user_last_name. Copy of code from Spring BeanPropertyRowMapper
 	 *
@@ -134,6 +121,23 @@ class InternalUtils {
 			return "";
 		}
 		return str.toLowerCase(Locale.US);
+	}
+
+	public static boolean isAlphanumericPlusUnderscore(String str) {
+		return str != null && str.matches("^[a-zA-Z0-9_]*$");
+	}
+
+	public static void validateTableAlias(String tableAlias) {
+		if (!StringUtils.hasText(tableAlias)) {
+			throw new IllegalArgumentException("tableAlias has no value");
+		}
+		if (isAlphanumericPlusUnderscore(tableAlias)) {
+			if (!Character.isLetter(tableAlias.charAt(0)) && tableAlias.charAt(0) != '_') {
+				throw new IllegalArgumentException("tableAlias should start with an alphabet or underscore.");
+			}
+		} else {
+			throw new IllegalArgumentException("tableAlias should be alphanumberic and can include underscore.");
+		}
 	}
 
 	private InternalUtils() {

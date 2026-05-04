@@ -96,7 +96,7 @@ class CachingTest {
 		assertEquals(1, cache.size());
 
 		Product product = new Product();
-		product.setProductId(10022);
+		product.setId(10022);
 		product.setName("xyz");
 		sjm.insert(product);
 
@@ -121,7 +121,7 @@ class CachingTest {
 		cache.clear();
 
 		ProductWithNoAuditFields product = new ProductWithNoAuditFields();
-		product.setProductId(811);
+		product.setId(811);
 		product.setName("p-811");
 		product.setCost(4.75);
 		sjm.insert(product);
@@ -204,7 +204,7 @@ class CachingTest {
 		cache.clear();
 
 		Order ord = new Order();
-		ord.setOrderId(801l);
+		ord.setId(801l);
 		sjm.delete(ord);
 		assertEquals(1, cache.size());
 
@@ -212,7 +212,7 @@ class CachingTest {
 		assertEquals(1, cache.size());
 
 		Product prod = new Product();
-		prod.setProductId(901);
+		prod.setId(901);
 		sjm.delete(prod);
 		assertEquals(2, cache.size());
 
@@ -231,7 +231,7 @@ class CachingTest {
 		assertEquals(1, cache.size());
 
 		Product prod = new Product();
-		prod.setProductId(3121);
+		prod.setId(3121);
 		prod.setName("xyz");
 		sjm.insert(prod);
 		assertEquals(2, cache.size());
@@ -249,6 +249,7 @@ class CachingTest {
 
 		Employee emp = new Employee();
 		emp.setId(Integer.valueOf(1));
+		emp.setFirstName("abc");
 		emp.setLastName("xyz");
 		sjm.update(emp);
 		assertEquals(3, cache.size());

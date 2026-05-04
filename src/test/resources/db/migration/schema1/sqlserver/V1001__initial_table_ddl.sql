@@ -1,6 +1,6 @@
 
 CREATE TABLE schema1.orders(
-    order_id bigint IDENTITY(1,1) NOT NULL,
+    id bigint IDENTITY(1,1) NOT NULL,
 	order_date datetime NULL,
 	customer_id int NULL,
 	status varchar(100) NULL,
@@ -9,29 +9,28 @@ CREATE TABLE schema1.orders(
 	updated_on datetime NULL,
 	updated_by varchar(100) NULL,
 	version int NULL,
-	non_model_column varchar(100),
-	CONSTRAINT order_pk PRIMARY KEY (order_id)
+	last_mapped_col varchar(100),
+	CONSTRAINT order_pk PRIMARY KEY (id)
 );
 
 CREATE TABLE schema1.order_line (
 	order_line_id int IDENTITY(1,1) NOT NULL,
 	order_id int NOT NULL,
-	product_id int NOT NULL,
-	num_of_units int NULL,
-	non_model_column varchar(100),
+	product_id int,
+	num_of_units int,
+	last_mapped_col varchar(100),
 	CONSTRAINT order_line_pk PRIMARY KEY (order_line_id)
 );
 
 CREATE TABLE schema1.customer (
-	customer_id int IDENTITY(1,1) NOT NULL,
+	id int IDENTITY(1,1) NOT NULL,
 	first_name varchar(100),
 	last_name varchar(100) NOT NULL,
-	non_model_column varchar(100),
-	CONSTRAINT customer_pk PRIMARY KEY (customer_id)
+	CONSTRAINT customer_pk PRIMARY KEY (id)
 );
 
 CREATE TABLE schema1.product (
-	product_id int NOT NULL,
+	id int NOT NULL,
 	name varchar(100) NOT NULL,
 	cost numeric(10,3) NULL,
 	description varchar(100) NULL,
@@ -40,8 +39,8 @@ CREATE TABLE schema1.product (
 	updated_on datetime NULL,
 	updated_by varchar(100) NULL,
 	version int NULL,
-	non_model_column varchar(100),
-	CONSTRAINT product_pk PRIMARY KEY (product_id)
+	last_mapped_col varchar(100),
+	CONSTRAINT product_pk PRIMARY KEY (id)
 );
 
 
@@ -54,7 +53,6 @@ CREATE TABLE schema1.person (
 	updated_on datetime NULL,
 	updated_by varchar(100) NULL,
 	version int NULL,
-	non_model_column varchar(100),
 	CONSTRAINT person_pk PRIMARY KEY (person_id)
 );
 
@@ -67,7 +65,6 @@ CREATE TABLE schema1.type_check (
    big_decimal_data numeric(10,2),
    boolean_val bit,
    string_enum varchar(100),
-   non_model_column varchar(100),
    offset_date_time_data datetimeoffset,
    image VARBINARY(MAX),
    clob_data VARCHAR(MAX)
@@ -120,16 +117,5 @@ GO
 CREATE VIEW schema1.person_view AS
 SELECT person_id, first_name, last_name
 FROM schema1.person;
-
-
-
-
-
-
-
-
-
-
-
 
 

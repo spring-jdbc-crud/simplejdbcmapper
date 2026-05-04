@@ -30,6 +30,6 @@ public @interface Column {
 	/** column name */
 	String name() default "[DEFAULT]";
 
-	/** column overridden sqlType */
+	/** column sqlType */
 	int sqlType() default Integer.MIN_VALUE;
 }

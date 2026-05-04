@@ -10,7 +10,7 @@ import io.github.simplejdbcmapper.annotation.Table;
 @Table(name = "orders")
 public class OrderInheritedColumn extends OrderColumnBaseClass {
 	@Id(type = IdType.AUTO_GENERATED)
-	private Long orderId;
+	private Long id;
 
 	@Column
 	private LocalDateTime orderDate;
@@ -18,12 +18,12 @@ public class OrderInheritedColumn extends OrderColumnBaseClass {
 	@Column
 	private Integer customerId;
 
-	public Long getOrderId() {
-		return orderId;
+	public Long getId() {
+		return id;
 	}
 
-	public void setOrderId(Long orderId) {
-		this.orderId = orderId;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public LocalDateTime getOrderDate() {

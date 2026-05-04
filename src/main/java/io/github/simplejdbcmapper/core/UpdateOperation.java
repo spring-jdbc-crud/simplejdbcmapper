@@ -28,6 +28,11 @@ import org.springframework.util.Assert;
 import io.github.simplejdbcmapper.exception.MapperException;
 import io.github.simplejdbcmapper.exception.OptimisticLockingException;
 
+/**
+ * Update operations
+ *
+ * @author Antony Joseph
+ */
 class UpdateOperation {
 	private static final int CACHEABLE_UPDATE_SPECIFIC_PROPERTIES_COUNT = 5;
 
@@ -39,7 +44,7 @@ class UpdateOperation {
 
 	// Map key - class name and properties concatenated by hyphens
 	// value - the update sql and params
-	private final SimpleCache<String, SqlAndParams> updateSpecificPropertiesSqlCache = new SimpleCache<>(2000);
+	private final SimpleCache<String, SqlAndParams> updateSpecificPropertiesSqlCache = new SimpleCache<>(5000);
 
 	public UpdateOperation(SimpleJdbcMapperSupport sjmSupport) {
 		this.sjmSupport = sjmSupport;
@@ -140,7 +145,7 @@ class UpdateOperation {
 				mapSqlParameterSource.addValue(INCREMENTED_VERSION, incrementedVersionVal, Types.INTEGER);
 			} else {
 				PropertyMapping propMapping = tableMapping.getPropertyMappingByPropertyName(paramName);
-				Integer columnSqlType = propMapping.getEffectiveSqlType();
+				Integer columnSqlType = propMapping.getColumnSqlType();
 				if (propMapping.isBinaryLargeObject()) {
 					InternalUtils.assignBlobMapSqlParameterSource(bw, mapSqlParameterSource, propMapping, columnSqlType,
 							false);

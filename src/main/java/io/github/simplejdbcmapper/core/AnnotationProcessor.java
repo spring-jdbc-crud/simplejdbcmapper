@@ -35,6 +35,11 @@ import io.github.simplejdbcmapper.annotation.UpdatedOn;
 import io.github.simplejdbcmapper.annotation.Version;
 import io.github.simplejdbcmapper.exception.AnnotationException;
 
+/**
+ * The annotation processor
+ *
+ * @author Antony Joseph
+ */
 class AnnotationProcessor {
 
 	Table getTableAnnotation(Class<?> entityType) {
@@ -53,14 +58,11 @@ class AnnotationProcessor {
 			}
 			colName = InternalUtils.toLowerCase(colName);
 			Integer sqlType = InternalUtils.javaTypeToSqlParameterType(field.getType());
-			PropertyMapping propertyMapping = null;
 			if (colAnnotation.sqlType() != Integer.MIN_VALUE) {
 				// sqlType has been configured in @Column
-				propertyMapping = new PropertyMapping(propertyName, field.getType(), colName, sqlType,
-						colAnnotation.sqlType());
-			} else {
-				propertyMapping = new PropertyMapping(propertyName, field.getType(), colName, sqlType);
+				sqlType = colAnnotation.sqlType();
 			}
+			PropertyMapping propertyMapping = new PropertyMapping(propertyName, field.getType(), colName, sqlType);
 			propNameToPropertyMapping.put(propertyName, propertyMapping);
 		}
 	}

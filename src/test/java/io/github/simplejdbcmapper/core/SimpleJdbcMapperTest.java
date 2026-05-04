@@ -246,8 +246,8 @@ class SimpleJdbcMapperTest {
 	@Test
 	void getPropertyToColumnMappings_Test() {
 		Map<String, String> map = sjm.getPropertyToColumnMappings(Product.class);
-		assertEquals(9, map.size());
-		assertTrue(map.containsKey("productId"));
+		assertEquals(10, map.size());
+		assertTrue(map.containsKey("cost"));
 	}
 
 	// Order of tests causing problem. Address it another day. It works when run on
@@ -260,6 +260,7 @@ class SimpleJdbcMapperTest {
 		assertNull(TestUtils.getInsertOperation(sjm));
 		assertNull(TestUtils.getUpdateOperation(sjm));
 		assertNull(TestUtils.getDeleteOperation(sjm));
+		assertNull(TestUtils.getMultiEntitySupport(sjm));
 
 	}
 

@@ -1,32 +1,40 @@
 
 INSERT INTO schema1.orders
-(order_date, customer_id, status, created_on, created_by, updated_on, updated_by, version)
-VALUES('20200620 00:00:00', 1, 'IN PROCESS', '20200620 00:00:00', 'system', '20200620 00:00:00', 'system', 1);
+(order_date, customer_id, status, created_on, created_by, updated_on, updated_by, version, last_mapped_col)
+VALUES('20260120 00:00:00', 1, 'IN PROCESS', '20260120 00:00:00', 'system', '20260120 00:00:00', 'system', 1, 'order last col');
 
 INSERT INTO schema1.orders
-(order_date, customer_id, status, created_on, created_by, updated_on, updated_by,  version)
-VALUES('20200620 00:00:00', 2, 'IN PROCESS',  '20200620 00:00:00', 'system', '20200620 00:00:00', 'system', 1);
+(order_date, customer_id, status, created_on, created_by, updated_on, updated_by,  version, last_mapped_col)
+VALUES('20260220 00:00:00', 2, 'IN PROCESS',  '20260220 00:00:00', 'system', '20260220 00:00:00', 'system', 1, 'order last col');
 
 INSERT INTO schema1.orders
-(order_date, created_on, created_by, updated_on, updated_by,  version)
-VALUES('20200620 00:00:00', '20200620 00:00:00', 'system', '20200620 00:00:00', 'system', 1);
+(order_date, created_on, created_by, updated_on, updated_by,  version, last_mapped_col)
+VALUES('20260320 00:00:00', '20260320 00:00:00', 'system', '20260320 00:00:00', 'system', 1, 'order last col');
+
+INSERT INTO schema1.orders
+(order_date, created_on, created_by, updated_on, updated_by,  version, last_mapped_col)
+VALUES('20260420 00:00:00', '20260420 00:00:00', 'system', '20260420 00:00:00', 'system', 1, 'order last col');
 
 INSERT INTO schema1.order_line
-(order_id, product_id, num_of_units)
-VALUES(1, 1, 10);
+(order_id, product_id, num_of_units, last_mapped_col)
+VALUES(1, 1, 10, 'orderline last col');
 
 INSERT INTO schema1.order_line
-(order_id, product_id, num_of_units)
-VALUES(1, 2, 5);
+(order_id, product_id, num_of_units, last_mapped_col)
+VALUES(1, 2, 5, 'orderline last col');
 
 INSERT INTO schema1.order_line
-(order_id, product_id, num_of_units)
-VALUES(2, 3, 1);
+(order_id, product_id, num_of_units, last_mapped_col)
+VALUES(2, 3, 1, 'orderline last col');
 
+INSERT INTO schema1.order_line
+(order_id, last_mapped_col)
+VALUES(4, 'orderline last col');
 
 INSERT INTO schema1.customer
 (first_name, last_name)
 VALUES( 'tony', 'joe');
+
 INSERT INTO schema1.customer
 (first_name, last_name)
 VALUES('jane', 'doe');
@@ -44,29 +52,29 @@ INSERT INTO schema1.customer
 VALUES(null, 'customer 5 last name whose first name is null');
 
 INSERT INTO schema1.product
-(product_id, name, cost, description, created_on, created_by, updated_on, updated_by, version)
-VALUES(1, 'shoes', 95.00,'some description', '20200620 00:00:00', 'system', '20200620 00:00:00', 'system', 1);
+(id, name, cost, description, created_on, created_by, updated_on, updated_by, version, last_mapped_col)
+VALUES(1, 'shoes', 95.00,'some description', '20200620 00:00:00', 'system', '20200620 00:00:00', 'system', 1, 'product last col');
 
 INSERT INTO schema1.product
-(product_id, name, cost, created_on, created_by, updated_on, updated_by, version)
-VALUES(2, 'socks', 4.55,'20200620 00:00:00', 'system', '20200620 00:00:00', 'system', 1);
+(id, name, cost, created_on, created_by, updated_on, updated_by, version, last_mapped_col)
+VALUES(2, 'socks', 4.55,'20200620 00:00:00', 'system', '20200620 00:00:00', 'system', 1, 'product last col');
 
 INSERT INTO schema1.product
-(product_id, name, cost, created_on, created_by, updated_on, updated_by, version)
-VALUES(3, 'laces', 1.25,'20200620 00:00:00', 'system', '20200620 00:00:00', 'system', 1);
+(id, name, cost, created_on, created_by, updated_on, updated_by, version, last_mapped_col)
+VALUES(3, 'laces', 1.25,'20200620 00:00:00', 'system', '20200620 00:00:00', 'system', 1, 'product last col');
 
 INSERT INTO schema1.product
-(product_id, name, cost, created_on, created_by, updated_on, updated_by, version)
-VALUES(4, 'product4 for delete test', 1.25,'20200620 00:00:00', 'system', '20200620 00:00:00', 'system', 1);
+(id, name, cost, created_on, created_by, updated_on, updated_by, version, last_mapped_col)
+VALUES(4, 'product4 for delete test', 1.25,'20200620 00:00:00', 'system', '20200620 00:00:00', 'system', 1, 'product last col');
 
 INSERT INTO schema1.product
-(product_id, name, cost, created_on, created_by, updated_on, updated_by, version)
-VALUES(5, 'product5 for delete test', 1.25,'20200620 00:00:00', 'system', '20200620 00:00:00', 'system', 1);
+(id, name, cost, created_on, created_by, updated_on, updated_by, version, last_mapped_col)
+VALUES(5, 'product5 for delete test', 1.25,'20200620 00:00:00', 'system', '20200620 00:00:00', 'system', 1, 'product last col');
 
 
 INSERT INTO schema1.product
-(product_id, name, cost, created_on, created_by, updated_on, updated_by, version)
-VALUES(6, 'product 6 update test', 2.45,'20200620 00:00:00', 'system', '20200620 00:00:00', 'system', 1);
+(id, name, cost, created_on, created_by, updated_on, updated_by, version, last_mapped_col)
+VALUES(6, 'product 6 update test', 2.45,'20200620 00:00:00', 'system', '20200620 00:00:00', 'system', 1, 'product last col');
 
 
 INSERT INTO schema1.person
@@ -74,5 +82,57 @@ INSERT INTO schema1.person
 VALUES('person101', 'mike', 'smith');
 
 
+INSERT INTO schema1.employee
+(last_name, first_name)
+VALUES ('emp1 last', 'emp1 first');
+
+INSERT INTO schema1.employee
+(last_name, first_name)
+VALUES ('emp2 last', 'emp2 first');
+
+INSERT INTO schema1.employee
+(last_name, first_name)
+VALUES ('emp3 last', 'emp3 first');
+
+INSERT INTO schema1.employee
+(last_name, first_name)
+VALUES ('emp4 last', 'emp4 first');
+
+INSERT INTO schema1.skill
+(name)
+VALUES ('java');
+
+INSERT INTO schema1.skill
+(name)
+VALUES ('spring');
+
+INSERT INTO schema1.skill
+(name)
+VALUES ('typescript');
+
+INSERT INTO schema1.skill
+(name)
+VALUES ('ruby');
+
+
+INSERT INTO schema1.employee_skill
+(employee_id, skill_id)
+VALUES (1, 1);
+
+INSERT INTO schema1.employee_skill
+(employee_id, skill_id)
+VALUES (1, 2);
+
+INSERT INTO schema1.employee_skill
+(employee_id, skill_id)
+VALUES (3, 2);
+
+INSERT INTO schema1.employee_skill
+(employee_id, skill_id)
+VALUES (3, 3);
+
+INSERT INTO schema1.employee_skill
+(employee_id, skill_id)
+VALUES (3, 4);
 
 

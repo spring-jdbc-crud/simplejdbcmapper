@@ -17,6 +17,11 @@ import org.springframework.beans.BeanWrapper;
 import org.springframework.jdbc.core.SqlParameterValue;
 import org.springframework.util.Assert;
 
+/**
+ * Delete operations
+ *
+ * @author Antony Joseph
+ */
 class DeleteOperation {
 	private final SimpleJdbcMapperSupport sjmSupport;
 
@@ -43,7 +48,7 @@ class DeleteOperation {
 			deleteSqlCache.put(entityType, sql);
 		}
 		return sjmSupport.getJdbcTemplate().update(sql,
-				new SqlParameterValue(tableMapping.getIdPropertyMapping().getEffectiveSqlType(), id));
+				new SqlParameterValue(tableMapping.getIdPropertyMapping().getColumnSqlType(), id));
 	}
 
 	SimpleCache<Class<?>, String> getDeleteSqlCache() {

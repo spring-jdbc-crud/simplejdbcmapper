@@ -18,7 +18,6 @@ public class NonDefaultNamingProduct {
 	private String productName;
 
 	@Id
-	@Column(name = "PRODUCT_id")
 	private Integer id;
 
 	@Column

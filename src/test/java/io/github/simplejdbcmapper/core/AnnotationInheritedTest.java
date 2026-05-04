@@ -40,7 +40,7 @@ class AnnotationInheritedTest {
 	@Test
 	void annotationOrderInheritedAuditProperty_Test() {
 		TableMapping tableMapping = sjmSupport.getTableMapping(OrderInheritedAudit.class);
-		List<String> mappedProperties = Arrays.asList("orderId", "orderDate", "customerId", "status", "createdOn",
+		List<String> mappedProperties = Arrays.asList("id", "orderDate", "customerId", "status", "createdOn",
 				"createdBy", "updatedOn", "updatedBy", "version");
 		for (String propertyName : mappedProperties) {
 			assertNotNull(tableMapping.getPropertyMappingByPropertyName(propertyName));
@@ -67,8 +67,8 @@ class AnnotationInheritedTest {
 		}
 		assertEquals(1, obj.getVersion());
 
-		OrderInheritedAudit obj2 = sjm.findById(OrderInheritedAudit.class, obj.getOrderId());
-		assertNotNull(obj2.getOrderId());
+		OrderInheritedAudit obj2 = sjm.findById(OrderInheritedAudit.class, obj.getId());
+		assertNotNull(obj2.getId());
 		assertNotNull(obj2.getOrderDate());
 		if (sjmSupport.getRecordAuditedBySupplier() != null) {
 			assertEquals("tester", obj.getCreatedBy());
@@ -84,7 +84,7 @@ class AnnotationInheritedTest {
 	@Test
 	void annotationOrderInheritedColumn_Test() {
 		TableMapping tableMapping = sjmSupport.getTableMapping(OrderInheritedColumn.class);
-		List<String> mappedProperties = Arrays.asList("orderId", "orderDate", "customerId", "status");
+		List<String> mappedProperties = Arrays.asList("id", "orderDate", "customerId", "status");
 		for (String propertyName : mappedProperties) {
 			assertNotNull(tableMapping.getPropertyMappingByPropertyName(propertyName));
 		}
@@ -93,7 +93,7 @@ class AnnotationInheritedTest {
 	@Test
 	void annotationOrderInheritedId_Test() {
 		TableMapping tableMapping = sjmSupport.getTableMapping(OrderInheritedId.class);
-		List<String> mappedProperties = Arrays.asList("orderId", "orderDate", "customerId", "status");
+		List<String> mappedProperties = Arrays.asList("id", "orderDate", "customerId", "status");
 		for (String propertyName : mappedProperties) {
 			assertNotNull(tableMapping.getPropertyMappingByPropertyName(propertyName));
 		}

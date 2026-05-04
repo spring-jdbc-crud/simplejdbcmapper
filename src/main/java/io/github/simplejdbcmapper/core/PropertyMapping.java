@@ -26,15 +26,15 @@ class PropertyMapping {
 
 	private Class<?> propertyType;
 
-	private Method writeMethod; // writeMethod for property to be set by reflection
+	private Method writeMethod;
+
+	private Method readMethod;
 
 	private ResultSetType resultSetType;
 
 	private String columnName;
 
 	private Integer columnSqlType;
-
-	private Integer columnOverriddenSqlType;
 
 	private boolean isEnum = false;
 
@@ -55,11 +55,6 @@ class PropertyMapping {
 	private boolean characterLargeObject = false;
 
 	public PropertyMapping(String propertyName, Class<?> propertyType, String columnName, Integer columnSqlType) {
-		this(propertyName, propertyType, columnName, columnSqlType, null);
-	}
-
-	public PropertyMapping(String propertyName, Class<?> propertyType, String columnName, Integer columnSqlType,
-			Integer columnOverriddenSqlType) {
 		if (propertyName == null || propertyType == null || columnName == null) {
 			throw new IllegalArgumentException("propertyName, propertyType, columnName must not be null");
 		}
@@ -69,17 +64,12 @@ class PropertyMapping {
 		// table column names or column names with spaces in them
 		this.columnName = InternalUtils.toLowerCase(columnName);
 		this.columnSqlType = columnSqlType;
-		this.columnOverriddenSqlType = columnOverriddenSqlType;
 		isEnum = propertyType.isEnum();
 		determineBlobClob();
 	}
 
 	public int getColumnSqlType() {
 		return columnSqlType;
-	}
-
-	public Integer getColumnOverriddenSqlType() {
-		return columnOverriddenSqlType;
 	}
 
 	public String getPropertyName() {
@@ -142,10 +132,6 @@ class PropertyMapping {
 		this.updatedByAnnotation = updatedByAnnotation;
 	}
 
-	public Integer getEffectiveSqlType() {
-		return columnOverriddenSqlType == null ? columnSqlType : columnOverriddenSqlType;
-	}
-
 	public boolean isBinaryLargeObject() {
 		return binaryLargeObject;
 	}
@@ -156,6 +142,14 @@ class PropertyMapping {
 
 	public boolean isEnum() {
 		return isEnum;
+	}
+
+	public Method getReadMethod() {
+		return readMethod;
+	}
+
+	public void setReadMethod(Method readMethod) {
+		this.readMethod = readMethod;
 	}
 
 	public Method getWriteMethod() {
@@ -175,12 +169,11 @@ class PropertyMapping {
 	}
 
 	private void determineBlobClob() {
-		Integer effectiveSqlType = getEffectiveSqlType();
-		if (effectiveSqlType != null && (effectiveSqlType == Types.BLOB || effectiveSqlType == Types.ARRAY
-				|| effectiveSqlType == Types.LONGVARBINARY || effectiveSqlType == Types.VARBINARY)) {
+		if (columnSqlType != null && (columnSqlType == Types.BLOB || columnSqlType == Types.ARRAY
+				|| columnSqlType == Types.LONGVARBINARY || columnSqlType == Types.VARBINARY)) {
 			binaryLargeObject = true;
-		} else if (effectiveSqlType != null && (effectiveSqlType == Types.CLOB || effectiveSqlType == Types.NCLOB
-				|| effectiveSqlType == Types.LONGVARCHAR || effectiveSqlType == Types.LONGNVARCHAR)) {
+		} else if (columnSqlType != null && (columnSqlType == Types.CLOB || columnSqlType == Types.NCLOB
+				|| columnSqlType == Types.LONGVARCHAR || columnSqlType == Types.LONGNVARCHAR)) {
 			characterLargeObject = true;
 		}
 	}

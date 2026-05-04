@@ -11,7 +11,7 @@ import io.github.simplejdbcmapper.annotation.Table;
 @Table(name = "product")
 public class ProductWithNoAuditFields {
 	@Id
-	private Integer productId;
+	private Integer id;
 	@Column
 	private String name;
 	@Column
@@ -32,12 +32,12 @@ public class ProductWithNoAuditFields {
 	@Column
 	private Integer version;
 
-	public Integer getProductId() {
-		return productId;
+	public Integer getId() {
+		return id;
 	}
 
-	public void setProductId(Integer id) {
-		this.productId = id;
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 	public String getName() {

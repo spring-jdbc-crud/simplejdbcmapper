@@ -35,7 +35,7 @@ class TableAnnotationWithSchemaTest {
 			customer.setLastName("xyz");
 			sjm.update(customer);
 
-			CustomerSchema1 customer1 = sjm.findById(CustomerSchema1.class, customer.getCustomerId());
+			CustomerSchema1 customer1 = sjm.findById(CustomerSchema1.class, customer.getId());
 
 			assertNotNull(customer1);
 			assertEquals("xyz", customer1.getLastName());

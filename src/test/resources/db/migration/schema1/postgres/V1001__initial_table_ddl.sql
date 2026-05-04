@@ -1,5 +1,5 @@
 CREATE TABLE schema1.orders (
-	order_id bigserial NOT NULL,
+	id bigserial NOT NULL,
 	order_date timestamp NULL,
 	customer_id integer NULL,
 	status varchar(100) NULL,
@@ -8,29 +8,28 @@ CREATE TABLE schema1.orders (
 	updated_on timestamp NULL,
 	updated_by varchar(100) NULL,
 	version integer NULL,
-	non_model_column varchar(100),
-	CONSTRAINT order_pk PRIMARY KEY (order_id)
+	last_mapped_col varchar(100),
+	CONSTRAINT order_pk PRIMARY KEY (id)
 );
 
 CREATE TABLE schema1.order_line (
 	order_line_id serial NOT NULL,
 	order_id bigint NOT NULL,
-	product_id integer NOT NULL,
-	num_of_units integer NULL,
-	non_model_column varchar(100),
+	product_id integer,
+	num_of_units integer,
+	last_mapped_col varchar(100),
 	CONSTRAINT order_line_pk PRIMARY KEY (order_line_id)
 );
 
 CREATE TABLE schema1.customer (
-	customer_id serial NOT NULL,
+	id serial NOT NULL,
 	first_name varchar(100),
 	last_name varchar(100) NOT NULL,
-	non_model_column varchar(100),
-	CONSTRAINT customer_pk PRIMARY KEY (customer_id)
+	CONSTRAINT customer_pk PRIMARY KEY (id)
 );
 
 CREATE TABLE schema1.product (
-	product_id integer NOT NULL,
+	id integer NOT NULL,
 	name varchar(100) NOT NULL,
 	cost numeric(10,3) NULL,
 	description varchar(100) NULL,
@@ -39,8 +38,8 @@ CREATE TABLE schema1.product (
 	updated_on timestamp NULL,
 	updated_by varchar(100) NULL,
 	version integer NULL,
-	non_model_column varchar(100),
-	CONSTRAINT product_pk PRIMARY KEY (product_id)
+	last_mapped_col varchar(100),
+	CONSTRAINT product_pk PRIMARY KEY (id)
 );
 
 
@@ -53,7 +52,6 @@ CREATE TABLE schema1.person (
 	updated_on timestamp NULL,
 	updated_by varchar(100) NULL,
 	version integer NULL,
-	non_model_column varchar(100),
 	CONSTRAINT person_pk PRIMARY KEY (person_id)
 );
 
@@ -85,8 +83,6 @@ CREATE TABLE schema1.type_check (
    java_sql_time_data time,
    java_sql_timestamp_data TIMESTAMP,
    number_data float8,
-   non_model_column varchar(100),
-   non_model_offset_date_time timestamptz,
    CONSTRAINT type_check_pk PRIMARY KEY (id)
 );
 

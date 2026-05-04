@@ -35,12 +35,17 @@ import io.github.simplejdbcmapper.annotation.Table;
 import io.github.simplejdbcmapper.exception.AnnotationException;
 import io.github.simplejdbcmapper.exception.MapperException;
 
+/**
+ * Provides the table mapping for an object.
+ *
+ * @author Antony Joseph
+ */
 class TableMappingProvider {
 	private final String schemaName;
 
 	private final String catalogName;
 
-	private SimpleCache<Class<?>, TableMapping> tableMappingCache = new SimpleCache<>();
+	private final SimpleCache<Class<?>, TableMapping> tableMappingCache = new SimpleCache<>();
 
 	private final AnnotationProcessor ap;
 
@@ -71,11 +76,6 @@ class TableMappingProvider {
 		return tableMappingCache;
 	}
 
-	// closing down simplejdbcmapper
-	void close() {
-		tableMappingCache = null;
-	}
-
 	private List<PropertyMapping> getPropertyMappings(Class<?> entityType, List<Field> fields) {
 		// key:propertyName, value:PropertyMapping. LinkedHashMap to maintain order of
 		// properties
@@ -93,7 +93,7 @@ class TableMappingProvider {
 		List<PropertyMapping> propertyMappings = new ArrayList<>(propNameToPropertyMapping.values());
 		ap.validateAnnotations(propertyMappings, entityType);
 		assignReflectionWriteMethods(entityType, propertyMappings);
-		assignResultSetType(propertyMappings);
+		assignResultSetTypes(propertyMappings);
 		return propertyMappings;
 	}
 
@@ -117,21 +117,28 @@ class TableMappingProvider {
 				PropertyDescriptor pd = bw.getPropertyDescriptor(propMapping.getPropertyName());
 				Method writeMethod = pd.getWriteMethod();
 				if (writeMethod == null) {
-					throw new MapperException("writeMethod was null maybe because it cannot be written to for property "
-							+ entityType.getName() + "." + propMapping.getPropertyName()
-							+ " Check the methods visibility.");
+					throw new MapperException("setter method was not accessible for property " + entityType.getName()
+							+ "." + propMapping.getPropertyName() + " Check the method's visibility.");
 				}
 				propMapping.setWriteMethod(writeMethod);
+
+				Method readMethod = pd.getReadMethod();
+				if (readMethod == null) {
+					throw new MapperException("getter method was not accessible for property " + entityType.getName()
+							+ "." + propMapping.getPropertyName() + " Check the method's visibility.");
+				}
+				propMapping.setReadMethod(readMethod);
+
 			}
 		} catch (Exception e) {
 			throw new MapperException(e.getMessage(), e);
 		}
 	}
 
-	private void assignResultSetType(List<PropertyMapping> propertyMappings) {
+	private void assignResultSetTypes(List<PropertyMapping> propertyMappings) {
 		for (PropertyMapping propMapping : propertyMappings) {
-			ResultSetType val = ResultSetType.getResultSetType(propMapping.getPropertyType());
-			propMapping.setResultSetType(val);
+			ResultSetType rsType = ResultSetType.getResultSetType(propMapping.getPropertyType());
+			propMapping.setResultSetType(rsType);
 		}
 	}
 

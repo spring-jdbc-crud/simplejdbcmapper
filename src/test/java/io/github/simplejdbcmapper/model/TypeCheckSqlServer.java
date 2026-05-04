@@ -37,10 +37,10 @@ public class TypeCheckSqlServer {
 	@Column
 	private Boolean booleanVal;
 
-	@Column(sqlType = Types.BLOB)
+	@Column(sqlType = Types.LONGVARBINARY)
 	private byte[] image;
 
-	@Column(sqlType = Types.CLOB)
+	@Column(sqlType = Types.LONGVARCHAR)
 	private String clobData;
 
 	@Column(sqlType = microsoft.sql.Types.DATETIMEOFFSET)

@@ -55,8 +55,8 @@ class InsertTest {
 		assertEquals(1, order.getVersion());
 
 		// requery and test.
-		order = sjm.findById(Order.class, order.getOrderId());
-		assertNotNull(order.getOrderId());
+		order = sjm.findById(Order.class, order.getId());
+		assertNotNull(order.getId());
 		assertNotNull(order.getOrderDate());
 		if (sjmSupport.getRecordAuditedOnSupplier() != null) {
 			assertNotNull(order.getCreatedOn());
@@ -78,9 +78,9 @@ class InsertTest {
 
 		sjm.insert(customer);
 
-		Customer customer1 = sjm.findById(Customer.class, customer.getCustomerId());
+		Customer customer1 = sjm.findById(Customer.class, customer.getId());
 
-		assertNotNull(customer1.getCustomerId());
+		assertNotNull(customer1.getId());
 		assertEquals("aaa", customer1.getFirstName());
 		assertEquals("bbb", customer1.getLastName());
 	}
@@ -88,7 +88,7 @@ class InsertTest {
 	@Test
 	void insert_withNonNullIdFailure_Test() {
 		Order order = new Order();
-		order.setOrderId(2002L);
+		order.setId(2002L);
 		order.setOrderDate(LocalDateTime.now());
 		order.setCustomerId(2);
 
@@ -102,7 +102,7 @@ class InsertTest {
 	@Test
 	void insert_WithManualIntegerId_Test() {
 		Product product = new Product();
-		product.setProductId(1001);
+		product.setId(1001);
 		product.setName("hat");
 		product.setCost(12.25);
 
@@ -121,7 +121,7 @@ class InsertTest {
 
 		// requery and check
 		product = sjm.findById(Product.class, 1001);
-		assertNotNull(product.getProductId());
+		assertNotNull(product.getId());
 		assertEquals("hat", product.getName());
 		assertEquals(12.25, product.getCost());
 		if (sjmSupport.getRecordAuditedBySupplier() != null) {
@@ -176,7 +176,7 @@ class InsertTest {
 	@Test
 	void insert_typeMismatch_Test() {
 		ProductMismatchType product = new ProductMismatchType();
-		product.setProductId(8650);
+		product.setId(8650);
 
 		Person person = new Person();
 		person.setPersonId("p1");
@@ -196,8 +196,7 @@ class InsertTest {
 		Exception exception = Assertions.assertThrows(MapperException.class, () -> {
 			sjm.insert(person);
 		});
-		assertTrue(exception.getMessage()
-				.contains("writeMethod was null maybe because it cannot be written to for property "));
+		assertTrue(exception.getMessage().contains("setter method was not accessible for property "));
 	}
 
 }

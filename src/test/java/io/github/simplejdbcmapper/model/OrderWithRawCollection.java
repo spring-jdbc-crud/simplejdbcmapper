@@ -19,7 +19,7 @@ import io.github.simplejdbcmapper.annotation.Version;
 @Table(name = "orders")
 public class OrderWithRawCollection {
 	@Id(type = IdType.AUTO_GENERATED)
-	private Long orderId;
+	private Long id;
 	@Column
 	private LocalDateTime orderDate;
 
@@ -49,12 +49,12 @@ public class OrderWithRawCollection {
 	@SuppressWarnings("rawtypes")
 	private List orderLines = new ArrayList();
 
-	public Long getOrderId() {
-		return orderId;
+	public Long getId() {
+		return id;
 	}
 
-	public void setOrderId(Long id) {
-		this.orderId = id;
+	public void setId(Long id) {
+		this.id = id;
 	}
 
 	public LocalDateTime getOrderDate() {

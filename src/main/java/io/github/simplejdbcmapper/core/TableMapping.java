@@ -25,7 +25,7 @@ import org.springframework.util.StringUtils;
 import io.github.simplejdbcmapper.exception.MapperException;
 
 /**
- * The database table mapping details on an object
+ * The table mapping for an object
  *
  * @author Antony Joseph
  */

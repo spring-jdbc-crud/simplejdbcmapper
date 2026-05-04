@@ -22,16 +22,24 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringJoiner;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.SqlParameterValue;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
-import org.springframework.util.StringUtils;
 
 import io.github.simplejdbcmapper.exception.MapperException;
 
+/**
+ * The find operations
+ *
+ * @author Antony Joseph
+ */
 class FindOperation {
+	private static final Logger logger = LoggerFactory.getLogger(FindOperation.class);
+
 	private final SimpleJdbcMapperSupport sjmSupport;
 
 	private final SimpleCache<Class<?>, String> findByIdSqlCache = new SimpleCache<>();
@@ -40,7 +48,7 @@ class FindOperation {
 
 	// Map key - classname-tableAlias
 	// value - the column sql string
-	private final SimpleCache<String, String> entitySqlColumnsAliasCache = new SimpleCache<>(2000);
+	private final SimpleCache<String, String> entitySqlColumnsAliasCache = new SimpleCache<>(5000);
 
 	public FindOperation(SimpleJdbcMapperSupport sjmSupport) {
 		this.sjmSupport = sjmSupport;
@@ -58,7 +66,7 @@ class FindOperation {
 		T obj = null;
 		try {
 			obj = sjmSupport.getJdbcTemplate().queryForObject(sql, newEntityRowMapper(entityType),
-					new SqlParameterValue(tableMapping.getIdPropertyMapping().getEffectiveSqlType(), getValue(id)));
+					new SqlParameterValue(tableMapping.getIdPropertyMapping().getColumnSqlType(), getValue(id)));
 		} catch (EmptyResultDataAccessException e) {
 			// do nothing
 		}
@@ -97,7 +105,7 @@ class FindOperation {
 			return sjmSupport.getJdbcTemplate().query(sql.toString(), newEntityRowMapper(entityType));
 		} else {
 			return sjmSupport.getJdbcTemplate().query(sql.toString(), newEntityRowMapper(entityType),
-					new SqlParameterValue(propMapping.getEffectiveSqlType(), getValue(propertyValue)));
+					new SqlParameterValue(propMapping.getColumnSqlType(), getValue(propertyValue)));
 		}
 	}
 
@@ -133,7 +141,7 @@ class FindOperation {
 		} else {
 			Set<?> values = getValues(localPropertyValues);
 			MapSqlParameterSource param = new MapSqlParameterSource();
-			param.addValue("propertyValues", values, propMapping.getEffectiveSqlType());
+			param.addValue("propertyValues", values, propMapping.getColumnSqlType());
 			return sjmSupport.getNamedParameterJdbcTemplate().query(sql.toString(), param,
 					newEntityRowMapper(entityType));
 		}
@@ -156,10 +164,8 @@ class FindOperation {
 
 	public String getEntitySqlColumns(Class<?> entityType, String tableAlias) {
 		Assert.notNull(entityType, "entityType must not be null");
-		if (!StringUtils.hasText(tableAlias)) {
-			throw new IllegalArgumentException("tableAlias has no value");
-		}
-		String cacheKey = entityType.getName() + "-" + tableAlias.trim();
+		InternalUtils.validateTableAlias(tableAlias);
+		String cacheKey = entityType.getName() + "-" + tableAlias;
 		String columnsSql = entitySqlColumnsAliasCache.get(cacheKey);
 		if (columnsSql == null) {
 			String tablePrefix = tableAlias + ".";
@@ -176,7 +182,11 @@ class FindOperation {
 
 	public <T> EntityRowMapper<T> newEntityRowMapper(Class<T> entityType) {
 		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
-		return new EntityRowMapper<>(tableMapping, sjmSupport.getConversionService());
+		EntityRowMapper<T> rowMapper = new EntityRowMapper<>(tableMapping, sjmSupport.getConversionService(), 1);
+		if (logger.isDebugEnabled()) {
+			logger.debug("EntityRowMapper: {}", rowMapper);
+		}
+		return rowMapper;
 	}
 
 	public String getBeanFriendlySqlColumns(Class<?> entityType) {
@@ -196,9 +206,7 @@ class FindOperation {
 
 	public String getBeanFriendlySqlColumns(Class<?> entityType, String tableAlias) {
 		Assert.notNull(entityType, "entityType must not be null");
-		if (!StringUtils.hasText(tableAlias)) {
-			throw new IllegalArgumentException("tableAlias has no value");
-		}
+		InternalUtils.validateTableAlias(tableAlias);
 		String tablePrefix = tableAlias + ".";
 		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
 		StringJoiner sj = new StringJoiner(", ", " ", " ");

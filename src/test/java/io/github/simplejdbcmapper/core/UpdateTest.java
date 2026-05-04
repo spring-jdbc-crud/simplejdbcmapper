@@ -129,7 +129,7 @@ class UpdateTest {
 	@Test
 	void update_nullIdFailure_Test() {
 		Customer customer = sjm.findById(Customer.class, 1);
-		customer.setCustomerId(null);
+		customer.setId(null);
 		Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
 			sjm.update(customer);
 		});
@@ -154,7 +154,7 @@ class UpdateTest {
 		Order order = sjm.findById(Order.class, 1);
 
 		Exception exception = Assertions.assertThrows(MapperException.class, () -> {
-			sjm.updateSpecificProperties(order, "orderId");
+			sjm.updateSpecificProperties(order, "id");
 		});
 		assertTrue(exception.getMessage().contains("cannot be updated"));
 
@@ -208,7 +208,7 @@ class UpdateTest {
 		customer.setFirstName("aaa");
 		sjm.updateSpecificProperties(customer, "lastName", "firstName");
 
-		customer = sjm.findById(Customer.class, customer.getCustomerId());
+		customer = sjm.findById(Customer.class, customer.getId());
 		assertEquals("bbb", customer.getLastName());
 		assertEquals("aaa", customer.getFirstName());
 
@@ -243,7 +243,7 @@ class UpdateTest {
 	@Test
 	void updateSpecificProperties_propertiesCountLargerThanCacheableSize_success() {
 		ProductWithNoAuditFields product = new ProductWithNoAuditFields();
-		product.setProductId(801);
+		product.setId(801);
 		product.setName("p-801");
 		product.setCost(4.75);
 		sjm.insert(product);
@@ -255,7 +255,7 @@ class UpdateTest {
 		sjm.updateSpecificProperties(product, "cost", "name", "version", "createdOn");
 
 		ProductWithNoAuditFields productWithNoAuditFields = sjm.findById(ProductWithNoAuditFields.class,
-				product.getProductId());
+				product.getId());
 		assertEquals(1, productWithNoAuditFields.getVersion());
 		assertNotNull(productWithNoAuditFields.getCreatedOn());
 

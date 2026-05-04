@@ -1,6 +1,9 @@
 package io.github.simplejdbcmapper.core;
 
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+
+import java.sql.Types;
 
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
@@ -32,6 +35,7 @@ import io.github.simplejdbcmapper.model.NoTableAnnotationModel;
 import io.github.simplejdbcmapper.model.PersonWithColumnPrimitive;
 import io.github.simplejdbcmapper.model.PersonWithOtherPrimitive;
 import io.github.simplejdbcmapper.model.PersonWithPrimitiveId;
+import io.github.simplejdbcmapper.model.TypeCheckPostgres;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -225,6 +229,15 @@ class AnnotationTest {
 			sjm.insert(obj);
 		});
 		assertTrue(exception.getMessage().contains("is of type java.sql.Clob and is not supported"));
+	}
+
+	@Test
+	void sqlType_override_test() {
+		if (jdbcDriver.contains("postgres")) {
+			SimpleJdbcMapperSupport sjmSupport = TestUtils.getSimpleJdbcMapperSupport(sjm);
+			TableMapping tm = sjmSupport.getTableMapping(TypeCheckPostgres.class);
+			assertEquals(Types.LONGVARCHAR, tm.getPropertyMappingByPropertyName("clobData").getColumnSqlType());
+		}
 	}
 
 }

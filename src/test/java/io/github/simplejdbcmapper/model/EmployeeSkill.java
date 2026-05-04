@@ -16,6 +16,10 @@ public class EmployeeSkill {
 	@Column
 	private Integer skillId;
 
+	private Skill skill;
+
+	private Employee employee;
+
 	public EmployeeSkill() {
 	}
 
@@ -47,4 +51,21 @@ public class EmployeeSkill {
 	public void setSkillId(Integer skillId) {
 		this.skillId = skillId;
 	}
+
+	public Skill getSkill() {
+		return skill;
+	}
+
+	public void setSkill(Skill skill) {
+		this.skill = skill;
+	}
+
+	public Employee getEmployee() {
+		return employee;
+	}
+
+	public void setEmployee(Employee employee) {
+		this.employee = employee;
+	}
+
 }

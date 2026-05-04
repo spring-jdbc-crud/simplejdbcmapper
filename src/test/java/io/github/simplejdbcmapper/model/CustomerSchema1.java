@@ -11,7 +11,7 @@ import io.github.simplejdbcmapper.annotation.Table;
 
 public class CustomerSchema1 {
 	@Id(type = IdType.AUTO_GENERATED)
-	private Integer customerId;
+	private Integer id;
 
 	@Column
 	private String firstName;
@@ -24,12 +24,12 @@ public class CustomerSchema1 {
 	private String updatedBy;
 	private Integer version;
 
-	public Integer getCustomerId() {
-		return customerId;
+	public Integer getId() {
+		return id;
 	}
 
-	public void setCustomerId(Integer id) {
-		this.customerId = id;
+	public void setId(Integer id) {
+		this.id = id;
 	}
 
 	public String getFirstName() {

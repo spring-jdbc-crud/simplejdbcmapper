@@ -54,10 +54,10 @@ public class ToOne<T, U> implements ToOneSpec, PopulateSpec {
 		Assert.notNull(mainObjJoinProperty, "mainObjJoinProperty must not be null");
 		Assert.notNull(relatedObjJoinProperty, "relatedObjJoinProperty must not be null");
 
-		mainObjJoinPropertyReadMethod = Relationship.getReadMethod(mainObjList, mainObjJoinProperty);
-		relatedObjJoinPropertyReadMethod = Relationship.getReadMethod(relatedObjList, relatedObjJoinProperty);
+		this.mainObjJoinPropertyReadMethod = Relationship.getReadMethod(mainObjList, mainObjJoinProperty);
+		this.relatedObjJoinPropertyReadMethod = Relationship.getReadMethod(relatedObjList, relatedObjJoinProperty);
 
-		if (mainObjJoinPropertyReadMethod != null && relatedObjJoinPropertyReadMethod != null) {
+		if (this.mainObjJoinPropertyReadMethod != null && this.relatedObjJoinPropertyReadMethod != null) {
 			Class<?> mainObjJoinPropertyType = Relationship.getPropertyType(mainObjList, mainObjJoinProperty);
 			Class<?> relatedObjJoinPropertyType = Relationship.getPropertyType(relatedObjList, relatedObjJoinProperty);
 			if (mainObjJoinPropertyType != relatedObjJoinPropertyType) {
@@ -65,15 +65,12 @@ public class ToOne<T, U> implements ToOneSpec, PopulateSpec {
 						+ relatedObjJoinProperty + " on related object are not the same.");
 			}
 		}
-
 		return this;
 	}
 
 	public void populate(String mainObjPropertyToPopulate) {
 		Assert.notNull(mainObjPropertyToPopulate, "mainObjPropertyToPopulate must not be null");
-
-		mainObjPropertyToPopulateWriteMethod = Relationship.getWriteMethod(mainObjList, mainObjPropertyToPopulate);
-
+		this.mainObjPropertyToPopulateWriteMethod = Relationship.getWriteMethod(mainObjList, mainObjPropertyToPopulate);
 		populateToOne();
 	}
 

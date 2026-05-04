@@ -11,8 +11,8 @@ public interface ToOneSpec {
 	 * the toOne relationship. <b>The java type of both the properties have to be
 	 * exactly the same.</b>
 	 * 
-	 * For example if one is a Long and the other is an Integer, equals() will fail
-	 * and you will not get a match
+	 * For example one should not be Long and the other an Integer.
+	 * 
 	 * 
 	 * @param mainObjJoinProperty    The main object property for matching
 	 * @param relatedObjJoinProperty The related object property for matching

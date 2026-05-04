@@ -314,8 +314,9 @@ public final class SimpleJdbcMapper {
 	 * <p>
 	 * Always use this method (or its overloaded method
 	 * getEntitySqlColumns({@code Class<?>} entityType, String tableAlias) to create
-	 * your custom query columns when using EntityRowMapper. EntityRowMapper will
-	 * handle the column to property mapping.
+	 * your custom query columns when using EntityRowMapper.
+	 * {@link io.github.simplejdbcmapper.core.EntityRowMapper} will handle the
+	 * column to property mapping.
 	 * 
 	 * <pre>
 	 * "somecolumn, some_other_column, last_name"
@@ -389,7 +390,8 @@ public final class SimpleJdbcMapper {
 
 	/**
 	 * The ResultSeExtractor for multiple entities. The results are returned in
-	 * {@link io.github.simplejdbcmapper.core.ResultListMap}
+	 * {@link io.github.simplejdbcmapper.core.ResultListMap}. It expects the columns
+	 * sql to be always be generated using {@link #getMultiEntitySqlColumns}.
 	 * <p>
 	 * The result list in ResultListMap for each entity will be <b>Unique by ID</b>
 	 * , ie there will no duplicate records for that entity.

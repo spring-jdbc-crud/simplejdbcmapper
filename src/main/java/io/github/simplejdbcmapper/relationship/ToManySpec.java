@@ -28,8 +28,7 @@ public interface ToManySpec {
 	 * 
 	 * <b>The java type of both the properties have to be exactly the same.</b>
 	 * 
-	 * For example if one is a Long and the other is an Integer, equals() will fail
-	 * and you will not get a match
+	 * For example one should not be Long and the other an Integer.
 	 * 
 	 * @param mainObjIdProperty    The main object id
 	 * @param relatedObjFkProperty The related object foreign key used for matching
@@ -39,11 +38,7 @@ public interface ToManySpec {
 
 	/**
 	 * The 'through' information when defining a toMany relationship through an
-	 * intermediate table. <b>The java type of both the properties have to be
-	 * exactly the same.</b>
-	 * <p>
-	 * The types should also exactly match the types of the properties in
-	 * {@link io.github.simplejdbcmapper.relationship.ThroughSpec#ids(String mainObjIdProperty, String relatedObjIdProperty)}
+	 * intermediate table (one side of many to many).
 	 * 
 	 * @param intermediateList         The intermediate table list
 	 * @param fkPropertyToMainObjId    the foreign key property that matches the

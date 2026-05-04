@@ -21,8 +21,8 @@ package io.github.simplejdbcmapper.relationship;
  */
 public interface PopulateSpec {
 	/**
-	 * Once invoked the relationship gets processed and the target property gets
-	 * set.
+	 * This is the terminal method of the API. Once invoked the relationship gets
+	 * processed and the target property gets set.
 	 * 
 	 * <p>
 	 * For a toMany relationship the target property <b>always has to be a List</b>.

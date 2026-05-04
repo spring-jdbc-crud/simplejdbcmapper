@@ -33,27 +33,17 @@ import io.github.simplejdbcmapper.exception.MapperException;
  */
 public class ToOne<T, U> implements ToOneSpec<T, U>, PopulateSpec {
 
-	private String mainObjJoinProperty;
-	private String relatedObjJoinProperty;
-
 	private Method mainObjJoinPropertyReadMethod;
 	private Method relatedObjJoinPropertyReadMethod;
 
-	private String mainObjPropertyToPopulate;
 	private Method mainObjPropertyToPopulateWriteMethod;
 
 	private List<T> mainObjList;
 	private List<U> relatedObjList;
 
-	// private BeanWrapper bwMainObj; // used for validation of property names
-
-	// private BeanWrapper bwRelatedObj; // used for validation of property names;
-
 	private ToOne(List<T> mainObjList, List<U> relatedObjList) {
 		this.mainObjList = mainObjList;
 		this.relatedObjList = relatedObjList;
-		// bwMainObj = getBeanWrapper(mainObjList);
-		// bwRelatedObj = getBeanWrapper(relatedObjList);
 	}
 
 	static <T, U> ToOneSpec<T, U> toOne(List<T> mainObjList, List<U> relatedObjList) {
@@ -67,8 +57,6 @@ public class ToOne<T, U> implements ToOneSpec<T, U>, PopulateSpec {
 		this.mainObjJoinPropertyReadMethod = Relationship.getReadMethod(mainObjList, mainObjJoinProperty);
 		this.relatedObjJoinPropertyReadMethod = Relationship.getReadMethod(relatedObjList, relatedObjJoinProperty);
 
-		this.mainObjJoinProperty = mainObjJoinProperty;
-		this.relatedObjJoinProperty = relatedObjJoinProperty;
 		return this;
 	}
 
@@ -76,7 +64,6 @@ public class ToOne<T, U> implements ToOneSpec<T, U>, PopulateSpec {
 		Assert.notNull(mainObjPropertyToPopulate, "mainObjPropertyToPopulate must not be null");
 
 		this.mainObjPropertyToPopulateWriteMethod = Relationship.getWriteMethod(mainObjList, mainObjPropertyToPopulate);
-		this.mainObjPropertyToPopulate = mainObjPropertyToPopulate;
 
 		populateToOne();
 	}
@@ -86,7 +73,7 @@ public class ToOne<T, U> implements ToOneSpec<T, U>, PopulateSpec {
 			return;
 		}
 		try {
-			Map<Object, Object> joinPropToMainObjMap = new HashMap<>();
+			Map<Object, T> joinPropToMainObjMap = new HashMap<>();
 			for (T mainObj : mainObjList) {
 				if (mainObj != null) {
 					Object mainObjJoinPropertyValue = mainObjJoinPropertyReadMethod.invoke(mainObj);
@@ -105,7 +92,7 @@ public class ToOne<T, U> implements ToOneSpec<T, U>, PopulateSpec {
 					}
 				}
 			}
-			for (Map.Entry<Object, Object> entry : joinPropToMainObjMap.entrySet()) {
+			for (Map.Entry<Object, T> entry : joinPropToMainObjMap.entrySet()) {
 				Object mainObjJoinPropertyValue = entry.getKey();
 				Object mainObj = entry.getValue();
 				U relatedObj = joinPropToRelatedObjMap.get(mainObjJoinPropertyValue);

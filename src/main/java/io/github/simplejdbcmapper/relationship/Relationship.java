@@ -23,8 +23,8 @@ import org.springframework.util.StringUtils;
 
 /**
  * The starting point for any relationship assignment. It works with the lists
- * provided and depending on the arguments to the fluent api methods, populates
- * the target property. The last method in the fluent flow is populate() which
+ * provided and depending on the arguments to the api methods, populates the
+ * target property. The terminal method in the api flow is populate() which
  * triggers the processing.
  * 
  * <p>
@@ -34,9 +34,9 @@ import org.springframework.util.StringUtils;
  */
 public class Relationship<T> implements RelationshipSpec<T> {
 
-	public static final String IS_PREFIX = "is";
-	public static final String GET_PREFIX = "get";
-	public static final String SET_PREFIX = "set";
+	static final String IS_PREFIX = "is";
+	static final String GET_PREFIX = "get";
+	static final String SET_PREFIX = "set";
 
 	private List<T> mainObjList;
 
@@ -46,7 +46,7 @@ public class Relationship<T> implements RelationshipSpec<T> {
 
 	/**
 	 * Start of creating a relationship. The main object is the object whose
-	 * property will be populated using the fluent api.
+	 * property will be populated using the api.
 	 * 
 	 * @param <T>         the main object type
 	 * @param mainObjList the main object list

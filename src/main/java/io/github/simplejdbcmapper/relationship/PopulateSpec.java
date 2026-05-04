@@ -14,8 +14,8 @@
 package io.github.simplejdbcmapper.relationship;
 
 /**
- * The populate specification for the last method in the fluent api which
- * triggers processing of the relationship.
+ * The populate specification for the terminal method in the api which triggers
+ * processing of the relationship.
  * 
  * @author Antony Joseph
  */

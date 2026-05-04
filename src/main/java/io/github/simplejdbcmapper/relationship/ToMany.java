@@ -35,25 +35,17 @@ import io.github.simplejdbcmapper.exception.MapperException;
  */
 public class ToMany<T, U> implements ToManySpec<T, U>, ThroughSpec, PopulateSpec {
 
-	private String mainObjIdProperty;
 	private Method mainObjIdPropertyReadMethod;
 
-	private String relatedObjIdProperty;
 	private Method relatedObjIdPropertyReadMethod;
 
-	private String relatedObjFkProperty;
 	private Method relatedObjFkPropertyReadMethod;
 
-	private String mainObjPropertyToPopulate;
 	private Method mainObjPropertyToPopulateWriteMethod;
 
 	private List<T> mainObjList;
 
 	private List<U> relatedObjList;
-
-	// private BeanWrapper bwMainObj; // used for validation of property names
-
-	// private BeanWrapper bwRelatedObj; // used for validation of property names;
 
 	private IntermediateJoiner intermediateJoiner;
 
@@ -62,8 +54,6 @@ public class ToMany<T, U> implements ToManySpec<T, U>, ThroughSpec, PopulateSpec
 	private ToMany(List<T> mainObjList, List<U> relatedObjList) {
 		this.mainObjList = mainObjList;
 		this.relatedObjList = relatedObjList;
-		// bwMainObj = getBeanWrapper(mainObjList);
-		// bwRelatedObj = getBeanWrapper(relatedObjList);
 	}
 
 	static <T, U> ToManySpec<T, U> toMany(List<T> mainObjList, List<U> relatedObjList) {
@@ -77,8 +67,6 @@ public class ToMany<T, U> implements ToManySpec<T, U>, ThroughSpec, PopulateSpec
 		this.mainObjIdPropertyReadMethod = Relationship.getReadMethod(mainObjList, mainObjIdProperty);
 		this.relatedObjFkPropertyReadMethod = Relationship.getReadMethod(relatedObjList, relatedObjFkProperty);
 
-		this.mainObjIdProperty = mainObjIdProperty;
-		this.relatedObjFkProperty = relatedObjFkProperty;
 		return this;
 	}
 
@@ -101,8 +89,6 @@ public class ToMany<T, U> implements ToManySpec<T, U>, ThroughSpec, PopulateSpec
 		this.mainObjIdPropertyReadMethod = Relationship.getReadMethod(mainObjList, mainObjIdProperty);
 		this.relatedObjIdPropertyReadMethod = Relationship.getReadMethod(relatedObjList, relatedObjIdProperty);
 
-		this.mainObjIdProperty = mainObjIdProperty;
-		this.relatedObjIdProperty = relatedObjIdProperty;
 		return this;
 	}
 
@@ -110,7 +96,6 @@ public class ToMany<T, U> implements ToManySpec<T, U>, ThroughSpec, PopulateSpec
 		Assert.notNull(mainObjPropertyToPopulate, "mainObjPropertyToPopulate must not be null");
 		this.mainObjPropertyToPopulateWriteMethod = Relationship.getWriteMethod(mainObjList, mainObjPropertyToPopulate);
 
-		this.mainObjPropertyToPopulate = mainObjPropertyToPopulate;
 		if ("hasMany".equals(relationshipType)) {
 			populateToMany();
 		} else {

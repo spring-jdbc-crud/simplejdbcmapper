@@ -67,6 +67,14 @@ public class ToMany<T, U> implements ToManySpec, ThroughSpec, PopulateSpec {
 		this.mainObjIdPropertyReadMethod = Relationship.getReadMethod(mainObjList, mainObjIdProperty);
 		this.relatedObjFkPropertyReadMethod = Relationship.getReadMethod(relatedObjList, relatedObjFkProperty);
 
+		if (mainObjIdPropertyReadMethod != null && relatedObjFkPropertyReadMethod != null) {
+			Class<?> mainObjIdPropertyType = Relationship.getPropertyType(mainObjList, mainObjIdProperty);
+			Class<?> relatedObjFkPropertyType = Relationship.getPropertyType(relatedObjList, relatedObjFkProperty);
+			if (mainObjIdPropertyType != relatedObjFkPropertyType) {
+				throw new IllegalArgumentException("Property types of " + mainObjIdProperty + " on main object and "
+						+ relatedObjFkProperty + " on related object are not the same.");
+			}
+		}
 		return this;
 	}
 
@@ -135,7 +143,7 @@ public class ToMany<T, U> implements ToManySpec, ThroughSpec, PopulateSpec {
 						mainObjPropertyToPopulateWriteMethod.invoke(mainObj, populaterList);
 					} catch (Exception e) {
 						throw new MapperException(e.getMessage() + ". Invoking " + mainObjPropertyToPopulateWriteMethod
-								+ " with value " + populaterList);
+								+ " with value " + populaterList, e);
 					}
 				}
 			}
@@ -177,7 +185,7 @@ public class ToMany<T, U> implements ToManySpec, ThroughSpec, PopulateSpec {
 						mainObjPropertyToPopulateWriteMethod.invoke(mainObj, populaterList);
 					} catch (Exception e) {
 						throw new MapperException(e.getMessage() + ". Invoking " + mainObjPropertyToPopulateWriteMethod
-								+ " with value " + populaterList);
+								+ " with value " + populaterList, e);
 					}
 
 				}

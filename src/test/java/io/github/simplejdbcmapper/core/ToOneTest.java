@@ -18,6 +18,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import io.github.simplejdbcmapper.model.OrderLine;
 import io.github.simplejdbcmapper.model.Product;
 import io.github.simplejdbcmapper.model.Profile;
+import io.github.simplejdbcmapper.model.ProfileUserIdLong;
 import io.github.simplejdbcmapper.model.User;
 import io.github.simplejdbcmapper.relationship.Relationship;
 
@@ -59,6 +60,30 @@ class ToOneTest {
 		assertDoesNotThrow(() -> {
 			Relationship.mainList(orderLines).toOneList(null).joinOn("orderLineId", "x");
 		});
+
+	}
+
+	@Test
+	void toOne_joinOn_propertyTypeCheck_test() {
+		User user1 = new User();
+		user1.setId(1);
+		user1.setName("user1");
+
+		List<User> users = new ArrayList<>();
+		users.add(user1);
+
+		ProfileUserIdLong profile1 = new ProfileUserIdLong();
+		profile1.setId(1);
+		profile1.setTheme("theme for user1");
+		profile1.setUserId(1L);
+
+		List<ProfileUserIdLong> profiles = new ArrayList<>();
+		profiles.add(profile1);
+
+		Exception exception = Assertions.assertThrows(Exception.class, () -> {
+			Relationship.mainList(users).toOneList(profiles).joinOn("id", "userId").populate("profile");
+		});
+		assertTrue(exception.getMessage().contains("are not the same"));
 
 	}
 

@@ -124,4 +124,18 @@ public class Relationship implements RelationshipSpec {
 		return null;
 	}
 
+	static Class<?> getPropertyType(List<?> list, String propertyName) {
+		if (!CollectionUtils.isEmpty(list)) {
+			for (Object obj : list) {
+				if (obj != null) {
+					Field field = ReflectionUtils.findField(obj.getClass(), propertyName);
+					if (field != null) {
+						return field.getType();
+					}
+				}
+			}
+		}
+		return null;
+	}
+
 }

@@ -54,8 +54,17 @@ public class ToOne<T, U> implements ToOneSpec, PopulateSpec {
 		Assert.notNull(mainObjJoinProperty, "mainObjJoinProperty must not be null");
 		Assert.notNull(relatedObjJoinProperty, "relatedObjJoinProperty must not be null");
 
-		this.mainObjJoinPropertyReadMethod = Relationship.getReadMethod(mainObjList, mainObjJoinProperty);
-		this.relatedObjJoinPropertyReadMethod = Relationship.getReadMethod(relatedObjList, relatedObjJoinProperty);
+		mainObjJoinPropertyReadMethod = Relationship.getReadMethod(mainObjList, mainObjJoinProperty);
+		relatedObjJoinPropertyReadMethod = Relationship.getReadMethod(relatedObjList, relatedObjJoinProperty);
+
+		if (mainObjJoinPropertyReadMethod != null && relatedObjJoinPropertyReadMethod != null) {
+			Class<?> mainObjJoinPropertyType = Relationship.getPropertyType(mainObjList, mainObjJoinProperty);
+			Class<?> relatedObjJoinPropertyType = Relationship.getPropertyType(relatedObjList, relatedObjJoinProperty);
+			if (mainObjJoinPropertyType != relatedObjJoinPropertyType) {
+				throw new IllegalArgumentException("Property types of " + mainObjJoinProperty + " on main object and "
+						+ relatedObjJoinProperty + " on related object are not the same.");
+			}
+		}
 
 		return this;
 	}
@@ -63,7 +72,7 @@ public class ToOne<T, U> implements ToOneSpec, PopulateSpec {
 	public void populate(String mainObjPropertyToPopulate) {
 		Assert.notNull(mainObjPropertyToPopulate, "mainObjPropertyToPopulate must not be null");
 
-		this.mainObjPropertyToPopulateWriteMethod = Relationship.getWriteMethod(mainObjList, mainObjPropertyToPopulate);
+		mainObjPropertyToPopulateWriteMethod = Relationship.getWriteMethod(mainObjList, mainObjPropertyToPopulate);
 
 		populateToOne();
 	}
@@ -100,7 +109,7 @@ public class ToOne<T, U> implements ToOneSpec, PopulateSpec {
 					mainObjPropertyToPopulateWriteMethod.invoke(mainObj, relatedObj);
 				} catch (Exception e) {
 					throw new MapperException(e.getMessage() + ". Invoking " + mainObjPropertyToPopulateWriteMethod
-							+ " with value " + relatedObj);
+							+ " with value " + relatedObj, e);
 				}
 			}
 		} catch (Exception e) {

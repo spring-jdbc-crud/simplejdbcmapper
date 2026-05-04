@@ -5,6 +5,7 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.junit.jupiter.api.Assertions;
@@ -16,6 +17,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import io.github.simplejdbcmapper.model.Order;
 import io.github.simplejdbcmapper.model.OrderLine;
+import io.github.simplejdbcmapper.model.OrderLineOrderIdInteger;
 import io.github.simplejdbcmapper.model.Product;
 import io.github.simplejdbcmapper.relationship.Relationship;
 
@@ -49,6 +51,19 @@ class ToManyTest {
 			Relationship.mainList(orders).toManyList(orderLines).joinOn("orderId", "x");
 		});
 		assertTrue(exception.getMessage().contains("Invalid argument. Could not find getter for"));
+
+	}
+
+	@Test
+	void toMany_joinOn_propertyTypeCheck_test() {
+		List<Order> orders = sjm.findAll(Order.class);
+		List<OrderLineOrderIdInteger> orderLines = new ArrayList<>();
+		orderLines.add(new OrderLineOrderIdInteger());
+
+		Exception exception = Assertions.assertThrows(Exception.class, () -> {
+			Relationship.mainList(orders).toOneList(orderLines).joinOn("id", "orderId").populate("orderLines");
+		});
+		assertTrue(exception.getMessage().contains("are not the same"));
 
 	}
 

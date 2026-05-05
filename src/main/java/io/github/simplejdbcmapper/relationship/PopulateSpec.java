@@ -30,5 +30,5 @@ public interface PopulateSpec {
 	 * @param propertyToPopulateOnMainObj the target property on the main object
 	 *                                    which needs to be populated.
 	 */
-	void populate(String propertyToPopulateOnMainObj);
+	GetListSpec populate(String propertyToPopulateOnMainObj);
 }

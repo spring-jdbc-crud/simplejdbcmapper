@@ -29,7 +29,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
 import io.github.simplejdbcmapper.exception.MapperException;
-import io.github.simplejdbcmapper.relationship.RelationshipExtractor;
+import io.github.simplejdbcmapper.relationship.RelationshipMapper;
 
 /**
  * The extractor of query results for multiple entities
@@ -63,13 +63,13 @@ class MultiEntityExtractor {
 		return sj.toString();
 	}
 
-	public ResultSetExtractor<RelationshipExtractor> resultSetExtractor(MultiEntity multiEntity) {
+	public ResultSetExtractor<RelationshipMapper> resultSetExtractor(MultiEntity multiEntity) {
 		List<EntityExtractor> entityExtractors = getEntityExtractors(multiEntity);
 
-		return new ResultSetExtractor<RelationshipExtractor>() {
+		return new ResultSetExtractor<RelationshipMapper>() {
 			@SuppressWarnings("unchecked")
 			@Override
-			public RelationshipExtractor extractData(ResultSet rs) throws SQLException, DataAccessException {
+			public RelationshipMapper extractData(ResultSet rs) throws SQLException, DataAccessException {
 				int rowCnt = 1;
 				while (rs.next()) {
 					for (EntityExtractor entityExtractor : entityExtractors) {
@@ -89,11 +89,12 @@ class MultiEntityExtractor {
 					rowCnt++;
 				}
 
-				RelationshipExtractor relationshipExtractor = new RelationshipExtractor();
+				RelationshipMapper relationshipMapper = new RelationshipMapper();
 				for (EntityExtractor entityExtractor : entityExtractors) {
-					relationshipExtractor.putList(entityExtractor.entityType(), entityExtractor.result());
+					relationshipMapper.addResult(entityExtractor.entityType(), entityExtractor.result(),
+							entityExtractor.idPropertyName);
 				}
-				return relationshipExtractor;
+				return relationshipMapper;
 			}
 		};
 	}
@@ -107,8 +108,8 @@ class MultiEntityExtractor {
 			EntityRowMapper<?> rowMapper = newEntityRowMapper(entityType, offset);
 			TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
 			Method idReadMethod = tableMapping.getIdPropertyMapping().getReadMethod();
-			entityExtractors
-					.add(new EntityExtractor(entityType, rowMapper, new ArrayList(), idReadMethod, new HashSet()));
+			entityExtractors.add(new EntityExtractor(entityType, rowMapper, new ArrayList(), idReadMethod,
+					tableMapping.getIdPropertyName(), new HashSet()));
 			offset += tableMapping.getPropertyMappings().length;
 		}
 		return entityExtractors;
@@ -125,7 +126,7 @@ class MultiEntityExtractor {
 
 	@SuppressWarnings("rawtypes")
 	record EntityExtractor(Class<?> entityType, EntityRowMapper<?> rowMapper, List result, Method idReadMethod,
-			Set idSet) {
+			String idPropertyName, Set idSet) {
 	}
 
 }

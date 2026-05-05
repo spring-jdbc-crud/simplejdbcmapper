@@ -13,8 +13,6 @@
  */
 package io.github.simplejdbcmapper.relationship;
 
-import java.util.List;
-
 /**
  * Specification for the ToMany relationship
  * 
@@ -47,5 +45,5 @@ public interface ToManySpec {
 	 *                                 related object's id
 	 * @return the ThroughSpec
 	 */
-	ThroughSpec through(List<?> intermediateList, String fkPropertyToMainObjId, String fkPropertyToRelatedObjId);
+	PopulateSpec through(Class<?> throughType, String fkPropertyToMainObjId, String fkPropertyToRelatedObjId);
 }

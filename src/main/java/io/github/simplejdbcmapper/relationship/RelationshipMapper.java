@@ -1,3 +1,5 @@
+package io.github.simplejdbcmapper.relationship;
+
 /*
  * Copyright 2025-present the original author or authors.
  *
@@ -11,13 +13,11 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.github.simplejdbcmapper.relationship;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-import java.util.HashMap;
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ReflectionUtils;
@@ -34,31 +34,61 @@ import org.springframework.util.StringUtils;
  * 
  * @author Antony Joseph
  */
-public class Relationship implements RelationshipSpec {
-	private final Map<Class<?>, List<?>> map = new HashMap<>();
-
-	public <T> void putList(Class<T> type, List<T> list) {
-		map.put(type, list);
-	}
-
-	public <T> List<T> getList(Class<T> type) {
-		return (List<T>) map.get(type);
-	}
-
+public class RelationshipMapper implements RelationshipSpec, ToManySpec, ToOneSpec, PopulateSpec, GetListSpec {
 	static final String IS_PREFIX = "is";
 	static final String GET_PREFIX = "get";
 	static final String SET_PREFIX = "set";
 
+	// private final Map<Class<?>, List<?>> map = new HashMap<>();
+
+	private List<ExtractorResult> results = new ArrayList<>();
+
+	private ToOne toOne;
+
+	private ToMany toMany;
+
 	private Class<?> mainType;
+	private Class<?> relatedType;
 
-	private List<?> mainObjList;
+	private String relationshipType = "toOne";
 
-	public Relationship() {
+	public <T> void addList(Class<T> type, List<T> list) {
+		results.add(new ExtractorResult(type, list, null));
 	}
 
-	private Relationship(List<?> mainObjList) {
-		this.mainObjList = mainObjList;
+	public <T> void addResult(Class<T> type, List<T> list, String idPropertyName) {
+		results.add(new ExtractorResult(type, list, idPropertyName));
 	}
+
+	@SuppressWarnings("unchecked")
+	public <T> List<T> getList(Class<T> type) {
+		for (ExtractorResult result : results) {
+			if (result.entityType == type) {
+				return (List<T>) result.list;
+			}
+		}
+		return null;
+	}
+
+	ExtractorResult getExtractorResult(Class<?> type) {
+		for (ExtractorResult result : results) {
+			if (result.entityType == type) {
+				return result;
+			}
+		}
+		return null;
+	}
+
+	// private List<T> mainObjList;
+
+	public RelationshipMapper() {
+		this.toOne = new ToOne();
+		this.toMany = new ToMany();
+	}
+
+	// private RelationshipMapper(List<?> mainObjList) {
+	// this.mainObjList = mainObjList;
+	// }
 
 	/**
 	 * Start of creating a relationship. The main object is the object whose
@@ -68,7 +98,7 @@ public class Relationship implements RelationshipSpec {
 	 * @param mainObjList the main object list
 	 * @return A relationship
 	 */
-	public RelationshipSpec type(Class<?> mainType) {
+	public <T> RelationshipSpec type(Class<T> mainType) {
 		this.mainType = mainType;
 		return this;
 	}
@@ -82,20 +112,50 @@ public class Relationship implements RelationshipSpec {
 	 * 
 	 */
 	public <U> ToOneSpec toOne(Class<U> relatedType) {
-		return ToOne.toOne(getList(mainType), getList(relatedType));
+		this.relatedType = relatedType;
+		return (ToOneSpec) this;
 	}
 
-	/**
-	 * A toMany relationship
-	 * 
-	 * @param <U>            the type of the related object
-	 * 
-	 * @param relatedObjList the list of related objects
-	 * 
-	 * @return The ToManySpec
-	 */
 	public <U> ToManySpec toMany(Class<U> relatedType) {
-		return ToMany.toMany(getList(mainType), getList(relatedType));
+		this.relatedType = relatedType;
+		this.relationshipType = "toMany";
+		return (ToManySpec) this;
+	}
+
+	public PopulateSpec joinOn(String mainObjJoinProperty, String relatedObjJoinProperty) {
+		if (relationshipType.equals("toOne")) {
+			toOne.joinOn(mainObjJoinProperty, relatedObjJoinProperty, getList(mainType), getList(relatedType));
+		} else if (relationshipType.equals("toMany")) {
+			toMany.joinOn(mainObjJoinProperty, relatedObjJoinProperty, getList(mainType), getList(relatedType));
+		}
+
+		return (PopulateSpec) this;
+	}
+
+	public PopulateSpec through(Class<?> throughType, String fkPropertyToMainObjId, String fkPropertyToRelatedObjId) {
+		this.relationshipType = "toManyThrough";
+
+		ExtractorResult mainResult = getExtractorResult(mainType);
+		ExtractorResult relatedResult = getExtractorResult(relatedType);
+
+		toMany.through(getList(throughType), fkPropertyToMainObjId, fkPropertyToRelatedObjId, mainResult.list(),
+				mainResult.idPropertyName(), relatedResult.list(), relatedResult.idPropertyName());
+		return (PopulateSpec) this;
+	}
+
+	public GetListSpec populate(String propertyToPopulateOnMainObj) {
+		if (relationshipType.equals("toOne")) {
+			toOne.populate(propertyToPopulateOnMainObj, getList(mainType));
+			toOne.populateToOne(getList(mainType), getList(relatedType));
+		} else if (relationshipType.equals("toMany")) {
+			toMany.populate(propertyToPopulateOnMainObj, getList(mainType));
+			toMany.populateToMany(getList(mainType), getList(relatedType));
+		} else {
+			// toManyThrough
+			toMany.populate(propertyToPopulateOnMainObj, getList(mainType));
+			toMany.populateToManyThrough(getList(mainType), getList(relatedType));
+		}
+		return (GetListSpec) this;
 	}
 
 	static Method getReadMethod(List<?> list, String propertyName) {
@@ -103,10 +163,10 @@ public class Relationship implements RelationshipSpec {
 			for (Object obj : list) {
 				if (obj != null) {
 					Method m = ReflectionUtils.findMethod(obj.getClass(),
-							Relationship.GET_PREFIX + StringUtils.capitalize(propertyName));
+							GET_PREFIX + StringUtils.capitalize(propertyName));
 					if (m == null) {
 						m = ReflectionUtils.findMethod(obj.getClass(),
-								Relationship.IS_PREFIX + StringUtils.capitalize(propertyName));
+								IS_PREFIX + StringUtils.capitalize(propertyName));
 					}
 					if (m == null) {
 						throw new IllegalArgumentException("Invalid argument. Could not find getter for "
@@ -129,7 +189,7 @@ public class Relationship implements RelationshipSpec {
 								+ " does not exist for " + obj.getClass().getName());
 					}
 					Method m = ReflectionUtils.findMethod(obj.getClass(),
-							Relationship.SET_PREFIX + StringUtils.capitalize(propertyName), field.getType());
+							SET_PREFIX + StringUtils.capitalize(propertyName), field.getType());
 					if (m == null) {
 						throw new IllegalArgumentException("Invalid argument. Could not find setter for "
 								+ obj.getClass().getName() + "." + propertyName);
@@ -153,6 +213,9 @@ public class Relationship implements RelationshipSpec {
 			}
 		}
 		return null;
+	}
+
+	record ExtractorResult(Class<?> entityType, List<?> list, String idPropertyName) {
 	}
 
 }

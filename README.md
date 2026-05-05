@@ -16,7 +16,7 @@ Just by annotating the models that you would use with JdbcTemplate/JdbcClient, y
 [JDK and Spring version requirements](#jdk-and-spring-version-requirements)  
 [Spring bean configuration for SimpleJdbcMapper](#spring-bean-configuration-for-simplejdbcmapper)  
 [Annotations](#annotations)   
-[Populating relationships from custom queries](#populating-relationships-from-custom-queries)   
+[Populating relationships from custom queries](#populating-relationships-from-custom-queries) :large_orange_diamond:     
 [BLOB CLOB mapping](#blob-clob-mapping)  
 [Enum mapping](#enum-mapping)  
 [Configuration for auto assigning @CreatedBy, @UpdateBy, @CreatedOn, @UpdatedOn](#configuration-for-auto-assigning-createdby-updateby-createdon-updatedon)  

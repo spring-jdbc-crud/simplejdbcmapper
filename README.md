@@ -3,7 +3,9 @@
 
 A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations by making them less verbose. Use it as needed and keep using JdbcTemplate/JdbcClient for other functionality.
 
-Just by annotating the models that you would use with JdbcTemplate/JdbcClient, you get single-line CRUD. Provides helper methods to populate relationships from custom queries.
+Just by annotating the models that you would use with JdbcTemplate/JdbcClient, you get single-line CRUD.
+
+**New Feature Alert:** Relationships can be populated from your custom queries. :new:
 
 [Javadoc](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/index.html) | [Demo Application](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper) | [Dzone Article](https://dzone.com/articles/using-simplejdbcmapper-with-spring)
 

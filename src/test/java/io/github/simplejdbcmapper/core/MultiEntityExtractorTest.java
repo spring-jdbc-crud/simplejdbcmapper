@@ -16,6 +16,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import io.github.simplejdbcmapper.model.Order;
 import io.github.simplejdbcmapper.model.OrderLine;
 import io.github.simplejdbcmapper.model.Product;
+import io.github.simplejdbcmapper.relationship.RelationshipExtractor;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -37,11 +38,12 @@ class MultiEntityExtractorTest {
 				WHERE o.id <= 4
 				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
 
-		ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
+		RelationshipExtractor relationshipExtractor = sjm.getJdbcTemplate().query(sql,
+				sjm.resultSetExtractor(multiEntity));
 
-		List<Order> orders = resultListMap.getList(Order.class);
-		List<OrderLine> orderLines = resultListMap.getList(OrderLine.class);
-		List<Product> products = resultListMap.getList(Product.class);
+		List<Order> orders = relationshipExtractor.getList(Order.class);
+		List<OrderLine> orderLines = relationshipExtractor.getList(OrderLine.class);
+		List<Product> products = relationshipExtractor.getList(Product.class);
 
 		// test the last columns to make sure EntityRowMapper offsets work.
 		assertEquals("order last col", orders.get(0).getLastMappedCol());

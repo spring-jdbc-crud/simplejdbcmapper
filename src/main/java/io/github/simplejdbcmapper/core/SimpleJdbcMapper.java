@@ -29,6 +29,8 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.util.Assert;
 
+import io.github.simplejdbcmapper.relationship.RelationshipExtractor;
+
 /**
  * CRUD methods and configuration for SimpleJdbcMapper.
  * 
@@ -428,7 +430,7 @@ public final class SimpleJdbcMapper {
 	 *         JdbcTemplate/NamedParameterJdbcTemplate and the results are returned
 	 *         in ResultListMap
 	 */
-	public ResultSetExtractor<ResultListMap> resultSetExtractor(MultiEntity multiEntity) {
+	public ResultSetExtractor<RelationshipExtractor> resultSetExtractor(MultiEntity multiEntity) {
 		return multiEntityExtractor.resultSetExtractor(multiEntity);
 	}
 

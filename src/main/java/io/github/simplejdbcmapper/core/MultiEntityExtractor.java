@@ -29,6 +29,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
 import io.github.simplejdbcmapper.exception.MapperException;
+import io.github.simplejdbcmapper.relationship.RelationshipExtractor;
 
 /**
  * The extractor of query results for multiple entities
@@ -62,13 +63,13 @@ class MultiEntityExtractor {
 		return sj.toString();
 	}
 
-	public ResultSetExtractor<ResultListMap> resultSetExtractor(MultiEntity multiEntity) {
+	public ResultSetExtractor<RelationshipExtractor> resultSetExtractor(MultiEntity multiEntity) {
 		List<EntityExtractor> entityExtractors = getEntityExtractors(multiEntity);
 
-		return new ResultSetExtractor<ResultListMap>() {
+		return new ResultSetExtractor<RelationshipExtractor>() {
 			@SuppressWarnings("unchecked")
 			@Override
-			public ResultListMap extractData(ResultSet rs) throws SQLException, DataAccessException {
+			public RelationshipExtractor extractData(ResultSet rs) throws SQLException, DataAccessException {
 				int rowCnt = 1;
 				while (rs.next()) {
 					for (EntityExtractor entityExtractor : entityExtractors) {
@@ -88,11 +89,11 @@ class MultiEntityExtractor {
 					rowCnt++;
 				}
 
-				ResultListMap resultListMap = new ResultListMap();
+				RelationshipExtractor relationshipExtractor = new RelationshipExtractor();
 				for (EntityExtractor entityExtractor : entityExtractors) {
-					resultListMap.putList(entityExtractor.entityType(), entityExtractor.result());
+					relationshipExtractor.putList(entityExtractor.entityType(), entityExtractor.result());
 				}
-				return resultListMap;
+				return relationshipExtractor;
 			}
 		};
 	}

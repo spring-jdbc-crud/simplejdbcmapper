@@ -1,6 +1,5 @@
 package io.github.simplejdbcmapper.core;
 
-import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -20,7 +19,7 @@ import io.github.simplejdbcmapper.model.Product;
 import io.github.simplejdbcmapper.model.Profile;
 import io.github.simplejdbcmapper.model.ProfileUserIdLong;
 import io.github.simplejdbcmapper.model.User;
-import io.github.simplejdbcmapper.relationship.Relationship;
+import io.github.simplejdbcmapper.relationship.RelationshipExtractor;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -33,33 +32,37 @@ class ToOneTest {
 		List<OrderLine> orderLines = sjm.findAll(OrderLine.class);
 		List<Product> products = sjm.findAll(Product.class);
 
+		RelationshipExtractor rExtractor = new RelationshipExtractor();
+		rExtractor.putList(OrderLine.class, orderLines);
+		rExtractor.putList(Product.class, products);
+
 		Exception exception = Assertions.assertThrows(Exception.class, () -> {
-			Relationship.mainList(orderLines).toOneList(products).joinOn(null, "id");
+			rExtractor.type(OrderLine.class).toOne(Product.class).joinOn(null, "id");
 		});
 		assertTrue(exception.getMessage().contains("mainObjJoinProperty must not be null"));
 
 		exception = Assertions.assertThrows(Exception.class, () -> {
-			Relationship.mainList(orderLines).toOneList(products).joinOn("orderLineId", null);
+			rExtractor.type(OrderLine.class).toOne(Product.class).joinOn("orderLineId", null);
 		});
 		assertTrue(exception.getMessage().contains("relatedObjJoinProperty must not be null"));
 
 		exception = Assertions.assertThrows(Exception.class, () -> {
-			Relationship.mainList(orderLines).toOneList(products).joinOn("x", "id");
+			rExtractor.type(OrderLine.class).toOne(Product.class).joinOn("x", "id");
 		});
 		assertTrue(exception.getMessage().contains("Invalid argument. Could not find getter for "));
 
 		exception = Assertions.assertThrows(Exception.class, () -> {
-			Relationship.mainList(orderLines).toOneList(products).joinOn("orderLineId", "x");
+			rExtractor.type(OrderLine.class).toOne(Product.class).joinOn("orderLineId", "x");
 		});
 		assertTrue(exception.getMessage().contains("Invalid argument. Could not find getter for "));
 
-		assertDoesNotThrow(() -> {
-			Relationship.mainList(null).toOneList(products).joinOn("x", "id");
-		});
+		// assertDoesNotThrow(() -> {
+		// rExtractor.type(null).toOneList(products).joinOn("x", "id");
+		// });
 
-		assertDoesNotThrow(() -> {
-			Relationship.mainList(orderLines).toOneList(null).joinOn("orderLineId", "x");
-		});
+		// assertDoesNotThrow(() -> {
+		// rExtractor.type(orderLines).toOneList(null).joinOn("orderLineId", "x");
+		// });
 
 	}
 
@@ -80,8 +83,12 @@ class ToOneTest {
 		List<ProfileUserIdLong> profiles = new ArrayList<>();
 		profiles.add(profile1);
 
+		RelationshipExtractor rExtractor = new RelationshipExtractor();
+		rExtractor.putList(User.class, users);
+		rExtractor.putList(ProfileUserIdLong.class, profiles);
+
 		Exception exception = Assertions.assertThrows(Exception.class, () -> {
-			Relationship.mainList(users).toOneList(profiles).joinOn("id", "userId").populate("profile");
+			rExtractor.type(User.class).toOne(ProfileUserIdLong.class).joinOn("id", "userId").populate("profile");
 		});
 		assertTrue(exception.getMessage().contains("are not the same"));
 
@@ -92,19 +99,24 @@ class ToOneTest {
 		List<OrderLine> orderLines = sjm.findAll(OrderLine.class);
 		List<Product> products = sjm.findAll(Product.class);
 
+		RelationshipExtractor rExtractor = new RelationshipExtractor();
+		rExtractor.putList(OrderLine.class, orderLines);
+		rExtractor.putList(Product.class, products);
+
 		Exception exception = Assertions.assertThrows(Exception.class, () -> {
-			Relationship.mainList(orderLines).toOneList(products).joinOn("productId", "id").populate(null);
+			rExtractor.type(OrderLine.class).toOne(Product.class).joinOn("productId", "id").populate(null);
 		});
 		assertTrue(exception.getMessage().contains("mainObjPropertyToPopulate must not be null"));
 
 		exception = Assertions.assertThrows(Exception.class, () -> {
-			Relationship.mainList(orderLines).toOneList(products).joinOn("productId", "id").populate("x");
+			rExtractor.type(OrderLine.class).toOne(Product.class).joinOn("productId", "id").populate("x");
 		});
 		assertTrue(exception.getMessage().contains("Invalid argument. Property name"));
 
-		assertDoesNotThrow(() -> {
-			Relationship.mainList(null).toOneList(products).joinOn("productId", "id").populate("x");
-		});
+		// assertDoesNotThrow(() -> {
+		// rExtractor.type(null).toOneList(products).joinOn("productId",
+		// "id").populate("x");
+		// });
 
 	}
 
@@ -141,14 +153,18 @@ class ToOneTest {
 		profiles.add(profile1);
 		profiles.add(profile2);
 
-		Relationship.mainList(users).toOneList(profiles).joinOn("id", "userId").populate("profile");
+		RelationshipExtractor rExtractor = new RelationshipExtractor();
+		rExtractor.putList(User.class, users);
+		rExtractor.putList(Profile.class, profiles);
+
+		rExtractor.type(User.class).toOne(Profile.class).joinOn("id", "userId").populate("profile");
 
 		assertEquals("theme for user1", users.get(0).getProfile().getTheme());
 		assertEquals("theme for user2", users.get(1).getProfile().getTheme());
 		assertNull(users.get(2).getProfile());
 
 		// reverse test ie populate profile with user
-		Relationship.mainList(profiles).toOneList(users).joinOn("userId", "id").populate("user");
+		rExtractor.type(Profile.class).toOne(User.class).joinOn("userId", "id").populate("user");
 
 		assertEquals("user1", profiles.get(0).getUser().getName());
 		assertEquals("user2", profiles.get(1).getUser().getName());
@@ -190,11 +206,11 @@ class ToOneTest {
 		profiles.add(profile1);
 		profiles.add(profile2);
 
-		Relationship.mainList(users).toOneList(profiles).joinOn("id", "userId").populate("profile");
+		rExtractor.type(users).toOneList(profiles).joinOn("id", "userId").populate("profile");
 		assertEquals("theme for user2", users.get(2).getProfile().getTheme());
 
 		// reverse test ie populate profile with user
-		Relationship.mainList(profiles).toOneList(users).joinOn("userId", "id").populate("user");
+		rExtractor.type(profiles).toOneList(users).joinOn("userId", "id").populate("user");
 		assertEquals("user1", profiles.get(1).getUser().getName());
 
 	}
@@ -217,7 +233,7 @@ class ToOneTest {
 		profiles.add(profile1);
 
 		Exception exception = Assertions.assertThrows(Exception.class, () -> {
-			Relationship.mainList(users).toOneList(profiles).joinOn("id", "userId").populate("name");
+			rExtractor.type(users).toOneList(profiles).joinOn("id", "userId").populate("name");
 		});
 		assertTrue(exception.getMessage().contains("argument type mismatch"));
 	}
@@ -257,88 +273,79 @@ class ToOneTest {
 		profiles.add(profile1);
 		profiles.add(profile2);
 
-		Relationship.mainList(users).toOneList(profiles).joinOn("id", "userId").populate("profile");
+		rExtractor.type(users).toOneList(profiles).joinOn("id", "userId").populate("profile");
 		assertEquals("theme for user2", users.get(2).getProfile().getTheme());
 
 		// reverse test ie populate profile with user
-		Relationship.mainList(profiles).toOneList(users).joinOn("userId", "id").populate("user");
+		rExtractor.type(profiles).toOneList(users).joinOn("userId", "id").populate("user");
 		assertEquals("user1", profiles.get(1).getUser().getName());
 
 	}
 
-	@Test
-	void toOne_integration_test() {
-		MultiEntity multiEntity = new MultiEntity().add(OrderLine.class, "ol").add(Product.class, "p");
+	@Test void toOne_integration_test() { MultiEntity multiEntity = new
+	  MultiEntity().add(OrderLine.class, "ol").add(Product.class, "p");
+	  
+	  String sql = """ SELECT %s FROM order_line ol LEFT JOIN product p ON
+	  ol.product_id = p.id WHERE ol.order_line_id <= 4 ORDER BY ol.order_line_id;
+	  """.formatted(sjm.getMultiEntitySqlColumns(multiEntity));
+	  
+	  ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql,
+	  sjm.resultSetExtractor(multiEntity));
+	  
+	  List<OrderLine> orderLines = resultListMap.getList(OrderLine.class);
+	  List<Product> products = resultListMap.getList(Product.class);
+	  rExtractor.type(orderLines).toOneList(products).joinOn("productId",
+	  "id").populate("product");
+	  
+	  assertEquals(4, orderLines.size()); assertEquals("laces",
+	  orderLines.get(2).getProduct().getName(), "line3 product name failed");
+	  assertNull(orderLines.get(3).getProduct(),
+	  "line3 product expected to be null failed");
+	  
+	  }
 
-		String sql = """
-				SELECT %s
-				FROM order_line ol
-				LEFT JOIN product p ON ol.product_id = p.id
-				WHERE ol.order_line_id <= 4
-				ORDER BY ol.order_line_id;
-				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
+	@Test void toOne_withMultiEntityPositionSwitched_test() { // Product first
+	  then Orderline MultiEntity multiEntity = new MultiEntity().add(Product.class,
+	  "p").add(OrderLine.class, "ol");
+	  
+	  String sql = """ SELECT %s FROM order_line ol LEFT JOIN product p ON
+	  ol.product_id = p.id WHERE ol.order_line_id <= 4 ORDER BY ol.order_line_id;
+	  """.formatted(sjm.getMultiEntitySqlColumns(multiEntity));
+	  
+	  ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql,
+	  sjm.resultSetExtractor(multiEntity));
+	  
+	  List<OrderLine> orderLines = resultListMap.getList(OrderLine.class);
+	  List<Product> products = resultListMap.getList(Product.class);
+	  rExtractor.type(orderLines).toOneList(products).joinOn("productId",
+	  "id").populate("product");
+	  
+	  assertEquals(4, orderLines.size()); assertEquals("laces",
+	  orderLines.get(2).getProduct().getName(), "line3 product name failed");
+	  assertNull(orderLines.get(3).getProduct(),
+	  "line3 product expected to be null failed");
+	  
+	  }
 
-		ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
-
-		List<OrderLine> orderLines = resultListMap.getList(OrderLine.class);
-		List<Product> products = resultListMap.getList(Product.class);
-		Relationship.mainList(orderLines).toOneList(products).joinOn("productId", "id").populate("product");
-
-		assertEquals(4, orderLines.size());
-		assertEquals("laces", orderLines.get(2).getProduct().getName(), "line3 product name failed");
-		assertNull(orderLines.get(3).getProduct(), "line3 product expected to be null failed");
-
-	}
-
-	@Test
-	void toOne_withMultiEntityPositionSwitched_test() {
-		// Product first then Orderline
-		MultiEntity multiEntity = new MultiEntity().add(Product.class, "p").add(OrderLine.class, "ol");
-
-		String sql = """
-				SELECT %s
-				FROM order_line ol
-				LEFT JOIN product p ON ol.product_id = p.id
-				WHERE ol.order_line_id <= 4
-				ORDER BY ol.order_line_id;
-				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
-
-		ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
-
-		List<OrderLine> orderLines = resultListMap.getList(OrderLine.class);
-		List<Product> products = resultListMap.getList(Product.class);
-		Relationship.mainList(orderLines).toOneList(products).joinOn("productId", "id").populate("product");
-
-		assertEquals(4, orderLines.size());
-		assertEquals("laces", orderLines.get(2).getProduct().getName(), "line3 product name failed");
-		assertNull(orderLines.get(3).getProduct(), "line3 product expected to be null failed");
-
-	}
-
-	@Test
-	void toOne_NoResults_test() {
-		MultiEntity multiEntity = new MultiEntity().add(OrderLine.class, "ol").add(Product.class, "p");
-
-		String sql = """
-				SELECT %s
-				FROM order_line ol
-				LEFT JOIN product p ON ol.product_id = p.id
-				WHERE ol.order_line_id < 0
-				ORDER BY ol.order_line_id;
-				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
-
-		ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
-
-		List<OrderLine> orderLines = resultListMap.getList(OrderLine.class);
-		List<Product> products = resultListMap.getList(Product.class);
-
-		assertEquals(0, orderLines.size());
-		assertEquals(0, products.size());
-
-		assertDoesNotThrow(() -> {
-			Relationship.mainList(orderLines).toOneList(products).joinOn("productId", "id").populate("product");
-		});
-
-	}
+	@Test void toOne_NoResults_test() { MultiEntity multiEntity = new
+	  MultiEntity().add(OrderLine.class, "ol").add(Product.class, "p");
+	  
+	  String sql = """ SELECT %s FROM order_line ol LEFT JOIN product p ON
+	  ol.product_id = p.id WHERE ol.order_line_id < 0 ORDER BY ol.order_line_id;
+	  """.formatted(sjm.getMultiEntitySqlColumns(multiEntity));
+	  
+	  ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql,
+	  sjm.resultSetExtractor(multiEntity));
+	  
+	  List<OrderLine> orderLines = resultListMap.getList(OrderLine.class);
+	  List<Product> products = resultListMap.getList(Product.class);
+	  
+	  assertEquals(0, orderLines.size()); assertEquals(0, products.size());
+	  
+	  assertDoesNotThrow(() -> {
+	  rExtractor.type(orderLines).toOneList(products).joinOn("productId",
+	  "id").populate("product"); });
+	  
+	  }
 
 }

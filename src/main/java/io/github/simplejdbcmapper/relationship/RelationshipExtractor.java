@@ -1,3 +1,5 @@
+package io.github.simplejdbcmapper.relationship;
+
 /*
  * Copyright 2025-present the original author or authors.
  *
@@ -11,7 +13,6 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.github.simplejdbcmapper.relationship;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
@@ -34,7 +35,7 @@ import org.springframework.util.StringUtils;
  * 
  * @author Antony Joseph
  */
-public class Relationship implements RelationshipSpec {
+public class RelationshipExtractor implements RelationshipSpec {
 	private final Map<Class<?>, List<?>> map = new HashMap<>();
 
 	public <T> void putList(Class<T> type, List<T> list) {
@@ -53,10 +54,10 @@ public class Relationship implements RelationshipSpec {
 
 	private List<?> mainObjList;
 
-	public Relationship() {
+	public RelationshipExtractor() {
 	}
 
-	private Relationship(List<?> mainObjList) {
+	private RelationshipExtractor(List<?> mainObjList) {
 		this.mainObjList = mainObjList;
 	}
 

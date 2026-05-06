@@ -42,4 +42,22 @@ public class RelationshipMapperTest {
 		assertTrue(exception.getMessage().contains("was not part of the query result set"));
 
 	}
+
+	@Test
+	void addEntityResult_test() {
+		RelationshipMapper relMapper = new RelationshipMapper();
+		List<OrderLine> orderLines = sjm.findAll(OrderLine.class);
+
+		Exception exception = Assertions.assertThrows(Exception.class, () -> {
+			relMapper.addResult(null, orderLines, null);
+		});
+		assertTrue(exception.getMessage().contains("type must not be null"));
+
+		exception = Assertions.assertThrows(Exception.class, () -> {
+			relMapper.addResult(OrderLine.class, null, null);
+		});
+		assertTrue(exception.getMessage().contains("list must not be null"));
+
+	}
+
 }

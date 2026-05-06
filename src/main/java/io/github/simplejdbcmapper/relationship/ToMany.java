@@ -45,16 +45,16 @@ public class ToMany {
 
 	private IntermediateJoiner intermediateJoiner;
 
-	void joinOn(String mainObjIdProperty, String relatedObjFkProperty, List<?> mainObjList, List<?> relatedObjList) {
+	void joinOn(String mainObjIdProperty, String relatedObjFkProperty, Class<?> mainType, Class<?> relatedType) {
 		Assert.notNull(mainObjIdProperty, "mainObjIdProperty must not be null");
 		Assert.notNull(relatedObjFkProperty, "relatedObjFkProperty must not be null");
 
-		this.mainObjIdPropertyReadMethod = Relationship.getReadMethod(mainObjList, mainObjIdProperty);
-		this.relatedObjFkPropertyReadMethod = Relationship.getReadMethod(relatedObjList, relatedObjFkProperty);
+		this.mainObjIdPropertyReadMethod = Relationship.getReadMethod(mainType, mainObjIdProperty);
+		this.relatedObjFkPropertyReadMethod = Relationship.getReadMethod(relatedType, relatedObjFkProperty);
 
 		if (this.mainObjIdPropertyReadMethod != null && this.relatedObjFkPropertyReadMethod != null) {
-			Class<?> mainObjIdPropertyType = Relationship.getPropertyType(mainObjList, mainObjIdProperty);
-			Class<?> relatedObjFkPropertyType = Relationship.getPropertyType(relatedObjList, relatedObjFkProperty);
+			Class<?> mainObjIdPropertyType = Relationship.getPropertyType(mainType, mainObjIdProperty);
+			Class<?> relatedObjFkPropertyType = Relationship.getPropertyType(relatedType, relatedObjFkProperty);
 			if (mainObjIdPropertyType != relatedObjFkPropertyType) {
 				throw new IllegalArgumentException("Property types of " + mainObjIdProperty + " on main object and "
 						+ relatedObjFkProperty + " on related object are not the same.");
@@ -63,21 +63,22 @@ public class ToMany {
 	}
 
 	void through(List<?> intermediateList, String fkPropertyToMainObjId, String fkPropertyToRelatedObjId,
-			List<?> mainObjList, String mainObjIdProperty, List<?> relatedObjList, String relatedObjIdProperty) {
+			Class<?> mainType, String mainObjIdProperty, Class<?> relatedType, String relatedObjIdProperty,
+			Class<?> intermediateType) {
 		Assert.notNull(fkPropertyToMainObjId, "fkPropertyToMainObjId must not be null");
 		Assert.notNull(fkPropertyToRelatedObjId, "fkPropertyToRelatedObjId must not be null");
 
-		this.mainObjIdPropertyReadMethod = Relationship.getReadMethod(mainObjList, mainObjIdProperty);
-		this.relatedObjIdPropertyReadMethod = Relationship.getReadMethod(relatedObjList, relatedObjIdProperty);
+		this.mainObjIdPropertyReadMethod = Relationship.getReadMethod(mainType, mainObjIdProperty);
+		this.relatedObjIdPropertyReadMethod = Relationship.getReadMethod(relatedType, relatedObjIdProperty);
 
 		this.intermediateJoiner = new IntermediateJoiner(intermediateList, fkPropertyToMainObjId,
-				fkPropertyToRelatedObjId);
+				fkPropertyToRelatedObjId, intermediateType);
 
 	}
 
-	void populate(String mainObjPropertyToPopulate, List<?> mainObjList) {
+	void populate(String mainObjPropertyToPopulate, Class<?> mainType) {
 		Assert.notNull(mainObjPropertyToPopulate, "mainObjPropertyToPopulate must not be null");
-		this.mainObjPropertyToPopulateWriteMethod = Relationship.getWriteMethod(mainObjList, mainObjPropertyToPopulate);
+		this.mainObjPropertyToPopulateWriteMethod = Relationship.getWriteMethod(mainType, mainObjPropertyToPopulate);
 	}
 
 	<T, U> void populateToMany(List<T> mainObjList, List<U> relatedObjList) {
@@ -173,13 +174,13 @@ public class ToMany {
 
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		public IntermediateJoiner(List<?> intermediateList, String fkPropertyToMainObjId,
-				String fkPropertyToRelatedObjId) {
+				String fkPropertyToRelatedObjId, Class<?> intermediateType) {
 			if (CollectionUtils.isEmpty(intermediateList)) {
 				return;
 			}
-			Method fkPropertyToMainObjIdReadMethod = Relationship.getReadMethod(intermediateList,
+			Method fkPropertyToMainObjIdReadMethod = Relationship.getReadMethod(intermediateType,
 					fkPropertyToMainObjId);
-			Method fkPropertyToRelatedObjIdReadMethod = Relationship.getReadMethod(intermediateList,
+			Method fkPropertyToRelatedObjIdReadMethod = Relationship.getReadMethod(intermediateType,
 					fkPropertyToRelatedObjId);
 			try {
 				for (Object intermediateObj : intermediateList) {

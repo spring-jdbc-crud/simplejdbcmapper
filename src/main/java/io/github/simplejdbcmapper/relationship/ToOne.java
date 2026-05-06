@@ -38,17 +38,17 @@ public class ToOne {
 
 	private Method mainObjPropertyToPopulateWriteMethod;
 
-	public void joinOn(String mainObjJoinProperty, String relatedObjJoinProperty, List<?> mainObjList,
-			List<?> relatedObjList) {
+	public void joinOn(String mainObjJoinProperty, String relatedObjJoinProperty, Class<?> mainType,
+			Class<?> relatedType) {
 		Assert.notNull(mainObjJoinProperty, "mainObjJoinProperty must not be null");
 		Assert.notNull(relatedObjJoinProperty, "relatedObjJoinProperty must not be null");
 
-		this.mainObjJoinPropertyReadMethod = Relationship.getReadMethod(mainObjList, mainObjJoinProperty);
-		this.relatedObjJoinPropertyReadMethod = Relationship.getReadMethod(relatedObjList, relatedObjJoinProperty);
+		this.mainObjJoinPropertyReadMethod = Relationship.getReadMethod(mainType, mainObjJoinProperty);
+		this.relatedObjJoinPropertyReadMethod = Relationship.getReadMethod(relatedType, relatedObjJoinProperty);
 
 		if (this.mainObjJoinPropertyReadMethod != null && this.relatedObjJoinPropertyReadMethod != null) {
-			Class<?> mainObjJoinPropertyType = Relationship.getPropertyType(mainObjList, mainObjJoinProperty);
-			Class<?> relatedObjJoinPropertyType = Relationship.getPropertyType(relatedObjList, relatedObjJoinProperty);
+			Class<?> mainObjJoinPropertyType = Relationship.getPropertyType(mainType, mainObjJoinProperty);
+			Class<?> relatedObjJoinPropertyType = Relationship.getPropertyType(relatedType, relatedObjJoinProperty);
 			if (mainObjJoinPropertyType != relatedObjJoinPropertyType) {
 				throw new IllegalArgumentException("Property types of " + mainObjJoinProperty + " on main object and "
 						+ relatedObjJoinProperty + " on related object are not the same.");
@@ -56,9 +56,9 @@ public class ToOne {
 		}
 	}
 
-	public void populate(String mainObjPropertyToPopulate, List<?> mainObjList) {
+	public void populate(String mainObjPropertyToPopulate, Class<?> mainType) {
 		Assert.notNull(mainObjPropertyToPopulate, "mainObjPropertyToPopulate must not be null");
-		this.mainObjPropertyToPopulateWriteMethod = Relationship.getWriteMethod(mainObjList, mainObjPropertyToPopulate);
+		this.mainObjPropertyToPopulateWriteMethod = Relationship.getWriteMethod(mainType, mainObjPropertyToPopulate);
 
 	}
 

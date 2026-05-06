@@ -6,7 +6,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.util.Assert;
-import org.springframework.util.CollectionUtils;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
@@ -67,9 +66,9 @@ public class Relationship implements RelationshipSpec, ToManySpec, ToOneSpec, Po
 
 	public PopulateSpec joinOn(String mainObjJoinProperty, String relatedObjJoinProperty) {
 		if (relationshipType.equals("toOne")) {
-			toOne.joinOn(mainObjJoinProperty, relatedObjJoinProperty, getList(mainType), getList(relatedType));
+			toOne.joinOn(mainObjJoinProperty, relatedObjJoinProperty, mainType, relatedType);
 		} else if (relationshipType.equals("toMany")) {
-			toMany.joinOn(mainObjJoinProperty, relatedObjJoinProperty, getList(mainType), getList(relatedType));
+			toMany.joinOn(mainObjJoinProperty, relatedObjJoinProperty, mainType, relatedType);
 		}
 
 		return this;
@@ -82,21 +81,22 @@ public class Relationship implements RelationshipSpec, ToManySpec, ToOneSpec, Po
 
 		this.relationshipType = "toManyThrough";
 		ExtractorResult mainResult = getExtractorResult(mainType);
-		toMany.through(getList(throughType), fkPropertyToMainObjId, fkPropertyToRelatedObjId, mainResult.list(),
-				mainResult.idPropertyName(), relatedResult.list(), relatedResult.idPropertyName());
+		toMany.through(getList(throughType), fkPropertyToMainObjId, fkPropertyToRelatedObjId, mainType,
+				mainResult.idPropertyName(), relatedType, relatedResult.idPropertyName(), throughType);
+
 		return this;
 	}
 
 	public GetListSpec populate(String propertyToPopulateOnMainObj) {
 		if (relationshipType.equals("toOne")) {
-			toOne.populate(propertyToPopulateOnMainObj, getList(mainType));
+			toOne.populate(propertyToPopulateOnMainObj, mainType);
 			toOne.populateToOne(getList(mainType), getList(relatedType));
 		} else if (relationshipType.equals("toMany")) {
-			toMany.populate(propertyToPopulateOnMainObj, getList(mainType));
+			toMany.populate(propertyToPopulateOnMainObj, mainType);
 			toMany.populateToMany(getList(mainType), getList(relatedType));
 		} else {
 			// toManyThrough
-			toMany.populate(propertyToPopulateOnMainObj, getList(mainType));
+			toMany.populate(propertyToPopulateOnMainObj, mainType);
 			toMany.populateToManyThrough(getList(mainType), getList(relatedType));
 		}
 		return this;
@@ -121,61 +121,35 @@ public class Relationship implements RelationshipSpec, ToManySpec, ToOneSpec, Po
 		throw new IllegalArgumentException(type + "was not part of the query result set");
 	}
 
-	static Method getReadMethod(List<?> list, String propertyName) {
-		if (!CollectionUtils.isEmpty(list)) {
-			for (Object obj : list) {
-				if (obj != null) {
-					Method m = ReflectionUtils.findMethod(obj.getClass(),
-							GET_PREFIX + StringUtils.capitalize(propertyName));
-					if (m == null) {
-						m = ReflectionUtils.findMethod(obj.getClass(),
-								IS_PREFIX + StringUtils.capitalize(propertyName));
-					}
-					if (m == null) {
-						throw new IllegalArgumentException("Invalid argument. Could not find getter for "
-								+ obj.getClass().getName() + "." + propertyName);
-					}
-					return m;
-				}
-			}
+	static Method getReadMethod(Class<?> type, String propertyName) {
+		Method m = ReflectionUtils.findMethod(type, GET_PREFIX + StringUtils.capitalize(propertyName));
+		if (m == null) {
+			m = ReflectionUtils.findMethod(type, IS_PREFIX + StringUtils.capitalize(propertyName));
 		}
-		return null;
+		if (m == null) {
+			throw new IllegalArgumentException(
+					"Invalid argument. Could not find getter for " + type.getName() + "." + propertyName);
+		}
+		return m;
 	}
 
-	static Method getWriteMethod(List<?> list, String propertyName) {
-		if (!CollectionUtils.isEmpty(list)) {
-			for (Object obj : list) {
-				if (obj != null) {
-					Field field = ReflectionUtils.findField(obj.getClass(), propertyName);
-					if (field == null) {
-						throw new IllegalArgumentException("Invalid argument. Property name " + propertyName
-								+ " does not exist for " + obj.getClass().getName());
-					}
-					Method m = ReflectionUtils.findMethod(obj.getClass(),
-							SET_PREFIX + StringUtils.capitalize(propertyName), field.getType());
-					if (m == null) {
-						throw new IllegalArgumentException("Invalid argument. Could not find setter for "
-								+ obj.getClass().getName() + "." + propertyName);
-					}
-					return m;
-				}
-			}
+	static Method getWriteMethod(Class<?> type, String propertyName) {
+		Field field = ReflectionUtils.findField(type, propertyName);
+		if (field == null) {
+			throw new IllegalArgumentException(
+					"Invalid argument. Property name " + propertyName + " does not exist for " + type.getName());
 		}
-		return null;
+		Method m = ReflectionUtils.findMethod(type, SET_PREFIX + StringUtils.capitalize(propertyName), field.getType());
+		if (m == null) {
+			throw new IllegalArgumentException(
+					"Invalid argument. Could not find setter for " + type.getName() + "." + propertyName);
+		}
+		return m;
 	}
 
-	static Class<?> getPropertyType(List<?> list, String propertyName) {
-		if (!CollectionUtils.isEmpty(list)) {
-			for (Object obj : list) {
-				if (obj != null) {
-					Field field = ReflectionUtils.findField(obj.getClass(), propertyName);
-					if (field != null) {
-						return field.getType();
-					}
-				}
-			}
-		}
-		return null;
+	static Class<?> getPropertyType(Class<?> type, String propertyName) {
+		Field field = ReflectionUtils.findField(type, propertyName);
+		return field.getType();
 	}
 
 }

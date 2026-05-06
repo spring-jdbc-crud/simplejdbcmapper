@@ -538,6 +538,9 @@ From the results of these 2 queries the relationships can be populated.
    
    // Second query. findByPropertyValues() uses an IN clause so even if there are duplicate product ids we are fine.
    List<Product> products = sjm.findByPropertyValues(Product.class, "id", productIdList);  
+   
+  // add products to the relationshipmapper so that we can build a relationship from it.
+  relationshipMapper.addEntityResult(Product.class, products, "id");
   
   // The toOne relationship populates orderLine.product.
    relationshipMapper.type(OrderLine.class).toOne(Product.class).joinOn("productId", "id").populate("product");

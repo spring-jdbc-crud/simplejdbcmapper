@@ -474,13 +474,12 @@ Use Multi-entity processing to populate multiple relationships:
       WHERE o.total_amount >= ? 
       ORDER BY o.order_date DESC, ol.id
       """.formatted(sjm.getMultiEntitySqlColumns(multiEntity));
- 
- // Use JdbcTemplate with the framework extractor to execute the query and extract results
+  // Use JdbcTemplate with the framework extractor to execute the query and extract results
   RelationshipMapper relationshipMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity), someAmount);
   
-  
-   // populate  the 'product' property on OrderLine using toOne() since its a toOne relationship. populate() method triggers the processing.
+  // populate  the 'product' property on OrderLine using toOne() since its a toOne relationship. populate() method triggers the processing.
   relationshipMapper.type(OrderLine.class).toOne(Product.class).joinOn("productId", "id").populate("product");
+  
   // populate orderLines property on order and use getList() to return the list
   List<Order> orders = relationshipMapper.type(Order.class).toMany(OrderLine.class).joinOn("id", "orderId").populate("orderLines").getList(Order.class)
 ```
@@ -538,11 +537,11 @@ From the results of these 2 queries the relationships can be populated.
    
   // add products to the relationshipmapper so that we can build a relationship from it.
   relationshipMapper.addEntityResult(Product.class, products, "id");
-  
+
   // The toOne relationship populates orderLine.product.
    relationshipMapper.type(OrderLine.class).toOne(Product.class).joinOn("productId", "id").populate("product");
-   
-   // The toMany relationship populates order.orderLines
+
+  // The toMany relationship populates order.orderLines
    List<Order> orders = relationshipMapper.type(Order.class).toMany(OrderLine.class).joinOn("id", "orderId").populate("orderLines").getList(Order.class);
    
    

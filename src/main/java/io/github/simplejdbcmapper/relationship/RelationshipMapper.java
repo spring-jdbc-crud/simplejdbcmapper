@@ -3,6 +3,8 @@ package io.github.simplejdbcmapper.relationship;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.util.Assert;
+
 /**
  * The starting point for any relationship assignment. It works with the lists
  * provided and depending on the arguments to the api methods, populates the
@@ -15,9 +17,6 @@ import java.util.List;
  * @author Antony Joseph
  */
 public class RelationshipMapper {
-	static final String IS_PREFIX = "is";
-	static final String GET_PREFIX = "get";
-	static final String SET_PREFIX = "set";
 
 	private List<ExtractorResult> results = new ArrayList<>();
 
@@ -26,6 +25,9 @@ public class RelationshipMapper {
 	}
 
 	public <T> RelationshipSpec type(Class<T> type) {
+		Assert.notNull(type, "type must not be null");
+		// will throw an exception for invalid type
+		getExtractorResult(type);
 		return Relationship.newInstance(type, results);
 	}
 

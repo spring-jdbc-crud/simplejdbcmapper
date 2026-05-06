@@ -5,6 +5,7 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
@@ -46,11 +47,19 @@ public class Relationship implements RelationshipSpec, ToManySpec, ToOneSpec, Po
 	 * 
 	 */
 	public ToOneSpec toOne(Class<?> relatedType) {
+		Assert.notNull(relatedType, "relatedType must not be null");
+		// will throw an exception for invalid type
+		getExtractorResult(relatedType);
+
 		this.relatedType = relatedType;
 		return this;
 	}
 
 	public ToManySpec toMany(Class<?> relatedType) {
+		Assert.notNull(relatedType, "relatedType must not be null");
+		// will throw an exception for invalid type
+		getExtractorResult(relatedType);
+
 		this.relatedType = relatedType;
 		this.relationshipType = "toMany";
 		return this;
@@ -67,11 +76,12 @@ public class Relationship implements RelationshipSpec, ToManySpec, ToOneSpec, Po
 	}
 
 	public PopulateSpec through(Class<?> throughType, String fkPropertyToMainObjId, String fkPropertyToRelatedObjId) {
-		this.relationshipType = "toManyThrough";
-
-		ExtractorResult mainResult = getExtractorResult(mainType);
+		Assert.notNull(throughType, "throughType must not be null");
+		// will throw an exception for invalid type
 		ExtractorResult relatedResult = getExtractorResult(relatedType);
 
+		this.relationshipType = "toManyThrough";
+		ExtractorResult mainResult = getExtractorResult(mainType);
 		toMany.through(getList(throughType), fkPropertyToMainObjId, fkPropertyToRelatedObjId, mainResult.list(),
 				mainResult.idPropertyName(), relatedResult.list(), relatedResult.idPropertyName());
 		return this;

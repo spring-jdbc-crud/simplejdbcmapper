@@ -61,7 +61,7 @@ public class Relationship<T> implements RelationshipSpec, ToManySpec, ToOneSpec,
 	 */
 	public <U> ToOneSpec toOne(Class<U> relatedType) {
 		this.relatedType = relatedType;
-		return (ToOneSpec) this;
+		return this;
 	}
 
 	public <U> ToManySpec toMany(Class<U> relatedType) {
@@ -113,7 +113,7 @@ public class Relationship<T> implements RelationshipSpec, ToManySpec, ToOneSpec,
 				return (List<E>) result.list();
 			}
 		}
-		return null;
+		throw new IllegalArgumentException(type + "was not part of the query result set");
 	}
 
 	private ExtractorResult getExtractorResult(Class<?> type) {
@@ -122,7 +122,7 @@ public class Relationship<T> implements RelationshipSpec, ToManySpec, ToOneSpec,
 				return result;
 			}
 		}
-		return null;
+		throw new IllegalArgumentException(type + "was not part of the query result set");
 	}
 
 	static Method getReadMethod(List<?> list, String propertyName) {

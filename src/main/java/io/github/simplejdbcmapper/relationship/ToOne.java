@@ -38,9 +38,6 @@ public class ToOne {
 
 	private Method mainObjPropertyToPopulateWriteMethod;
 
-	public ToOne() {
-	}
-
 	public void joinOn(String mainObjJoinProperty, String relatedObjJoinProperty, List<?> mainObjList,
 			List<?> relatedObjList) {
 		Assert.notNull(mainObjJoinProperty, "mainObjJoinProperty must not be null");

@@ -42,7 +42,7 @@ public class RelationshipMapper {
 				return (List<T>) result.list;
 			}
 		}
-		return null;
+		throw new IllegalArgumentException(type + " was not part of the query result set");
 	}
 
 	ExtractorResult getExtractorResult(Class<?> type) {
@@ -51,7 +51,7 @@ public class RelationshipMapper {
 				return result;
 			}
 		}
-		return null;
+		throw new IllegalArgumentException(type + "was not part of the query result set");
 	}
 
 	record ExtractorResult(Class<?> entityType, List<?> list, String idPropertyName) {

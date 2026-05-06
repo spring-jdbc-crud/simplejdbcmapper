@@ -45,9 +45,6 @@ public class ToMany {
 
 	private IntermediateJoiner intermediateJoiner;
 
-	public ToMany() {
-	}
-
 	void joinOn(String mainObjIdProperty, String relatedObjFkProperty, List<?> mainObjList, List<?> relatedObjList) {
 		Assert.notNull(mainObjIdProperty, "mainObjIdProperty must not be null");
 		Assert.notNull(relatedObjFkProperty, "relatedObjFkProperty must not be null");

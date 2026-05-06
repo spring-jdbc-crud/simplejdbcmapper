@@ -392,7 +392,7 @@ public final class SimpleJdbcMapper {
 
 	/**
 	 * The ResultSeExtractor for multiple entities. The results are returned in
-	 * {@link io.github.simplejdbcmapper.core.relationship.RelationshipMapper}. It
+	 * {@link io.github.simplejdbcmapper.relationship.RelationshipMapper}. It
 	 * expects the columns sql to <b>always</b> be generated using
 	 * {@link #getMultiEntitySqlColumns}.
 	 * <p>

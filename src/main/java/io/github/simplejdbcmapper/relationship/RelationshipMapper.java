@@ -19,11 +19,11 @@ import java.util.List;
 import org.springframework.util.Assert;
 
 /**
- * /** This holds the results from a multi-entity query. See
+ * This holds the results from a multi-entity query. See
  * {@link io.github.simplejdbcmapper.core.SimpleJdbcMapper#resultSetExtractor}
  * 
  * <p>
- * Starts of the relationship processing.
+ * Starts the relationship processing flow.
  *
  * @author Antony Joseph
  */
@@ -39,7 +39,7 @@ public class RelationshipMapper {
 	}
 
 	/**
-	 * Starts of the relationship population flow.
+	 * Starts the relationship processing flow.
 	 * 
 	 * @param <T>  the type
 	 * @param type the type

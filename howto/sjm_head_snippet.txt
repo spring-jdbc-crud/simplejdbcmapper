@@ -27,7 +27,6 @@
 
 	<a href="https://github.com/spring-jdbc-crud/simplejdbcmapper">github</a> |
 	<a href="https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/index.html">Javadoc</a> |
-	<a href="https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper">Demo Application</a> |
-	<a href="https://dzone.com/articles/using-simplejdbcmapper-with-spring">Dzone Article</a>
+	<a href="https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper">Demo Application</a>
 	
 *) Remove the "table of contents paragraph and heading.

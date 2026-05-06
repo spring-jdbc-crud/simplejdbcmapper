@@ -31,9 +31,9 @@ class ToManyThroughTest {
 		List<EmployeeSkill> employeeSkillList = sjm.findAll(EmployeeSkill.class);
 
 		RelationshipMapper relMapper = new RelationshipMapper();
-		relMapper.addList(Employee.class, employees);
-		relMapper.addList(Skill.class, skills);
-		relMapper.addList(EmployeeSkill.class, employeeSkillList);
+		relMapper.addResult(Employee.class, employees, "id");
+		relMapper.addResult(Skill.class, skills, "id");
+		relMapper.addResult(EmployeeSkill.class, employeeSkillList, "id");
 
 		Exception exception = Assertions.assertThrows(Exception.class, () -> {
 			relMapper.type(Employee.class).toMany(Skill.class).through(EmployeeSkill.class, null, "skillId");
@@ -72,9 +72,9 @@ class ToManyThroughTest {
 		List<EmployeeSkill> employeeSkillList = sjm.findAll(EmployeeSkill.class);
 
 		RelationshipMapper relMapper = new RelationshipMapper();
-		relMapper.addList(Employee.class, employees);
-		relMapper.addList(Skill.class, skills);
-		relMapper.addList(EmployeeSkill.class, employeeSkillList);
+		relMapper.addResult(Employee.class, employees, "id");
+		relMapper.addResult(Skill.class, skills, "id");
+		relMapper.addResult(EmployeeSkill.class, employeeSkillList, "id");
 
 		Exception exception = Assertions.assertThrows(Exception.class, () -> {
 			relMapper.type(Employee.class).toMany(Skill.class).through(EmployeeSkill.class, "employeeId", "skillId")
@@ -88,8 +88,8 @@ class ToManyThroughTest {
 		});
 		assertTrue(exception.getMessage().contains("Invalid argument. Property name"));
 
-		// type mismatch ie property exits but of different type exception =
-		Assertions.assertThrows(Exception.class, () -> {
+		// type mismatch ie property exits but of different type
+		exception = Assertions.assertThrows(Exception.class, () -> {
 			relMapper.type(Employee.class).toMany(Skill.class).through(EmployeeSkill.class, "employeeId", "skillId")
 					.populate("lastName");
 		});

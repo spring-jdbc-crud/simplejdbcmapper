@@ -46,14 +46,12 @@ public class ToOne {
 		Assert.notNull(mainObjJoinProperty, "mainObjJoinProperty must not be null");
 		Assert.notNull(relatedObjJoinProperty, "relatedObjJoinProperty must not be null");
 
-		this.mainObjJoinPropertyReadMethod = RelationshipMapper.getReadMethod(mainObjList, mainObjJoinProperty);
-		this.relatedObjJoinPropertyReadMethod = RelationshipMapper.getReadMethod(relatedObjList,
-				relatedObjJoinProperty);
+		this.mainObjJoinPropertyReadMethod = Relationship.getReadMethod(mainObjList, mainObjJoinProperty);
+		this.relatedObjJoinPropertyReadMethod = Relationship.getReadMethod(relatedObjList, relatedObjJoinProperty);
 
 		if (this.mainObjJoinPropertyReadMethod != null && this.relatedObjJoinPropertyReadMethod != null) {
-			Class<?> mainObjJoinPropertyType = RelationshipMapper.getPropertyType(mainObjList, mainObjJoinProperty);
-			Class<?> relatedObjJoinPropertyType = RelationshipMapper.getPropertyType(relatedObjList,
-					relatedObjJoinProperty);
+			Class<?> mainObjJoinPropertyType = Relationship.getPropertyType(mainObjList, mainObjJoinProperty);
+			Class<?> relatedObjJoinPropertyType = Relationship.getPropertyType(relatedObjList, relatedObjJoinProperty);
 			if (mainObjJoinPropertyType != relatedObjJoinPropertyType) {
 				throw new IllegalArgumentException("Property types of " + mainObjJoinProperty + " on main object and "
 						+ relatedObjJoinProperty + " on related object are not the same.");
@@ -63,8 +61,8 @@ public class ToOne {
 
 	public void populate(String mainObjPropertyToPopulate, List<?> mainObjList) {
 		Assert.notNull(mainObjPropertyToPopulate, "mainObjPropertyToPopulate must not be null");
-		this.mainObjPropertyToPopulateWriteMethod = RelationshipMapper.getWriteMethod(mainObjList,
-				mainObjPropertyToPopulate);
+		this.mainObjPropertyToPopulateWriteMethod = Relationship.getWriteMethod(mainObjList, mainObjPropertyToPopulate);
+
 	}
 
 	<T, U> void populateToOne(List<T> mainObjList, List<U> relatedObjList) {

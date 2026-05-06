@@ -308,7 +308,7 @@ class ToOneTest {
 		RelationshipMapper relMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 
 		List<OrderLine> orderLines = relMapper.type(OrderLine.class).toOne(Product.class).joinOn("productId", "id")
-				.populate("product").getList(OrderLine.class);
+				.populate(sql).getList(OrderLine.class);
 
 		assertEquals(4, orderLines.size());
 		assertEquals("laces", orderLines.get(2).getProduct().getName(), "line3 product name failed");

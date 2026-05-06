@@ -52,13 +52,12 @@ public class ToMany {
 		Assert.notNull(mainObjIdProperty, "mainObjIdProperty must not be null");
 		Assert.notNull(relatedObjFkProperty, "relatedObjFkProperty must not be null");
 
-		this.mainObjIdPropertyReadMethod = RelationshipMapper.getReadMethod(mainObjList, mainObjIdProperty);
-		this.relatedObjFkPropertyReadMethod = RelationshipMapper.getReadMethod(relatedObjList, relatedObjFkProperty);
+		this.mainObjIdPropertyReadMethod = Relationship.getReadMethod(mainObjList, mainObjIdProperty);
+		this.relatedObjFkPropertyReadMethod = Relationship.getReadMethod(relatedObjList, relatedObjFkProperty);
 
 		if (this.mainObjIdPropertyReadMethod != null && this.relatedObjFkPropertyReadMethod != null) {
-			Class<?> mainObjIdPropertyType = RelationshipMapper.getPropertyType(mainObjList, mainObjIdProperty);
-			Class<?> relatedObjFkPropertyType = RelationshipMapper.getPropertyType(relatedObjList,
-					relatedObjFkProperty);
+			Class<?> mainObjIdPropertyType = Relationship.getPropertyType(mainObjList, mainObjIdProperty);
+			Class<?> relatedObjFkPropertyType = Relationship.getPropertyType(relatedObjList, relatedObjFkProperty);
 			if (mainObjIdPropertyType != relatedObjFkPropertyType) {
 				throw new IllegalArgumentException("Property types of " + mainObjIdProperty + " on main object and "
 						+ relatedObjFkProperty + " on related object are not the same.");
@@ -71,8 +70,8 @@ public class ToMany {
 		Assert.notNull(fkPropertyToMainObjId, "fkPropertyToMainObjId must not be null");
 		Assert.notNull(fkPropertyToRelatedObjId, "fkPropertyToRelatedObjId must not be null");
 
-		this.mainObjIdPropertyReadMethod = RelationshipMapper.getReadMethod(mainObjList, mainObjIdProperty);
-		this.relatedObjIdPropertyReadMethod = RelationshipMapper.getReadMethod(relatedObjList, relatedObjIdProperty);
+		this.mainObjIdPropertyReadMethod = Relationship.getReadMethod(mainObjList, mainObjIdProperty);
+		this.relatedObjIdPropertyReadMethod = Relationship.getReadMethod(relatedObjList, relatedObjIdProperty);
 
 		this.intermediateJoiner = new IntermediateJoiner(intermediateList, fkPropertyToMainObjId,
 				fkPropertyToRelatedObjId);
@@ -81,8 +80,7 @@ public class ToMany {
 
 	void populate(String mainObjPropertyToPopulate, List<?> mainObjList) {
 		Assert.notNull(mainObjPropertyToPopulate, "mainObjPropertyToPopulate must not be null");
-		this.mainObjPropertyToPopulateWriteMethod = RelationshipMapper.getWriteMethod(mainObjList,
-				mainObjPropertyToPopulate);
+		this.mainObjPropertyToPopulateWriteMethod = Relationship.getWriteMethod(mainObjList, mainObjPropertyToPopulate);
 	}
 
 	<T, U> void populateToMany(List<T> mainObjList, List<U> relatedObjList) {
@@ -182,9 +180,9 @@ public class ToMany {
 			if (CollectionUtils.isEmpty(intermediateList)) {
 				return;
 			}
-			Method fkPropertyToMainObjIdReadMethod = RelationshipMapper.getReadMethod(intermediateList,
+			Method fkPropertyToMainObjIdReadMethod = Relationship.getReadMethod(intermediateList,
 					fkPropertyToMainObjId);
-			Method fkPropertyToRelatedObjIdReadMethod = RelationshipMapper.getReadMethod(intermediateList,
+			Method fkPropertyToRelatedObjIdReadMethod = Relationship.getReadMethod(intermediateList,
 					fkPropertyToRelatedObjId);
 			try {
 				for (Object intermediateObj : intermediateList) {

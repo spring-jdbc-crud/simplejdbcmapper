@@ -48,12 +48,12 @@ class ToManyThroughTest {
 		exception = Assertions.assertThrows(Exception.class, () -> {
 			relMapper.type(Employee.class).toMany(Skill.class).through(EmployeeSkill.class, "x", "skillId");
 		});
-		assertTrue(exception.getMessage().contains("Invalid argument. Could not find getter for"));
+		assertTrue(exception.getMessage().contains("does not exist for"));
 
 		exception = Assertions.assertThrows(Exception.class, () -> {
 			relMapper.type(Employee.class).toMany(Skill.class).through(EmployeeSkill.class, "employeeId", "x");
 		});
-		assertTrue(exception.getMessage().contains("Invalid argument. Could not find getter for"));
+		assertTrue(exception.getMessage().contains("does not exist for"));
 
 	}
 
@@ -96,8 +96,7 @@ class ToManyThroughTest {
 				.add(Skill.class, "s");
 
 		String sql = """
-
-						SELECT %s FROM employee emp LEFT JOIN employee_skill es ON
+				  SELECT %s FROM employee emp LEFT JOIN employee_skill es ON
 				emp.id = es.employee_id LEFT JOIN skill s ON es.skill_id = s.id WHERE emp.id
 				<= 4 ORDER BY emp.id, s.name
 				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));

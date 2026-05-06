@@ -50,12 +50,12 @@ class ToManyTest {
 		exception = Assertions.assertThrows(Exception.class, () -> {
 			relMapper.type(Order.class).toMany(OrderLine.class).joinOn("x", "orderId");
 		});
-		assertTrue(exception.getMessage().contains("Invalid argument. Could not find getter for"));
+		assertTrue(exception.getMessage().contains("does not exist for"));
 
 		exception = Assertions.assertThrows(Exception.class, () -> {
 			relMapper.type(Order.class).toMany(OrderLine.class).joinOn("orderId", "x");
 		});
-		assertTrue(exception.getMessage().contains("Invalid argument. Could not find getter for"));
+		assertTrue(exception.getMessage().contains("does not exist for"));
 
 	}
 

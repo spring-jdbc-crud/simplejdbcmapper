@@ -50,12 +50,12 @@ class ToOneTest {
 		exception = Assertions.assertThrows(Exception.class, () -> {
 			relMapper.type(OrderLine.class).toOne(Product.class).joinOn("x", "id");
 		});
-		assertTrue(exception.getMessage().contains("Invalid argument. Could not find getter for "));
+		assertTrue(exception.getMessage().contains("does not exist for"));
 
 		exception = Assertions.assertThrows(Exception.class, () -> {
 			relMapper.type(OrderLine.class).toOne(Product.class).joinOn("orderLineId", "x");
 		});
-		assertTrue(exception.getMessage().contains("Invalid argument. Could not find getter for "));
+		assertTrue(exception.getMessage().contains("does not exist for"));
 
 		// assertDoesNotThrow(() -> {
 		// relMapper.type(null).toOne(Product.class).joinOn("x", "id");

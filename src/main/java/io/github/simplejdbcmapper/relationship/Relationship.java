@@ -140,18 +140,25 @@ public class Relationship implements RelationshipSpec, ToManySpec, ToOneSpec, Po
 		if (field == null) {
 			throw new IllegalArgumentException(
 					"Invalid argument. Property name " + propertyName + " does not exist for " + type.getName());
+		} else {
+			Method m = ReflectionUtils.findMethod(type, SET_PREFIX + StringUtils.capitalize(propertyName),
+					field.getType());
+			if (m == null) {
+				throw new IllegalArgumentException(
+						"Invalid argument. Could not find setter for " + type.getName() + "." + propertyName);
+			}
+			return m;
 		}
-		Method m = ReflectionUtils.findMethod(type, SET_PREFIX + StringUtils.capitalize(propertyName), field.getType());
-		if (m == null) {
-			throw new IllegalArgumentException(
-					"Invalid argument. Could not find setter for " + type.getName() + "." + propertyName);
-		}
-		return m;
 	}
 
 	static Class<?> getPropertyType(Class<?> type, String propertyName) {
 		Field field = ReflectionUtils.findField(type, propertyName);
-		return field.getType();
+		if (field != null) {
+			return field.getType();
+		} else {
+			throw new IllegalArgumentException(
+					"Invalid argument. Property name " + propertyName + " does not exist for " + type.getName());
+		}
 	}
 
 }

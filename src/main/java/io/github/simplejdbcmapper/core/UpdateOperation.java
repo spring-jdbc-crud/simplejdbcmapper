@@ -90,28 +90,30 @@ class UpdateOperation {
 	private Integer updateInternal(Object object, SqlAndParams sqlAndParams, TableMapping tableMapping) {
 		Assert.notNull(object, "object must not be null");
 		Assert.notNull(sqlAndParams, "sqlAndParams must not be null");
-		BeanWrapper bw = sjmSupport.getBeanWrapper(object);
-		if (bw.getPropertyValue(tableMapping.getIdPropertyName()) == null) {
+		if (InternalUtils.getPropertyValue(tableMapping.getIdPropertyMapping(), object) == null) {
 			throw new IllegalArgumentException("Property " + tableMapping.getMappedObjType().getName() + "."
 					+ tableMapping.getIdPropertyName() + " is the id and must not be null.");
 		}
 		Set<String> parameters = sqlAndParams.getParams();
-		populateAuditProperties(tableMapping, bw, parameters);
-		MapSqlParameterSource mapSqlParameterSource = createMapSqlParameterSource(tableMapping, bw, parameters);
+		populateAuditProperties(tableMapping, object, parameters);
+		MapSqlParameterSource mapSqlParameterSource = createMapSqlParameterSource(tableMapping, object, parameters);
 		int cnt = -1;
 		// if object has property version the version gets incremented on update.
 		// throws OptimisticLockingException when update fails.
 		if (sqlAndParams.getParams().contains(INCREMENTED_VERSION)) {
 			cnt = sjmSupport.getNamedParameterJdbcTemplate().update(sqlAndParams.getSql(), mapSqlParameterSource);
 			if (cnt == 0) {
+				// todo
 				throw new OptimisticLockingException(object.getClass().getSimpleName()
 						+ " update failed due to stale data. Failed for " + tableMapping.getIdColumnName() + " = "
-						+ bw.getPropertyValue(tableMapping.getIdPropertyName()) + " and "
+						// + bw.getPropertyValue(tableMapping.getIdPropertyName()) + " and "
 						+ tableMapping.getVersionPropertyMapping().getColumnName() + " = "
-						+ bw.getPropertyValue(tableMapping.getVersionPropertyMapping().getPropertyName()));
+				// +
+				// bw.getPropertyValue(tableMapping.getVersionPropertyMapping().getPropertyName()));
+				);
 			}
 			// update the version in object with new version
-			bw.setPropertyValue(tableMapping.getVersionPropertyMapping().getPropertyName(),
+			InternalUtils.setPropertyValue(tableMapping.getVersionPropertyMapping(), object,
 					mapSqlParameterSource.getValue(INCREMENTED_VERSION));
 		} else {
 			cnt = sjmSupport.getNamedParameterJdbcTemplate().update(sqlAndParams.getSql(), mapSqlParameterSource);
@@ -136,37 +138,55 @@ class UpdateOperation {
 		}
 	}
 
-	private MapSqlParameterSource createMapSqlParameterSource(TableMapping tableMapping, BeanWrapper bw,
+	private void populateAuditProperties(TableMapping tableMapping, Object obj, Set<String> parameters) {
+		if (tableMapping.hasAutoAssignProperties()) {
+			PropertyMapping updatedByPropMapping = tableMapping.getUpdatedByPropertyMapping();
+			if (updatedByPropMapping != null && sjmSupport.getRecordAuditedBySupplier() != null
+					&& parameters.contains(updatedByPropMapping.getPropertyName())) {
+				InternalUtils.setPropertyValue(updatedByPropMapping, obj,
+						sjmSupport.getRecordAuditedBySupplier().get());
+			}
+			PropertyMapping updatedOnPropMapping = tableMapping.getUpdatedOnPropertyMapping();
+			if (updatedOnPropMapping != null && sjmSupport.getRecordAuditedOnSupplier() != null
+					&& parameters.contains(updatedOnPropMapping.getPropertyName())) {
+				InternalUtils.setPropertyValue(updatedOnPropMapping, obj,
+						sjmSupport.getRecordAuditedOnSupplier().get());
+			}
+		}
+	}
+
+	private MapSqlParameterSource createMapSqlParameterSource(TableMapping tableMapping, Object obj,
 			Set<String> parameters) {
 		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
 		for (String paramName : parameters) {
 			if (paramName.equals(INCREMENTED_VERSION)) {
-				Integer incrementedVersionVal = getIncrementedVersionValue(tableMapping, bw);
+				Integer incrementedVersionVal = getIncrementedVersionValue(tableMapping, obj);
 				mapSqlParameterSource.addValue(INCREMENTED_VERSION, incrementedVersionVal, Types.INTEGER);
 			} else {
 				PropertyMapping propMapping = tableMapping.getPropertyMappingByPropertyName(paramName);
 				Integer columnSqlType = propMapping.getColumnSqlType();
 				if (propMapping.isBinaryLargeObject()) {
-					InternalUtils.assignBlobMapSqlParameterSource(bw, mapSqlParameterSource, propMapping, columnSqlType,
-							false);
+					InternalUtils.assignBlobMapSqlParameterSource(obj, mapSqlParameterSource, propMapping,
+							columnSqlType, false);
 				} else if (propMapping.isCharacterLargeObject()) {
-					InternalUtils.assignClobMapSqlParameterSource(bw, mapSqlParameterSource, propMapping, columnSqlType,
-							false);
+					InternalUtils.assignClobMapSqlParameterSource(obj, mapSqlParameterSource, propMapping,
+							columnSqlType, false);
 				} else if (propMapping.isEnum()) {
-					InternalUtils.assignEnumMapSqlParameterSource(bw, mapSqlParameterSource, propMapping, columnSqlType,
-							false);
+					InternalUtils.assignEnumMapSqlParameterSource(obj, mapSqlParameterSource, propMapping,
+							columnSqlType, false);
 				} else {
-					mapSqlParameterSource.addValue(paramName, bw.getPropertyValue(paramName), columnSqlType);
+					mapSqlParameterSource.addValue(paramName, InternalUtils.getPropertyValue(propMapping, obj),
+							columnSqlType);
 				}
 			}
 		}
 		return mapSqlParameterSource;
 	}
 
-	private Integer getIncrementedVersionValue(TableMapping tableMapping, BeanWrapper bw) {
-		Integer versionVal = (Integer) bw.getPropertyValue(tableMapping.getVersionPropertyMapping().getPropertyName());
+	private Integer getIncrementedVersionValue(TableMapping tableMapping, Object obj) {
+		Integer versionVal = (Integer) InternalUtils.getPropertyValue(tableMapping.getVersionPropertyMapping(), obj);
 		if (versionVal == null) {
-			throw new MapperException(bw.getWrappedClass().getSimpleName() + "."
+			throw new MapperException(obj.getClass().getSimpleName() + "."
 					+ tableMapping.getVersionPropertyMapping().getPropertyName()
 					+ " is configured with annotation @Version. Property "
 					+ tableMapping.getVersionPropertyMapping().getPropertyName() + " must not be null when updating.");

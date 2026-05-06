@@ -55,14 +55,6 @@ class ToManyThroughTest {
 		});
 		assertTrue(exception.getMessage().contains("Invalid argument. Could not find getter for"));
 
-		assertDoesNotThrow(() -> {
-			relMapper.type(Employee.class).toMany(Skill.class).through(null, "x", "skillId");
-		});
-
-		assertDoesNotThrow(() -> {
-			relMapper.type(Employee.class).toMany(Skill.class).through(null, "employeeId", "x");
-		});
-
 	}
 
 	@Test

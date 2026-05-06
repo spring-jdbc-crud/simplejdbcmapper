@@ -11,31 +11,21 @@ import org.springframework.util.StringUtils;
 
 import io.github.simplejdbcmapper.relationship.RelationshipMapper.ExtractorResult;
 
-public class Relationship<T> implements RelationshipSpec, ToManySpec, ToOneSpec, PopulateSpec, GetListSpec {
+public class Relationship implements RelationshipSpec, ToManySpec, ToOneSpec, PopulateSpec, GetListSpec {
 	static final String IS_PREFIX = "is";
 	static final String GET_PREFIX = "get";
 	static final String SET_PREFIX = "set";
 
-	private Class<T> mainType;
+	private Class<?> mainType;
 	private Class<?> relatedType;
 	private List<ExtractorResult> results = new ArrayList<>();
-
-	private List<T> listT = new ArrayList<>();
-
-	public void addToList(T obj) {
-		listT.add(obj);
-	}
-
-	public List<T> getListT() {
-		return listT;
-	}
 
 	private ToOne toOne;
 	private ToMany toMany;
 
 	private String relationshipType = "toOne";
 
-	private Relationship(Class<T> mainType, List<ExtractorResult> results) {
+	private Relationship(Class<?> mainType, List<ExtractorResult> results) {
 		this.mainType = mainType;
 		this.results = results;
 
@@ -43,8 +33,8 @@ public class Relationship<T> implements RelationshipSpec, ToManySpec, ToOneSpec,
 		this.toMany = new ToMany();
 	}
 
-	public static <T> RelationshipSpec newInstance(Class<T> type, List<ExtractorResult> results) {
-		return new Relationship<>(type, results);
+	static RelationshipSpec newInstance(Class<?> type, List<ExtractorResult> results) {
+		return new Relationship(type, results);
 	}
 
 	/**
@@ -55,12 +45,12 @@ public class Relationship<T> implements RelationshipSpec, ToManySpec, ToOneSpec,
 	 * @param relatedObjList the list of related objects
 	 * 
 	 */
-	public <U> ToOneSpec toOne(Class<U> relatedType) {
+	public ToOneSpec toOne(Class<?> relatedType) {
 		this.relatedType = relatedType;
 		return this;
 	}
 
-	public <U> ToManySpec toMany(Class<U> relatedType) {
+	public ToManySpec toMany(Class<?> relatedType) {
 		this.relatedType = relatedType;
 		this.relationshipType = "toMany";
 		return this;

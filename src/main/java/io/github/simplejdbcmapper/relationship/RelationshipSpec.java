@@ -27,7 +27,7 @@ public interface RelationshipSpec {
 	 * 
 	 * @param relatedObjList the list of related objects
 	 */
-	<U> ToOneSpec toOne(Class<U> relatedType);
+	ToOneSpec toOne(Class<?> relatedType);
 
 	/**
 	 * A toMany relationship
@@ -36,6 +36,6 @@ public interface RelationshipSpec {
 	 * 
 	 * @param relatedObjList the list of related objects
 	 */
-	<U> ToManySpec toMany(Class<U> relatedType);
+	ToManySpec toMany(Class<?> relatedType);
 
 }

@@ -34,8 +34,8 @@ class ToOneTest {
 		List<Product> products = sjm.findAll(Product.class);
 
 		RelationshipMapper relMapper = new RelationshipMapper();
-		relMapper.addList(OrderLine.class, orderLines);
-		relMapper.addList(Product.class, products);
+		relMapper.addResult(OrderLine.class, orderLines, null);
+		relMapper.addResult(Product.class, products, null);
 
 		Exception exception = Assertions.assertThrows(Exception.class, () -> {
 			relMapper.type(OrderLine.class).toOne(Product.class).joinOn(null, "id");
@@ -85,8 +85,8 @@ class ToOneTest {
 		profiles.add(profile1);
 
 		RelationshipMapper relMapper = new RelationshipMapper();
-		relMapper.addList(User.class, users);
-		relMapper.addList(ProfileUserIdLong.class, profiles);
+		relMapper.addResult(User.class, users, null);
+		relMapper.addResult(ProfileUserIdLong.class, profiles, null);
 
 		Exception exception = Assertions.assertThrows(Exception.class, () -> {
 			relMapper.type(User.class).toOne(ProfileUserIdLong.class).joinOn("id", "userId").populate("profile");
@@ -101,8 +101,8 @@ class ToOneTest {
 		List<Product> products = sjm.findAll(Product.class);
 
 		RelationshipMapper relMapper = new RelationshipMapper();
-		relMapper.addList(OrderLine.class, orderLines);
-		relMapper.addList(Product.class, products);
+		relMapper.addResult(OrderLine.class, orderLines, null);
+		relMapper.addResult(Product.class, products, null);
 
 		Exception exception = Assertions.assertThrows(Exception.class, () -> {
 			relMapper.type(OrderLine.class).toOne(Product.class).joinOn("productId", "id").populate(null);
@@ -155,8 +155,8 @@ class ToOneTest {
 		profiles.add(profile2);
 
 		RelationshipMapper relMapper = new RelationshipMapper();
-		relMapper.addList(User.class, users);
-		relMapper.addList(Profile.class, profiles);
+		relMapper.addResult(User.class, users, null);
+		relMapper.addResult(Profile.class, profiles, null);
 
 		relMapper.type(User.class).toOne(Profile.class).joinOn("id", "userId").populate("profile");
 
@@ -208,8 +208,8 @@ class ToOneTest {
 		profiles.add(profile2);
 
 		RelationshipMapper relMapper = new RelationshipMapper();
-		relMapper.addList(User.class, users);
-		relMapper.addList(Profile.class, profiles);
+		relMapper.addResult(User.class, users, null);
+		relMapper.addResult(Profile.class, profiles, null);
 
 		relMapper.type(User.class).toOne(Profile.class).joinOn("id", "userId").populate("profile");
 		assertEquals("theme for user2", users.get(2).getProfile().getTheme());
@@ -238,8 +238,8 @@ class ToOneTest {
 		profiles.add(profile1);
 
 		RelationshipMapper relMapper = new RelationshipMapper();
-		relMapper.addList(User.class, users);
-		relMapper.addList(Profile.class, profiles);
+		relMapper.addResult(User.class, users, null);
+		relMapper.addResult(Profile.class, profiles, null);
 
 		Exception exception = Assertions.assertThrows(Exception.class, () -> {
 			relMapper.type(User.class).toOne(Profile.class).joinOn("id", "userId").populate("name");
@@ -283,8 +283,8 @@ class ToOneTest {
 		profiles.add(profile2);
 
 		RelationshipMapper relMapper = new RelationshipMapper();
-		relMapper.addList(User.class, users);
-		relMapper.addList(Profile.class, profiles);
+		relMapper.addResult(User.class, users, null);
+		relMapper.addResult(Profile.class, profiles, null);
 
 		relMapper.type(User.class).toOne(Profile.class).joinOn("id", "userId").populate("profile");
 		assertEquals("theme for user2", users.get(2).getProfile().getTheme());
@@ -308,7 +308,7 @@ class ToOneTest {
 		RelationshipMapper relMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 
 		List<OrderLine> orderLines = relMapper.type(OrderLine.class).toOne(Product.class).joinOn("productId", "id")
-				.populate(sql).getList(OrderLine.class);
+				.populate("product").getList(OrderLine.class);
 
 		assertEquals(4, orderLines.size());
 		assertEquals("laces", orderLines.get(2).getProduct().getName(), "line3 product name failed");

@@ -21,10 +21,6 @@ public class RelationshipMapper {
 
 	private List<ExtractorResult> results = new ArrayList<>();
 
-	public <T> void addList(Class<T> type, List<T> list) {
-		results.add(new ExtractorResult(type, list, null));
-	}
-
 	public <T> void addResult(Class<T> type, List<T> list, String idPropertyName) {
 		results.add(new ExtractorResult(type, list, idPropertyName));
 	}

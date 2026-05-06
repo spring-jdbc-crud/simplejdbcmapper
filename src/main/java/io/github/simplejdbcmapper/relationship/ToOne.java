@@ -55,7 +55,6 @@ public class ToOne {
 	public void populate(String mainObjPropertyToPopulate, Class<?> mainType) {
 		Assert.notNull(mainObjPropertyToPopulate, "mainObjPropertyToPopulate must not be null");
 		this.mainObjPropertyToPopulateWriteMethod = Relationship.getWriteMethod(mainType, mainObjPropertyToPopulate);
-
 	}
 
 	<T, U> void populateToOne(List<T> mainObjList, List<U> relatedObjList) {

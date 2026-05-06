@@ -67,7 +67,7 @@ public class ToMany {
 		Class<?> fkPropertyToMainObjIdType = Relationship.getPropertyType(intermediateType, fkPropertyToMainObjId);
 		if (mainObjIdPropertyType != fkPropertyToMainObjIdType) {
 			throw new IllegalArgumentException("Conflicting property types. Property type of " + mainObjIdProperty
-					+ " on main object and " + fkPropertyToRelatedObjId + " on intermediate object are not the same.");
+					+ " on main object and " + fkPropertyToMainObjIdType + " on intermediate object are not the same.");
 		}
 
 		Class<?> relatedObjIdPropertyType = Relationship.getPropertyType(relatedType, relatedObjIdProperty);

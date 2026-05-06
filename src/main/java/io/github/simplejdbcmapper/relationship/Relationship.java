@@ -104,7 +104,6 @@ public class Relationship implements RelationshipSpec, ToManySpec, ToOneSpec, Po
 		ExtractorEntityResult mainResult = getExtractorResult(mainType);
 		toMany.through(getList(throughType), fkPropertyToMainObjId, fkPropertyToRelatedObjId, mainType,
 				mainResult.idPropertyName(), relatedType, relatedResult.idPropertyName(), throughType);
-
 		return this;
 	}
 

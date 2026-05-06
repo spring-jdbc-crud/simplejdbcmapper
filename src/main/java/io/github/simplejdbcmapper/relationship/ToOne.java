@@ -46,13 +46,11 @@ public class ToOne {
 		this.mainObjJoinPropertyReadMethod = Relationship.getReadMethod(mainType, mainObjJoinProperty);
 		this.relatedObjJoinPropertyReadMethod = Relationship.getReadMethod(relatedType, relatedObjJoinProperty);
 
-		if (this.mainObjJoinPropertyReadMethod != null && this.relatedObjJoinPropertyReadMethod != null) {
-			Class<?> mainObjJoinPropertyType = Relationship.getPropertyType(mainType, mainObjJoinProperty);
-			Class<?> relatedObjJoinPropertyType = Relationship.getPropertyType(relatedType, relatedObjJoinProperty);
-			if (mainObjJoinPropertyType != relatedObjJoinPropertyType) {
-				throw new IllegalArgumentException("Property types of " + mainObjJoinProperty + " on main object and "
-						+ relatedObjJoinProperty + " on related object are not the same.");
-			}
+		Class<?> mainObjJoinPropertyType = Relationship.getPropertyType(mainType, mainObjJoinProperty);
+		Class<?> relatedObjJoinPropertyType = Relationship.getPropertyType(relatedType, relatedObjJoinProperty);
+		if (mainObjJoinPropertyType != relatedObjJoinPropertyType) {
+			throw new IllegalArgumentException("Property types of " + mainObjJoinProperty + " on main object and "
+					+ relatedObjJoinProperty + " on related object are not the same.");
 		}
 	}
 

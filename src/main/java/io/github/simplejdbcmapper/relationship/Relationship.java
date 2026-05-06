@@ -77,9 +77,11 @@ public class Relationship implements RelationshipSpec, ToManySpec, ToOneSpec, Po
 	public PopulateSpec through(Class<?> throughType, String fkPropertyToMainObjId, String fkPropertyToRelatedObjId) {
 		Assert.notNull(throughType, "throughType must not be null");
 		// will throw an exception for invalid type
-		ExtractorResult relatedResult = getExtractorResult(relatedType);
+		getExtractorResult(throughType);
 
 		this.relationshipType = "toManyThrough";
+
+		ExtractorResult relatedResult = getExtractorResult(relatedType);
 		ExtractorResult mainResult = getExtractorResult(mainType);
 		toMany.through(getList(throughType), fkPropertyToMainObjId, fkPropertyToRelatedObjId, mainType,
 				mainResult.idPropertyName(), relatedType, relatedResult.idPropertyName(), throughType);

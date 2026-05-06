@@ -52,13 +52,11 @@ public class ToMany {
 		this.mainObjIdPropertyReadMethod = Relationship.getReadMethod(mainType, mainObjIdProperty);
 		this.relatedObjFkPropertyReadMethod = Relationship.getReadMethod(relatedType, relatedObjFkProperty);
 
-		if (this.mainObjIdPropertyReadMethod != null && this.relatedObjFkPropertyReadMethod != null) {
-			Class<?> mainObjIdPropertyType = Relationship.getPropertyType(mainType, mainObjIdProperty);
-			Class<?> relatedObjFkPropertyType = Relationship.getPropertyType(relatedType, relatedObjFkProperty);
-			if (mainObjIdPropertyType != relatedObjFkPropertyType) {
-				throw new IllegalArgumentException("Property types of " + mainObjIdProperty + " on main object and "
-						+ relatedObjFkProperty + " on related object are not the same.");
-			}
+		Class<?> mainObjIdPropertyType = Relationship.getPropertyType(mainType, mainObjIdProperty);
+		Class<?> relatedObjFkPropertyType = Relationship.getPropertyType(relatedType, relatedObjFkProperty);
+		if (mainObjIdPropertyType != relatedObjFkPropertyType) {
+			throw new IllegalArgumentException("Property types of " + mainObjIdProperty + " on main object and "
+					+ relatedObjFkProperty + " on related object are not the same.");
 		}
 	}
 

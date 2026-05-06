@@ -5,7 +5,7 @@ A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations by maki
 
 Just by annotating the models that you would use with JdbcTemplate/JdbcClient, you get single-line CRUD.
 
-**New Feature Alert:** Relationships can be populated from your custom queries. :eight_spoked_asterisk:
+**New Feature Alert:** Relationships can be populated from your custom queries. :star2:
 
 [Javadoc](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/index.html) | [Demo Application](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper) | [Dzone Article](https://dzone.com/articles/using-simplejdbcmapper-with-spring)
 
@@ -16,7 +16,7 @@ Just by annotating the models that you would use with JdbcTemplate/JdbcClient, y
 [JDK and Spring version requirements](#jdk-and-spring-version-requirements)  
 [Spring bean configuration for SimpleJdbcMapper](#spring-bean-configuration-for-simplejdbcmapper)  
 [Annotations](#annotations)   
-[Populating relationships from custom queries](#populating-relationships-from-custom-queries) :eight_spoked_asterisk:     
+[Populating relationships from custom queries](#populating-relationships-from-custom-queries) :star2:     
 [BLOB CLOB mapping](#blob-clob-mapping)  
 [Enum mapping](#enum-mapping)  
 [Configuration for auto assigning @CreatedBy, @UpdateBy, @CreatedOn, @UpdatedOn](#configuration-for-auto-assigning-createdby-updateby-createdon-updatedon)  
@@ -448,7 +448,7 @@ An implementation of the relationship examples below and other features of the f
    // multiple entities. The return value 'RelationshipMapper' holds the query results.
    RelationshipMapper relationshipMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity), someAmount); 
    
-   // populate() method triggers the processing of the relationship
+   // populate() method triggers the processing of the relationship and getList() returns the list
    List<Order> orders = relationshipMapper.type(Order.class).toMany(OrderLine.class).joinOn("id", "orderId").populate("orderLines").getList(Order.class);
 ```
 1. When creating an instance of [MultiEntity](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/io/github/simplejdbcmapper/core/MultiEntity.html) make sure the table aliases **exactly match** what you have in your custom query. 
@@ -483,7 +483,7 @@ Use Multi-entity processing to populate multiple relationships:
   
    // populate  the 'product' property on OrderLine using toOne() since its a toOne relationship. populate() method triggers the processing.
   relationshipMapper.type(OrderLine.class).toOne(Product.class).joinOn("productId", "id").populate("product");
-  // populate orderLines property on order
+  // populate orderLines property on order and use getList() to return the list
   List<Order> orders = relationshipMapper.type(Order.class).toMany(OrderLine.class).joinOn("id", "orderId").populate("orderLines").getList(Order.class)
 ```
 

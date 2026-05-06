@@ -5,9 +5,9 @@ A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations by maki
 
 Just by annotating the models that you would use with JdbcTemplate/JdbcClient, you get single-line CRUD.
 
-**New Feature Alert:** Relationships can be populated from your custom queries. :star2:
+**New Feature Alert:** Relationships can be populated from your custom queries. :sparkler:
 
-[Javadoc](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/index.html) | [Demo Application](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper) | [Dzone Article](https://dzone.com/articles/using-simplejdbcmapper-with-spring)
+[Javadoc](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/index.html) | [Demo Application](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper)  
 
 ## Table of contents
 [Features](#features)  
@@ -16,7 +16,7 @@ Just by annotating the models that you would use with JdbcTemplate/JdbcClient, y
 [JDK and Spring version requirements](#jdk-and-spring-version-requirements)  
 [Spring bean configuration for SimpleJdbcMapper](#spring-bean-configuration-for-simplejdbcmapper)  
 [Annotations](#annotations)   
-[Populating relationships from custom queries](#populating-relationships-from-custom-queries) :star2:     
+[Populating relationships from custom queries](#populating-relationships-from-custom-queries) :sparkler:     
 [BLOB CLOB mapping](#blob-clob-mapping)  
 [Enum mapping](#enum-mapping)  
 [Configuration for auto assigning @CreatedBy, @UpdateBy, @CreatedOn, @UpdatedOn](#configuration-for-auto-assigning-createdby-updateby-createdon-updatedon)  

@@ -9,7 +9,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
-import io.github.simplejdbcmapper.relationship.RelationshipMapper.ExtractorResult;
+import io.github.simplejdbcmapper.relationship.RelationshipMapper.ExtractorEntityResult;
 
 public class Relationship implements RelationshipSpec, ToManySpec, ToOneSpec, PopulateSpec, GetListSpec {
 	static final String IS_PREFIX = "is";
@@ -18,14 +18,14 @@ public class Relationship implements RelationshipSpec, ToManySpec, ToOneSpec, Po
 
 	private Class<?> mainType;
 	private Class<?> relatedType;
-	private List<ExtractorResult> results = new ArrayList<>();
+	private List<ExtractorEntityResult> results = new ArrayList<>();
 
 	private ToOne toOne;
 	private ToMany toMany;
 
 	private String relationshipType = "toOne";
 
-	private Relationship(Class<?> mainType, List<ExtractorResult> results) {
+	private Relationship(Class<?> mainType, List<ExtractorEntityResult> results) {
 		this.mainType = mainType;
 		this.results = results;
 
@@ -33,7 +33,7 @@ public class Relationship implements RelationshipSpec, ToManySpec, ToOneSpec, Po
 		this.toMany = new ToMany();
 	}
 
-	static RelationshipSpec newInstance(Class<?> type, List<ExtractorResult> results) {
+	static RelationshipSpec newInstance(Class<?> type, List<ExtractorEntityResult> results) {
 		return new Relationship(type, results);
 	}
 
@@ -81,8 +81,8 @@ public class Relationship implements RelationshipSpec, ToManySpec, ToOneSpec, Po
 
 		this.relationshipType = "toManyThrough";
 
-		ExtractorResult relatedResult = getExtractorResult(relatedType);
-		ExtractorResult mainResult = getExtractorResult(mainType);
+		ExtractorEntityResult relatedResult = getExtractorResult(relatedType);
+		ExtractorEntityResult mainResult = getExtractorResult(mainType);
 		toMany.through(getList(throughType), fkPropertyToMainObjId, fkPropertyToRelatedObjId, mainType,
 				mainResult.idPropertyName(), relatedType, relatedResult.idPropertyName(), throughType);
 
@@ -106,7 +106,7 @@ public class Relationship implements RelationshipSpec, ToManySpec, ToOneSpec, Po
 
 	@SuppressWarnings("unchecked")
 	public <E> List<E> getList(Class<E> type) {
-		for (ExtractorResult result : results) {
+		for (ExtractorEntityResult result : results) {
 			if (result.entityType() == type) {
 				return (List<E>) result.list();
 			}
@@ -114,8 +114,8 @@ public class Relationship implements RelationshipSpec, ToManySpec, ToOneSpec, Po
 		throw new IllegalArgumentException(type + "was not part of the query result set");
 	}
 
-	private ExtractorResult getExtractorResult(Class<?> type) {
-		for (ExtractorResult result : results) {
+	private ExtractorEntityResult getExtractorResult(Class<?> type) {
+		for (ExtractorEntityResult result : results) {
 			if (result.entityType() == type) {
 				return result;
 			}

@@ -18,42 +18,42 @@ import org.springframework.util.Assert;
  */
 public class RelationshipMapper {
 
-	private List<ExtractorResult> results = new ArrayList<>();
+	private List<ExtractorEntityResult> results = new ArrayList<>();
 
 	public <T> void addEntityResult(Class<T> entityType, List<T> list, String idPropertyName) {
 		Assert.notNull(entityType, "entityType must not be null");
 		Assert.notNull(list, "list must not be null");
 
-		results.add(new ExtractorResult(entityType, list, idPropertyName));
+		results.add(new ExtractorEntityResult(entityType, list, idPropertyName));
 	}
 
 	public <T> RelationshipSpec type(Class<T> type) {
 		Assert.notNull(type, "type must not be null");
 		// will throw an exception for invalid type
-		getExtractorResult(type);
+		getExtractorEntityResult(type);
 		return Relationship.newInstance(type, results);
 	}
 
 	@SuppressWarnings("unchecked")
 	public <T> List<T> getList(Class<T> type) {
-		for (ExtractorResult result : results) {
-			if (result.entityType == type) {
+		for (ExtractorEntityResult result : results) {
+			if (result.entityType() == type) {
 				return (List<T>) result.list;
 			}
 		}
 		throw new IllegalArgumentException(type + " was not part of the query result set");
 	}
 
-	ExtractorResult getExtractorResult(Class<?> type) {
-		for (ExtractorResult result : results) {
-			if (result.entityType == type) {
+	ExtractorEntityResult getExtractorEntityResult(Class<?> type) {
+		for (ExtractorEntityResult result : results) {
+			if (result.entityType() == type) {
 				return result;
 			}
 		}
 		throw new IllegalArgumentException(type + "was not part of the query result set");
 	}
 
-	record ExtractorResult(Class<?> entityType, List<?> list, String idPropertyName) {
+	record ExtractorEntityResult(Class<?> entityType, List<?> list, String idPropertyName) {
 	}
 
 }

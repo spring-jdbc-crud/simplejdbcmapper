@@ -19,8 +19,6 @@ public class RelationshipMapper {
 	static final String GET_PREFIX = "get";
 	static final String SET_PREFIX = "set";
 
-	// private final Map<Class<?>, List<?>> map = new HashMap<>();
-
 	private List<ExtractorResult> results = new ArrayList<>();
 
 	public <T> void addList(Class<T> type, List<T> list) {

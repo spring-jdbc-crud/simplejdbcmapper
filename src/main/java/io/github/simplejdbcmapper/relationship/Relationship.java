@@ -43,10 +43,6 @@ public class Relationship<T> implements RelationshipSpec, ToManySpec, ToOneSpec,
 		this.toMany = new ToMany();
 	}
 
-	// private RelationshipMapper(List<?> mainObjList) {
-	// this.mainObjList = mainObjList;
-	//
-
 	public static <T> RelationshipSpec newInstance(Class<T> type, List<ExtractorResult> results) {
 		return new Relationship<>(type, results);
 	}
@@ -67,7 +63,7 @@ public class Relationship<T> implements RelationshipSpec, ToManySpec, ToOneSpec,
 	public <U> ToManySpec toMany(Class<U> relatedType) {
 		this.relatedType = relatedType;
 		this.relationshipType = "toMany";
-		return (ToManySpec) this;
+		return this;
 	}
 
 	public PopulateSpec joinOn(String mainObjJoinProperty, String relatedObjJoinProperty) {

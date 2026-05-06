@@ -29,6 +29,8 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.util.Assert;
 
+import io.github.simplejdbcmapper.relationship.RelationshipMapper;
+
 /**
  * CRUD methods and configuration for SimpleJdbcMapper.
  * 
@@ -44,7 +46,7 @@ import org.springframework.util.Assert;
  */
 public final class SimpleJdbcMapper {
 
-<span class="fc" id="L47">	private static final Logger logger = LoggerFactory.getLogger(SimpleJdbcMapper.class);</span>
+<span class="fc" id="L49">	private static final Logger logger = LoggerFactory.getLogger(SimpleJdbcMapper.class);</span>
 
 	private SimpleJdbcMapperSupport simpleJdbcMapperSupport;
 
@@ -64,8 +66,8 @@ public final class SimpleJdbcMapper {
 	 * @param dataSource the dataSource.
 	 */
 	public SimpleJdbcMapper(DataSource dataSource) {
-<span class="fc" id="L67">		this(dataSource, null, null);</span>
-<span class="fc" id="L68">	}</span>
+<span class="fc" id="L69">		this(dataSource, null, null);</span>
+<span class="fc" id="L70">	}</span>
 
 	/**
 	 * Constructor.
@@ -74,8 +76,8 @@ public final class SimpleJdbcMapper {
 	 * @param schemaName the schema name.
 	 */
 	public SimpleJdbcMapper(DataSource dataSource, String schemaName) {
-<span class="fc" id="L77">		this(dataSource, schemaName, null);</span>
-<span class="fc" id="L78">	}</span>
+<span class="fc" id="L79">		this(dataSource, schemaName, null);</span>
+<span class="fc" id="L80">	}</span>
 
 	/**
 	 * Constructor.
@@ -84,15 +86,15 @@ public final class SimpleJdbcMapper {
 	 * @param schemaName  the schema name.
 	 * @param catalogName the catalog name.
 	 */
-<span class="fc" id="L87">	public SimpleJdbcMapper(DataSource dataSource, String schemaName, String catalogName) {</span>
-<span class="fc" id="L88">		Assert.notNull(dataSource, &quot;dataSource must not be null&quot;);</span>
-<span class="fc" id="L89">		this.simpleJdbcMapperSupport = new SimpleJdbcMapperSupport(dataSource, schemaName, catalogName);</span>
-<span class="fc" id="L90">		this.insertOperation = new InsertOperation(simpleJdbcMapperSupport);</span>
-<span class="fc" id="L91">		this.findOperation = new FindOperation(simpleJdbcMapperSupport);</span>
-<span class="fc" id="L92">		this.updateOperation = new UpdateOperation(simpleJdbcMapperSupport);</span>
-<span class="fc" id="L93">		this.deleteOperation = new DeleteOperation(simpleJdbcMapperSupport);</span>
-<span class="fc" id="L94">		this.multiEntityExtractor = new MultiEntityExtractor(simpleJdbcMapperSupport);</span>
-<span class="fc" id="L95">	}</span>
+<span class="fc" id="L89">	public SimpleJdbcMapper(DataSource dataSource, String schemaName, String catalogName) {</span>
+<span class="fc" id="L90">		Assert.notNull(dataSource, &quot;dataSource must not be null&quot;);</span>
+<span class="fc" id="L91">		this.simpleJdbcMapperSupport = new SimpleJdbcMapperSupport(dataSource, schemaName, catalogName);</span>
+<span class="fc" id="L92">		this.insertOperation = new InsertOperation(simpleJdbcMapperSupport);</span>
+<span class="fc" id="L93">		this.findOperation = new FindOperation(simpleJdbcMapperSupport);</span>
+<span class="fc" id="L94">		this.updateOperation = new UpdateOperation(simpleJdbcMapperSupport);</span>
+<span class="fc" id="L95">		this.deleteOperation = new DeleteOperation(simpleJdbcMapperSupport);</span>
+<span class="fc" id="L96">		this.multiEntityExtractor = new MultiEntityExtractor(simpleJdbcMapperSupport);</span>
+<span class="fc" id="L97">	}</span>
 
 	/**
 	 * finds the object by Id. Returns null if not found
@@ -103,7 +105,7 @@ public final class SimpleJdbcMapper {
 	 * @return the object of type T
 	 */
 	public &lt;T&gt; T findById(Class&lt;T&gt; entityType, Object id) {
-<span class="fc" id="L106">		return findOperation.findById(entityType, id);</span>
+<span class="fc" id="L108">		return findOperation.findById(entityType, id);</span>
 	}
 
 	/**
@@ -116,7 +118,7 @@ public final class SimpleJdbcMapper {
 	 * @return List of objects of type T
 	 */
 	public &lt;T&gt; List&lt;T&gt; findAll(Class&lt;T&gt; entityType, SortBy... sortByArray) {
-<span class="fc" id="L119">		return findOperation.findAll(entityType, sortByArray);</span>
+<span class="fc" id="L121">		return findOperation.findAll(entityType, sortByArray);</span>
 	}
 
 	/**
@@ -133,7 +135,7 @@ public final class SimpleJdbcMapper {
 	 */
 	public &lt;T&gt; List&lt;T&gt; findByPropertyValue(Class&lt;T&gt; entityType, String propertyName, Object propertyValue,
 			SortBy... sortByArray) {
-<span class="fc" id="L136">		return findOperation.findByPropertyValue(entityType, propertyName, propertyValue, sortByArray);</span>
+<span class="fc" id="L138">		return findOperation.findByPropertyValue(entityType, propertyName, propertyValue, sortByArray);</span>
 	}
 
 	/**
@@ -158,7 +160,7 @@ public final class SimpleJdbcMapper {
 	 */
 	public &lt;T, U&gt; List&lt;T&gt; findByPropertyValues(Class&lt;T&gt; entityType, String propertyName, Collection&lt;U&gt; propertyValues,
 			SortBy... sortByArray) {
-<span class="fc" id="L161">		return findOperation.findByPropertyValues(entityType, propertyName, propertyValues, sortByArray);</span>
+<span class="fc" id="L163">		return findOperation.findByPropertyValues(entityType, propertyName, propertyValues, sortByArray);</span>
 	}
 
 	/**
@@ -183,8 +185,8 @@ public final class SimpleJdbcMapper {
 	 */
 
 	public void insert(Object object) {
-<span class="fc" id="L186">		insertOperation.insert(object);</span>
-<span class="fc" id="L187">	}</span>
+<span class="fc" id="L188">		insertOperation.insert(object);</span>
+<span class="fc" id="L189">	}</span>
 
 	/**
 	 * Update the object.
@@ -203,7 +205,7 @@ public final class SimpleJdbcMapper {
 	 * @return number of records updated
 	 */
 	public Integer update(Object object) {
-<span class="fc" id="L206">		return updateOperation.update(object);</span>
+<span class="fc" id="L208">		return updateOperation.update(object);</span>
 	}
 
 	/**
@@ -227,7 +229,7 @@ public final class SimpleJdbcMapper {
 	 * @return number of records updated
 	 */
 	public Integer updateSpecificProperties(Object object, String... propertyNames) {
-<span class="fc" id="L230">		return updateOperation.updateSpecificProperties(object, propertyNames);</span>
+<span class="fc" id="L232">		return updateOperation.updateSpecificProperties(object, propertyNames);</span>
 	}
 
 	/**
@@ -237,7 +239,7 @@ public final class SimpleJdbcMapper {
 	 * @return number of records were deleted (1 or 0)
 	 */
 	public Integer delete(Object object) {
-<span class="fc" id="L240">		return deleteOperation.delete(object);</span>
+<span class="fc" id="L242">		return deleteOperation.delete(object);</span>
 	}
 
 	/**
@@ -248,7 +250,7 @@ public final class SimpleJdbcMapper {
 	 * @return number records were deleted (1 or 0)
 	 */
 	public Integer deleteById(Class&lt;?&gt; entityType, Object id) {
-<span class="fc" id="L251">		return deleteOperation.deleteById(entityType, id);</span>
+<span class="fc" id="L253">		return deleteOperation.deleteById(entityType, id);</span>
 	}
 
 	/**
@@ -304,7 +306,7 @@ public final class SimpleJdbcMapper {
 	 * @return EntityRowMapper for the type
 	 */
 	public &lt;T&gt; EntityRowMapper&lt;T&gt; newEntityRowMapper(Class&lt;T&gt; entityType) {
-<span class="fc" id="L307">		return findOperation.newEntityRowMapper(entityType);</span>
+<span class="fc" id="L309">		return findOperation.newEntityRowMapper(entityType);</span>
 	}
 
 	/**
@@ -329,7 +331,7 @@ public final class SimpleJdbcMapper {
 	 * 
 	 */
 	public String getEntitySqlColumns(Class&lt;?&gt; entityType) {
-<span class="fc" id="L332">		return findOperation.getEntitySqlColumns(entityType);</span>
+<span class="fc" id="L334">		return findOperation.getEntitySqlColumns(entityType);</span>
 	}
 
 	/**
@@ -360,7 +362,7 @@ public final class SimpleJdbcMapper {
 	 * 
 	 */
 	public String getEntitySqlColumns(Class&lt;?&gt; entityType, String tableAlias) {
-<span class="fc" id="L363">		return findOperation.getEntitySqlColumns(entityType, tableAlias);</span>
+<span class="fc" id="L365">		return findOperation.getEntitySqlColumns(entityType, tableAlias);</span>
 	}
 
 	/**
@@ -385,16 +387,17 @@ public final class SimpleJdbcMapper {
 	 * @return columns sql string
 	 */
 	public String getMultiEntitySqlColumns(MultiEntity multiEntity) {
-<span class="fc" id="L388">		return multiEntityExtractor.getMultiEntitySqlColumns(multiEntity);</span>
+<span class="fc" id="L390">		return multiEntityExtractor.getMultiEntitySqlColumns(multiEntity);</span>
 	}
 
 	/**
 	 * The ResultSeExtractor for multiple entities. The results are returned in
-	 * {@link io.github.simplejdbcmapper.core.ResultListMap}. It expects the columns
-	 * sql to &lt;b&gt;always&lt;/b&gt; be generated using {@link #getMultiEntitySqlColumns}.
+	 * {@link io.github.simplejdbcmapper.relationship.RelationshipMapper}. It
+	 * expects the columns sql to &lt;b&gt;always&lt;/b&gt; be generated using
+	 * {@link #getMultiEntitySqlColumns}.
 	 * &lt;p&gt;
-	 * The result list in ResultListMap for each entity will be &lt;b&gt;Unique by ID&lt;/b&gt;
-	 * , ie there will no duplicate records for that entity.
+	 * The result lists held in RelationshipMapper for each entity will be &lt;b&gt;Unique
+	 * by ID&lt;/b&gt; , ie there will no duplicate records for each entity.
 	 * &lt;p&gt;
 	 * It will handle the cases where the column to property mappings do not follow
 	 * the underscore to camel case naming convention.
@@ -417,7 +420,8 @@ public final class SimpleJdbcMapper {
 	 * 		&quot;&quot;&quot;.formatted(sjm.getMultiEntitySqlColumns(multiEntity));
 	 * 
 	 * // Use this method with JdbcTemplate to extract the data for the multiple entities. 
-	 * ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity), someAmount);
+	 * RelationshipMapper relationshipMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity),
+	 * 		someAmount);
 	 * 
 	 * &lt;/pre&gt;
 	 * 
@@ -426,10 +430,10 @@ public final class SimpleJdbcMapper {
 	 *                    extracted from the query ResultSet
 	 * @return a Spring ResultSetExtractor that can be used with
 	 *         JdbcTemplate/NamedParameterJdbcTemplate and the results are returned
-	 *         in ResultListMap
+	 *         in RelationshipMapper
 	 */
-	public ResultSetExtractor&lt;ResultListMap&gt; resultSetExtractor(MultiEntity multiEntity) {
-<span class="fc" id="L432">		return multiEntityExtractor.resultSetExtractor(multiEntity);</span>
+	public ResultSetExtractor&lt;RelationshipMapper&gt; resultSetExtractor(MultiEntity multiEntity) {
+<span class="fc" id="L436">		return multiEntityExtractor.resultSetExtractor(multiEntity);</span>
 	}
 
 	/**
@@ -475,7 +479,7 @@ public final class SimpleJdbcMapper {
 	 * 
 	 */
 	public String getBeanFriendlySqlColumns(Class&lt;?&gt; entityType) {
-<span class="fc" id="L478">		return findOperation.getBeanFriendlySqlColumns(entityType);</span>
+<span class="fc" id="L482">		return findOperation.getBeanFriendlySqlColumns(entityType);</span>
 	}
 
 	/**
@@ -527,7 +531,7 @@ public final class SimpleJdbcMapper {
 	 * 
 	 */
 	public String getBeanFriendlySqlColumns(Class&lt;?&gt; entityType, String tableAlias) {
-<span class="fc" id="L530">		return findOperation.getBeanFriendlySqlColumns(entityType, tableAlias);</span>
+<span class="fc" id="L534">		return findOperation.getBeanFriendlySqlColumns(entityType, tableAlias);</span>
 	}
 
 	/**
@@ -539,7 +543,7 @@ public final class SimpleJdbcMapper {
 	 * 
 	 */
 	public Map&lt;String, String&gt; getPropertyToColumnMappings(Class&lt;?&gt; entityType) {
-<span class="fc" id="L542">		return findOperation.getPropertyToColumnMappings(entityType);</span>
+<span class="fc" id="L546">		return findOperation.getPropertyToColumnMappings(entityType);</span>
 	}
 
 	/**
@@ -548,7 +552,7 @@ public final class SimpleJdbcMapper {
 	 * @return the JdbcClient
 	 */
 	public JdbcClient getJdbcClient() {
-<span class="fc" id="L551">		return simpleJdbcMapperSupport.getJdbcClient();</span>
+<span class="fc" id="L555">		return simpleJdbcMapperSupport.getJdbcClient();</span>
 	}
 
 	/**
@@ -557,7 +561,7 @@ public final class SimpleJdbcMapper {
 	 * @return the JdbcTemplate
 	 */
 	public JdbcTemplate getJdbcTemplate() {
-<span class="fc" id="L560">		return simpleJdbcMapperSupport.getJdbcTemplate();</span>
+<span class="fc" id="L564">		return simpleJdbcMapperSupport.getJdbcTemplate();</span>
 	}
 
 	/**
@@ -566,7 +570,7 @@ public final class SimpleJdbcMapper {
 	 * @return the NamedParameterJdbcTemplate
 	 */
 	public NamedParameterJdbcTemplate getNamedParameterJdbcTemplate() {
-<span class="fc" id="L569">		return simpleJdbcMapperSupport.getNamedParameterJdbcTemplate();</span>
+<span class="fc" id="L573">		return simpleJdbcMapperSupport.getNamedParameterJdbcTemplate();</span>
 	}
 
 	/**
@@ -577,8 +581,8 @@ public final class SimpleJdbcMapper {
 	 * @param supplier the Supplier for audited by.
 	 */
 	public &lt;T&gt; void setRecordAuditedBySupplier(Supplier&lt;T&gt; supplier) {
-<span class="fc" id="L580">		simpleJdbcMapperSupport.setRecordAuditedBySupplier(supplier);</span>
-<span class="fc" id="L581">	}</span>
+<span class="fc" id="L584">		simpleJdbcMapperSupport.setRecordAuditedBySupplier(supplier);</span>
+<span class="fc" id="L585">	}</span>
 
 	/**
 	 * Set the Supplier that is used to populate the &amp;#64;CreatedOn and
@@ -588,8 +592,8 @@ public final class SimpleJdbcMapper {
 	 * @param supplier the Supplier for audited on.
 	 */
 	public &lt;T&gt; void setRecordAuditedOnSupplier(Supplier&lt;T&gt; supplier) {
-<span class="fc" id="L591">		simpleJdbcMapperSupport.setRecordAuditedOnSupplier(supplier);</span>
-<span class="fc" id="L592">	}</span>
+<span class="fc" id="L595">		simpleJdbcMapperSupport.setRecordAuditedOnSupplier(supplier);</span>
+<span class="fc" id="L596">	}</span>
 
 	/**
 	 * Exposing the conversion service used, so if necessary new converters can be
@@ -599,7 +603,7 @@ public final class SimpleJdbcMapper {
 	 * @return the conversion service.
 	 */
 	public ConversionService getConversionService() {
-<span class="fc" id="L602">		return simpleJdbcMapperSupport.getConversionService();</span>
+<span class="fc" id="L606">		return simpleJdbcMapperSupport.getConversionService();</span>
 	}
 
 	/**
@@ -608,8 +612,8 @@ public final class SimpleJdbcMapper {
 	 * @param conversionService The conversion service to set
 	 */
 	public void setConversionService(ConversionService conversionService) {
-<span class="fc" id="L611">		simpleJdbcMapperSupport.setConversionService(conversionService);</span>
-<span class="fc" id="L612">	}</span>
+<span class="fc" id="L615">		simpleJdbcMapperSupport.setConversionService(conversionService);</span>
+<span class="fc" id="L616">	}</span>
 
 	/**
 	 * Get the schema name.
@@ -617,7 +621,7 @@ public final class SimpleJdbcMapper {
 	 * @return the schema name.
 	 */
 	public String getSchemaName() {
-<span class="fc" id="L620">		return simpleJdbcMapperSupport.getSchemaName();</span>
+<span class="fc" id="L624">		return simpleJdbcMapperSupport.getSchemaName();</span>
 	}
 
 	/**
@@ -626,7 +630,7 @@ public final class SimpleJdbcMapper {
 	 * @return the catalog name.
 	 */
 	public String getCatalogName() {
-<span class="fc" id="L629">		return simpleJdbcMapperSupport.getCatalogName();</span>
+<span class="fc" id="L633">		return simpleJdbcMapperSupport.getCatalogName();</span>
 	}
 
 	/**
@@ -636,14 +640,14 @@ public final class SimpleJdbcMapper {
 	 * context this method is invoked automatically.
 	 */
 	public void close() {
-<span class="nc" id="L639">		simpleJdbcMapperSupport = null;</span>
-<span class="nc" id="L640">		insertOperation = null;</span>
-<span class="nc" id="L641">		findOperation = null;</span>
-<span class="nc" id="L642">		updateOperation = null;</span>
-<span class="nc" id="L643">		deleteOperation = null;</span>
-<span class="nc" id="L644">		multiEntityExtractor = null;</span>
-<span class="nc" id="L645">		logger.info(&quot;SimpleJdbcMapper shutdown completed. {}&quot;, this);</span>
-<span class="nc" id="L646">	}</span>
+<span class="fc" id="L643">		simpleJdbcMapperSupport = null;</span>
+<span class="fc" id="L644">		insertOperation = null;</span>
+<span class="fc" id="L645">		findOperation = null;</span>
+<span class="fc" id="L646">		updateOperation = null;</span>
+<span class="fc" id="L647">		deleteOperation = null;</span>
+<span class="fc" id="L648">		multiEntityExtractor = null;</span>
+<span class="fc" id="L649">		logger.info(&quot;SimpleJdbcMapper shutdown completed. {}&quot;, this);</span>
+<span class="fc" id="L650">	}</span>
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 62f8e7f42c621a330cc418c402526616c2be30b4 2026-05-04T23:21:08</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 5cea7eebf4084fde2a05a4448e205fff75260a8f 2026-05-06T11:57:14</div></body></html>

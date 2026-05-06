@@ -29,6 +29,7 @@ import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
 import io.github.simplejdbcmapper.exception.MapperException;
+import io.github.simplejdbcmapper.relationship.RelationshipMapper;
 
 /**
  * The extractor of query results for multiple entities
@@ -36,96 +37,97 @@ import io.github.simplejdbcmapper.exception.MapperException;
  * @author Antony Joseph
  */
 class MultiEntityExtractor {
-<span class="fc" id="L39">	private static final Logger logger = LoggerFactory.getLogger(MultiEntityExtractor.class);</span>
+<span class="fc" id="L40">	private static final Logger logger = LoggerFactory.getLogger(MultiEntityExtractor.class);</span>
 
 	private final SimpleJdbcMapperSupport sjmSupport;
 
-<span class="fc" id="L43">	public MultiEntityExtractor(SimpleJdbcMapperSupport sjmSupport) {</span>
-<span class="fc" id="L44">		this.sjmSupport = sjmSupport;</span>
-<span class="fc" id="L45">	}</span>
+<span class="fc" id="L44">	public MultiEntityExtractor(SimpleJdbcMapperSupport sjmSupport) {</span>
+<span class="fc" id="L45">		this.sjmSupport = sjmSupport;</span>
+<span class="fc" id="L46">	}</span>
 
 	public String getMultiEntitySqlColumns(MultiEntity multiEntity) {
-<span class="fc" id="L48">		StringBuilder sb = new StringBuilder(64);</span>
-<span class="fc" id="L49">		StringJoiner sj = new StringJoiner(&quot;, &quot;, &quot; &quot;, &quot; &quot;);</span>
-<span class="fc bfc" id="L50" title="All 2 branches covered.">		for (Map.Entry&lt;Class&lt;?&gt;, String&gt; entry : multiEntity.getEntries()) {</span>
-<span class="fc" id="L51">			String tableAlias = entry.getValue();</span>
-<span class="fc" id="L52">			String tablePrefix = tableAlias + &quot;.&quot;;</span>
-<span class="fc" id="L53">			String colPrefix = tableAlias + &quot;_&quot;;</span>
-<span class="fc" id="L54">			TableMapping tableMapping = sjmSupport.getTableMapping(entry.getKey());</span>
-<span class="fc bfc" id="L55" title="All 2 branches covered.">			for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {</span>
-<span class="fc" id="L56">				sb.append(tablePrefix).append(propMapping.getColumnName()).append(&quot; AS &quot;).append(colPrefix)</span>
-<span class="fc" id="L57">						.append(propMapping.getColumnName());</span>
-<span class="fc" id="L58">				sj.add(sb);</span>
-<span class="fc" id="L59">				sb.setLength(0);</span>
+<span class="fc" id="L49">		StringBuilder sb = new StringBuilder(64);</span>
+<span class="fc" id="L50">		StringJoiner sj = new StringJoiner(&quot;, &quot;, &quot; &quot;, &quot; &quot;);</span>
+<span class="fc bfc" id="L51" title="All 2 branches covered.">		for (Map.Entry&lt;Class&lt;?&gt;, String&gt; entry : multiEntity.getEntries()) {</span>
+<span class="fc" id="L52">			String tableAlias = entry.getValue();</span>
+<span class="fc" id="L53">			String tablePrefix = tableAlias + &quot;.&quot;;</span>
+<span class="fc" id="L54">			String colPrefix = tableAlias + &quot;_&quot;;</span>
+<span class="fc" id="L55">			TableMapping tableMapping = sjmSupport.getTableMapping(entry.getKey());</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">			for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {</span>
+<span class="fc" id="L57">				sb.append(tablePrefix).append(propMapping.getColumnName()).append(&quot; AS &quot;).append(colPrefix)</span>
+<span class="fc" id="L58">						.append(propMapping.getColumnName());</span>
+<span class="fc" id="L59">				sj.add(sb);</span>
+<span class="fc" id="L60">				sb.setLength(0);</span>
 			}
-<span class="fc" id="L61">		}</span>
-<span class="fc" id="L62">		return sj.toString();</span>
+<span class="fc" id="L62">		}</span>
+<span class="fc" id="L63">		return sj.toString();</span>
 	}
 
-	public ResultSetExtractor&lt;ResultListMap&gt; resultSetExtractor(MultiEntity multiEntity) {
-<span class="fc" id="L66">		List&lt;EntityExtractor&gt; entityExtractors = getEntityExtractors(multiEntity);</span>
+	public ResultSetExtractor&lt;RelationshipMapper&gt; resultSetExtractor(MultiEntity multiEntity) {
+<span class="fc" id="L67">		List&lt;EntityExtractor&gt; entityExtractors = getEntityExtractors(multiEntity);</span>
 
-<span class="fc" id="L68">		return new ResultSetExtractor&lt;ResultListMap&gt;() {</span>
+<span class="fc" id="L69">		return new ResultSetExtractor&lt;RelationshipMapper&gt;() {</span>
 			@SuppressWarnings(&quot;unchecked&quot;)
 			@Override
-			public ResultListMap extractData(ResultSet rs) throws SQLException, DataAccessException {
-<span class="fc" id="L72">				int rowCnt = 1;</span>
-<span class="fc bfc" id="L73" title="All 2 branches covered.">				while (rs.next()) {</span>
-<span class="fc bfc" id="L74" title="All 2 branches covered.">					for (EntityExtractor entityExtractor : entityExtractors) {</span>
-<span class="fc" id="L75">						EntityRowMapper&lt;?&gt; rowMapper = entityExtractor.rowMapper();</span>
+			public RelationshipMapper extractData(ResultSet rs) throws SQLException, DataAccessException {
+<span class="fc" id="L73">				int rowCnt = 1;</span>
+<span class="fc bfc" id="L74" title="All 2 branches covered.">				while (rs.next()) {</span>
+<span class="fc bfc" id="L75" title="All 2 branches covered.">					for (EntityExtractor entityExtractor : entityExtractors) {</span>
+<span class="fc" id="L76">						EntityRowMapper&lt;?&gt; rowMapper = entityExtractor.rowMapper();</span>
 						// rowMapper will always return an object
-<span class="fc" id="L77">						Object obj = rowMapper.mapRow(rs, rowCnt);</span>
+<span class="fc" id="L78">						Object obj = rowMapper.mapRow(rs, rowCnt);</span>
 						try {
-<span class="fc" id="L79">							Object id = entityExtractor.idReadMethod().invoke(obj);</span>
-<span class="fc bfc" id="L80" title="All 4 branches covered.">							if (id != null &amp;&amp; entityExtractor.idSet().add(id)) {</span>
+<span class="fc" id="L80">							Object id = entityExtractor.idReadMethod().invoke(obj);</span>
+<span class="fc bfc" id="L81" title="All 4 branches covered.">							if (id != null &amp;&amp; entityExtractor.idSet().add(id)) {</span>
 								// not a duplicate
-<span class="fc" id="L82">								entityExtractor.result().add(obj);</span>
+<span class="fc" id="L83">								entityExtractor.result().add(obj);</span>
 							}
-<span class="nc" id="L84">						} catch (Exception e) {</span>
-<span class="nc" id="L85">							throw new MapperException(e.getMessage(), e);</span>
-<span class="fc" id="L86">						}</span>
-<span class="fc" id="L87">					}</span>
-<span class="fc" id="L88">					rowCnt++;</span>
+<span class="nc" id="L85">						} catch (Exception e) {</span>
+<span class="nc" id="L86">							throw new MapperException(e.getMessage(), e);</span>
+<span class="fc" id="L87">						}</span>
+<span class="fc" id="L88">					}</span>
+<span class="fc" id="L89">					rowCnt++;</span>
 				}
 
-<span class="fc" id="L91">				ResultListMap resultListMap = new ResultListMap();</span>
-<span class="fc bfc" id="L92" title="All 2 branches covered.">				for (EntityExtractor entityExtractor : entityExtractors) {</span>
-<span class="fc" id="L93">					resultListMap.putList(entityExtractor.entityType(), entityExtractor.result());</span>
-<span class="fc" id="L94">				}</span>
-<span class="fc" id="L95">				return resultListMap;</span>
+<span class="fc" id="L92">				RelationshipMapper relationshipMapper = new RelationshipMapper();</span>
+<span class="fc bfc" id="L93" title="All 2 branches covered.">				for (EntityExtractor entityExtractor : entityExtractors) {</span>
+<span class="fc" id="L94">					relationshipMapper.addEntityResult(entityExtractor.entityType(), entityExtractor.result(),</span>
+<span class="fc" id="L95">							entityExtractor.idPropertyName());</span>
+<span class="fc" id="L96">				}</span>
+<span class="fc" id="L97">				return relationshipMapper;</span>
 			}
 		};
 	}
 
 	@SuppressWarnings(&quot;rawtypes&quot;)
 	List&lt;EntityExtractor&gt; getEntityExtractors(MultiEntity multiEntity) {
-<span class="fc" id="L102">		int offset = 1;</span>
-<span class="fc" id="L103">		List&lt;EntityExtractor&gt; entityExtractors = new ArrayList&lt;&gt;();</span>
-<span class="fc bfc" id="L104" title="All 2 branches covered.">		for (Map.Entry&lt;Class&lt;?&gt;, String&gt; entry : multiEntity.getEntries()) {</span>
-<span class="fc" id="L105">			Class&lt;?&gt; entityType = entry.getKey();</span>
-<span class="fc" id="L106">			EntityRowMapper&lt;?&gt; rowMapper = newEntityRowMapper(entityType, offset);</span>
-<span class="fc" id="L107">			TableMapping tableMapping = sjmSupport.getTableMapping(entityType);</span>
-<span class="fc" id="L108">			Method idReadMethod = tableMapping.getIdPropertyMapping().getReadMethod();</span>
-<span class="fc" id="L109">			entityExtractors</span>
-<span class="fc" id="L110">					.add(new EntityExtractor(entityType, rowMapper, new ArrayList(), idReadMethod, new HashSet()));</span>
-<span class="fc" id="L111">			offset += tableMapping.getPropertyMappings().length;</span>
-<span class="fc" id="L112">		}</span>
-<span class="fc" id="L113">		return entityExtractors;</span>
+<span class="fc" id="L104">		int offset = 1;</span>
+<span class="fc" id="L105">		List&lt;EntityExtractor&gt; entityExtractors = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L106" title="All 2 branches covered.">		for (Map.Entry&lt;Class&lt;?&gt;, String&gt; entry : multiEntity.getEntries()) {</span>
+<span class="fc" id="L107">			Class&lt;?&gt; entityType = entry.getKey();</span>
+<span class="fc" id="L108">			EntityRowMapper&lt;?&gt; rowMapper = newEntityRowMapper(entityType, offset);</span>
+<span class="fc" id="L109">			TableMapping tableMapping = sjmSupport.getTableMapping(entityType);</span>
+<span class="fc" id="L110">			Method idReadMethod = tableMapping.getIdPropertyMapping().getReadMethod();</span>
+<span class="fc" id="L111">			entityExtractors.add(new EntityExtractor(entityType, rowMapper, new ArrayList(), idReadMethod,</span>
+<span class="fc" id="L112">					tableMapping.getIdPropertyName(), new HashSet()));</span>
+<span class="fc" id="L113">			offset += tableMapping.getPropertyMappings().length;</span>
+<span class="fc" id="L114">		}</span>
+<span class="fc" id="L115">		return entityExtractors;</span>
 	}
 
 	public &lt;T&gt; EntityRowMapper&lt;T&gt; newEntityRowMapper(Class&lt;T&gt; entityType, int offset) {
-<span class="fc" id="L117">		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);</span>
-<span class="fc" id="L118">		EntityRowMapper&lt;T&gt; rowMapper = new EntityRowMapper&lt;&gt;(tableMapping, sjmSupport.getConversionService(), offset);</span>
-<span class="pc bpc" id="L119" title="1 of 2 branches missed.">		if (logger.isDebugEnabled()) {</span>
-<span class="fc" id="L120">			logger.debug(&quot;EntityRowMapper: {}&quot;, rowMapper);</span>
+<span class="fc" id="L119">		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);</span>
+<span class="fc" id="L120">		EntityRowMapper&lt;T&gt; rowMapper = new EntityRowMapper&lt;&gt;(tableMapping, sjmSupport.getConversionService(), offset);</span>
+<span class="pc bpc" id="L121" title="1 of 2 branches missed.">		if (logger.isDebugEnabled()) {</span>
+<span class="fc" id="L122">			logger.debug(&quot;EntityRowMapper: {}&quot;, rowMapper);</span>
 		}
-<span class="fc" id="L122">		return rowMapper;</span>
+<span class="fc" id="L124">		return rowMapper;</span>
 	}
 
 	@SuppressWarnings(&quot;rawtypes&quot;)
-<span class="fc" id="L126">	record EntityExtractor(Class&lt;?&gt; entityType, EntityRowMapper&lt;?&gt; rowMapper, List result, Method idReadMethod,</span>
-			Set idSet) {
+<span class="fc" id="L128">	record EntityExtractor(Class&lt;?&gt; entityType, EntityRowMapper&lt;?&gt; rowMapper, List result, Method idReadMethod,</span>
+			String idPropertyName, Set idSet) {
 	}
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 62f8e7f42c621a330cc418c402526616c2be30b4 2026-05-04T23:21:08</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 5cea7eebf4084fde2a05a4448e205fff75260a8f 2026-05-06T11:57:14</div></body></html>

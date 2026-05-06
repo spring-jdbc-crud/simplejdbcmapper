@@ -74,7 +74,7 @@ class ToManyTest {
 			relMapper.type(Order.class).toMany(OrderLineOrderIdInteger.class).joinOn("id", "orderId")
 					.populate("orderLines");
 		});
-		assertTrue(exception.getMessage().contains("are not the same"));
+		assertTrue(exception.getMessage().contains("Conflicting property types."));
 
 	}
 

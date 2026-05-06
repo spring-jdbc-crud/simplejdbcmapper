@@ -46,8 +46,8 @@ public class ToOne {
 		Class<?> mainObjJoinPropertyType = Relationship.getPropertyType(mainType, mainObjJoinProperty);
 		Class<?> relatedObjJoinPropertyType = Relationship.getPropertyType(relatedType, relatedObjJoinProperty);
 		if (mainObjJoinPropertyType != relatedObjJoinPropertyType) {
-			throw new IllegalArgumentException("Property types of " + mainObjJoinProperty + " on main object and "
-					+ relatedObjJoinProperty + " on related object are not the same.");
+			throw new IllegalArgumentException("Conflicting property types. Property type of " + mainObjJoinProperty
+					+ " on main object and " + relatedObjJoinProperty + " on related object are not the same.");
 		}
 
 		this.mainObjJoinPropertyReadMethod = Relationship.getReadMethod(mainType, mainObjJoinProperty);

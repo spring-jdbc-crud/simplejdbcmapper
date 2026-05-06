@@ -52,8 +52,8 @@ public class ToMany {
 		Class<?> mainObjIdPropertyType = Relationship.getPropertyType(mainType, mainObjIdProperty);
 		Class<?> relatedObjFkPropertyType = Relationship.getPropertyType(relatedType, relatedObjFkProperty);
 		if (mainObjIdPropertyType != relatedObjFkPropertyType) {
-			throw new IllegalArgumentException("Property types of " + mainObjIdProperty + " on main object and "
-					+ relatedObjFkProperty + " on related object are not the same.");
+			throw new IllegalArgumentException("Conflicting property types. Property type of " + mainObjIdProperty
+					+ " on main object and " + relatedObjFkProperty + " on related object are not the same.");
 		}
 
 		this.mainObjIdPropertyReadMethod = Relationship.getReadMethod(mainType, mainObjIdProperty);
@@ -66,24 +66,24 @@ public class ToMany {
 		Assert.notNull(fkPropertyToMainObjId, "fkPropertyToMainObjId must not be null");
 		Assert.notNull(fkPropertyToRelatedObjId, "fkPropertyToRelatedObjId must not be null");
 
-		this.mainObjIdPropertyReadMethod = Relationship.getReadMethod(mainType, mainObjIdProperty);
-		this.relatedObjIdPropertyReadMethod = Relationship.getReadMethod(relatedType, relatedObjIdProperty);
-
 		Class<?> mainObjIdPropertyType = Relationship.getPropertyType(mainType, mainObjIdProperty);
 		Class<?> fkPropertyToMainObjIdType = Relationship.getPropertyType(intermediateType, fkPropertyToMainObjId);
+		if (mainObjIdPropertyType != fkPropertyToMainObjIdType) {
+			throw new IllegalArgumentException("Conflicting property types. Property type of " + mainObjIdProperty
+					+ " on main object and " + fkPropertyToRelatedObjId + " on intermediate object are not the same.");
+		}
 
 		Class<?> relatedObjIdPropertyType = Relationship.getPropertyType(relatedType, relatedObjIdProperty);
 		Class<?> fkPropertyToRelatedObjIdType = Relationship.getPropertyType(intermediateType,
 				fkPropertyToRelatedObjId);
-		if (mainObjIdPropertyType != fkPropertyToMainObjIdType) {
-			throw new IllegalArgumentException("Property types of " + mainObjIdProperty + " on main object and "
-					+ fkPropertyToRelatedObjId + " on intermediate object are not the same.");
+		if (relatedObjIdPropertyType != fkPropertyToRelatedObjIdType) {
+			throw new IllegalArgumentException("Conflicting property types. Property type of "
+					+ relatedObjIdPropertyType + " on related object and " + fkPropertyToRelatedObjIdType
+					+ " on intermediate object are not the same.");
 		}
 
-		if (relatedObjIdPropertyType != fkPropertyToRelatedObjIdType) {
-			throw new IllegalArgumentException("Property types of " + relatedObjIdPropertyType + " on main object and "
-					+ fkPropertyToRelatedObjIdType + " on intermediate object are not the same.");
-		}
+		this.mainObjIdPropertyReadMethod = Relationship.getReadMethod(mainType, mainObjIdProperty);
+		this.relatedObjIdPropertyReadMethod = Relationship.getReadMethod(relatedType, relatedObjIdProperty);
 
 		this.intermediateJoiner = new IntermediateJoiner(intermediateList, fkPropertyToMainObjId,
 				fkPropertyToRelatedObjId, intermediateType);

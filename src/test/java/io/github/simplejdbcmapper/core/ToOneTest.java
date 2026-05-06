@@ -57,14 +57,6 @@ class ToOneTest {
 		});
 		assertTrue(exception.getMessage().contains("does not exist for"));
 
-		// assertDoesNotThrow(() -> {
-		// relMapper.type(null).toOne(Product.class).joinOn("x", "id");
-		// });
-
-		// assertDoesNotThrow(() -> {
-		// relMapper.type(orderLines).toOneList(null).joinOn("orderLineId", "x");
-		// });
-
 	}
 
 	@Test
@@ -91,7 +83,7 @@ class ToOneTest {
 		Exception exception = Assertions.assertThrows(Exception.class, () -> {
 			relMapper.type(User.class).toOne(ProfileUserIdLong.class).joinOn("id", "userId").populate("profile");
 		});
-		assertTrue(exception.getMessage().contains("are not the same"));
+		assertTrue(exception.getMessage().contains("Conflicting property types."));
 
 	}
 

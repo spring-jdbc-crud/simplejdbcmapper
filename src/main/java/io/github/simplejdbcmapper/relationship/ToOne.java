@@ -26,9 +26,6 @@ import io.github.simplejdbcmapper.exception.MapperException;
 /**
  * This handles the ToOne relationship.
  * 
- * @param <T> the type of the main object
- * @param <U> the type of the related object
- * 
  * @author Antony Joseph
  */
 public class ToOne {

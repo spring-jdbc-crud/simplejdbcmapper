@@ -1,3 +1,16 @@
+/*
+ * Copyright 2025-present the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ *
+ * https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package io.github.simplejdbcmapper.relationship;
 
 import java.util.ArrayList;
@@ -6,14 +19,12 @@ import java.util.List;
 import org.springframework.util.Assert;
 
 /**
- * The starting point for any relationship assignment. It works with the lists
- * provided and depending on the arguments to the api methods, populates the
- * target property. The terminal method in the api flow is populate() which
- * triggers the processing.
+ * /** This holds the results from a multi-entity query. See
+ * {@link io.github.simplejdbcmapper.core.SimpleJdbcMapper#resultSetExtractor}
  * 
  * <p>
- * Processing does not access the database or use SimpleJdbcMapper.
- * 
+ * Starts of the relationship processing.
+ *
  * @author Antony Joseph
  */
 public class RelationshipMapper {
@@ -27,6 +38,13 @@ public class RelationshipMapper {
 		results.add(new ExtractorEntityResult(entityType, list, idPropertyName));
 	}
 
+	/**
+	 * Starts of the relationship population flow.
+	 * 
+	 * @param <T>  the type
+	 * @param type the type
+	 * @return RelationshipSpec the relationship spec
+	 */
 	public <T> RelationshipSpec type(Class<T> type) {
 		Assert.notNull(type, "type must not be null");
 		// will throw an exception for invalid type

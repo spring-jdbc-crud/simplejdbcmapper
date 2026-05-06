@@ -26,8 +26,6 @@ public interface ToManySpec {
 	 * 
 	 * <b>The java type of both the properties have to be exactly the same.</b>
 	 * 
-	 * For example one should not be Long and the other an Integer.
-	 * 
 	 * @param mainObjIdProperty    The main object id
 	 * @param relatedObjFkProperty The related object foreign key used for matching
 	 * @return The populateSpec
@@ -38,12 +36,12 @@ public interface ToManySpec {
 	 * The 'through' information when defining a toMany relationship through an
 	 * intermediate table (one side of many to many).
 	 * 
-	 * @param intermediateList         The intermediate table list
+	 * @param throughType              The intermediate type
 	 * @param fkPropertyToMainObjId    the foreign key property that matches the
 	 *                                 main object's id
 	 * @param fkPropertyToRelatedObjId The foreign key property that matches the
 	 *                                 related object's id
-	 * @return the ThroughSpec
+	 * @return the PopulateSpec
 	 */
 	PopulateSpec through(Class<?> throughType, String fkPropertyToMainObjId, String fkPropertyToRelatedObjId);
 }

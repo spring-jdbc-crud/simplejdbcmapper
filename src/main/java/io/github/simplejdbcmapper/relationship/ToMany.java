@@ -28,9 +28,6 @@ import io.github.simplejdbcmapper.exception.MapperException;
  * This handles the toMany relationship including toMany through an intermediate
  * table.
  * 
- * @param <T> The main object type
- * @param <U> The related object type
- * 
  * @author Antony Joseph
  */
 public class ToMany {

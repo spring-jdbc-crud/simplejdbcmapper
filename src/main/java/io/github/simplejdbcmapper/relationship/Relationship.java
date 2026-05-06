@@ -1,3 +1,16 @@
+/*
+ * Copyright 2025-present the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ *
+ * https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
+ */
 package io.github.simplejdbcmapper.relationship;
 
 import java.lang.reflect.Field;
@@ -11,6 +24,15 @@ import org.springframework.util.StringUtils;
 
 import io.github.simplejdbcmapper.relationship.RelationshipMapper.ExtractorEntityResult;
 
+/**
+ * The relationship. It uses the arguments provided through its API and
+ * populates the target property.
+ * 
+ * <p>
+ * Does not access database or use SimpleJdbcMapper
+ * 
+ * @author Antony Joseph
+ */
 public class Relationship implements RelationshipSpec, ToManySpec, ToOneSpec, PopulateSpec, GetListSpec {
 	static final String IS_PREFIX = "is";
 	static final String GET_PREFIX = "get";
@@ -37,14 +59,6 @@ public class Relationship implements RelationshipSpec, ToManySpec, ToOneSpec, Po
 		return new Relationship(type, results);
 	}
 
-	/**
-	 * A toOne relationship
-	 * 
-	 * @param <U>            the type of the related object
-	 * 
-	 * @param relatedObjList the list of related objects
-	 * 
-	 */
 	public ToOneSpec toOne(Class<?> relatedType) {
 		Assert.notNull(relatedType, "relatedType must not be null");
 		// will throw an exception for invalid type

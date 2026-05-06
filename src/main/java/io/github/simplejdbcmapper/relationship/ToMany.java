@@ -28,12 +28,9 @@ import io.github.simplejdbcmapper.exception.MapperException;
  * This handles the toMany relationship including toMany through an intermediate
  * table.
  * 
- * @param <T> The main object type
- * @param <U> The related object type
- * 
  * @author Antony Joseph
  */
-public class ToMany<T, U> implements ToManySpec, ThroughSpec, PopulateSpec {
+public class ToMany {
 
 	private Method mainObjIdPropertyReadMethod;
 
@@ -43,75 +40,59 @@ public class ToMany<T, U> implements ToManySpec, ThroughSpec, PopulateSpec {
 
 	private Method mainObjPropertyToPopulateWriteMethod;
 
-	private List<T> mainObjList;
-
-	private List<U> relatedObjList;
-
 	private IntermediateJoiner intermediateJoiner;
 
-	private String relationshipType = "toMany";
-
-	private ToMany(List<T> mainObjList, List<U> relatedObjList) {
-		this.mainObjList = mainObjList;
-		this.relatedObjList = relatedObjList;
-	}
-
-	static <T, U> ToManySpec toMany(List<T> mainObjList, List<U> relatedObjList) {
-		return new ToMany<>(mainObjList, relatedObjList);
-	}
-
-	public PopulateSpec joinOn(String mainObjIdProperty, String relatedObjFkProperty) {
+	void joinOn(String mainObjIdProperty, String relatedObjFkProperty, Class<?> mainType, Class<?> relatedType) {
 		Assert.notNull(mainObjIdProperty, "mainObjIdProperty must not be null");
 		Assert.notNull(relatedObjFkProperty, "relatedObjFkProperty must not be null");
 
-		this.mainObjIdPropertyReadMethod = Relationship.getReadMethod(mainObjList, mainObjIdProperty);
-		this.relatedObjFkPropertyReadMethod = Relationship.getReadMethod(relatedObjList, relatedObjFkProperty);
-
-		if (this.mainObjIdPropertyReadMethod != null && this.relatedObjFkPropertyReadMethod != null) {
-			Class<?> mainObjIdPropertyType = Relationship.getPropertyType(mainObjList, mainObjIdProperty);
-			Class<?> relatedObjFkPropertyType = Relationship.getPropertyType(relatedObjList, relatedObjFkProperty);
-			if (mainObjIdPropertyType != relatedObjFkPropertyType) {
-				throw new IllegalArgumentException("Property types of " + mainObjIdProperty + " on main object and "
-						+ relatedObjFkProperty + " on related object are not the same.");
-			}
+		Class<?> mainObjIdPropertyType = Relationship.getPropertyType(mainType, mainObjIdProperty);
+		Class<?> relatedObjFkPropertyType = Relationship.getPropertyType(relatedType, relatedObjFkProperty);
+		if (mainObjIdPropertyType != relatedObjFkPropertyType) {
+			throw new IllegalArgumentException("Conflicting property types. Property type of " + mainObjIdProperty
+					+ " on main object and " + relatedObjFkProperty + " on related object are not the same.");
 		}
-		return this;
+
+		this.mainObjIdPropertyReadMethod = Relationship.getReadMethod(mainType, mainObjIdProperty);
+		this.relatedObjFkPropertyReadMethod = Relationship.getReadMethod(relatedType, relatedObjFkProperty);
 	}
 
-	public ThroughSpec through(List<?> intermediateList, String fkPropertyToMainObjId,
-			String fkPropertyToRelatedObjId) {
+	void through(List<?> intermediateList, String fkPropertyToMainObjId, String fkPropertyToRelatedObjId,
+			Class<?> mainType, String mainObjIdProperty, Class<?> relatedType, String relatedObjIdProperty,
+			Class<?> intermediateType) {
 		Assert.notNull(fkPropertyToMainObjId, "fkPropertyToMainObjId must not be null");
 		Assert.notNull(fkPropertyToRelatedObjId, "fkPropertyToRelatedObjId must not be null");
 
-		this.intermediateJoiner = new IntermediateJoiner(intermediateList, fkPropertyToMainObjId,
-				fkPropertyToRelatedObjId);
-
-		this.relationshipType = "toManyThrough";
-		return this;
-	}
-
-	public PopulateSpec ids(String mainObjIdProperty, String relatedObjIdProperty) {
-		Assert.notNull(mainObjIdProperty, "mainObjIdProperty must not be null");
-		Assert.notNull(relatedObjIdProperty, "relatedObjIdProperty must not be null");
-
-		this.mainObjIdPropertyReadMethod = Relationship.getReadMethod(mainObjList, mainObjIdProperty);
-		this.relatedObjIdPropertyReadMethod = Relationship.getReadMethod(relatedObjList, relatedObjIdProperty);
-
-		return this;
-	}
-
-	public void populate(String mainObjPropertyToPopulate) {
-		Assert.notNull(mainObjPropertyToPopulate, "mainObjPropertyToPopulate must not be null");
-		this.mainObjPropertyToPopulateWriteMethod = Relationship.getWriteMethod(mainObjList, mainObjPropertyToPopulate);
-
-		if ("toMany".equals(relationshipType)) {
-			populateToMany();
-		} else {
-			populateToManyThrough();
+		Class<?> mainObjIdPropertyType = Relationship.getPropertyType(mainType, mainObjIdProperty);
+		Class<?> fkPropertyToMainObjIdType = Relationship.getPropertyType(intermediateType, fkPropertyToMainObjId);
+		if (mainObjIdPropertyType != fkPropertyToMainObjIdType) {
+			throw new IllegalArgumentException("Conflicting property types. Property type of " + mainObjIdProperty
+					+ " on main object and " + fkPropertyToMainObjIdType + " on intermediate object are not the same.");
 		}
+
+		Class<?> relatedObjIdPropertyType = Relationship.getPropertyType(relatedType, relatedObjIdProperty);
+		Class<?> fkPropertyToRelatedObjIdType = Relationship.getPropertyType(intermediateType,
+				fkPropertyToRelatedObjId);
+		if (relatedObjIdPropertyType != fkPropertyToRelatedObjIdType) {
+			throw new IllegalArgumentException("Conflicting property types. Property type of "
+					+ relatedObjIdPropertyType + " on related object and " + fkPropertyToRelatedObjIdType
+					+ " on intermediate object are not the same.");
+		}
+
+		this.mainObjIdPropertyReadMethod = Relationship.getReadMethod(mainType, mainObjIdProperty);
+		this.relatedObjIdPropertyReadMethod = Relationship.getReadMethod(relatedType, relatedObjIdProperty);
+
+		this.intermediateJoiner = new IntermediateJoiner(intermediateList, fkPropertyToMainObjId,
+				fkPropertyToRelatedObjId, intermediateType);
+
 	}
 
-	private void populateToMany() {
+	void populate(String mainObjPropertyToPopulate, Class<?> mainType) {
+		Assert.notNull(mainObjPropertyToPopulate, "mainObjPropertyToPopulate must not be null");
+		this.mainObjPropertyToPopulateWriteMethod = Relationship.getWriteMethod(mainType, mainObjPropertyToPopulate);
+	}
+
+	<T, U> void populateToMany(List<T> mainObjList, List<U> relatedObjList) {
 		if (CollectionUtils.isEmpty(mainObjList) || CollectionUtils.isEmpty(relatedObjList)) {
 			return;
 		}
@@ -154,7 +135,7 @@ public class ToMany<T, U> implements ToManySpec, ThroughSpec, PopulateSpec {
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private void populateToManyThrough() {
+	<T, U> void populateToManyThrough(List<T> mainObjList, List<U> relatedObjList) {
 		if (CollectionUtils.isEmpty(mainObjList) || CollectionUtils.isEmpty(relatedObjList)) {
 			return;
 		}
@@ -204,13 +185,13 @@ public class ToMany<T, U> implements ToManySpec, ThroughSpec, PopulateSpec {
 
 		@SuppressWarnings({ "unchecked", "rawtypes" })
 		public IntermediateJoiner(List<?> intermediateList, String fkPropertyToMainObjId,
-				String fkPropertyToRelatedObjId) {
+				String fkPropertyToRelatedObjId, Class<?> intermediateType) {
 			if (CollectionUtils.isEmpty(intermediateList)) {
 				return;
 			}
-			Method fkPropertyToMainObjIdReadMethod = Relationship.getReadMethod(intermediateList,
+			Method fkPropertyToMainObjIdReadMethod = Relationship.getReadMethod(intermediateType,
 					fkPropertyToMainObjId);
-			Method fkPropertyToRelatedObjIdReadMethod = Relationship.getReadMethod(intermediateList,
+			Method fkPropertyToRelatedObjIdReadMethod = Relationship.getReadMethod(intermediateType,
 					fkPropertyToRelatedObjId);
 			try {
 				for (Object intermediateObj : intermediateList) {

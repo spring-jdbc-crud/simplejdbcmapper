@@ -14,14 +14,14 @@
 package io.github.simplejdbcmapper.relationship;
 
 /**
- * The populate specification for the terminal method in the api which triggers
- * processing of the relationship.
+ * The populate specification for the populate method which triggers processing
+ * of the relationship.
  * 
  * @author Antony Joseph
  */
 public interface PopulateSpec {
 	/**
-	 * This is the terminal method of the API. Once invoked the relationship gets
+	 * Triggers processing of relationship. Once invoked the relationship gets
 	 * processed and the target property gets set.
 	 * 
 	 * <p>
@@ -30,5 +30,5 @@ public interface PopulateSpec {
 	 * @param propertyToPopulateOnMainObj the target property on the main object
 	 *                                    which needs to be populated.
 	 */
-	void populate(String propertyToPopulateOnMainObj);
+	GetListSpec populate(String propertyToPopulateOnMainObj);
 }

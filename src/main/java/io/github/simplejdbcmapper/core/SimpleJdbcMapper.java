@@ -29,6 +29,8 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.util.Assert;
 
+import io.github.simplejdbcmapper.relationship.RelationshipMapper;
+
 /**
  * CRUD methods and configuration for SimpleJdbcMapper.
  * 
@@ -390,11 +392,12 @@ public final class SimpleJdbcMapper {
 
 	/**
 	 * The ResultSeExtractor for multiple entities. The results are returned in
-	 * {@link io.github.simplejdbcmapper.core.ResultListMap}. It expects the columns
-	 * sql to <b>always</b> be generated using {@link #getMultiEntitySqlColumns}.
+	 * {@link io.github.simplejdbcmapper.relationship.RelationshipMapper}. It
+	 * expects the columns sql to <b>always</b> be generated using
+	 * {@link #getMultiEntitySqlColumns}.
 	 * <p>
-	 * The result list in ResultListMap for each entity will be <b>Unique by ID</b>
-	 * , ie there will no duplicate records for that entity.
+	 * The result lists held in RelationshipMapper for each entity will be <b>Unique
+	 * by ID</b> , ie there will no duplicate records for each entity.
 	 * <p>
 	 * It will handle the cases where the column to property mappings do not follow
 	 * the underscore to camel case naming convention.
@@ -417,7 +420,8 @@ public final class SimpleJdbcMapper {
 	 * 		""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
 	 * 
 	 * // Use this method with JdbcTemplate to extract the data for the multiple entities. 
-	 * ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity), someAmount);
+	 * RelationshipMapper relationshipMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity),
+	 * 		someAmount);
 	 * 
 	 * </pre>
 	 * 
@@ -426,9 +430,9 @@ public final class SimpleJdbcMapper {
 	 *                    extracted from the query ResultSet
 	 * @return a Spring ResultSetExtractor that can be used with
 	 *         JdbcTemplate/NamedParameterJdbcTemplate and the results are returned
-	 *         in ResultListMap
+	 *         in RelationshipMapper
 	 */
-	public ResultSetExtractor<ResultListMap> resultSetExtractor(MultiEntity multiEntity) {
+	public ResultSetExtractor<RelationshipMapper> resultSetExtractor(MultiEntity multiEntity) {
 		return multiEntityExtractor.resultSetExtractor(multiEntity);
 	}
 

@@ -16,7 +16,7 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 import io.github.simplejdbcmapper.model.Employee;
 import io.github.simplejdbcmapper.model.EmployeeSkill;
 import io.github.simplejdbcmapper.model.Skill;
-import io.github.simplejdbcmapper.relationship.Relationship;
+import io.github.simplejdbcmapper.relationship.RelationshipMapper;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -30,75 +30,31 @@ class ToManyThroughTest {
 		List<Skill> skills = sjm.findAll(Skill.class);
 		List<EmployeeSkill> employeeSkillList = sjm.findAll(EmployeeSkill.class);
 
+		RelationshipMapper relMapper = new RelationshipMapper();
+		relMapper.addEntityResult(Employee.class, employees, "id");
+		relMapper.addEntityResult(Skill.class, skills, "id");
+		relMapper.addEntityResult(EmployeeSkill.class, employeeSkillList, "id");
+
 		Exception exception = Assertions.assertThrows(Exception.class, () -> {
-			Relationship.mainList(employees).toManyList(skills).through(employeeSkillList, null, "skillId");
+			relMapper.type(Employee.class).toMany(Skill.class).through(EmployeeSkill.class, null, "skillId");
 		});
 		assertTrue(exception.getMessage().contains("fkPropertyToMainObjId must not be null"));
 
 		exception = Assertions.assertThrows(Exception.class, () -> {
-			Relationship.mainList(employees).toManyList(skills).through(employeeSkillList, "employeeId", null);
+			relMapper.type(Employee.class).toMany(Skill.class).through(EmployeeSkill.class, "employeeId", null);
 		});
 		assertTrue(exception.getMessage().contains("fkPropertyToRelatedObjId must not be null"));
 
 		exception = Assertions.assertThrows(Exception.class, () -> {
-			Relationship.mainList(employees).toManyList(skills).through(employeeSkillList, "x", "skillId");
+			relMapper.type(Employee.class).toMany(Skill.class).through(EmployeeSkill.class, "x", "skillId");
 		});
-		assertTrue(exception.getMessage().contains("Invalid argument. Could not find getter for"));
+		assertTrue(exception.getMessage().contains("does not exist for"));
 
 		exception = Assertions.assertThrows(Exception.class, () -> {
-			Relationship.mainList(employees).toManyList(skills).through(employeeSkillList, "employeeId", "x");
+			relMapper.type(Employee.class).toMany(Skill.class).through(EmployeeSkill.class, "employeeId", "x");
 		});
-		assertTrue(exception.getMessage().contains("Invalid argument. Could not find getter for"));
+		assertTrue(exception.getMessage().contains("does not exist for"));
 
-		assertDoesNotThrow(() -> {
-			Relationship.mainList(employees).toManyList(skills).through(null, "x", "skillId");
-		});
-
-		assertDoesNotThrow(() -> {
-			Relationship.mainList(employees).toManyList(skills).through(null, "employeeId", "x");
-		});
-
-	}
-
-	@Test
-	void toManythrough_ids_validation_test() {
-		List<Employee> employees = sjm.findAll(Employee.class);
-		List<Skill> skills = sjm.findAll(Skill.class);
-		List<EmployeeSkill> employeeSkillList = sjm.findAll(EmployeeSkill.class);
-
-		Exception exception = Assertions.assertThrows(Exception.class, () -> {
-			Relationship.mainList(employees).toManyList(skills).through(employeeSkillList, "employeeId", "skillId")
-					.ids(null, "id");
-		});
-		assertTrue(exception.getMessage().contains("mainObjIdProperty must not be null"));
-
-		exception = Assertions.assertThrows(Exception.class, () -> {
-			Relationship.mainList(employees).toManyList(skills).through(employeeSkillList, "employeeId", "skillId")
-					.ids("id", null);
-		});
-		assertTrue(exception.getMessage().contains("relatedObjIdProperty must not be null"));
-
-		exception = Assertions.assertThrows(Exception.class, () -> {
-			Relationship.mainList(employees).toManyList(skills).through(employeeSkillList, "employeeId", "skillId")
-					.ids("x", "id");
-		});
-		assertTrue(exception.getMessage().contains("Invalid argument. Could not find getter for"));
-
-		exception = Assertions.assertThrows(Exception.class, () -> {
-			Relationship.mainList(employees).toManyList(skills).through(employeeSkillList, "employeeId", "skillId")
-					.ids("id", "x");
-		});
-		assertTrue(exception.getMessage().contains("Invalid argument. Could not find getter for"));
-
-		assertDoesNotThrow(() -> {
-			Relationship.mainList(null).toManyList(skills).through(employeeSkillList, "employeeId", "skillId").ids("x",
-					"id");
-		});
-
-		assertDoesNotThrow(() -> {
-			Relationship.mainList(employees).toManyList(null).through(employeeSkillList, "employeeId", "skillId")
-					.ids("id", "x");
-		});
 	}
 
 	@Test
@@ -107,27 +63,27 @@ class ToManyThroughTest {
 		List<Skill> skills = sjm.findAll(Skill.class);
 		List<EmployeeSkill> employeeSkillList = sjm.findAll(EmployeeSkill.class);
 
+		RelationshipMapper relMapper = new RelationshipMapper();
+		relMapper.addEntityResult(Employee.class, employees, "id");
+		relMapper.addEntityResult(Skill.class, skills, "id");
+		relMapper.addEntityResult(EmployeeSkill.class, employeeSkillList, "id");
+
 		Exception exception = Assertions.assertThrows(Exception.class, () -> {
-			Relationship.mainList(employees).toManyList(skills).through(employeeSkillList, "employeeId", "skillId")
-					.ids("id", "id").populate(null);
+			relMapper.type(Employee.class).toMany(Skill.class).through(EmployeeSkill.class, "employeeId", "skillId")
+					.populate(null);
 		});
 		assertTrue(exception.getMessage().contains("mainObjPropertyToPopulate must not be null"));
 
 		exception = Assertions.assertThrows(Exception.class, () -> {
-			Relationship.mainList(employees).toManyList(skills).through(employeeSkillList, "employeeId", "skillId")
-					.ids("id", "id").populate("x");
+			relMapper.type(Employee.class).toMany(Skill.class).through(EmployeeSkill.class, "employeeId", "skillId")
+					.populate("x");
 		});
 		assertTrue(exception.getMessage().contains("Invalid argument. Property name"));
 
-		assertDoesNotThrow(() -> {
-			Relationship.mainList(null).toManyList(skills).through(employeeSkillList, "employeeId", "skillId")
-					.ids("id", "id").populate("x");
-		});
-
 		// type mismatch ie property exits but of different type
 		exception = Assertions.assertThrows(Exception.class, () -> {
-			Relationship.mainList(employees).toManyList(skills).through(employeeSkillList, "employeeId", "skillId")
-					.ids("id", "id").populate("lastName");
+			relMapper.type(Employee.class).toMany(Skill.class).through(EmployeeSkill.class, "employeeId", "skillId")
+					.populate("lastName");
 		});
 		assertTrue(exception.getMessage().contains("argument type mismatch"));
 
@@ -142,20 +98,16 @@ class ToManyThroughTest {
 		String sql = """
 				SELECT %s
 				FROM employee emp
-				LEFT JOIN  employee_skill es ON emp.id = es.employee_id
+				LEFT JOIN employee_skill es ON emp.id = es.employee_id
 				LEFT JOIN skill s ON es.skill_id = s.id
 				WHERE emp.id <= 4
 				ORDER BY emp.id, s.name
 				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
 
-		ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
+		RelationshipMapper relMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 
-		List<Employee> employees = resultListMap.getList(Employee.class);
-		List<EmployeeSkill> employeeSkillList = resultListMap.getList(EmployeeSkill.class);
-		List<Skill> skills = resultListMap.getList(Skill.class);
-
-		Relationship.mainList(employees).toManyList(skills).through(employeeSkillList, "employeeId", "skillId")
-				.ids("id", "id").populate("skills");
+		List<Employee> employees = relMapper.type(Employee.class).toMany(Skill.class)
+				.through(EmployeeSkill.class, "employeeId", "skillId").populate("skills").getList(Employee.class);
 
 		assertEquals(4, employees.size());
 		assertEquals(2, employees.get(0).getSkills().size(), "emp 1 size failed");
@@ -178,24 +130,24 @@ class ToManyThroughTest {
 		String sql = """
 				SELECT %s
 				FROM employee emp
-				LEFT JOIN  employee_skill es ON emp.id = es.employee_id
+				LEFT JOIN employee_skill es ON emp.id = es.employee_id
 				LEFT JOIN skill s ON es.skill_id = s.id
 				WHERE emp.id <= 4
 				ORDER BY emp.id, s.id
 				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
 
-		ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
+		RelationshipMapper relMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 
-		List<Employee> employees = resultListMap.getList(Employee.class);
+		List<Employee> employees = relMapper.getList(Employee.class);
 		employees.add(1, null);
-		List<EmployeeSkill> employeeSkillList = resultListMap.getList(EmployeeSkill.class);
+		List<EmployeeSkill> employeeSkillList = relMapper.getList(EmployeeSkill.class);
 		employeeSkillList.add(0, null);
 
-		List<Skill> skills = resultListMap.getList(Skill.class);
+		List<Skill> skills = relMapper.getList(Skill.class);
 		skills.add(2, null);
 
-		Relationship.mainList(employees).toManyList(skills).through(employeeSkillList, "employeeId", "skillId")
-				.ids("id", "id").populate("skills");
+		relMapper.type(Employee.class).toMany(Skill.class).through(EmployeeSkill.class, "employeeId", "skillId")
+				.populate("skills");
 
 		assertEquals("ruby", employees.get(3).getSkills().get(2).getName());
 
@@ -208,66 +160,27 @@ class ToManyThroughTest {
 				.add(Skill.class, "s");
 
 		String sql = """
-				SELECT %s
-				FROM employee emp
-				LEFT JOIN  employee_skill es ON emp.id = es.employee_id
-				LEFT JOIN skill s ON es.skill_id = s.id
-				WHERE emp.id <= 4
-				ORDER BY emp.id, s.id
+					SELECT %s
+					FROM employee emp
+					LEFT JOIN employee_skill es ON emp.id = es.employee_id
+					LEFT JOIN skill s ON es.skill_id = s.id
+					WHERE emp.id <= 4 ORDER BY emp.id, s.id
 				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
 
-		ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
+		RelationshipMapper relMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 
-		List<Employee> employees = resultListMap.getList(Employee.class);
+		List<Employee> employees = relMapper.getList(Employee.class);
 		employees.add(1, new Employee());
-		List<EmployeeSkill> employeeSkillList = resultListMap.getList(EmployeeSkill.class);
+		List<EmployeeSkill> employeeSkillList = relMapper.getList(EmployeeSkill.class);
 		employeeSkillList.add(0, new EmployeeSkill());
 
-		List<Skill> skills = resultListMap.getList(Skill.class);
+		List<Skill> skills = relMapper.getList(Skill.class);
 		skills.add(2, new Skill());
 
-		Relationship.mainList(employees).toManyList(skills).through(employeeSkillList, "employeeId", "skillId")
-				.ids("id", "id").populate("skills");
+		relMapper.type(Employee.class).toMany(Skill.class).through(EmployeeSkill.class, "employeeId", "skillId")
+				.populate("skills");
 
 		assertEquals("ruby", employees.get(3).getSkills().get(2).getName());
-
-	}
-
-	@Test
-	void ToManyThrough_null_lists_test() {
-
-		MultiEntity multiEntity = new MultiEntity().add(Employee.class, "emp").add(EmployeeSkill.class, "es")
-				.add(Skill.class, "s");
-
-		String sql = """
-				SELECT %s
-				FROM employee emp
-				LEFT JOIN  employee_skill es ON emp.id = es.employee_id
-				LEFT JOIN skill s ON es.skill_id = s.id
-				WHERE emp.id <= 4
-				ORDER BY emp.id, s.id
-				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
-
-		ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
-
-		List<Employee> employees = resultListMap.getList(Employee.class);
-		List<EmployeeSkill> employeeSkillList = resultListMap.getList(EmployeeSkill.class);
-		List<Skill> skills = resultListMap.getList(Skill.class);
-
-		assertDoesNotThrow(() -> {
-			Relationship.mainList(null).toManyList(skills).through(employeeSkillList, "employeeId", "skillId")
-					.ids("id", "id").populate("skills");
-		});
-
-		assertDoesNotThrow(() -> {
-			Relationship.mainList(employees).toManyList(null).through(employeeSkillList, "employeeId", "skillId")
-					.ids("id", "id").populate("skills");
-		});
-
-		assertDoesNotThrow(() -> {
-			Relationship.mainList(employees).toManyList(skills).through(null, "employeeId", "skillId").ids("id", "id")
-					.populate("skills");
-		});
 
 	}
 
@@ -280,26 +193,26 @@ class ToManyThroughTest {
 		String sql = """
 				SELECT %s
 				FROM employee emp
-				LEFT JOIN  employee_skill es ON emp.id = es.employee_id
+				LEFT JOIN employee_skill es ON emp.id = es.employee_id
 				LEFT JOIN skill s ON es.skill_id = s.id
-				WHERE emp.id < 0
-				ORDER BY emp.id, s.id
+				WHERE emp.id < 0 ORDER BY emp.id, s.id
 				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
 
-		ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
+		RelationshipMapper relMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 
-		List<Employee> employees = resultListMap.getList(Employee.class);
-		List<EmployeeSkill> employeeSkillList = resultListMap.getList(EmployeeSkill.class);
-		List<Skill> skills = resultListMap.getList(Skill.class);
+		List<Employee> employees = relMapper.getList(Employee.class);
+		List<EmployeeSkill> employeeSkillList = relMapper.getList(EmployeeSkill.class);
+		List<Skill> skills = relMapper.getList(Skill.class);
 
 		assertEquals(0, employees.size());
 		assertEquals(0, employeeSkillList.size());
 		assertEquals(0, skills.size());
 
 		assertDoesNotThrow(() -> {
-			Relationship.mainList(employees).toManyList(skills).through(employeeSkillList, "employeeId", "skillId")
-					.ids("id", "id").populate("skills");
+			relMapper.type(Employee.class).toMany(Skill.class).through(EmployeeSkill.class, "employeeId", "skillId")
+					.populate("skills");
 		});
 
 	}
+
 }

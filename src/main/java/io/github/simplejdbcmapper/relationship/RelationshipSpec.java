@@ -13,8 +13,6 @@
  */
 package io.github.simplejdbcmapper.relationship;
 
-import java.util.List;
-
 /**
  * A relationship specification.
  * 
@@ -25,19 +23,19 @@ public interface RelationshipSpec {
 	/**
 	 * A toOne relationship
 	 * 
-	 * @param <U>            the type of the related object
+	 * @param relatedType the related type
 	 * 
-	 * @param relatedObjList the list of related objects
+	 * @return ToOneSpec the spec
 	 */
-	<U> ToOneSpec toOneList(List<U> relatedObjList);
+	ToOneSpec toOne(Class<?> relatedType);
 
 	/**
 	 * A toMany relationship
 	 * 
-	 * @param <U>            the type of the related object
+	 * @param relatedType the related type
 	 * 
-	 * @param relatedObjList the list of related objects
+	 * @return ToManySpec the spec
 	 */
-	<U> ToManySpec toManyList(List<U> relatedObjList);
+	ToManySpec toMany(Class<?> relatedType);
 
 }

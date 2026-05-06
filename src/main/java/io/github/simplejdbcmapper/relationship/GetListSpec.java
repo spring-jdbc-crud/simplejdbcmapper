@@ -13,22 +13,22 @@
  */
 package io.github.simplejdbcmapper.relationship;
 
+import java.util.List;
+
 /**
- * The Through specification for a toMany relationship through an intermediate
- * table.
+ * Gets list by type for relationship
  * 
  * @author Antony Joseph
  */
-public interface ThroughSpec {
+public interface GetListSpec {
+
 	/**
-	 * The id property names whose values are used to match the corresponding
-	 * property values of properties configured in the
-	 * {@link io.github.simplejdbcmapper.relationship.ToManySpec#through} method
-	 * (intermediate table info) of the relationship.
+	 * Gets list by type for relationship
 	 * 
-	 * @param mainObjIdProperty
-	 * @param relatedObjIdProperty
-	 * @return PopulateSpec
+	 * @param type the type
+	 * 
+	 * @return the list of type
 	 */
-	PopulateSpec ids(String mainObjIdProperty, String relatedObjIdProperty);
+	<E> List<E> getList(Class<E> type);
+
 }

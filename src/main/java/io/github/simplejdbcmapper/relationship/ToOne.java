@@ -26,55 +26,38 @@ import io.github.simplejdbcmapper.exception.MapperException;
 /**
  * This handles the ToOne relationship.
  * 
- * @param <T> the type of the main object
- * @param <U> the type of the related object
- * 
  * @author Antony Joseph
  */
-public class ToOne<T, U> implements ToOneSpec, PopulateSpec {
+public class ToOne {
 
 	private Method mainObjJoinPropertyReadMethod;
 	private Method relatedObjJoinPropertyReadMethod;
 
 	private Method mainObjPropertyToPopulateWriteMethod;
 
-	private List<T> mainObjList;
-	private List<U> relatedObjList;
-
-	private ToOne(List<T> mainObjList, List<U> relatedObjList) {
-		this.mainObjList = mainObjList;
-		this.relatedObjList = relatedObjList;
-	}
-
-	static <T, U> ToOneSpec toOne(List<T> mainObjList, List<U> relatedObjList) {
-		return new ToOne<>(mainObjList, relatedObjList);
-	}
-
-	public PopulateSpec joinOn(String mainObjJoinProperty, String relatedObjJoinProperty) {
+	public void joinOn(String mainObjJoinProperty, String relatedObjJoinProperty, Class<?> mainType,
+			Class<?> relatedType) {
 		Assert.notNull(mainObjJoinProperty, "mainObjJoinProperty must not be null");
 		Assert.notNull(relatedObjJoinProperty, "relatedObjJoinProperty must not be null");
 
-		this.mainObjJoinPropertyReadMethod = Relationship.getReadMethod(mainObjList, mainObjJoinProperty);
-		this.relatedObjJoinPropertyReadMethod = Relationship.getReadMethod(relatedObjList, relatedObjJoinProperty);
-
-		if (this.mainObjJoinPropertyReadMethod != null && this.relatedObjJoinPropertyReadMethod != null) {
-			Class<?> mainObjJoinPropertyType = Relationship.getPropertyType(mainObjList, mainObjJoinProperty);
-			Class<?> relatedObjJoinPropertyType = Relationship.getPropertyType(relatedObjList, relatedObjJoinProperty);
-			if (mainObjJoinPropertyType != relatedObjJoinPropertyType) {
-				throw new IllegalArgumentException("Property types of " + mainObjJoinProperty + " on main object and "
-						+ relatedObjJoinProperty + " on related object are not the same.");
-			}
+		Class<?> mainObjJoinPropertyType = Relationship.getPropertyType(mainType, mainObjJoinProperty);
+		Class<?> relatedObjJoinPropertyType = Relationship.getPropertyType(relatedType, relatedObjJoinProperty);
+		if (mainObjJoinPropertyType != relatedObjJoinPropertyType) {
+			throw new IllegalArgumentException("Conflicting property types. Property type of " + mainObjJoinProperty
+					+ " on main object and " + relatedObjJoinProperty + " on related object are not the same.");
 		}
-		return this;
+
+		this.mainObjJoinPropertyReadMethod = Relationship.getReadMethod(mainType, mainObjJoinProperty);
+		this.relatedObjJoinPropertyReadMethod = Relationship.getReadMethod(relatedType, relatedObjJoinProperty);
+
 	}
 
-	public void populate(String mainObjPropertyToPopulate) {
+	public void populate(String mainObjPropertyToPopulate, Class<?> mainType) {
 		Assert.notNull(mainObjPropertyToPopulate, "mainObjPropertyToPopulate must not be null");
-		this.mainObjPropertyToPopulateWriteMethod = Relationship.getWriteMethod(mainObjList, mainObjPropertyToPopulate);
-		populateToOne();
+		this.mainObjPropertyToPopulateWriteMethod = Relationship.getWriteMethod(mainType, mainObjPropertyToPopulate);
 	}
 
-	private void populateToOne() {
+	<T, U> void populateToOne(List<T> mainObjList, List<U> relatedObjList) {
 		if (CollectionUtils.isEmpty(mainObjList) || CollectionUtils.isEmpty(relatedObjList)) {
 			return;
 		}

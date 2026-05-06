@@ -15,11 +15,12 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import io.github.simplejdbcmapper.exception.MapperException;
 import io.github.simplejdbcmapper.model.Order;
 import io.github.simplejdbcmapper.model.OrderLine;
 import io.github.simplejdbcmapper.model.OrderLineOrderIdInteger;
 import io.github.simplejdbcmapper.model.Product;
-import io.github.simplejdbcmapper.relationship.Relationship;
+import io.github.simplejdbcmapper.relationship.RelationshipMapper;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -32,25 +33,29 @@ class ToManyTest {
 		List<Order> orders = sjm.findAll(Order.class);
 		List<OrderLine> orderLines = sjm.findAll(OrderLine.class);
 
+		RelationshipMapper relMapper = new RelationshipMapper();
+		relMapper.addEntityResult(Order.class, orders, null);
+		relMapper.addEntityResult(OrderLine.class, orderLines, null);
+
 		Exception exception = Assertions.assertThrows(Exception.class, () -> {
-			Relationship.mainList(orders).toManyList(orderLines).joinOn(null, "orderId");
+			relMapper.type(Order.class).toMany(OrderLine.class).joinOn(null, "orderId");
 		});
 		assertTrue(exception.getMessage().contains("mainObjIdProperty must not be null"));
 
 		exception = Assertions.assertThrows(Exception.class, () -> {
-			Relationship.mainList(orders).toManyList(orderLines).joinOn("orderId", null);
+			relMapper.type(Order.class).toMany(OrderLine.class).joinOn("orderId", null);
 		});
 		assertTrue(exception.getMessage().contains("relatedObjFkProperty must not be null"));
 
 		exception = Assertions.assertThrows(Exception.class, () -> {
-			Relationship.mainList(orders).toManyList(orderLines).joinOn("x", "orderId");
+			relMapper.type(Order.class).toMany(OrderLine.class).joinOn("x", "orderId");
 		});
-		assertTrue(exception.getMessage().contains("Invalid argument. Could not find getter for"));
+		assertTrue(exception.getMessage().contains("does not exist for"));
 
 		exception = Assertions.assertThrows(Exception.class, () -> {
-			Relationship.mainList(orders).toManyList(orderLines).joinOn("orderId", "x");
+			relMapper.type(Order.class).toMany(OrderLine.class).joinOn("orderId", "x");
 		});
-		assertTrue(exception.getMessage().contains("Invalid argument. Could not find getter for"));
+		assertTrue(exception.getMessage().contains("does not exist for"));
 
 	}
 
@@ -58,12 +63,18 @@ class ToManyTest {
 	void toMany_joinOn_propertyTypeCheck_test() {
 		List<Order> orders = sjm.findAll(Order.class);
 		List<OrderLineOrderIdInteger> orderLines = new ArrayList<>();
+
 		orderLines.add(new OrderLineOrderIdInteger());
 
+		RelationshipMapper relMapper = new RelationshipMapper();
+		relMapper.addEntityResult(Order.class, orders, null);
+		relMapper.addEntityResult(OrderLineOrderIdInteger.class, orderLines, null);
+
 		Exception exception = Assertions.assertThrows(Exception.class, () -> {
-			Relationship.mainList(orders).toOneList(orderLines).joinOn("id", "orderId").populate("orderLines");
+			relMapper.type(Order.class).toMany(OrderLineOrderIdInteger.class).joinOn("id", "orderId")
+					.populate("orderLines");
 		});
-		assertTrue(exception.getMessage().contains("are not the same"));
+		assertTrue(exception.getMessage().contains("Conflicting property types."));
 
 	}
 
@@ -73,36 +84,29 @@ class ToManyTest {
 		MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol");
 
 		String sql = """
-				SELECT %s
-				FROM orders o
-				LEFT JOIN order_line ol ON  o.id = ol.order_id
-				WHERE o.id <= 4
-				ORDER BY o.id, ol.order_line_id
+					SELECT %s
+					FROM orders o
+					LEFT JOIN order_line ol ON o.id =ol.order_id
+					WHERE o.id <= 4
+					ORDER BY o.id, ol.order_line_id
 				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
 
-		ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
-
-		List<Order> orders = resultListMap.getList(Order.class);
-		List<OrderLine> orderLines = resultListMap.getList(OrderLine.class);
+		RelationshipMapper relMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 
 		Exception exception = Assertions.assertThrows(Exception.class, () -> {
-			Relationship.mainList(orders).toManyList(orderLines).joinOn("id", "orderId").populate(null);
+			relMapper.type(Order.class).toMany(OrderLine.class).joinOn("id", "orderId").populate(null);
 		});
 		assertTrue(exception.getMessage().contains("mainObjPropertyToPopulate must not be null"));
 
 		exception = Assertions.assertThrows(Exception.class, () -> {
-			Relationship.mainList(orders).toManyList(orderLines).joinOn("id", "orderId").populate("x");
+			relMapper.type(Order.class).toMany(OrderLine.class).joinOn("id", "orderId").populate("x");
 		});
 		assertTrue(exception.getMessage().contains("Invalid argument. Property name"));
 
-		assertDoesNotThrow(() -> {
-			Relationship.mainList(null).toManyList(orderLines).joinOn("id", "orderId").populate("x");
+		exception = Assertions.assertThrows(MapperException.class, () -> {
+			relMapper.type(Order.class).toMany(OrderLine.class).joinOn("id", "orderId").populate("customerId");
 		});
 
-		// type mismatch ie property exits but of different type
-		exception = Assertions.assertThrows(Exception.class, () -> {
-			Relationship.mainList(orders).toManyList(orderLines).joinOn("id", "orderId").populate("customerId");
-		});
 		assertTrue(exception.getMessage().contains("argument type mismatch"));
 
 	}
@@ -115,17 +119,15 @@ class ToManyTest {
 		String sql = """
 				SELECT %s
 				FROM orders o
-				LEFT JOIN order_line ol ON  o.id = ol.order_id
+				LEFT JOIN order_line ol ON o.id = ol.order_id
 				WHERE o.id <= 4
 				ORDER BY o.id, ol.order_line_id
 				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
 
-		ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
+		RelationshipMapper relMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 
-		List<Order> orders = resultListMap.getList(Order.class);
-		List<OrderLine> orderLines = resultListMap.getList(OrderLine.class);
-
-		Relationship.mainList(orders).toManyList(orderLines).joinOn("id", "orderId").populate("orderLines");
+		List<Order> orders = relMapper.type(Order.class).toMany(OrderLine.class).joinOn("id", "orderId")
+				.populate("orderLines").getList(Order.class);
 
 		assertEquals(4, orders.size());
 		assertEquals(2, orders.get(0).getOrderLines().size(), "ord 1 lines count failed");
@@ -145,19 +147,17 @@ class ToManyTest {
 		MultiEntity multiEntity = new MultiEntity().add(OrderLine.class, "ol").add(Order.class, "o");
 
 		String sql = """
-				SELECT %s
-				FROM orders o
-				LEFT JOIN order_line ol ON  o.id = ol.order_id
-				WHERE o.id <= 4
-				ORDER BY o.id, ol.order_line_id
+						SELECT %s
+						FROM orders o
+						LEFT JOIN order_line ol ON o.id = ol.order_id
+						WHERE o.id <= 4
+						ORDER BY o.id, ol.order_line_id
 				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
 
-		ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
+		RelationshipMapper relMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 
-		List<Order> orders = resultListMap.getList(Order.class);
-		List<OrderLine> orderLines = resultListMap.getList(OrderLine.class);
-
-		Relationship.mainList(orders).toManyList(orderLines).joinOn("id", "orderId").populate("orderLines");
+		List<Order> orders = relMapper.type(Order.class).toMany(OrderLine.class).joinOn("id", "orderId")
+				.populate("orderLines").getList(Order.class);
 
 		assertEquals(4, orders.size());
 		assertEquals(2, orders.get(0).getOrderLines().size(), "ord 1 lines count failed");
@@ -178,21 +178,18 @@ class ToManyTest {
 		String sql = """
 				SELECT %s
 				FROM orders o
-				LEFT JOIN order_line ol ON  o.id = ol.order_id
+				LEFT JOIN order_line ol ON o.id = ol.order_id
 				WHERE o.id <= 0
 				ORDER BY o.id, ol.order_line_id
 				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
 
-		ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
+		RelationshipMapper relMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 
-		List<Order> orders = resultListMap.getList(Order.class);
-		List<OrderLine> orderLines = resultListMap.getList(OrderLine.class);
-
-		assertEquals(0, orders.size());
-		assertEquals(0, orderLines.size());
+		assertEquals(0, relMapper.getList(Order.class).size());
+		assertEquals(0, relMapper.getList(Order.class).size());
 
 		assertDoesNotThrow(() -> {
-			Relationship.mainList(orders).toManyList(orderLines).joinOn("id", "orderId").populate("orderLines");
+			relMapper.type(Order.class).toMany(OrderLine.class).joinOn("id", "orderId").populate("orderLines");
 		});
 
 	}
@@ -205,21 +202,21 @@ class ToManyTest {
 		String sql = """
 				SELECT %s
 				FROM orders o
-				LEFT JOIN order_line ol ON  o.id = ol.order_id
+				LEFT JOIN order_line ol ON o.id = ol.order_id
 				WHERE o.id <= 4
 				ORDER BY o.id, ol.order_line_id
 				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
 
-		ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
+		RelationshipMapper relMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 
-		List<Order> orders = resultListMap.getList(Order.class);
-		List<OrderLine> orderLines = resultListMap.getList(OrderLine.class);
+		List<Order> orders = relMapper.getList(Order.class);
+		List<OrderLine> orderLines = relMapper.getList(OrderLine.class);
 
 		orders.add(1, null);
 
 		orderLines.add(1, null);
 
-		Relationship.mainList(orders).toManyList(orderLines).joinOn("id", "orderId").populate("orderLines");
+		relMapper.type(Order.class).toMany(OrderLine.class).joinOn("id", "orderId").populate("orderLines");
 
 		assertEquals(5, orders.get(0).getOrderLines().get(1).getNumOfUnits());
 
@@ -235,53 +232,25 @@ class ToManyTest {
 		String sql = """
 				SELECT %s
 				FROM orders o
-				LEFT JOIN order_line ol ON  o.id = ol.order_id
+				LEFT JOIN order_line ol ON o.id = ol.order_id
 				WHERE o.id <= 4
 				ORDER BY o.id, ol.order_line_id
 				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
 
-		ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
+		RelationshipMapper relMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 
-		List<Order> orders = resultListMap.getList(Order.class);
-		List<OrderLine> orderLines = resultListMap.getList(OrderLine.class);
+		List<Order> orders = relMapper.getList(Order.class);
+		List<OrderLine> orderLines = relMapper.getList(OrderLine.class);
 
 		orders.add(1, new Order());
 
 		orderLines.add(1, new OrderLine());
 
-		Relationship.mainList(orders).toManyList(orderLines).joinOn("id", "orderId").populate("orderLines");
+		relMapper.type(Order.class).toMany(OrderLine.class).joinOn("id", "orderId").populate("orderLines");
 
 		assertEquals(5, orders.get(0).getOrderLines().get(1).getNumOfUnits());
 
 		assertEquals(1, orders.get(2).getOrderLines().get(0).getNumOfUnits());
-
-	}
-
-	@Test
-	void ToMany_null_list_tests() {
-
-		MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol");
-
-		String sql = """
-				SELECT %s
-				FROM orders o
-				LEFT JOIN order_line ol ON  o.id = ol.order_id
-				WHERE o.id <= 4
-				ORDER BY o.id, ol.order_line_id
-				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
-
-		ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
-
-		List<Order> orders = resultListMap.getList(Order.class);
-		List<OrderLine> orderLines = resultListMap.getList(OrderLine.class);
-
-		assertDoesNotThrow(() -> {
-			Relationship.mainList(null).toManyList(orderLines).joinOn("id", "orderId").populate("orderLines");
-		});
-
-		assertDoesNotThrow(() -> {
-			Relationship.mainList(orders).toManyList(null).joinOn("id", "orderId").populate("orderLines");
-		});
 
 	}
 
@@ -292,22 +261,19 @@ class ToManyTest {
 				"p");
 
 		String sql = """
-				SELECT %s
-				FROM orders o
-				LEFT JOIN order_line ol ON  o.id = ol.order_id
-				LEFT JOIN product p ON ol.product_id = p.id
-				WHERE o.id <= 4
-				ORDER BY o.id, ol.order_line_id
+						SELECT %s
+						FROM orders o
+						LEFT JOIN order_line ol ON o.id = ol.order_id
+						LEFT JOIN product p ON ol.product_id = p.id
+						WHERE o.id <= 4 ORDER BY o.id, ol.order_line_id
 				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
 
-		ResultListMap resultListMap = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
+		RelationshipMapper relMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 
-		List<Order> orders = resultListMap.getList(Order.class);
-		List<OrderLine> orderLines = resultListMap.getList(OrderLine.class);
-		List<Product> products = resultListMap.getList(Product.class);
+		relMapper.type(OrderLine.class).toOne(Product.class).joinOn("productId", "id").populate("product");
 
-		Relationship.mainList(orders).toManyList(orderLines).joinOn("id", "orderId").populate("orderLines");
-		Relationship.mainList(orderLines).toOneList(products).joinOn("productId", "id").populate("product");
+		List<Order> orders = relMapper.type(Order.class).toMany(OrderLine.class).joinOn("id", "orderId")
+				.populate("orderLines").getList(Order.class);
 
 		assertEquals(4, orders.size());
 		assertEquals(2, orders.get(0).getOrderLines().size(), "ord 1 lines count failed");

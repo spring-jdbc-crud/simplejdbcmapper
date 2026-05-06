@@ -84,7 +84,8 @@ class ToManyTest {
 		MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol");
 
 		String sql = """
-					SELECT %s FROM orders o
+					SELECT %s
+					FROM orders o
 					LEFT JOIN order_line ol ON o.id =ol.order_id
 					WHERE o.id <= 4
 					ORDER BY o.id, ol.order_line_id
@@ -116,7 +117,8 @@ class ToManyTest {
 		MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol");
 
 		String sql = """
-				SELECT %s FROM orders o
+				SELECT %s
+				FROM orders o
 				LEFT JOIN order_line ol ON o.id = ol.order_id
 				WHERE o.id <= 4
 				ORDER BY o.id, ol.order_line_id
@@ -145,8 +147,11 @@ class ToManyTest {
 		MultiEntity multiEntity = new MultiEntity().add(OrderLine.class, "ol").add(Order.class, "o");
 
 		String sql = """
-						SELECT %s FROM orders o LEFT JOIN order_line ol ON o.id =
-				ol.order_id WHERE o.id <= 4 ORDER BY o.id, ol.order_line_id
+						SELECT %s
+						FROM orders o
+						LEFT JOIN order_line ol ON o.id = ol.order_id
+						WHERE o.id <= 4
+						ORDER BY o.id, ol.order_line_id
 				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
 
 		RelationshipMapper relMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
@@ -171,9 +176,11 @@ class ToManyTest {
 		MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol");
 
 		String sql = """
-
-					SELECT %s FROM orders o LEFT JOIN order_line ol ON o.id =
-				ol.order_id WHERE o.id <= 0 ORDER BY o.id, ol.order_line_id
+				SELECT %s
+				FROM orders o
+				LEFT JOIN order_line ol ON o.id = ol.order_id
+				WHERE o.id <= 0
+				ORDER BY o.id, ol.order_line_id
 				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
 
 		RelationshipMapper relMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
@@ -193,9 +200,11 @@ class ToManyTest {
 		MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol");
 
 		String sql = """
-
-						SELECT %s FROM orders o LEFT JOIN order_line ol ON o.id =
-				ol.order_id WHERE o.id <= 4 ORDER BY o.id, ol.order_line_id
+				SELECT %s
+				FROM orders o
+				LEFT JOIN order_line ol ON o.id = ol.order_id
+				WHERE o.id <= 4
+				ORDER BY o.id, ol.order_line_id
 				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
 
 		RelationshipMapper relMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
@@ -221,8 +230,11 @@ class ToManyTest {
 		MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol");
 
 		String sql = """
-					 SELECT %s FROM orders o LEFT JOIN order_line ol ON o.id =
-				ol.order_id WHERE o.id <= 4 ORDER BY o.id, ol.order_line_id
+				SELECT %s
+				FROM orders o
+				LEFT JOIN order_line ol ON o.id = ol.order_id
+				WHERE o.id <= 4
+				ORDER BY o.id, ol.order_line_id
 				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
 
 		RelationshipMapper relMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));

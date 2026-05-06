@@ -96,9 +96,12 @@ class ToManyThroughTest {
 				.add(Skill.class, "s");
 
 		String sql = """
-				  SELECT %s FROM employee emp LEFT JOIN employee_skill es ON
-				emp.id = es.employee_id LEFT JOIN skill s ON es.skill_id = s.id WHERE emp.id
-				<= 4 ORDER BY emp.id, s.name
+				SELECT %s
+				FROM employee emp
+				LEFT JOIN employee_skill es ON emp.id = es.employee_id
+				LEFT JOIN skill s ON es.skill_id = s.id
+				WHERE emp.id <= 4
+				ORDER BY emp.id, s.name
 				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
 
 		RelationshipMapper relMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
@@ -125,10 +128,12 @@ class ToManyThroughTest {
 				.add(Skill.class, "s");
 
 		String sql = """
-
-						SELECT %s FROM employee emp LEFT JOIN employee_skill es ON
-				emp.id = es.employee_id LEFT JOIN skill s ON es.skill_id = s.id WHERE emp.id
-				<= 4 ORDER BY emp.id, s.id
+				SELECT %s
+				FROM employee emp
+				LEFT JOIN employee_skill es ON emp.id = es.employee_id
+				LEFT JOIN skill s ON es.skill_id = s.id
+				WHERE emp.id <= 4
+				ORDER BY emp.id, s.id
 				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
 
 		RelationshipMapper relMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
@@ -155,9 +160,11 @@ class ToManyThroughTest {
 				.add(Skill.class, "s");
 
 		String sql = """
-					SELECT %s FROM employee emp LEFT JOIN employee_skill es ON
-				emp.id = es.employee_id LEFT JOIN skill s ON es.skill_id = s.id WHERE emp.id
-				<= 4 ORDER BY emp.id, s.id
+					SELECT %s
+					FROM employee emp
+					LEFT JOIN employee_skill es ON emp.id = es.employee_id
+					LEFT JOIN skill s ON es.skill_id = s.id
+					WHERE emp.id <= 4 ORDER BY emp.id, s.id
 				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
 
 		RelationshipMapper relMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
@@ -184,9 +191,11 @@ class ToManyThroughTest {
 				.add(Skill.class, "s");
 
 		String sql = """
-						SELECT %s FROM employee emp LEFT JOIN employee_skill es ON
-				emp.id = es.employee_id LEFT JOIN skill s ON es.skill_id = s.id WHERE emp.id
-				< 0 ORDER BY emp.id, s.id
+				SELECT %s
+				FROM employee emp
+				LEFT JOIN employee_skill es ON emp.id = es.employee_id
+				LEFT JOIN skill s ON es.skill_id = s.id
+				WHERE emp.id < 0 ORDER BY emp.id, s.id
 				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
 
 		RelationshipMapper relMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));

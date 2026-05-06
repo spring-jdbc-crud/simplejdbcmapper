@@ -24,13 +24,25 @@ import org.springframework.util.Assert;
  * 
  * <p>
  * Starts the relationship processing flow.
+ * 
+ * For more details on its use see the <a href=
+ * "https://github.com/spring-jdbc-crud/simplejdbcmapper#populating-relationships-from-custom-queries">documentation</a>
  *
+ * 
  * @author Antony Joseph
  */
 public class RelationshipMapper {
 
 	private List<ExtractorEntityResult> results = new ArrayList<>();
 
+	/**
+	 * Add an entity result
+	 * 
+	 * @param <T>            the type
+	 * @param entityType     the entity type
+	 * @param list           the list of results
+	 * @param idPropertyName the id property name of the entity
+	 */
 	public <T> void addEntityResult(Class<T> entityType, List<T> list, String idPropertyName) {
 		Assert.notNull(entityType, "entityType must not be null");
 		Assert.notNull(list, "list must not be null");
@@ -52,6 +64,13 @@ public class RelationshipMapper {
 		return Relationship.newInstance(type, results);
 	}
 
+	/**
+	 * returns the results for the type
+	 * 
+	 * @param <T>  the type
+	 * @param type the type
+	 * @return list of results
+	 */
 	@SuppressWarnings("unchecked")
 	public <T> List<T> getList(Class<T> type) {
 		for (ExtractorEntityResult result : results) {

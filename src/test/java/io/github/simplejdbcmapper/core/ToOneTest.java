@@ -106,11 +106,6 @@ class ToOneTest {
 		});
 		assertTrue(exception.getMessage().contains("Invalid argument. Property name"));
 
-		// assertDoesNotThrow(() -> {
-		// relMapper.type(null).toOne(Product.class).joinOn("productId",
-		// "id").populate("x");
-		// });
-
 	}
 
 	@Test

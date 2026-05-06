@@ -18,7 +18,7 @@ import io.github.simplejdbcmapper.relationship.RelationshipMapper;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-public class RelationshipMapperTest {
+class RelationshipMapperTest {
 	@Autowired
 	private SimpleJdbcMapper sjm;
 

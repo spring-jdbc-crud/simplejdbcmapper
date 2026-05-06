@@ -37,7 +37,7 @@ public class SimpleJdbcMapperUtils {
 	/**
 	 * 
 	 * @deprecated As of release 2.3.0, Replaced by
-	 *             {@link io.github.simplejdbcmapper.relationship.Relationship#toOneList}
+	 *             {@link io.github.simplejdbcmapper.relationship.Relationship#toOne}
 	 *             <p>
 	 *             Assigns the 'hasOne' property of the main object with the related
 	 *             object that matches 'relatedObjJoinPropertyNameTheId' and
@@ -100,7 +100,7 @@ public class SimpleJdbcMapperUtils {
 	/**
 	 * 
 	 * @deprecated As of release 2.3.0, Replaced by
-	 *             {@link io.github.simplejdbcmapper.relationship.Relationship#toManyList}
+	 *             {@link io.github.simplejdbcmapper.relationship.Relationship#toMany}
 	 *             <p>
 	 *             Assigns the 'hasMany' property of the main object with the list
 	 *             of related objects that match 'mainObjJoinPropertyNameTheId' and

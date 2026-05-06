@@ -16,9 +16,8 @@ public interface ToOneSpec {
 	 * 
 	 * @param mainObjJoinProperty    The main object property for matching
 	 * @param relatedObjJoinProperty The related object property for matching
-	 * @return The populateSpec
+	 * @return The PopulateSpec
 	 * 
-	 * @author Antony Joseph
 	 */
 	PopulateSpec joinOn(String mainObjJoinProperty, String relatedObjJoinProperty);
 }

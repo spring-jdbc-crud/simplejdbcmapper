@@ -31,9 +31,9 @@ class ToManyThroughTest {
 		List<EmployeeSkill> employeeSkillList = sjm.findAll(EmployeeSkill.class);
 
 		RelationshipMapper relMapper = new RelationshipMapper();
-		relMapper.addResult(Employee.class, employees, "id");
-		relMapper.addResult(Skill.class, skills, "id");
-		relMapper.addResult(EmployeeSkill.class, employeeSkillList, "id");
+		relMapper.addEntityResult(Employee.class, employees, "id");
+		relMapper.addEntityResult(Skill.class, skills, "id");
+		relMapper.addEntityResult(EmployeeSkill.class, employeeSkillList, "id");
 
 		Exception exception = Assertions.assertThrows(Exception.class, () -> {
 			relMapper.type(Employee.class).toMany(Skill.class).through(EmployeeSkill.class, null, "skillId");
@@ -64,9 +64,9 @@ class ToManyThroughTest {
 		List<EmployeeSkill> employeeSkillList = sjm.findAll(EmployeeSkill.class);
 
 		RelationshipMapper relMapper = new RelationshipMapper();
-		relMapper.addResult(Employee.class, employees, "id");
-		relMapper.addResult(Skill.class, skills, "id");
-		relMapper.addResult(EmployeeSkill.class, employeeSkillList, "id");
+		relMapper.addEntityResult(Employee.class, employees, "id");
+		relMapper.addEntityResult(Skill.class, skills, "id");
+		relMapper.addEntityResult(EmployeeSkill.class, employeeSkillList, "id");
 
 		Exception exception = Assertions.assertThrows(Exception.class, () -> {
 			relMapper.type(Employee.class).toMany(Skill.class).through(EmployeeSkill.class, "employeeId", "skillId")

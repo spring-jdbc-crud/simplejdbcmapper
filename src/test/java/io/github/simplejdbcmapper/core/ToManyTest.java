@@ -34,8 +34,8 @@ class ToManyTest {
 		List<OrderLine> orderLines = sjm.findAll(OrderLine.class);
 
 		RelationshipMapper relMapper = new RelationshipMapper();
-		relMapper.addResult(Order.class, orders, null);
-		relMapper.addResult(OrderLine.class, orderLines, null);
+		relMapper.addEntityResult(Order.class, orders, null);
+		relMapper.addEntityResult(OrderLine.class, orderLines, null);
 
 		Exception exception = Assertions.assertThrows(Exception.class, () -> {
 			relMapper.type(Order.class).toMany(OrderLine.class).joinOn(null, "orderId");
@@ -67,8 +67,8 @@ class ToManyTest {
 		orderLines.add(new OrderLineOrderIdInteger());
 
 		RelationshipMapper relMapper = new RelationshipMapper();
-		relMapper.addResult(Order.class, orders, null);
-		relMapper.addResult(OrderLineOrderIdInteger.class, orderLines, null);
+		relMapper.addEntityResult(Order.class, orders, null);
+		relMapper.addEntityResult(OrderLineOrderIdInteger.class, orderLines, null);
 
 		Exception exception = Assertions.assertThrows(Exception.class, () -> {
 			relMapper.type(Order.class).toMany(OrderLineOrderIdInteger.class).joinOn("id", "orderId")

@@ -20,11 +20,11 @@ public class RelationshipMapper {
 
 	private List<ExtractorResult> results = new ArrayList<>();
 
-	public <T> void addResult(Class<T> type, List<T> list, String idPropertyName) {
-		Assert.notNull(type, "type must not be null");
+	public <T> void addEntityResult(Class<T> entityType, List<T> list, String idPropertyName) {
+		Assert.notNull(entityType, "entityType must not be null");
 		Assert.notNull(list, "list must not be null");
 
-		results.add(new ExtractorResult(type, list, idPropertyName));
+		results.add(new ExtractorResult(entityType, list, idPropertyName));
 	}
 
 	public <T> RelationshipSpec type(Class<T> type) {

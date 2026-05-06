@@ -28,8 +28,8 @@ public class RelationshipMapperTest {
 		List<Product> products = sjm.findAll(Product.class);
 
 		RelationshipMapper relMapper = new RelationshipMapper();
-		relMapper.addResult(OrderLine.class, orderLines, null);
-		relMapper.addResult(Product.class, products, null);
+		relMapper.addEntityResult(OrderLine.class, orderLines, null);
+		relMapper.addEntityResult(Product.class, products, null);
 
 		Exception exception = Assertions.assertThrows(Exception.class, () -> {
 			relMapper.type(null);
@@ -49,12 +49,12 @@ public class RelationshipMapperTest {
 		List<OrderLine> orderLines = sjm.findAll(OrderLine.class);
 
 		Exception exception = Assertions.assertThrows(Exception.class, () -> {
-			relMapper.addResult(null, orderLines, null);
+			relMapper.addEntityResult(null, orderLines, null);
 		});
-		assertTrue(exception.getMessage().contains("type must not be null"));
+		assertTrue(exception.getMessage().contains("entityType must not be null"));
 
 		exception = Assertions.assertThrows(Exception.class, () -> {
-			relMapper.addResult(OrderLine.class, null, null);
+			relMapper.addEntityResult(OrderLine.class, null, null);
 		});
 		assertTrue(exception.getMessage().contains("list must not be null"));
 

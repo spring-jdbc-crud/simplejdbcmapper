@@ -34,8 +34,8 @@ class ToOneTest {
 		List<Product> products = sjm.findAll(Product.class);
 
 		RelationshipMapper relMapper = new RelationshipMapper();
-		relMapper.addResult(OrderLine.class, orderLines, null);
-		relMapper.addResult(Product.class, products, null);
+		relMapper.addEntityResult(OrderLine.class, orderLines, null);
+		relMapper.addEntityResult(Product.class, products, null);
 
 		Exception exception = Assertions.assertThrows(Exception.class, () -> {
 			relMapper.type(OrderLine.class).toOne(Product.class).joinOn(null, "id");
@@ -85,8 +85,8 @@ class ToOneTest {
 		profiles.add(profile1);
 
 		RelationshipMapper relMapper = new RelationshipMapper();
-		relMapper.addResult(User.class, users, null);
-		relMapper.addResult(ProfileUserIdLong.class, profiles, null);
+		relMapper.addEntityResult(User.class, users, null);
+		relMapper.addEntityResult(ProfileUserIdLong.class, profiles, null);
 
 		Exception exception = Assertions.assertThrows(Exception.class, () -> {
 			relMapper.type(User.class).toOne(ProfileUserIdLong.class).joinOn("id", "userId").populate("profile");
@@ -101,8 +101,8 @@ class ToOneTest {
 		List<Product> products = sjm.findAll(Product.class);
 
 		RelationshipMapper relMapper = new RelationshipMapper();
-		relMapper.addResult(OrderLine.class, orderLines, null);
-		relMapper.addResult(Product.class, products, null);
+		relMapper.addEntityResult(OrderLine.class, orderLines, null);
+		relMapper.addEntityResult(Product.class, products, null);
 
 		Exception exception = Assertions.assertThrows(Exception.class, () -> {
 			relMapper.type(OrderLine.class).toOne(Product.class).joinOn("productId", "id").populate(null);
@@ -155,8 +155,8 @@ class ToOneTest {
 		profiles.add(profile2);
 
 		RelationshipMapper relMapper = new RelationshipMapper();
-		relMapper.addResult(User.class, users, null);
-		relMapper.addResult(Profile.class, profiles, null);
+		relMapper.addEntityResult(User.class, users, null);
+		relMapper.addEntityResult(Profile.class, profiles, null);
 
 		relMapper.type(User.class).toOne(Profile.class).joinOn("id", "userId").populate("profile");
 
@@ -208,8 +208,8 @@ class ToOneTest {
 		profiles.add(profile2);
 
 		RelationshipMapper relMapper = new RelationshipMapper();
-		relMapper.addResult(User.class, users, null);
-		relMapper.addResult(Profile.class, profiles, null);
+		relMapper.addEntityResult(User.class, users, null);
+		relMapper.addEntityResult(Profile.class, profiles, null);
 
 		relMapper.type(User.class).toOne(Profile.class).joinOn("id", "userId").populate("profile");
 		assertEquals("theme for user2", users.get(2).getProfile().getTheme());
@@ -238,8 +238,8 @@ class ToOneTest {
 		profiles.add(profile1);
 
 		RelationshipMapper relMapper = new RelationshipMapper();
-		relMapper.addResult(User.class, users, null);
-		relMapper.addResult(Profile.class, profiles, null);
+		relMapper.addEntityResult(User.class, users, null);
+		relMapper.addEntityResult(Profile.class, profiles, null);
 
 		Exception exception = Assertions.assertThrows(Exception.class, () -> {
 			relMapper.type(User.class).toOne(Profile.class).joinOn("id", "userId").populate("name");
@@ -283,8 +283,8 @@ class ToOneTest {
 		profiles.add(profile2);
 
 		RelationshipMapper relMapper = new RelationshipMapper();
-		relMapper.addResult(User.class, users, null);
-		relMapper.addResult(Profile.class, profiles, null);
+		relMapper.addEntityResult(User.class, users, null);
+		relMapper.addEntityResult(Profile.class, profiles, null);
 
 		relMapper.type(User.class).toOne(Profile.class).joinOn("id", "userId").populate("profile");
 		assertEquals("theme for user2", users.get(2).getProfile().getTheme());

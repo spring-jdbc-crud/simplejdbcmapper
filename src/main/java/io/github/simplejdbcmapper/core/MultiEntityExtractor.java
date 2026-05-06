@@ -91,7 +91,7 @@ class MultiEntityExtractor {
 
 				RelationshipMapper relationshipMapper = new RelationshipMapper();
 				for (EntityExtractor entityExtractor : entityExtractors) {
-					relationshipMapper.addResult(entityExtractor.entityType(), entityExtractor.result(),
+					relationshipMapper.addEntityResult(entityExtractor.entityType(), entityExtractor.result(),
 							entityExtractor.idPropertyName);
 				}
 				return relationshipMapper;

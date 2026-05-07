@@ -103,18 +103,13 @@ class UpdateOperation {
 		if (sqlAndParams.getParams().contains(INCREMENTED_VERSION)) {
 			cnt = sjmSupport.getNamedParameterJdbcTemplate().update(sqlAndParams.getSql(), mapSqlParameterSource);
 			if (cnt == 0) {
-				// todo
-				throw new OptimisticLockingException(object.getClass().getSimpleName()
-						+ " update failed due to stale data. Failed for " + tableMapping.getIdColumnName() + " = "
-						// + bw.getPropertyValue(tableMapping.getIdPropertyName()) + " and "
-						+ tableMapping.getVersionPropertyMapping().getColumnName() + " = "
-				// +
-				// bw.getPropertyValue(tableMapping.getVersionPropertyMapping().getPropertyName()));
-				);
+				throw new OptimisticLockingException(
+						object.getClass().getSimpleName() + " update failed due to stale data. Failed for "
+								+ tableMapping.getIdColumnName() + " = " + ew.getIdPropertyValue() + " and "
+								+ ew.getVersionColumnName() + " = " + ew.getVersionPropertyValue());
 			}
 			// update the version in object with new version
-			InternalUtils.setPropertyValue(tableMapping.getVersionPropertyMapping(), object,
-					mapSqlParameterSource.getValue(INCREMENTED_VERSION));
+			ew.setPropertyValue(ew.getVersionPropertyName(), mapSqlParameterSource.getValue(INCREMENTED_VERSION));
 		} else {
 			cnt = sjmSupport.getNamedParameterJdbcTemplate().update(sqlAndParams.getSql(), mapSqlParameterSource);
 		}
@@ -140,21 +135,29 @@ class UpdateOperation {
 
 	private MapSqlParameterSource createMapSqlParameterSource(EntityWrapper ew, Set<String> parameters) {
 		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
-		for (String paramName : parameters) {
-			if (paramName.equals(INCREMENTED_VERSION)) {
+		for (String propertyName : parameters) {
+			if (propertyName.equals(INCREMENTED_VERSION)) {
 				Integer incrementedVersionVal = getIncrementedVersionValue(ew);
 				mapSqlParameterSource.addValue(INCREMENTED_VERSION, incrementedVersionVal, Types.INTEGER);
 			} else {
-				PropertyMapping propMapping = ew.getPropertyMapping(paramName);
+				PropertyMapping propMapping = ew.getPropertyMapping(propertyName);
+				Object val = ew.getPropertyValue(propMapping.getPropertyName());
+				Integer columnSqlType = propMapping.getColumnSqlType();
 				if (propMapping.isBinaryLargeObject()) {
-					InternalUtils.assignBlobMapSqlParameterSourceForUpdate(ew, mapSqlParameterSource, paramName);
+					InternalUtils.assignBlobMapSqlParameterSource(mapSqlParameterSource, val, propertyName,
+							columnSqlType);
 				} else if (propMapping.isCharacterLargeObject()) {
-					InternalUtils.assignClobMapSqlParameterSourceForUpdate(ew, mapSqlParameterSource, paramName);
+					InternalUtils.assignClobMapSqlParameterSource(mapSqlParameterSource, val, propertyName,
+							columnSqlType);
 				} else if (propMapping.isEnum()) {
-					InternalUtils.assignEnumMapSqlParameterSourceForUpdate(ew, mapSqlParameterSource, paramName);
+					if (val == null) {
+						mapSqlParameterSource.addValue(propertyName, null, columnSqlType);
+					} else {
+						mapSqlParameterSource.addValue(propertyName, ((Enum<?>) val).name(), columnSqlType);
+					}
 				} else {
-					mapSqlParameterSource.addValue(paramName, ew.getPropertyValue(paramName),
-							ew.getColumnSqlType(paramName));
+					mapSqlParameterSource.addValue(propertyName, ew.getPropertyValue(propertyName),
+							ew.getColumnSqlType(propertyName));
 				}
 			}
 		}

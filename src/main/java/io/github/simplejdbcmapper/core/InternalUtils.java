@@ -16,7 +16,6 @@ package io.github.simplejdbcmapper.core;
 import java.sql.Types;
 import java.util.Locale;
 
-import org.springframework.beans.BeanWrapper;
 import org.springframework.jdbc.core.StatementCreatorUtils;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.support.SqlBinaryValue;
@@ -61,20 +60,6 @@ class InternalUtils {
 		} else {
 			throw new MapperException(val.getClass().getSimpleName() + "." + paramName
 					+ " : java type has to be String for a CLOB mapping. No other type is supported");
-		}
-	}
-
-	public static void assignEnumMapSqlParameterSource(BeanWrapper bw, MapSqlParameterSource mapSqlParameterSource,
-			PropertyMapping propMapping, Integer columnSqlType, boolean forInsert) {
-		Object enumObj = bw.getPropertyValue(propMapping.getPropertyName());
-		String param = propMapping.getPropertyName();
-		if (forInsert) {
-			param = propMapping.getColumnName();
-		}
-		if (enumObj != null) {
-			mapSqlParameterSource.addValue(param, ((Enum<?>) enumObj).name(), columnSqlType);
-		} else {
-			mapSqlParameterSource.addValue(param, null, columnSqlType);
 		}
 	}
 

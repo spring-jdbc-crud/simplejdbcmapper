@@ -57,7 +57,8 @@ class UpdateOperation {
 			sqlAndParams = buildSqlAndParamsForUpdate(tableMapping);
 			updateSqlCache.put(object.getClass(), sqlAndParams);
 		}
-		return updateInternal(object, sqlAndParams, tableMapping);
+		EntityWrapper ew = new EntityWrapper(object, tableMapping);
+		return updateInternal(ew, sqlAndParams);
 	}
 
 	public Integer updateSpecificProperties(Object object, String... propertyNames) {
@@ -75,7 +76,8 @@ class UpdateOperation {
 				updateSpecificPropertiesSqlCache.put(cacheKey, sqlAndParams);
 			}
 		}
-		return updateInternal(object, sqlAndParams, tableMapping);
+		EntityWrapper ew = new EntityWrapper(object, tableMapping);
+		return updateInternal(ew, sqlAndParams);
 	}
 
 	SimpleCache<Class<?>, SqlAndParams> getUpdateSqlCache() {
@@ -86,16 +88,14 @@ class UpdateOperation {
 		return updateSpecificPropertiesSqlCache;
 	}
 
-	private Integer updateInternal(Object object, SqlAndParams sqlAndParams, TableMapping tableMapping) {
-		Assert.notNull(object, "object must not be null");
+	private Integer updateInternal(EntityWrapper ew, SqlAndParams sqlAndParams) {
 		Assert.notNull(sqlAndParams, "sqlAndParams must not be null");
-		EntityWrapper ew = new EntityWrapper(object, tableMapping);
 		if (ew.getIdPropertyValue() == null) {
-			throw new IllegalArgumentException("Property " + tableMapping.getMappedObjType().getName() + "."
-					+ tableMapping.getIdPropertyName() + " is the id and must not be null.");
+			throw new IllegalArgumentException("Property " + ew.getWrappedClass().getName() + "."
+					+ ew.getIdPropertyName() + " is the id and must not be null.");
 		}
 		Set<String> parameters = sqlAndParams.getParams();
-		populateAuditProperties(new EntityWrapper(object, tableMapping), parameters);
+		populateAuditProperties(ew, parameters);
 		MapSqlParameterSource mapSqlParameterSource = createMapSqlParameterSource(ew, parameters);
 		int cnt = -1;
 		// if object has property version the version gets incremented on update.
@@ -104,8 +104,8 @@ class UpdateOperation {
 			cnt = sjmSupport.getNamedParameterJdbcTemplate().update(sqlAndParams.getSql(), mapSqlParameterSource);
 			if (cnt == 0) {
 				throw new OptimisticLockingException(
-						object.getClass().getSimpleName() + " update failed due to stale data. Failed for "
-								+ tableMapping.getIdColumnName() + " = " + ew.getIdPropertyValue() + " and "
+						ew.getWrappedClass().getSimpleName() + " update failed due to stale data. Failed for "
+								+ ew.getIdColumnName() + " = " + ew.getIdPropertyValue() + " and "
 								+ ew.getVersionColumnName() + " = " + ew.getVersionPropertyValue());
 			}
 			// update the version in object with new version
@@ -118,17 +118,15 @@ class UpdateOperation {
 
 	private void populateAuditProperties(EntityWrapper ew, Set<String> parameters) {
 		if (ew.hasAutoAssignProperties()) {
-			PropertyMapping updatedByPropMapping = ew.getUpdatedByPropertyMapping();
-			if (updatedByPropMapping != null && sjmSupport.getRecordAuditedBySupplier() != null
-					&& parameters.contains(updatedByPropMapping.getPropertyName())) {
-				ew.setPropertyValue(updatedByPropMapping.getPropertyName(),
-						sjmSupport.getRecordAuditedBySupplier().get());
+			String updatedByPropertyName = ew.getUpdatedByPropertyName();
+			if (updatedByPropertyName != null && sjmSupport.getRecordAuditedBySupplier() != null
+					&& parameters.contains(updatedByPropertyName)) {
+				ew.setPropertyValue(updatedByPropertyName, sjmSupport.getRecordAuditedBySupplier().get());
 			}
-			PropertyMapping updatedOnPropMapping = ew.getUpdatedOnPropertyMapping();
-			if (updatedOnPropMapping != null && sjmSupport.getRecordAuditedOnSupplier() != null
-					&& parameters.contains(updatedOnPropMapping.getPropertyName())) {
-				ew.setPropertyValue(updatedOnPropMapping.getPropertyName(),
-						sjmSupport.getRecordAuditedOnSupplier().get());
+			String updatedOnPropertyName = ew.getUpdatedOnPropertyName();
+			if (updatedOnPropertyName != null && sjmSupport.getRecordAuditedOnSupplier() != null
+					&& parameters.contains(updatedOnPropertyName)) {
+				ew.setPropertyValue(updatedOnPropertyName, sjmSupport.getRecordAuditedOnSupplier().get());
 			}
 		}
 	}

@@ -427,16 +427,17 @@ An implementation of the relationship examples below and other features of the f
 - Order has many OrderLine
 
 ```  
-  // Define the multiple mapped entities you want to select. Explanation on the next step.
+  /* 
+     Define the multiple mapped entities you want to select. Make sure the table aliases match that in query.
+     Mapped Class    | Table      |Alias
+     ------------------------------------
+     Order.class     | orders     | "o"
+     OrderLine.class | order_line | "ol"
+  */
   MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol");
   
-  /* 
-     Get the columns for your 'SELECT' using getMultiEntitySqlColumns(). For the method to generate the columns 
-     sql correctly, the table alias argument for each entity in 'MultiEntity' should match exactly the table aliases in 
-     your custom query. In this case 'o' for Order.class which has been mapped to the 'orders' table and
-     'ol' for OrderLine.class which has been mapped to 'order_line' table.
-     Creating the SQL using java String blocks makes the queries more readable.
-  */
+  // Get the columns for your 'SELECT' using getMultiEntitySqlColumns().
+  // Using java String blocks makes the queries more readable.
   String sql = """
       SELECT %s
       FROM orders o

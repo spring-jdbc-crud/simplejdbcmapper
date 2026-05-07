@@ -449,7 +449,7 @@ An implementation of the relationship examples below and other features of the f
    // Use the framework ResultSetExtractor with JdbcTemplate to extract the results.
    RelationshipMapper relationshipMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity), someAmount); 
    
-   // populate() does the processing and populates populates Order.orderLines and getList() returns the list
+   // populate() does the processing and populates Order.orderLines and getList() returns the list
    List<Order> orders = relationshipMapper.type(Order.class)
                                           .toMany(OrderLine.class)
                                           .joinOn("id", "orderId")

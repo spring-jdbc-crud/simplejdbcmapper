@@ -16,7 +16,6 @@ package io.github.simplejdbcmapper.core;
 import java.sql.Types;
 import java.util.Locale;
 
-import org.springframework.beans.BeanWrapper;
 import org.springframework.jdbc.core.StatementCreatorUtils;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.support.SqlBinaryValue;
@@ -40,55 +39,27 @@ class InternalUtils {
 		}
 	}
 
-	public static void assignBlobMapSqlParameterSource(BeanWrapper bw, MapSqlParameterSource mapSqlParameterSource,
-			PropertyMapping propMapping, Integer columnSqlType, boolean forInsert) {
-		Object val = bw.getPropertyValue(propMapping.getPropertyName());
-		String param = propMapping.getPropertyName();
-		if (forInsert) {
-			// for inserts parameters are column name
-			param = propMapping.getColumnName();
-		}
+	public static void assignBlobMapSqlParameterSource(MapSqlParameterSource mapSqlParameterSource, Object val,
+			String paramName, Integer columnSqlType) {
 		if (val == null) {
-			mapSqlParameterSource.addValue(param, null, columnSqlType);
+			mapSqlParameterSource.addValue(paramName, null, columnSqlType);
 		} else if (val instanceof byte[] byteArray) {
-			mapSqlParameterSource.addValue(param, new SqlBinaryValue(byteArray), columnSqlType);
+			mapSqlParameterSource.addValue(paramName, new SqlBinaryValue(byteArray), columnSqlType);
 		} else {
-			throw new MapperException(bw.getWrappedClass().getSimpleName() + "." + propMapping.getPropertyName()
+			throw new MapperException(val.getClass().getSimpleName() + " " + paramName
 					+ " : java type has to be byte[] for a BLOB mapping. No other type is supported.");
 		}
 	}
 
-	public static void assignClobMapSqlParameterSource(BeanWrapper bw, MapSqlParameterSource mapSqlParameterSource,
-			PropertyMapping propMapping, Integer columnSqlType, boolean forInsert) {
-		Object val = bw.getPropertyValue(propMapping.getPropertyName());
-		String param = propMapping.getPropertyName();
-		if (forInsert) {
-			// for inserts parameters are column name
-			param = propMapping.getColumnName();
-		}
+	public static void assignClobMapSqlParameterSource(MapSqlParameterSource mapSqlParameterSource, Object val,
+			String paramName, Integer columnSqlType) {
 		if (val == null) {
-			mapSqlParameterSource.addValue(param, null, columnSqlType);
+			mapSqlParameterSource.addValue(paramName, null, columnSqlType);
+		} else if (val instanceof String str) {
+			mapSqlParameterSource.addValue(paramName, new SqlCharacterValue(str), columnSqlType);
 		} else {
-			if (val instanceof String str) {
-				mapSqlParameterSource.addValue(param, new SqlCharacterValue(str), columnSqlType);
-			} else {
-				throw new MapperException(bw.getWrappedClass().getSimpleName() + "." + propMapping.getPropertyName()
-						+ " : java type has to be String for a CLOB mapping. No other type is supported");
-			}
-		}
-	}
-
-	public static void assignEnumMapSqlParameterSource(BeanWrapper bw, MapSqlParameterSource mapSqlParameterSource,
-			PropertyMapping propMapping, Integer columnSqlType, boolean forInsert) {
-		Object enumObj = bw.getPropertyValue(propMapping.getPropertyName());
-		String param = propMapping.getPropertyName();
-		if (forInsert) {
-			param = propMapping.getColumnName();
-		}
-		if (enumObj != null) {
-			mapSqlParameterSource.addValue(param, ((Enum<?>) enumObj).name(), columnSqlType);
-		} else {
-			mapSqlParameterSource.addValue(param, null, columnSqlType);
+			throw new MapperException(val.getClass().getSimpleName() + "." + paramName
+					+ " : java type has to be String for a CLOB mapping. No other type is supported");
 		}
 	}
 

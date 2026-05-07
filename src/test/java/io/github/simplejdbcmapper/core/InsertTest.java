@@ -185,7 +185,7 @@ class InsertTest {
 		Exception exception = Assertions.assertThrows(Exception.class, () -> {
 			sjm.insert(product);
 		});
-		assertTrue(exception.getMessage().contains("Failed to convert property value"));
+		assertTrue(exception.getMessage().contains("argument type mismatch"));
 	}
 
 	@Test

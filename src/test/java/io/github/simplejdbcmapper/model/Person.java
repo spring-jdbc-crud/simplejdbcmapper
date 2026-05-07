@@ -1,6 +1,7 @@
 package io.github.simplejdbcmapper.model;
 
 import io.github.simplejdbcmapper.annotation.Column;
+import io.github.simplejdbcmapper.annotation.CreatedBy;
 import io.github.simplejdbcmapper.annotation.Id;
 import io.github.simplejdbcmapper.annotation.Table;
 
@@ -12,6 +13,10 @@ public class Person {
 	private String lastName;
 	@Column
 	private String firstName;
+
+	@CreatedBy
+	private String createdBy;
+
 	private String someNonDatabaseProperty;
 
 	public String getPersonId() {
@@ -36,6 +41,14 @@ public class Person {
 
 	public void setFirstName(String firstName) {
 		this.firstName = firstName;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
 	}
 
 	public String getSomeNonDatabaseProperty() {

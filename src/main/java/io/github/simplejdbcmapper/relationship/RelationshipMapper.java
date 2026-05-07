@@ -81,7 +81,7 @@ public class RelationshipMapper {
 		throw new IllegalArgumentException(type + " was not part of the query result set");
 	}
 
-	ExtractorEntityResult getExtractorEntityResult(Class<?> type) {
+	private ExtractorEntityResult getExtractorEntityResult(Class<?> type) {
 		for (ExtractorEntityResult result : results) {
 			if (result.entityType() == type) {
 				return result;

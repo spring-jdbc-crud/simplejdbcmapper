@@ -35,8 +35,7 @@ public class ToOne {
 
 	private Method mainObjPropertyToPopulateWriteMethod;
 
-	public void joinOn(String mainObjJoinProperty, String relatedObjJoinProperty, Class<?> mainType,
-			Class<?> relatedType) {
+	void joinOn(String mainObjJoinProperty, String relatedObjJoinProperty, Class<?> mainType, Class<?> relatedType) {
 		Assert.notNull(mainObjJoinProperty, "mainObjJoinProperty must not be null");
 		Assert.notNull(relatedObjJoinProperty, "relatedObjJoinProperty must not be null");
 
@@ -52,7 +51,7 @@ public class ToOne {
 
 	}
 
-	public void populate(String mainObjPropertyToPopulate, Class<?> mainType) {
+	void populate(String mainObjPropertyToPopulate, Class<?> mainType) {
 		Assert.notNull(mainObjPropertyToPopulate, "mainObjPropertyToPopulate must not be null");
 		this.mainObjPropertyToPopulateWriteMethod = Relationship.getWriteMethod(mainType, mainObjPropertyToPopulate);
 	}

@@ -479,6 +479,7 @@ Use Multi-entity processing to populate multiple relationships:
       WHERE o.total_amount >= ? 
       ORDER BY o.order_date DESC, ol.id
       """.formatted(sjm.getMultiEntitySqlColumns(multiEntity));
+      
   // Use JdbcTemplate with the framework extractor to execute the query and extract results
   RelationshipMapper relationshipMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity), someAmount);
   

@@ -123,22 +123,13 @@ public class Relationship implements RelationshipSpec, ToManySpec, ToOneSpec, Po
 	}
 
 	@SuppressWarnings("unchecked")
-	public <E> List<E> getList(Class<E> type) {
-		for (ExtractorEntityResult result : results) {
-			if (result.entityType() == type) {
-				return (List<E>) result.list();
-			}
-		}
-		throw new IllegalArgumentException(type + "was not part of the query result set");
+	public <T> List<T> getList(Class<T> type) {
+		ExtractorEntityResult result = RelationshipMapper.getExtractorEntityResult(type, results);
+		return (List<T>) result.list();
 	}
 
 	private ExtractorEntityResult getExtractorResult(Class<?> type) {
-		for (ExtractorEntityResult result : results) {
-			if (result.entityType() == type) {
-				return result;
-			}
-		}
-		throw new IllegalArgumentException(type + "was not part of the query result set");
+		return RelationshipMapper.getExtractorEntityResult(type, results);
 	}
 
 	static Method getReadMethod(Class<?> type, String propertyName) {

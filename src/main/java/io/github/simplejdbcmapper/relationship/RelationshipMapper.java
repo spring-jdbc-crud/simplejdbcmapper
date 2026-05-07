@@ -60,7 +60,7 @@ public class RelationshipMapper {
 	public <T> RelationshipSpec type(Class<T> type) {
 		Assert.notNull(type, "type must not be null");
 		// will throw an exception for invalid type
-		getExtractorEntityResult(type);
+		getExtractorEntityResult(type, results);
 		return Relationship.newInstance(type, results);
 	}
 
@@ -73,15 +73,11 @@ public class RelationshipMapper {
 	 */
 	@SuppressWarnings("unchecked")
 	public <T> List<T> getList(Class<T> type) {
-		for (ExtractorEntityResult result : results) {
-			if (result.entityType() == type) {
-				return (List<T>) result.list;
-			}
-		}
-		throw new IllegalArgumentException(type + " was not part of the query result set");
+		ExtractorEntityResult result = getExtractorEntityResult(type, results);
+		return (List<T>) result.list();
 	}
 
-	private ExtractorEntityResult getExtractorEntityResult(Class<?> type) {
+	static ExtractorEntityResult getExtractorEntityResult(Class<?> type, List<ExtractorEntityResult> results) {
 		for (ExtractorEntityResult result : results) {
 			if (result.entityType() == type) {
 				return result;

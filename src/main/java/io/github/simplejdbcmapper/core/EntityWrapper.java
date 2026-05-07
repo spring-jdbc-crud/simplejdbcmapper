@@ -13,12 +13,7 @@ class EntityWrapper {
 		this.tableMapping = tableMapping;
 	}
 
-	public Object getPropertyValue(String propertyName) {
-		PropertyMapping propMapping = tableMapping.getPropertyMappingByPropertyName(propertyName);
-		if (propMapping == null) {
-			throw new IllegalArgumentException(
-					propertyName + " is not a mapped property for " + object.getClass().getName());
-		}
+	public Object getPropertyValue(PropertyMapping propMapping) {
 		try {
 			return propMapping.getReadMethod().invoke(object);
 		} catch (Exception e) {
@@ -27,16 +22,11 @@ class EntityWrapper {
 		}
 	}
 
-	public void setPropertyValue(String propertyName, Object val) {
-		setPropertyValue(propertyName, val, null);
+	public void setPropertyValue(PropertyMapping propMapping, Object val) {
+		setPropertyValue(propMapping, val, null);
 	}
 
-	public void setPropertyValue(String propertyName, Object val, ConversionService conversionService) {
-		PropertyMapping propMapping = tableMapping.getPropertyMappingByPropertyName(propertyName);
-		if (propMapping == null) {
-			throw new IllegalArgumentException(
-					propertyName + " is not a mapped property for " + object.getClass().getName());
-		}
+	public void setPropertyValue(PropertyMapping propMapping, Object val, ConversionService conversionService) {
 		try {
 			if (conversionService == null) {
 				propMapping.getWriteMethod().invoke(object, val);

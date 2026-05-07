@@ -445,8 +445,7 @@ An implementation of the relationship examples below and other features of the f
       ORDER BY o.order_date DESC, ol.id
    """.formatted(sjm.getMultiEntitySqlColumns(multiEntity));
    
-   // Use the framework ResultSetExtractor with JdbcTemplate to extract the data for the 
-   // multiple entities. The return value RelationshipMapper holds the query results.
+   // Use the framework ResultSetExtractor with JdbcTemplate to extract the results.
    RelationshipMapper relationshipMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity), someAmount); 
    
    // populate() method does the processing of the relationship and getList() returns the list

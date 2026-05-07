@@ -58,21 +58,17 @@ class InternalUtils {
 		}
 	}
 
-	public static void assignBlobMapSqlParameterSource(Object obj, MapSqlParameterSource mapSqlParameterSource,
-			PropertyMapping propMapping, Integer columnSqlType, boolean forInsert) {
-		Object val = getPropertyValue(propMapping, obj);
-		String param = propMapping.getPropertyName();
-		if (forInsert) {
-			// for inserts parameters are column name
-			param = propMapping.getColumnName();
-		}
+	public static void assignBlobMapSqlParameterSourceForUpdate(EntityWrapper ew,
+			MapSqlParameterSource mapSqlParameterSource, String propertyName) {
+		Object val = ew.getPropertyValue(propertyName);
 		if (val == null) {
-			mapSqlParameterSource.addValue(param, null, columnSqlType);
+			mapSqlParameterSource.addValue(propertyName, null, ew.getColumnSqlType(propertyName));
 		} else if (val instanceof byte[] byteArray) {
-			mapSqlParameterSource.addValue(param, new SqlBinaryValue(byteArray), columnSqlType);
+			mapSqlParameterSource.addValue(propertyName, new SqlBinaryValue(byteArray),
+					ew.getColumnSqlType(propertyName));
 		} else {
 			// todo check for null?
-			throw new MapperException(obj.getClass().getSimpleName() + "." + propMapping.getPropertyName()
+			throw new MapperException(ew.getWrappedClass().getSimpleName() + "." + propertyName
 					+ " : java type has to be byte[] for a BLOB mapping. No other type is supported.");
 		}
 	}
@@ -97,22 +93,18 @@ class InternalUtils {
 		}
 	}
 
-	public static void assignClobMapSqlParameterSource(Object obj, MapSqlParameterSource mapSqlParameterSource,
-			PropertyMapping propMapping, Integer columnSqlType, boolean forInsert) {
-		Object val = getPropertyValue(propMapping, obj);
-		String param = propMapping.getPropertyName();
-		if (forInsert) {
-			// for inserts parameters are column name
-			param = propMapping.getColumnName();
-		}
+	public static void assignClobMapSqlParameterSourceForUpdate(EntityWrapper ew,
+			MapSqlParameterSource mapSqlParameterSource, String propertyName) {
+		Object val = ew.getPropertyValue(propertyName);
 		if (val == null) {
-			mapSqlParameterSource.addValue(param, null, columnSqlType);
+			mapSqlParameterSource.addValue(propertyName, null, ew.getColumnSqlType(propertyName));
 		} else {
 			if (val instanceof String str) {
-				mapSqlParameterSource.addValue(param, new SqlCharacterValue(str), columnSqlType);
+				mapSqlParameterSource.addValue(propertyName, new SqlCharacterValue(str),
+						ew.getColumnSqlType(propertyName));
 			} else {
 				// todo ?
-				throw new MapperException(obj.getClass().getSimpleName() + "." + propMapping.getPropertyName()
+				throw new MapperException(ew.getWrappedClass().getSimpleName() + "." + propertyName
 						+ " : java type has to be String for a CLOB mapping. No other type is supported");
 			}
 		}
@@ -132,17 +124,13 @@ class InternalUtils {
 		}
 	}
 
-	public static void assignEnumMapSqlParameterSource(Object obj, MapSqlParameterSource mapSqlParameterSource,
-			PropertyMapping propMapping, Integer columnSqlType, boolean forInsert) {
-		Object enumObj = getPropertyValue(propMapping, obj);
-		String param = propMapping.getPropertyName();
-		if (forInsert) {
-			param = propMapping.getColumnName();
-		}
+	public static void assignEnumMapSqlParameterSourceForUpdate(EntityWrapper ew,
+			MapSqlParameterSource mapSqlParameterSource, String propertyName) {
+		Object enumObj = ew.getPropertyValue(propertyName);
 		if (enumObj != null) {
-			mapSqlParameterSource.addValue(param, ((Enum<?>) enumObj).name(), columnSqlType);
+			mapSqlParameterSource.addValue(propertyName, ((Enum<?>) enumObj).name(), ew.getColumnSqlType(propertyName));
 		} else {
-			mapSqlParameterSource.addValue(param, null, columnSqlType);
+			mapSqlParameterSource.addValue(propertyName, null, ew.getColumnSqlType(propertyName));
 		}
 	}
 
@@ -194,18 +182,18 @@ class InternalUtils {
 		}
 	}
 
-	public static Object getPropertyValue(TableMapping tableMapping, String propertyName, Object obj) {
+	public static Object getPropertyValuex(TableMapping tableMapping, String propertyName, Object obj) {
 		if (obj != null) {
 			PropertyMapping propMapping = tableMapping.getPropertyMappingByPropertyName(propertyName);
-			return getPropertyValue(propMapping, obj);
+			return getPropertyValuex(propMapping, obj);
 		}
 		return null;
 	}
 
-	public static Object getPropertyValue(PropertyMapping propMapping, Object obj) {
+	public static Object getPropertyValuex(PropertyMapping propMapping, Object obj) {
 		if (obj != null && propMapping != null) {
 			try {
-				propMapping.getReadMethod().invoke(obj);
+				return propMapping.getReadMethod().invoke(obj);
 			} catch (Exception e) {
 				throw new MapperException(e.getMessage() + " error while trying to get value of "
 						+ obj.getClass().getSimpleName() + "." + propMapping.getPropertyName());
@@ -214,7 +202,7 @@ class InternalUtils {
 		return null;
 	}
 
-	public static Object setPropertyValue(PropertyMapping propMapping, Object obj) {
+	public static Object setPropertyValuex(PropertyMapping propMapping, Object obj) {
 		if (obj != null && propMapping != null) {
 			try {
 				propMapping.getReadMethod().invoke(obj);

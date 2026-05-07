@@ -19,7 +19,12 @@ class EntityWrapper {
 			throw new IllegalArgumentException(
 					propertyName + " is not a mapped property for " + object.getClass().getName());
 		}
-		return getPropertyValue(propMapping);
+		try {
+			return propMapping.getReadMethod().invoke(object);
+		} catch (Exception e) {
+			throw new MapperException(e.getMessage() + " error while trying to get value of "
+					+ object.getClass().getSimpleName() + "." + propMapping.getPropertyName());
+		}
 	}
 
 	public void setPropertyValue(String propertyName, Object val) {
@@ -55,18 +60,6 @@ class EntityWrapper {
 
 	public TableMapping getTableMapping() {
 		return tableMapping;
-	}
-
-	private Object getPropertyValue(PropertyMapping propMapping) {
-		if (propMapping != null) {
-			try {
-				return propMapping.getReadMethod().invoke(object);
-			} catch (Exception e) {
-				throw new MapperException(e.getMessage() + " error while trying to get value of "
-						+ object.getClass().getSimpleName() + "." + propMapping.getPropertyName());
-			}
-		}
-		return null;
 	}
 
 }

@@ -275,6 +275,7 @@ class FindOperation {
 	}
 
 	private Set<?> getValues(Set<?> set) {
+		// method gets called only if there are values in the set that are not null
 		Object obj = set.iterator().next();
 		if (obj != null && obj.getClass().isEnum()) {
 			Set<String> values = new LinkedHashSet<>();

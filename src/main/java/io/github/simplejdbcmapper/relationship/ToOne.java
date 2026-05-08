@@ -27,7 +27,7 @@ import io.github.simplejdbcmapper.exception.MapperException;
 import io.github.simplejdbcmapper.relationship.RelationshipMapper.ExtractorEntityResult;
 
 /**
- * This handles the ToOne relationship.
+ * This handles the toOne relationship.
  * 
  * @author Antony Joseph
  */

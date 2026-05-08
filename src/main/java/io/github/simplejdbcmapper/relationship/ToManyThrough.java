@@ -27,7 +27,7 @@ import io.github.simplejdbcmapper.exception.MapperException;
 import io.github.simplejdbcmapper.relationship.RelationshipMapper.ExtractorEntityResult;
 
 /**
- * This handles the toManyThroug relationship. table.
+ * This handles the toManyThrough relationship.
  * 
  * @author Antony Joseph
  */

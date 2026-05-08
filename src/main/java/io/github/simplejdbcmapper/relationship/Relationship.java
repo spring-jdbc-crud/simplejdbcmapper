@@ -28,7 +28,7 @@ import io.github.simplejdbcmapper.relationship.RelationshipMapper.ExtractorEntit
  * Does not access database or use SimpleJdbcMapper.
  * 
  * <p>
- * For more details on its use see the <a href=
+ * For more details see the <a href=
  * "https://github.com/spring-jdbc-crud/simplejdbcmapper#populating-relationships-from-custom-queries">documentation</a>
  * 
  * 

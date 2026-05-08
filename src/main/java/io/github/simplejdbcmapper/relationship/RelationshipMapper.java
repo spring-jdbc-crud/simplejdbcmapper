@@ -29,7 +29,7 @@ import org.springframework.util.StringUtils;
  * <p>
  * Starts the relationship processing flow.
  * 
- * For more details on its use see the <a href=
+ * For more details see the <a href=
  * "https://github.com/spring-jdbc-crud/simplejdbcmapper#populating-relationships-from-custom-queries">documentation</a>
  *
  * 

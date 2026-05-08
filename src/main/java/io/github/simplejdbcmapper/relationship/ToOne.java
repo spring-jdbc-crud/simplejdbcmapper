@@ -62,10 +62,9 @@ public class ToOne {
 			return;
 		}
 		try {
-			Map<Object, T> joinPropToMainObjMap = new HashMap<>();
-			joinPropToMainObjMap(mainObjList, joinPropToMainObjMap);
+			Map<Object, T> joinPropToMainObjMap = getJoinPropToMainObjMap(mainObjList);
+			Map<Object, U> joinPropToRelatedObjMap = getJoinPropToRelatedObjMap(relatedObjList);
 
-			Map<Object, U> joinPropToRelatedObjMap = joinPropertyToRelatedObjMap(relatedObjList);
 			for (Map.Entry<Object, T> entry : joinPropToMainObjMap.entrySet()) {
 				Object mainObjJoinPropertyValue = entry.getKey();
 				Object mainObj = entry.getValue();
@@ -82,7 +81,7 @@ public class ToOne {
 		}
 	}
 
-	private <U> Map<Object, U> joinPropertyToRelatedObjMap(List<U> relatedObjList)
+	private <U> Map<Object, U> getJoinPropToRelatedObjMap(List<U> relatedObjList)
 			throws IllegalAccessException, InvocationTargetException {
 		Map<Object, U> joinPropToRelatedObjMap = new HashMap<>();
 		for (U relatedObj : relatedObjList) {
@@ -96,8 +95,9 @@ public class ToOne {
 		return joinPropToRelatedObjMap;
 	}
 
-	private <T> void joinPropToMainObjMap(List<T> mainObjList, Map<Object, T> joinPropToMainObjMap)
+	private <T> Map<Object, T> getJoinPropToMainObjMap(List<T> mainObjList)
 			throws IllegalAccessException, InvocationTargetException {
+		Map<Object, T> joinPropToMainObjMap = new HashMap<>();
 		for (T mainObj : mainObjList) {
 			if (mainObj != null) {
 				Object mainObjJoinPropertyValue = mainObjJoinPropertyReadMethod.invoke(mainObj);
@@ -106,6 +106,7 @@ public class ToOne {
 				}
 			}
 		}
+		return joinPropToMainObjMap;
 	}
 
 }

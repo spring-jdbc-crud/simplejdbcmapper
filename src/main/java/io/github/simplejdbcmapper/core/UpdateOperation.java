@@ -33,6 +33,8 @@ import io.github.simplejdbcmapper.exception.OptimisticLockingException;
  * @author Antony Joseph
  */
 class UpdateOperation {
+	private static final String TABLE_MAPPING_MUST_NOT_BE_NULL = "tableMapping must not be null";
+
 	private static final int CACHEABLE_UPDATE_SPECIFIC_PROPERTIES_COUNT = 5;
 
 	private static final String INCREMENTED_VERSION = "[incrementedVersion]";
@@ -208,7 +210,7 @@ class UpdateOperation {
 	}
 
 	private SqlAndParams buildSqlAndParamsForUpdate(TableMapping tableMapping) {
-		Assert.notNull(tableMapping, "tableMapping must not be null");
+		Assert.notNull(tableMapping, TABLE_MAPPING_MUST_NOT_BE_NULL);
 		List<String> propertyList = Arrays.stream(tableMapping.getPropertyMappings()).map(pm -> pm.getPropertyName())
 				.collect(Collectors.toList());
 		List<String> ignoreProps = getIgnoreProperties(tableMapping);
@@ -218,7 +220,7 @@ class UpdateOperation {
 
 	private SqlAndParams buildSqlAndParamsForUpdateSpecificProperties(TableMapping tableMapping,
 			String... propertyNames) {
-		Assert.notNull(tableMapping, "tableMapping must not be null");
+		Assert.notNull(tableMapping, TABLE_MAPPING_MUST_NOT_BE_NULL);
 		Assert.notNull(propertyNames, "propertyNames must not be null");
 		validateUpdateSpecificProperties(tableMapping, propertyNames);
 		List<String> propertyList = new ArrayList<>(Arrays.asList(propertyNames));
@@ -227,7 +229,7 @@ class UpdateOperation {
 	}
 
 	private SqlAndParams buildSqlAndParams(TableMapping tableMapping, List<String> propertyList) {
-		Assert.notNull(tableMapping, "tableMapping must not be null");
+		Assert.notNull(tableMapping, TABLE_MAPPING_MUST_NOT_BE_NULL);
 		Assert.notNull(propertyList, "propertyList must not be null");
 		Set<String> params = new HashSet<>();
 		StringBuilder sql = new StringBuilder(256);

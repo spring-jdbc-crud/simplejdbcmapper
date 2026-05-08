@@ -13,6 +13,7 @@
  */
 package io.github.simplejdbcmapper.relationship;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
@@ -62,24 +63,9 @@ public class ToOne {
 		}
 		try {
 			Map<Object, T> joinPropToMainObjMap = new HashMap<>();
-			for (T mainObj : mainObjList) {
-				if (mainObj != null) {
-					Object mainObjJoinPropertyValue = mainObjJoinPropertyReadMethod.invoke(mainObj);
-					if (mainObjJoinPropertyValue != null) {
-						joinPropToMainObjMap.put(mainObjJoinPropertyValue, mainObj);
-					}
-				}
-			}
+			joinPropToMainObjMap(mainObjList, joinPropToMainObjMap);
 
-			Map<Object, U> joinPropToRelatedObjMap = new HashMap<>();
-			for (U relatedObj : relatedObjList) {
-				if (relatedObj != null) {
-					Object relatedObjJoinPropertyValue = relatedObjJoinPropertyReadMethod.invoke(relatedObj);
-					if (relatedObjJoinPropertyValue != null) {
-						joinPropToRelatedObjMap.put(relatedObjJoinPropertyValue, relatedObj);
-					}
-				}
-			}
+			Map<Object, U> joinPropToRelatedObjMap = joinPropertyToRelatedObjMap(relatedObjList);
 			for (Map.Entry<Object, T> entry : joinPropToMainObjMap.entrySet()) {
 				Object mainObjJoinPropertyValue = entry.getKey();
 				Object mainObj = entry.getValue();
@@ -93,6 +79,32 @@ public class ToOne {
 			}
 		} catch (Exception e) {
 			throw new MapperException(e.getMessage(), e);
+		}
+	}
+
+	private <U> Map<Object, U> joinPropertyToRelatedObjMap(List<U> relatedObjList)
+			throws IllegalAccessException, InvocationTargetException {
+		Map<Object, U> joinPropToRelatedObjMap = new HashMap<>();
+		for (U relatedObj : relatedObjList) {
+			if (relatedObj != null) {
+				Object relatedObjJoinPropertyValue = relatedObjJoinPropertyReadMethod.invoke(relatedObj);
+				if (relatedObjJoinPropertyValue != null) {
+					joinPropToRelatedObjMap.put(relatedObjJoinPropertyValue, relatedObj);
+				}
+			}
+		}
+		return joinPropToRelatedObjMap;
+	}
+
+	private <T> void joinPropToMainObjMap(List<T> mainObjList, Map<Object, T> joinPropToMainObjMap)
+			throws IllegalAccessException, InvocationTargetException {
+		for (T mainObj : mainObjList) {
+			if (mainObj != null) {
+				Object mainObjJoinPropertyValue = mainObjJoinPropertyReadMethod.invoke(mainObj);
+				if (mainObjJoinPropertyValue != null) {
+					joinPropToMainObjMap.put(mainObjJoinPropertyValue, mainObj);
+				}
+			}
 		}
 	}
 

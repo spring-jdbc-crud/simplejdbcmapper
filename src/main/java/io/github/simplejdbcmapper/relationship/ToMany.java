@@ -13,6 +13,7 @@
  */
 package io.github.simplejdbcmapper.relationship;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -97,27 +98,11 @@ public class ToMany {
 			return;
 		}
 		try {
-			// relatedObjFk - List of relatedObj
-			Map<Object, List<U>> foreignKeyToListMap = new HashMap<>();
-			for (U relatedObj : relatedObjList) {
-				if (relatedObj != null) {
-					Object foreignKeyPropertyValue = relatedObjFkPropertyReadMethod.invoke(relatedObj);
-					if (foreignKeyPropertyValue != null) {
-						List<U> list = foreignKeyToListMap.get(foreignKeyPropertyValue);
-						if (list == null) {
-							list = new ArrayList<>();
-							list.add(relatedObj);
-							foreignKeyToListMap.put(foreignKeyPropertyValue, list);
-						} else {
-							list.add(relatedObj);
-						}
-					}
-				}
-			}
+			Map<Object, List<U>> fkToRelatedObjListMap = getFkToRelatedObjListMap(relatedObjList);
 			for (T mainObj : mainObjList) {
 				if (mainObj != null) {
 					Object mainObjIdPropertyValue = mainObjIdPropertyReadMethod.invoke(mainObj);
-					List<U> populaterList = foreignKeyToListMap.get(mainObjIdPropertyValue);
+					List<U> populaterList = fkToRelatedObjListMap.get(mainObjIdPropertyValue);
 					if (populaterList == null) {
 						populaterList = new ArrayList<>();
 					}
@@ -134,47 +119,83 @@ public class ToMany {
 		}
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private <U> Map<Object, List<U>> getFkToRelatedObjListMap(List<U> relatedObjList)
+			throws IllegalAccessException, InvocationTargetException {
+		// relatedObjFk - List of relatedObj
+		Map<Object, List<U>> foreignKeyToListMap = new HashMap<>();
+		for (U relatedObj : relatedObjList) {
+			if (relatedObj != null) {
+				Object foreignKeyPropertyValue = relatedObjFkPropertyReadMethod.invoke(relatedObj);
+				if (foreignKeyPropertyValue != null) {
+					List<U> list = foreignKeyToListMap.get(foreignKeyPropertyValue);
+					if (list == null) {
+						list = new ArrayList<>();
+						list.add(relatedObj);
+						foreignKeyToListMap.put(foreignKeyPropertyValue, list);
+					} else {
+						list.add(relatedObj);
+					}
+				}
+			}
+		}
+		return foreignKeyToListMap;
+	}
+
 	<T, U> void populateToManyThrough(List<T> mainObjList, List<U> relatedObjList) {
 		if (CollectionUtils.isEmpty(mainObjList) || CollectionUtils.isEmpty(relatedObjList)) {
 			return;
 		}
 		try {
-			// relatedObjId - relatedObj
-			Map<Object, U> idToRelatedObjMap = new HashMap<>();
-			for (U relatedObj : relatedObjList) {
-				if (relatedObj != null) {
-					Object relatedObjIdValue = relatedObjIdPropertyReadMethod.invoke(relatedObj);
-					if (relatedObjIdValue != null) {
-						idToRelatedObjMap.put(relatedObjIdValue, relatedObj);
-					}
-				}
-			}
+			Map<Object, U> idToRelatedObjMap = idToRelatedObjMap(relatedObjList);
 			for (T mainObj : mainObjList) {
-				if (mainObj != null) {
-					Object mainObjIdValue = mainObjIdPropertyReadMethod.invoke(mainObj);
-					List relatedObjIdListFromJoiner = intermediateJoiner.getRelatedObjIds(mainObjIdValue);
-					List<U> populaterList = new ArrayList<>();
-					if (!CollectionUtils.isEmpty(relatedObjIdListFromJoiner)) {
-						for (Object relatedObjId : relatedObjIdListFromJoiner) {
-							U relatedObj = idToRelatedObjMap.get(relatedObjId);
-							if (relatedObj != null) {
-								populaterList.add(relatedObj);
-							}
-						}
-					}
-					try {
-						mainObjPropertyToPopulateWriteMethod.invoke(mainObj, populaterList);
-					} catch (Exception e) {
-						throw new MapperException(e.getMessage() + ". Invoking " + mainObjPropertyToPopulateWriteMethod
-								+ " with value " + populaterList, e);
-					}
-
-				}
+				processMainObj(idToRelatedObjMap, mainObj);
 			}
 		} catch (Exception e) {
 			throw new MapperException(e.getMessage(), e);
 		}
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	private <U, T> void processMainObj(Map<Object, U> idToRelatedObjMap, T mainObj)
+			throws IllegalAccessException, InvocationTargetException {
+		if (mainObj != null) {
+			Object mainObjIdValue = mainObjIdPropertyReadMethod.invoke(mainObj);
+			List relatedObjIdListFromJoiner = intermediateJoiner.getRelatedObjIds(mainObjIdValue);
+			List<U> populaterList = new ArrayList<>();
+			if (!CollectionUtils.isEmpty(relatedObjIdListFromJoiner)) {
+				for (Object relatedObjId : relatedObjIdListFromJoiner) {
+					U relatedObj = idToRelatedObjMap.get(relatedObjId);
+					if (relatedObj != null) {
+						populaterList.add(relatedObj);
+					}
+				}
+			}
+			populateMainObjProperty(mainObj, populaterList);
+		}
+	}
+
+	private <T, U> void populateMainObjProperty(T mainObj, List<U> populaterList) {
+		try {
+			mainObjPropertyToPopulateWriteMethod.invoke(mainObj, populaterList);
+		} catch (Exception e) {
+			throw new MapperException(e.getMessage() + ". Invoking " + mainObjPropertyToPopulateWriteMethod
+					+ " with value " + populaterList, e);
+		}
+	}
+
+	private <U> Map<Object, U> idToRelatedObjMap(List<U> relatedObjList)
+			throws IllegalAccessException, InvocationTargetException {
+		// relatedObjId - relatedObj
+		Map<Object, U> idToRelatedObjMap = new HashMap<>();
+		for (U relatedObj : relatedObjList) {
+			if (relatedObj != null) {
+				Object relatedObjIdValue = relatedObjIdPropertyReadMethod.invoke(relatedObj);
+				if (relatedObjIdValue != null) {
+					idToRelatedObjMap.put(relatedObjIdValue, relatedObj);
+				}
+			}
+		}
+		return idToRelatedObjMap;
 	}
 
 	class IntermediateJoiner {

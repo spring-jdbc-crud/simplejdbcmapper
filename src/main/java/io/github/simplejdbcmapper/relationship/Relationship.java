@@ -43,6 +43,10 @@ public class Relationship implements RelationshipSpec, ToManySpec, ToOneSpec, Po
 	static final String GET_PREFIX = "get";
 	static final String SET_PREFIX = "set";
 
+	static final String TO_MANY = "toMany";
+	static final String TO_ONE = "toOne";
+	static final String TO_MANY_THROUGH = "toManyThrough";
+
 	private Class<?> mainType;
 	private Class<?> relatedType;
 	private List<ExtractorEntityResult> results = new ArrayList<>();
@@ -50,7 +54,7 @@ public class Relationship implements RelationshipSpec, ToManySpec, ToOneSpec, Po
 	private ToOne toOne;
 	private ToMany toMany;
 
-	private String relationshipType = "toOne";
+	private String relationshipType = TO_ONE;
 
 	private Relationship(Class<?> mainType, List<ExtractorEntityResult> results) {
 		this.mainType = mainType;
@@ -79,14 +83,14 @@ public class Relationship implements RelationshipSpec, ToManySpec, ToOneSpec, Po
 		getExtractorResult(relatedType);
 
 		this.relatedType = relatedType;
-		this.relationshipType = "toMany";
+		this.relationshipType = TO_MANY;
 		return this;
 	}
 
 	public PopulateSpec joinOn(String mainObjJoinProperty, String relatedObjJoinProperty) {
-		if (relationshipType.equals("toOne")) {
+		if (relationshipType.equals(TO_ONE)) {
 			toOne.joinOn(mainObjJoinProperty, relatedObjJoinProperty, mainType, relatedType);
-		} else if (relationshipType.equals("toMany")) {
+		} else if (relationshipType.equals(TO_MANY)) {
 			toMany.joinOn(mainObjJoinProperty, relatedObjJoinProperty, mainType, relatedType);
 		}
 
@@ -98,7 +102,7 @@ public class Relationship implements RelationshipSpec, ToManySpec, ToOneSpec, Po
 		// will throw an exception for invalid type
 		getExtractorResult(throughType);
 
-		this.relationshipType = "toManyThrough";
+		this.relationshipType = TO_MANY_THROUGH;
 
 		ExtractorEntityResult relatedResult = getExtractorResult(relatedType);
 		ExtractorEntityResult mainResult = getExtractorResult(mainType);
@@ -108,10 +112,10 @@ public class Relationship implements RelationshipSpec, ToManySpec, ToOneSpec, Po
 	}
 
 	public GetListSpec populate(String propertyToPopulateOnMainObj) {
-		if (relationshipType.equals("toOne")) {
+		if (relationshipType.equals(TO_ONE)) {
 			toOne.populate(propertyToPopulateOnMainObj, mainType);
 			toOne.populateToOne(getList(mainType), getList(relatedType));
-		} else if (relationshipType.equals("toMany")) {
+		} else if (relationshipType.equals(TO_MANY)) {
 			toMany.populate(propertyToPopulateOnMainObj, mainType);
 			toMany.populateToMany(getList(mainType), getList(relatedType));
 		} else {

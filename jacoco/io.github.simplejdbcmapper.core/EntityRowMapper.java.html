@@ -200,37 +200,39 @@ public final class EntityRowMapper&lt;T&gt; implements RowMapper&lt;T&gt; {
 			try {
 <span class="fc" id="L201">				return rs.getObject(index, requiredType);</span>
 <span class="nc" id="L202">			} catch (SQLFeatureNotSupportedException | AbstractMethodError ex) {</span>
-<span class="nc" id="L203">				logger.debug(&quot;JDBC driver does not support JDBC 4.1 'getObject(int, Class)' method&quot;, ex);</span>
-<span class="fc" id="L204">			} catch (SQLException ex) {</span>
-<span class="pc bpc" id="L205" title="1 of 2 branches missed.">				if (logger.isDebugEnabled()) {</span>
-<span class="fc" id="L206">					logger.debug(&quot;JDBC driver has limited support for 'getObject(int, Class)' with column type: &quot;</span>
-<span class="fc" id="L207">							+ requiredType.getName(), ex);</span>
+<span class="nc bnc" id="L203" title="All 2 branches missed.">				if (logger.isDebugEnabled()) {</span>
+<span class="nc" id="L204">					logger.debug(&quot;JDBC driver does not support JDBC 4.1 'getObject(int, Class)' method&quot;, ex);</span>
 				}
-<span class="nc" id="L209">			}</span>
-<span class="fc" id="L210">			typedValueExtracted[0] = false;</span>
+<span class="fc" id="L206">			} catch (SQLException ex) {</span>
+<span class="pc bpc" id="L207" title="1 of 2 branches missed.">				if (logger.isDebugEnabled()) {</span>
+<span class="fc" id="L208">					logger.debug(&quot;JDBC driver has limited support for 'getObject(int, Class)' with column type: &quot;</span>
+<span class="fc" id="L209">							+ requiredType.getName(), ex);</span>
+				}
+<span class="nc" id="L211">			}</span>
+<span class="fc" id="L212">			typedValueExtracted[0] = false;</span>
 
 			// Corresponding SQL types for JSR-310, left up to the caller to convert
 			// them (for example, through a ConversionService).
-<span class="fc" id="L214">			String typeName = requiredType.getSimpleName();</span>
-<span class="pc bpc" id="L215" title="3 of 4 branches missed.">			return switch (typeName) {</span>
-<span class="nc" id="L216">			case &quot;LocalDate&quot; -&gt; rs.getDate(index);</span>
-<span class="nc" id="L217">			case &quot;LocalTime&quot; -&gt; rs.getTime(index);</span>
-<span class="nc" id="L218">			case &quot;LocalDateTime&quot; -&gt; rs.getTimestamp(index);</span>
+<span class="fc" id="L216">			String typeName = requiredType.getSimpleName();</span>
+<span class="pc bpc" id="L217" title="3 of 4 branches missed.">			return switch (typeName) {</span>
+<span class="nc" id="L218">			case &quot;LocalDate&quot; -&gt; rs.getDate(index);</span>
+<span class="nc" id="L219">			case &quot;LocalTime&quot; -&gt; rs.getTime(index);</span>
+<span class="nc" id="L220">			case &quot;LocalDateTime&quot; -&gt; rs.getTimestamp(index);</span>
 			// Fall back to getObject without type specification, again
 			// left up to the caller to convert the value if necessary.
-<span class="fc" id="L221">			default -&gt; JdbcUtils.getResultSetValue(rs, index);</span>
+<span class="fc" id="L223">			default -&gt; JdbcUtils.getResultSetValue(rs, index);</span>
 			};
 
 		}
 		// Perform was-null check if necessary (for results that the JDBC driver returns
 		// as primitives).
-<span class="fc bfc" id="L227" title="All 2 branches covered.">		return (rs.wasNull() ? null : value);</span>
+<span class="fc bfc" id="L229" title="All 2 branches covered.">		return (rs.wasNull() ? null : value);</span>
 	}
 
 	@Override
 	public String toString() {
-<span class="fc" id="L232">		return mappedObjConstructor.getName() + &quot; startIndex: &quot; + startIndex + &quot; endIndex: &quot; + endIndex;</span>
+<span class="fc" id="L234">		return mappedObjConstructor.getName() + &quot; startIndex: &quot; + startIndex + &quot; endIndex: &quot; + endIndex;</span>
 	}
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 3c282da7a87e1dfe411021ebe2eb03b2ab31574f 2026-05-08T15:40:33</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 29043d8be06a45c597791c13ac94742d1b4dcc33 2026-05-08T18:46:53</div></body></html>

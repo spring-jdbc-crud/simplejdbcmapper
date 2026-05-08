@@ -149,66 +149,60 @@ class TableMapping {
 	}
 
 	public PropertyMapping getIdPropertyMapping() {
-<span class="fc" id="L152">		PropertyMapping propMapping = propertyNameMap.get(idPropertyName);</span>
-<span class="pc bpc" id="L153" title="1 of 2 branches missed.">		if (propMapping != null) {</span>
-<span class="fc" id="L154">			return propMapping;</span>
-		} else {
-<span class="nc" id="L156">			throw new MapperException(&quot;For @Id property &quot; + idPropertyName</span>
-					+ &quot; could not find corresponding column in database table &quot; + tableName);
-		}
+<span class="fc" id="L152">		return propertyNameMap.get(idPropertyName);</span>
 	}
 
 	public PropertyMapping[] getPropertyMappings() {
-<span class="fc" id="L162">		return propertyMappings;</span>
+<span class="fc" id="L156">		return propertyMappings;</span>
 	}
 
 	public PropertyMapping getPropertyMappingByColumnName(String columnName) {
-<span class="fc" id="L166">		return columnNameMap.get(columnName);</span>
+<span class="fc" id="L160">		return columnNameMap.get(columnName);</span>
 	}
 
 	public PropertyMapping getPropertyMappingByPropertyName(String propertyName) {
-<span class="fc" id="L170">		return propertyNameMap.get(propertyName);</span>
+<span class="fc" id="L164">		return propertyNameMap.get(propertyName);</span>
 	}
 
 	public String fullyQualifiedTableName() {
-<span class="fc" id="L174">		String prefix = &quot;&quot;;</span>
-<span class="fc bfc" id="L175" title="All 2 branches covered.">		if (StringUtils.hasText(catalogName)) {</span>
-<span class="fc" id="L176">			prefix = prefix + catalogName + &quot;.&quot;;</span>
+<span class="fc" id="L168">		String prefix = &quot;&quot;;</span>
+<span class="fc bfc" id="L169" title="All 2 branches covered.">		if (StringUtils.hasText(catalogName)) {</span>
+<span class="fc" id="L170">			prefix = prefix + catalogName + &quot;.&quot;;</span>
 		}
-<span class="fc bfc" id="L178" title="All 2 branches covered.">		if (StringUtils.hasText(schemaName)) {</span>
-<span class="fc" id="L179">			prefix = prefix + schemaName + &quot;.&quot;;</span>
+<span class="fc bfc" id="L172" title="All 2 branches covered.">		if (StringUtils.hasText(schemaName)) {</span>
+<span class="fc" id="L173">			prefix = prefix + schemaName + &quot;.&quot;;</span>
 		}
-<span class="fc" id="L181">		return prefix + tableName;</span>
+<span class="fc" id="L175">		return prefix + tableName;</span>
 	}
 
 	public PropertyMapping getVersionPropertyMapping() {
-<span class="fc bfc" id="L185" title="All 2 branches covered.">		return versionPropertyName != null ? propertyNameMap.get(versionPropertyName) : null;</span>
+<span class="fc bfc" id="L179" title="All 2 branches covered.">		return versionPropertyName != null ? propertyNameMap.get(versionPropertyName) : null;</span>
 	}
 
 	public PropertyMapping getCreatedOnPropertyMapping() {
-<span class="fc bfc" id="L189" title="All 2 branches covered.">		return createdOnPropertyName != null ? propertyNameMap.get(createdOnPropertyName) : null;</span>
+<span class="fc bfc" id="L183" title="All 2 branches covered.">		return createdOnPropertyName != null ? propertyNameMap.get(createdOnPropertyName) : null;</span>
 	}
 
 	public PropertyMapping getCreatedByPropertyMapping() {
-<span class="fc bfc" id="L193" title="All 2 branches covered.">		return createdByPropertyName != null ? propertyNameMap.get(createdByPropertyName) : null;</span>
+<span class="fc bfc" id="L187" title="All 2 branches covered.">		return createdByPropertyName != null ? propertyNameMap.get(createdByPropertyName) : null;</span>
 	}
 
 	public PropertyMapping getUpdatedOnPropertyMapping() {
-<span class="fc bfc" id="L197" title="All 2 branches covered.">		return updatedOnPropertyName != null ? propertyNameMap.get(updatedOnPropertyName) : null;</span>
+<span class="fc bfc" id="L191" title="All 2 branches covered.">		return updatedOnPropertyName != null ? propertyNameMap.get(updatedOnPropertyName) : null;</span>
 	}
 
 	public PropertyMapping getUpdatedByPropertyMapping() {
-<span class="fc bfc" id="L201" title="All 2 branches covered.">		return updatedByPropertyName != null ? propertyNameMap.get(updatedByPropertyName) : null;</span>
+<span class="fc bfc" id="L195" title="All 2 branches covered.">		return updatedByPropertyName != null ? propertyNameMap.get(updatedByPropertyName) : null;</span>
 	}
 
 	public boolean hasAutoAssignProperties() {
-<span class="fc" id="L205">		return autoAssignProperties;</span>
+<span class="fc" id="L199">		return autoAssignProperties;</span>
 	}
 
 	@SuppressWarnings(&quot;rawtypes&quot;)
 	public Constructor getMappedObjConstructor() {
-<span class="fc" id="L210">		return mappedObjConstructor;</span>
+<span class="fc" id="L204">		return mappedObjConstructor;</span>
 	}
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 3c282da7a87e1dfe411021ebe2eb03b2ab31574f 2026-05-08T15:40:33</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 29043d8be06a45c597791c13ac94742d1b4dcc33 2026-05-08T18:46:53</div></body></html>

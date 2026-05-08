@@ -103,9 +103,9 @@ class ToManyThrough {
 			return;
 		}
 		try {
-			Map<Object, U> idToRelatedObjMap = gitIdToRelatedObjMap(relatedObjList);
+			Map<Object, U> idToRelatedObjMap = getIdToRelatedObjMap(relatedObjList);
 			for (T mainObj : mainObjList) {
-				processMainObj(idToRelatedObjMap, mainObj);
+				processMainObj(mainObj, idToRelatedObjMap);
 			}
 		} catch (Exception e) {
 			throw new MapperException(e.getMessage(), e);
@@ -113,7 +113,7 @@ class ToManyThrough {
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private <U, T> void processMainObj(Map<Object, U> idToRelatedObjMap, T mainObj)
+	private <U, T> void processMainObj(T mainObj, Map<Object, U> idToRelatedObjMap)
 			throws IllegalAccessException, InvocationTargetException {
 		if (mainObj != null) {
 			Object mainObjIdValue = mainObjIdPropertyReadMethod.invoke(mainObj);
@@ -140,7 +140,7 @@ class ToManyThrough {
 		}
 	}
 
-	private <U> Map<Object, U> gitIdToRelatedObjMap(List<U> relatedObjList)
+	private <U> Map<Object, U> getIdToRelatedObjMap(List<U> relatedObjList)
 			throws IllegalAccessException, InvocationTargetException {
 		// relatedObjId - relatedObj
 		Map<Object, U> idToRelatedObjMap = new HashMap<>();

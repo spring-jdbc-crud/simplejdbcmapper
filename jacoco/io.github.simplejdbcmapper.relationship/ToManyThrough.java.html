@@ -95,17 +95,17 @@ class ToManyThrough {
 
 <span class="fc" id="L96">		List&lt;?&gt; mainList = RelationshipMapper.getList(mainType, results);</span>
 <span class="fc" id="L97">		List&lt;?&gt; relatedList = RelationshipMapper.getList(relatedType, results);</span>
-<span class="fc" id="L98">		populateToManyThrough(mainList, relatedList);</span>
+<span class="fc" id="L98">		processToManyThrough(mainList, relatedList);</span>
 <span class="fc" id="L99">	}</span>
 
-	&lt;T, U&gt; void populateToManyThrough(List&lt;T&gt; mainObjList, List&lt;U&gt; relatedObjList) {
+	private &lt;T, U&gt; void processToManyThrough(List&lt;T&gt; mainObjList, List&lt;U&gt; relatedObjList) {
 <span class="pc bpc" id="L102" title="1 of 4 branches missed.">		if (CollectionUtils.isEmpty(mainObjList) || CollectionUtils.isEmpty(relatedObjList)) {</span>
 <span class="fc" id="L103">			return;</span>
 		}
 		try {
-<span class="fc" id="L106">			Map&lt;Object, U&gt; idToRelatedObjMap = idToRelatedObjMap(relatedObjList);</span>
+<span class="fc" id="L106">			Map&lt;Object, U&gt; idToRelatedObjMap = gitIdToRelatedObjMap(relatedObjList);</span>
 <span class="fc bfc" id="L107" title="All 2 branches covered.">			for (T mainObj : mainObjList) {</span>
-<span class="fc" id="L108">				processToManyThrough(idToRelatedObjMap, mainObj);</span>
+<span class="fc" id="L108">				processMainObj(idToRelatedObjMap, mainObj);</span>
 <span class="fc" id="L109">			}</span>
 <span class="fc" id="L110">		} catch (Exception e) {</span>
 <span class="fc" id="L111">			throw new MapperException(e.getMessage(), e);</span>
@@ -113,7 +113,7 @@ class ToManyThrough {
 <span class="fc" id="L113">	}</span>
 
 	@SuppressWarnings({ &quot;rawtypes&quot;, &quot;unchecked&quot; })
-	private &lt;U, T&gt; void processToManyThrough(Map&lt;Object, U&gt; idToRelatedObjMap, T mainObj)
+	private &lt;U, T&gt; void processMainObj(Map&lt;Object, U&gt; idToRelatedObjMap, T mainObj)
 			throws IllegalAccessException, InvocationTargetException {
 <span class="fc bfc" id="L118" title="All 2 branches covered.">		if (mainObj != null) {</span>
 <span class="fc" id="L119">			Object mainObjIdValue = mainObjIdPropertyReadMethod.invoke(mainObj);</span>
@@ -127,11 +127,11 @@ class ToManyThrough {
 					}
 <span class="fc" id="L128">				}</span>
 			}
-<span class="fc" id="L130">			setValueForToManyThrough(mainObj, populaterList);</span>
+<span class="fc" id="L130">			setValue(mainObj, populaterList);</span>
 		}
 <span class="fc" id="L132">	}</span>
 
-	private &lt;T, U&gt; void setValueForToManyThrough(T mainObj, List&lt;U&gt; populaterList) {
+	private &lt;T, U&gt; void setValue(T mainObj, List&lt;U&gt; populaterList) {
 		try {
 <span class="fc" id="L136">			mainObjPropertyToPopulateWriteMethod.invoke(mainObj, populaterList);</span>
 <span class="fc" id="L137">		} catch (Exception e) {</span>
@@ -140,7 +140,7 @@ class ToManyThrough {
 <span class="fc" id="L140">		}</span>
 <span class="fc" id="L141">	}</span>
 
-	private &lt;U&gt; Map&lt;Object, U&gt; idToRelatedObjMap(List&lt;U&gt; relatedObjList)
+	private &lt;U&gt; Map&lt;Object, U&gt; gitIdToRelatedObjMap(List&lt;U&gt; relatedObjList)
 			throws IllegalAccessException, InvocationTargetException {
 		// relatedObjId - relatedObj
 <span class="fc" id="L146">		Map&lt;Object, U&gt; idToRelatedObjMap = new HashMap&lt;&gt;();</span>
@@ -155,7 +155,7 @@ class ToManyThrough {
 <span class="fc" id="L155">		return idToRelatedObjMap;</span>
 	}
 
-	class ThroughJoiner {
+	private class ThroughJoiner {
 <span class="fc" id="L159">		@SuppressWarnings(&quot;rawtypes&quot;)</span>
 		// key: fkToMainObjIdValue,
 		// value: list of fkToRelatedObjIdValue
@@ -200,4 +200,4 @@ class ToManyThrough {
 	}
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main baf2301153d9f2b1747958b7f8dc0fd3f3b6b252 2026-05-08T10:12:55</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main e778276c76672b5996b308ee93813189715b311e 2026-05-08T10:24:59</div></body></html>

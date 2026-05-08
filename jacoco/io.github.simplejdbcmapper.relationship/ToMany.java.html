@@ -70,10 +70,10 @@ class ToMany {
 
 <span class="fc" id="L71">		List&lt;?&gt; mainList = RelationshipMapper.getList(mainType, results);</span>
 <span class="fc" id="L72">		List&lt;?&gt; relatedList = RelationshipMapper.getList(relatedType, results);</span>
-<span class="fc" id="L73">		populateToMany(mainList, relatedList);</span>
+<span class="fc" id="L73">		processToMany(mainList, relatedList);</span>
 <span class="fc" id="L74">	}</span>
 
-	&lt;T, U&gt; void populateToMany(List&lt;T&gt; mainObjList, List&lt;U&gt; relatedObjList) {
+	private &lt;T, U&gt; void processToMany(List&lt;T&gt; mainObjList, List&lt;U&gt; relatedObjList) {
 <span class="pc bpc" id="L77" title="1 of 4 branches missed.">		if (CollectionUtils.isEmpty(mainObjList) || CollectionUtils.isEmpty(relatedObjList)) {</span>
 <span class="fc" id="L78">			return;</span>
 		}
@@ -122,4 +122,4 @@ class ToMany {
 	}
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main baf2301153d9f2b1747958b7f8dc0fd3f3b6b252 2026-05-08T10:12:55</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main e778276c76672b5996b308ee93813189715b311e 2026-05-08T10:24:59</div></body></html>

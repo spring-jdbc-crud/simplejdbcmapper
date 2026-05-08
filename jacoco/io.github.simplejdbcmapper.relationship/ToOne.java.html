@@ -69,16 +69,16 @@ class ToOne {
 <span class="fc" id="L69">		this.mainObjPropertyToPopulateWriteMethod = RelationshipMapper.getWriteMethod(mainType,</span>
 				mainObjPropertyToPopulate);
 
-<span class="fc" id="L72">		populateToOne(getList(mainType), getList(relatedType));</span>
+<span class="fc" id="L72">		processToOne(getList(mainType), getList(relatedType));</span>
 <span class="fc" id="L73">	}</span>
 
 	@SuppressWarnings(&quot;unchecked&quot;)
-	&lt;T&gt; List&lt;T&gt; getList(Class&lt;T&gt; type) {
+	private &lt;T&gt; List&lt;T&gt; getList(Class&lt;T&gt; type) {
 <span class="fc" id="L77">		ExtractorEntityResult result = RelationshipMapper.getExtractorEntityResult(type, results);</span>
 <span class="fc" id="L78">		return (List&lt;T&gt;) result.list();</span>
 	}
 
-	&lt;T, U&gt; void populateToOne(List&lt;T&gt; mainObjList, List&lt;U&gt; relatedObjList) {
+	private &lt;T, U&gt; void processToOne(List&lt;T&gt; mainObjList, List&lt;U&gt; relatedObjList) {
 <span class="pc bpc" id="L82" title="1 of 4 branches missed.">		if (CollectionUtils.isEmpty(mainObjList) || CollectionUtils.isEmpty(relatedObjList)) {</span>
 <span class="fc" id="L83">			return;</span>
 		}
@@ -131,4 +131,4 @@ class ToOne {
 	}
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main baf2301153d9f2b1747958b7f8dc0fd3f3b6b252 2026-05-08T10:12:55</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main e778276c76672b5996b308ee93813189715b311e 2026-05-08T10:24:59</div></body></html>

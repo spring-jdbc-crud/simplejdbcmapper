@@ -200,7 +200,9 @@ public final class EntityRowMapper<T> implements RowMapper<T> {
 			try {
 				return rs.getObject(index, requiredType);
 			} catch (SQLFeatureNotSupportedException | AbstractMethodError ex) {
-				logger.debug("JDBC driver does not support JDBC 4.1 'getObject(int, Class)' method", ex);
+				if (logger.isDebugEnabled()) {
+					logger.debug("JDBC driver does not support JDBC 4.1 'getObject(int, Class)' method", ex);
+				}
 			} catch (SQLException ex) {
 				if (logger.isDebugEnabled()) {
 					logger.debug("JDBC driver has limited support for 'getObject(int, Class)' with column type: "

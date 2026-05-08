@@ -27,12 +27,11 @@ import io.github.simplejdbcmapper.exception.MapperException;
 import io.github.simplejdbcmapper.relationship.RelationshipMapper.ExtractorEntityResult;
 
 /**
- * This handles the toMany relationship including toMany through an intermediate
- * table.
+ * This handles the toMany relationship.
  * 
  * @author Antony Joseph
  */
-public class ToMany {
+class ToMany {
 
 	private Method mainObjIdPropertyReadMethod;
 

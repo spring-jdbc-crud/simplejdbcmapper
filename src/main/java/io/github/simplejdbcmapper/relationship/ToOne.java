@@ -31,7 +31,7 @@ import io.github.simplejdbcmapper.relationship.RelationshipMapper.ExtractorEntit
  * 
  * @author Antony Joseph
  */
-public class ToOne {
+class ToOne {
 
 	private Class<?> mainType;
 	private Class<?> relatedType;

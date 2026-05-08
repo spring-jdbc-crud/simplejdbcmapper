@@ -105,27 +105,23 @@ public final class EntityRowMapper<T> implements RowMapper<T> {
 		T obj = null;
 		try {
 			obj = mappedObjConstructor.newInstance();
-		} catch (Exception e) {
-			throw new MapperException(e.getMessage(), e);
-		}
-		boolean[] typedValueExtracted = { true };
-		// since the columns sql was generated using the property mappings the resultset
-		// columns will be in same order.
-		for (int index = startIndex; index <= endIndex; index++) {
-			// propertyMappings index starts at 0
-			PropertyMapping propMapping = propertyMappings[index - startIndex];
-			Object value = getResultSetValue(rs, index, propMapping.getResultSetType(), propMapping.getPropertyType(),
-					typedValueExtracted);
-			try {
+			boolean[] typedValueExtracted = { true };
+			// since the columns sql was generated using the property mappings the resultset
+			// columns will be in same order.
+			for (int index = startIndex; index <= endIndex; index++) {
+				// propertyMappings index starts at 0
+				PropertyMapping propMapping = propertyMappings[index - startIndex];
+				Object value = getResultSetValue(rs, index, propMapping.getResultSetType(),
+						propMapping.getPropertyType(), typedValueExtracted);
 				if (typedValueExtracted[0] || value == null) {
 					propMapping.getWriteMethod().invoke(obj, value);
 				} else {
 					propMapping.getWriteMethod().invoke(obj,
 							conversionService.convert(value, propMapping.getPropertyType()));
 				}
-			} catch (Exception e) {
-				throw new MapperException(e.getMessage(), e);
 			}
+		} catch (Exception e) {
+			throw new MapperException(e.getMessage(), e);
 		}
 		return obj;
 	}

@@ -70,10 +70,10 @@ class ToMany {
 
 		List<?> mainList = RelationshipMapper.getList(mainType, results);
 		List<?> relatedList = RelationshipMapper.getList(relatedType, results);
-		populateToMany(mainList, relatedList);
+		processToMany(mainList, relatedList);
 	}
 
-	<T, U> void populateToMany(List<T> mainObjList, List<U> relatedObjList) {
+	private <T, U> void processToMany(List<T> mainObjList, List<U> relatedObjList) {
 		if (CollectionUtils.isEmpty(mainObjList) || CollectionUtils.isEmpty(relatedObjList)) {
 			return;
 		}

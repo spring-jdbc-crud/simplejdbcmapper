@@ -95,17 +95,17 @@ class ToManyThrough {
 
 		List<?> mainList = RelationshipMapper.getList(mainType, results);
 		List<?> relatedList = RelationshipMapper.getList(relatedType, results);
-		populateToManyThrough(mainList, relatedList);
+		processToManyThrough(mainList, relatedList);
 	}
 
-	<T, U> void populateToManyThrough(List<T> mainObjList, List<U> relatedObjList) {
+	private <T, U> void processToManyThrough(List<T> mainObjList, List<U> relatedObjList) {
 		if (CollectionUtils.isEmpty(mainObjList) || CollectionUtils.isEmpty(relatedObjList)) {
 			return;
 		}
 		try {
-			Map<Object, U> idToRelatedObjMap = idToRelatedObjMap(relatedObjList);
+			Map<Object, U> idToRelatedObjMap = gitIdToRelatedObjMap(relatedObjList);
 			for (T mainObj : mainObjList) {
-				processToManyThrough(idToRelatedObjMap, mainObj);
+				processMainObj(idToRelatedObjMap, mainObj);
 			}
 		} catch (Exception e) {
 			throw new MapperException(e.getMessage(), e);
@@ -113,7 +113,7 @@ class ToManyThrough {
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private <U, T> void processToManyThrough(Map<Object, U> idToRelatedObjMap, T mainObj)
+	private <U, T> void processMainObj(Map<Object, U> idToRelatedObjMap, T mainObj)
 			throws IllegalAccessException, InvocationTargetException {
 		if (mainObj != null) {
 			Object mainObjIdValue = mainObjIdPropertyReadMethod.invoke(mainObj);
@@ -127,11 +127,11 @@ class ToManyThrough {
 					}
 				}
 			}
-			setValueForToManyThrough(mainObj, populaterList);
+			setValue(mainObj, populaterList);
 		}
 	}
 
-	private <T, U> void setValueForToManyThrough(T mainObj, List<U> populaterList) {
+	private <T, U> void setValue(T mainObj, List<U> populaterList) {
 		try {
 			mainObjPropertyToPopulateWriteMethod.invoke(mainObj, populaterList);
 		} catch (Exception e) {
@@ -140,7 +140,7 @@ class ToManyThrough {
 		}
 	}
 
-	private <U> Map<Object, U> idToRelatedObjMap(List<U> relatedObjList)
+	private <U> Map<Object, U> gitIdToRelatedObjMap(List<U> relatedObjList)
 			throws IllegalAccessException, InvocationTargetException {
 		// relatedObjId - relatedObj
 		Map<Object, U> idToRelatedObjMap = new HashMap<>();
@@ -155,7 +155,7 @@ class ToManyThrough {
 		return idToRelatedObjMap;
 	}
 
-	class ThroughJoiner {
+	private class ThroughJoiner {
 		@SuppressWarnings("rawtypes")
 		// key: fkToMainObjIdValue,
 		// value: list of fkToRelatedObjIdValue

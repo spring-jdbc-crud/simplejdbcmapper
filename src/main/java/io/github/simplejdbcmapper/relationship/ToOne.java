@@ -69,16 +69,16 @@ class ToOne {
 		this.mainObjPropertyToPopulateWriteMethod = RelationshipMapper.getWriteMethod(mainType,
 				mainObjPropertyToPopulate);
 
-		populateToOne(getList(mainType), getList(relatedType));
+		processToOne(getList(mainType), getList(relatedType));
 	}
 
 	@SuppressWarnings("unchecked")
-	<T> List<T> getList(Class<T> type) {
+	private <T> List<T> getList(Class<T> type) {
 		ExtractorEntityResult result = RelationshipMapper.getExtractorEntityResult(type, results);
 		return (List<T>) result.list();
 	}
 
-	<T, U> void populateToOne(List<T> mainObjList, List<U> relatedObjList) {
+	private <T, U> void processToOne(List<T> mainObjList, List<U> relatedObjList) {
 		if (CollectionUtils.isEmpty(mainObjList) || CollectionUtils.isEmpty(relatedObjList)) {
 			return;
 		}

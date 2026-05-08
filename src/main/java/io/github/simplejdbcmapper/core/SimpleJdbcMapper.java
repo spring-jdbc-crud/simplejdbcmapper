@@ -402,7 +402,7 @@ public final class SimpleJdbcMapper {
 	 * It will handle the cases where the column to property mappings do not follow
 	 * the underscore to camel case naming convention.
 	 * <p>
-	 * For more details on its use see the <a href=
+	 * For more details see the <a href=
 	 * "https://github.com/spring-jdbc-crud/simplejdbcmapper#populating-relationships-from-custom-queries">documentation</a>
 	 * <p>
 	 * Example code:

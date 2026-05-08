@@ -19,6 +19,8 @@ import io.github.simplejdbcmapper.exception.MapperException;
 
 /**
  * Entity wrapper for getters and setters.
+ * 
+ * @author Antony Joseph
  */
 class EntityWrapper {
 	private Object object;

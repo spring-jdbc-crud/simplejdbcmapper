@@ -489,7 +489,7 @@ Use Multi-entity processing to populate multiple relationships:
                     .joinOn("productId", "id")
                     .populate("product");
   
-  // populate orderLines property on order and use getList() to return the list
+  // populate Order.orderLines property and use getList() to return the list
   List<Order> orders = relationshipMapper.type(Order.class)
                                           .toMany(OrderLine.class)
                                           .joinOn("id", "orderId")
@@ -561,7 +561,7 @@ From the results of these 2 queries the relationships can be populated.
                      .joinOn("productId", "id")
                      .populate("product");
 
-  // The toMany relationship populates order.orderLines and getList() returns the orders
+  // The toMany relationship populates order.orderLines.
    List<Order> orders = relationshipMapper.type(Order.class)
                                           .toMany(OrderLine.class) 
                                           .joinOn("id", "orderId")

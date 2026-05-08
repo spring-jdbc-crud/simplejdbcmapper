@@ -46,23 +46,24 @@ public class ToManyThrough {
 		ExtractorEntityResult relatedResult = RelationshipMapper.getExtractorEntityResult(relatedType, results);
 		String relatedObjIdProperty = relatedResult.idPropertyName();
 
-		Class<?> mainObjIdPropertyType = Relationship.getPropertyType(mainType, mainObjIdProperty);
-		Class<?> fkPropertyToMainObjIdType = Relationship.getPropertyType(throughType, fkPropertyToMainObjId);
+		Class<?> mainObjIdPropertyType = RelationshipMapper.getPropertyType(mainType, mainObjIdProperty);
+		Class<?> fkPropertyToMainObjIdType = RelationshipMapper.getPropertyType(throughType, fkPropertyToMainObjId);
 		if (mainObjIdPropertyType != fkPropertyToMainObjIdType) {
 			throw new IllegalArgumentException("Conflicting property types. Property type of " + mainObjIdProperty
 					+ " on main object and " + fkPropertyToMainObjIdType + " on intermediate object are not the same.");
 		}
 
-		Class<?> relatedObjIdPropertyType = Relationship.getPropertyType(relatedType, relatedObjIdProperty);
-		Class<?> fkPropertyToRelatedObjIdType = Relationship.getPropertyType(throughType, fkPropertyToRelatedObjId);
+		Class<?> relatedObjIdPropertyType = RelationshipMapper.getPropertyType(relatedType, relatedObjIdProperty);
+		Class<?> fkPropertyToRelatedObjIdType = RelationshipMapper.getPropertyType(throughType,
+				fkPropertyToRelatedObjId);
 		if (relatedObjIdPropertyType != fkPropertyToRelatedObjIdType) {
 			throw new IllegalArgumentException("Conflicting property types. Property type of "
 					+ relatedObjIdPropertyType + " on related object and " + fkPropertyToRelatedObjIdType
 					+ " on intermediate object are not the same.");
 		}
 
-		this.mainObjIdPropertyReadMethod = Relationship.getReadMethod(mainType, mainObjIdProperty);
-		this.relatedObjIdPropertyReadMethod = Relationship.getReadMethod(relatedType, relatedObjIdProperty);
+		this.mainObjIdPropertyReadMethod = RelationshipMapper.getReadMethod(mainType, mainObjIdProperty);
+		this.relatedObjIdPropertyReadMethod = RelationshipMapper.getReadMethod(relatedType, relatedObjIdProperty);
 
 		this.intermediateJoiner = new IntermediateJoiner(intermediateList, fkPropertyToMainObjId,
 				fkPropertyToRelatedObjId, throughType);
@@ -71,7 +72,8 @@ public class ToManyThrough {
 
 	void populate(String mainObjPropertyToPopulate) {
 		Assert.notNull(mainObjPropertyToPopulate, "mainObjPropertyToPopulate must not be null");
-		this.mainObjPropertyToPopulateWriteMethod = Relationship.getWriteMethod(mainType, mainObjPropertyToPopulate);
+		this.mainObjPropertyToPopulateWriteMethod = RelationshipMapper.getWriteMethod(mainType,
+				mainObjPropertyToPopulate);
 
 		List<?> mainList = RelationshipMapper.getList(mainType, results);
 		List<?> relatedList = RelationshipMapper.getList(relatedType, results);
@@ -147,9 +149,9 @@ public class ToManyThrough {
 			if (CollectionUtils.isEmpty(intermediateList)) {
 				return;
 			}
-			Method fkPropertyToMainObjIdReadMethod = Relationship.getReadMethod(intermediateType,
+			Method fkPropertyToMainObjIdReadMethod = RelationshipMapper.getReadMethod(intermediateType,
 					fkPropertyToMainObjId);
-			Method fkPropertyToRelatedObjIdReadMethod = Relationship.getReadMethod(intermediateType,
+			Method fkPropertyToRelatedObjIdReadMethod = RelationshipMapper.getReadMethod(intermediateType,
 					fkPropertyToRelatedObjId);
 			try {
 				for (Object intermediateObj : intermediateList) {

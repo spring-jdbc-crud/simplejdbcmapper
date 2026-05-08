@@ -13,14 +13,10 @@
  */
 package io.github.simplejdbcmapper.relationship;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.util.Assert;
-import org.springframework.util.ReflectionUtils;
-import org.springframework.util.StringUtils;
 
 import io.github.simplejdbcmapper.relationship.RelationshipMapper.ExtractorEntityResult;
 
@@ -39,9 +35,6 @@ import io.github.simplejdbcmapper.relationship.RelationshipMapper.ExtractorEntit
  * @author Antony Joseph
  */
 public class Relationship implements RelationshipSpec, ToManySpec, ToOneSpec, PopulateSpec, GetListSpec {
-	static final String IS_PREFIX = "is";
-	static final String GET_PREFIX = "get";
-	static final String SET_PREFIX = "set";
 
 	static final String TO_MANY = "toMany";
 	static final String TO_ONE = "toOne";
@@ -69,22 +62,20 @@ public class Relationship implements RelationshipSpec, ToManySpec, ToOneSpec, Po
 	public ToOneSpec toOne(Class<?> relatedType) {
 		Assert.notNull(relatedType, "relatedType must not be null");
 		// will throw an exception for invalid type
-		RelationshipMapper.getExtractorEntityResult(relatedType, results);
+		getList(relatedType);
 
 		this.relationshipType = TO_ONE;
 		this.toOne = new ToOne(mainType, relatedType, results);
-
 		return this;
 	}
 
 	public ToManySpec toMany(Class<?> relatedType) {
 		Assert.notNull(relatedType, "relatedType must not be null");
 		// will throw an exception for invalid type
-		RelationshipMapper.getExtractorEntityResult(relatedType, results);
+		getList(relatedType);
 
 		this.relatedType = relatedType;
 		this.toMany = new ToMany(mainType, relatedType, results);
-
 		this.relationshipType = TO_MANY;
 		return this;
 	}
@@ -95,17 +86,13 @@ public class Relationship implements RelationshipSpec, ToManySpec, ToOneSpec, Po
 		} else if (relationshipType.equals(TO_MANY)) {
 			toMany.joinOn(mainObjJoinProperty, relatedObjJoinProperty);
 		}
-
 		return this;
 	}
 
 	public PopulateSpec through(Class<?> throughType, String fkPropertyToMainObjId, String fkPropertyToRelatedObjId) {
-
 		this.relationshipType = TO_MANY_THROUGH;
-
 		this.toManyThrough = new ToManyThrough(mainType, relatedType, results);
 		toManyThrough.through(throughType, fkPropertyToMainObjId, fkPropertyToRelatedObjId);
-
 		return this;
 	}
 
@@ -125,44 +112,6 @@ public class Relationship implements RelationshipSpec, ToManySpec, ToOneSpec, Po
 	public <T> List<T> getList(Class<T> type) {
 		ExtractorEntityResult result = RelationshipMapper.getExtractorEntityResult(type, results);
 		return (List<T>) result.list();
-	}
-
-	static Method getReadMethod(Class<?> type, String propertyName) {
-		Method m = ReflectionUtils.findMethod(type, GET_PREFIX + StringUtils.capitalize(propertyName));
-		if (m == null) {
-			m = ReflectionUtils.findMethod(type, IS_PREFIX + StringUtils.capitalize(propertyName));
-		}
-		if (m == null) {
-			throw new IllegalArgumentException(
-					"Invalid argument. Could not find getter for " + type.getName() + "." + propertyName);
-		}
-		return m;
-	}
-
-	static Method getWriteMethod(Class<?> type, String propertyName) {
-		Field field = ReflectionUtils.findField(type, propertyName);
-		if (field == null) {
-			throw new IllegalArgumentException(
-					"Invalid argument. Property name " + propertyName + " does not exist for " + type.getName());
-		} else {
-			Method m = ReflectionUtils.findMethod(type, SET_PREFIX + StringUtils.capitalize(propertyName),
-					field.getType());
-			if (m == null) {
-				throw new IllegalArgumentException(
-						"Invalid argument. Could not find setter for " + type.getName() + "." + propertyName);
-			}
-			return m;
-		}
-	}
-
-	static Class<?> getPropertyType(Class<?> type, String propertyName) {
-		Field field = ReflectionUtils.findField(type, propertyName);
-		if (field != null) {
-			return field.getType();
-		} else {
-			throw new IllegalArgumentException(
-					"Invalid argument. Property name " + propertyName + " does not exist for " + type.getName());
-		}
 	}
 
 }

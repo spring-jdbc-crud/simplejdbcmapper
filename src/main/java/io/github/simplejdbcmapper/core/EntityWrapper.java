@@ -18,7 +18,7 @@ import org.springframework.core.convert.ConversionService;
 import io.github.simplejdbcmapper.exception.MapperException;
 
 /**
- * Entity wrapper for get/set values
+ * Entity wrapper for getters and setters.
  */
 class EntityWrapper {
 	private Object object;

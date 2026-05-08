@@ -21,7 +21,7 @@ package io.github.simplejdbcmapper.relationship;
  */
 public interface PopulateSpec {
 	/**
-	 * Triggers processing of relationship. Once invoked the relationship gets
+	 * Triggers processing of the relationship. Once invoked the relationship gets
 	 * processed and the target property gets set.
 	 * 
 	 * <p>

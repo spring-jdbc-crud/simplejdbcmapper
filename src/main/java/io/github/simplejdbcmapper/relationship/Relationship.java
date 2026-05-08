@@ -21,8 +21,8 @@ import org.springframework.util.Assert;
 import io.github.simplejdbcmapper.relationship.RelationshipMapper.ExtractorEntityResult;
 
 /**
- * The relationship. It uses the arguments provided through its API and
- * populates the target property.
+ * The relationship. It uses the query results and information provided through
+ * the API to populate the target property.
  * 
  * <p>
  * Does not access database or use SimpleJdbcMapper.

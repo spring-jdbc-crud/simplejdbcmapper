@@ -16,14 +16,14 @@ package io.github.simplejdbcmapper.relationship;
 import java.util.List;
 
 /**
- * Gets list by type for relationship
+ * Gets list by type for the relationship
  * 
  * @author Antony Joseph
  */
 public interface GetListSpec {
 
 	/**
-	 * Gets list by type for relationship
+	 * Gets list by type for the relationship
 	 * 
 	 * @param type the type
 	 * 

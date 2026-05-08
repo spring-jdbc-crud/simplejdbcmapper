@@ -22,11 +22,9 @@ import io.github.simplejdbcmapper.exception.MapperException;
  */
 class EntityWrapper {
 	private Object object;
-	private TableMapping tableMapping;
 
-	public EntityWrapper(Object object, TableMapping tableMapping) {
+	public EntityWrapper(Object object) {
 		this.object = object;
-		this.tableMapping = tableMapping;
 	}
 
 	public Object getPropertyValue(PropertyMapping propMapping) {
@@ -62,10 +60,6 @@ class EntityWrapper {
 
 	public Object getWrappedInstance() {
 		return object;
-	}
-
-	public TableMapping getTableMapping() {
-		return tableMapping;
 	}
 
 }

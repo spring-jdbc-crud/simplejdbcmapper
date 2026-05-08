@@ -33,7 +33,7 @@ class DeleteOperation {
 	public Integer delete(Object object) {
 		Assert.notNull(object, "object must not be null");
 		TableMapping tableMapping = sjmSupport.getTableMapping(object.getClass());
-		EntityWrapper ew = new EntityWrapper(object, tableMapping);
+		EntityWrapper ew = new EntityWrapper(object);
 		return deleteById(object.getClass(), ew.getPropertyValue(tableMapping.getIdPropertyMapping()));
 	}
 

@@ -35,7 +35,6 @@ import io.github.simplejdbcmapper.relationship.RelationshipMapper.ExtractorEntit
  * @author Antony Joseph
  */
 public class Relationship implements RelationshipSpec, ToManySpec, ToOneSpec, PopulateSpec, GetListSpec {
-
 	static final String TO_MANY = "toMany";
 	static final String TO_ONE = "toOne";
 	static final String TO_MANY_THROUGH = "toManyThrough";
@@ -48,7 +47,7 @@ public class Relationship implements RelationshipSpec, ToManySpec, ToOneSpec, Po
 	private ToMany toMany;
 	private ToManyThrough toManyThrough;
 
-	private String relationshipType = TO_ONE;
+	private String relationshipType;
 
 	private Relationship(Class<?> mainType, List<ExtractorEntityResult> results) {
 		this.mainType = mainType;

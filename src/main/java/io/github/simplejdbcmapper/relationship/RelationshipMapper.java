@@ -77,6 +77,12 @@ public class RelationshipMapper {
 		return (List<T>) result.list();
 	}
 
+	@SuppressWarnings("unchecked")
+	static <T> List<T> getList(Class<?> type, List<ExtractorEntityResult> results) {
+		ExtractorEntityResult result = getExtractorEntityResult(type, results);
+		return (List<T>) result.list();
+	}
+
 	static ExtractorEntityResult getExtractorEntityResult(Class<?> type, List<ExtractorEntityResult> results) {
 		for (ExtractorEntityResult result : results) {
 			if (result.entityType() == type) {

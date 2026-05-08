@@ -53,15 +53,13 @@ public class Relationship implements RelationshipSpec, ToManySpec, ToOneSpec, Po
 
 	private ToOne toOne;
 	private ToMany toMany;
+	private ToManyThrough toManyThrough;
 
 	private String relationshipType = TO_ONE;
 
 	private Relationship(Class<?> mainType, List<ExtractorEntityResult> results) {
 		this.mainType = mainType;
 		this.results = results;
-
-		this.toOne = new ToOne();
-		this.toMany = new ToMany();
 	}
 
 	static RelationshipSpec newInstance(Class<?> type, List<ExtractorEntityResult> results) {
@@ -71,57 +69,54 @@ public class Relationship implements RelationshipSpec, ToManySpec, ToOneSpec, Po
 	public ToOneSpec toOne(Class<?> relatedType) {
 		Assert.notNull(relatedType, "relatedType must not be null");
 		// will throw an exception for invalid type
-		getExtractorResult(relatedType);
+		RelationshipMapper.getExtractorEntityResult(relatedType, results);
 
-		this.relatedType = relatedType;
+		this.relationshipType = TO_ONE;
+		this.toOne = new ToOne(mainType, relatedType, results);
+
 		return this;
 	}
 
 	public ToManySpec toMany(Class<?> relatedType) {
 		Assert.notNull(relatedType, "relatedType must not be null");
 		// will throw an exception for invalid type
-		getExtractorResult(relatedType);
+		RelationshipMapper.getExtractorEntityResult(relatedType, results);
 
 		this.relatedType = relatedType;
+		this.toMany = new ToMany(mainType, relatedType, results);
+
 		this.relationshipType = TO_MANY;
 		return this;
 	}
 
 	public PopulateSpec joinOn(String mainObjJoinProperty, String relatedObjJoinProperty) {
 		if (relationshipType.equals(TO_ONE)) {
-			toOne.joinOn(mainObjJoinProperty, relatedObjJoinProperty, mainType, relatedType);
+			toOne.joinOn(mainObjJoinProperty, relatedObjJoinProperty);
 		} else if (relationshipType.equals(TO_MANY)) {
-			toMany.joinOn(mainObjJoinProperty, relatedObjJoinProperty, mainType, relatedType);
+			toMany.joinOn(mainObjJoinProperty, relatedObjJoinProperty);
 		}
 
 		return this;
 	}
 
 	public PopulateSpec through(Class<?> throughType, String fkPropertyToMainObjId, String fkPropertyToRelatedObjId) {
-		Assert.notNull(throughType, "throughType must not be null");
-		// will throw an exception for invalid type
-		getExtractorResult(throughType);
 
 		this.relationshipType = TO_MANY_THROUGH;
 
-		ExtractorEntityResult relatedResult = getExtractorResult(relatedType);
-		ExtractorEntityResult mainResult = getExtractorResult(mainType);
-		toMany.through(getList(throughType), fkPropertyToMainObjId, fkPropertyToRelatedObjId, mainType,
-				mainResult.idPropertyName(), relatedType, relatedResult.idPropertyName(), throughType);
+		this.toManyThrough = new ToManyThrough(mainType, relatedType, results);
+		toManyThrough.through(throughType, fkPropertyToMainObjId, fkPropertyToRelatedObjId);
+
 		return this;
 	}
 
 	public GetListSpec populate(String propertyToPopulateOnMainObj) {
 		if (relationshipType.equals(TO_ONE)) {
-			toOne.populate(propertyToPopulateOnMainObj, mainType);
-			toOne.populateToOne(getList(mainType), getList(relatedType));
+			toOne.populate(propertyToPopulateOnMainObj);
 		} else if (relationshipType.equals(TO_MANY)) {
-			toMany.populate(propertyToPopulateOnMainObj, mainType);
-			toMany.populateToMany(getList(mainType), getList(relatedType));
+			toMany.populate(propertyToPopulateOnMainObj);
 		} else {
 			// toManyThrough
-			toMany.populate(propertyToPopulateOnMainObj, mainType);
-			toMany.populateToManyThrough(getList(mainType), getList(relatedType));
+			toManyThrough.populate(propertyToPopulateOnMainObj);
 		}
 		return this;
 	}
@@ -130,10 +125,6 @@ public class Relationship implements RelationshipSpec, ToManySpec, ToOneSpec, Po
 	public <T> List<T> getList(Class<T> type) {
 		ExtractorEntityResult result = RelationshipMapper.getExtractorEntityResult(type, results);
 		return (List<T>) result.list();
-	}
-
-	private ExtractorEntityResult getExtractorResult(Class<?> type) {
-		return RelationshipMapper.getExtractorEntityResult(type, results);
 	}
 
 	static Method getReadMethod(Class<?> type, String propertyName) {

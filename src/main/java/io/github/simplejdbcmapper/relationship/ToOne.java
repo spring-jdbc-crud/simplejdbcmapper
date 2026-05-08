@@ -15,6 +15,7 @@ package io.github.simplejdbcmapper.relationship;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,6 +24,7 @@ import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 import io.github.simplejdbcmapper.exception.MapperException;
+import io.github.simplejdbcmapper.relationship.RelationshipMapper.ExtractorEntityResult;
 
 /**
  * This handles the ToOne relationship.
@@ -31,12 +33,22 @@ import io.github.simplejdbcmapper.exception.MapperException;
  */
 public class ToOne {
 
+	private Class<?> mainType;
+	private Class<?> relatedType;
+	private List<ExtractorEntityResult> results = new ArrayList<>();
+
 	private Method mainObjJoinPropertyReadMethod;
 	private Method relatedObjJoinPropertyReadMethod;
 
 	private Method mainObjPropertyToPopulateWriteMethod;
 
-	void joinOn(String mainObjJoinProperty, String relatedObjJoinProperty, Class<?> mainType, Class<?> relatedType) {
+	ToOne(Class<?> mainType, Class<?> relatedType, List<ExtractorEntityResult> results) {
+		this.mainType = mainType;
+		this.relatedType = relatedType;
+		this.results = results;
+	}
+
+	void joinOn(String mainObjJoinProperty, String relatedObjJoinProperty) {
 		Assert.notNull(mainObjJoinProperty, "mainObjJoinProperty must not be null");
 		Assert.notNull(relatedObjJoinProperty, "relatedObjJoinProperty must not be null");
 
@@ -52,9 +64,17 @@ public class ToOne {
 
 	}
 
-	void populate(String mainObjPropertyToPopulate, Class<?> mainType) {
+	void populate(String mainObjPropertyToPopulate) {
 		Assert.notNull(mainObjPropertyToPopulate, "mainObjPropertyToPopulate must not be null");
 		this.mainObjPropertyToPopulateWriteMethod = Relationship.getWriteMethod(mainType, mainObjPropertyToPopulate);
+
+		populateToOne(getList(mainType), getList(relatedType));
+	}
+
+	@SuppressWarnings("unchecked")
+	<T> List<T> getList(Class<T> type) {
+		ExtractorEntityResult result = RelationshipMapper.getExtractorEntityResult(type, results);
+		return (List<T>) result.list();
 	}
 
 	<T, U> void populateToOne(List<T> mainObjList, List<U> relatedObjList) {

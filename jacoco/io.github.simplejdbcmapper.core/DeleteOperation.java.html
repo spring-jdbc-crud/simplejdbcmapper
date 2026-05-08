@@ -13,7 +13,6 @@
  */
 package io.github.simplejdbcmapper.core;
 
-import org.springframework.beans.BeanWrapper;
 import org.springframework.jdbc.core.SqlParameterValue;
 import org.springframework.util.Assert;
 
@@ -25,35 +24,35 @@ import org.springframework.util.Assert;
 class DeleteOperation {
 	private final SimpleJdbcMapperSupport sjmSupport;
 
-<span class="fc" id="L28">	private final SimpleCache&lt;Class&lt;?&gt;, String&gt; deleteSqlCache = new SimpleCache&lt;&gt;();</span>
+<span class="fc" id="L27">	private final SimpleCache&lt;Class&lt;?&gt;, String&gt; deleteSqlCache = new SimpleCache&lt;&gt;();</span>
 
-<span class="fc" id="L30">	public DeleteOperation(SimpleJdbcMapperSupport sjmSupport) {</span>
-<span class="fc" id="L31">		this.sjmSupport = sjmSupport;</span>
-<span class="fc" id="L32">	}</span>
+<span class="fc" id="L29">	public DeleteOperation(SimpleJdbcMapperSupport sjmSupport) {</span>
+<span class="fc" id="L30">		this.sjmSupport = sjmSupport;</span>
+<span class="fc" id="L31">	}</span>
 
 	public Integer delete(Object object) {
-<span class="fc" id="L35">		Assert.notNull(object, &quot;object must not be null&quot;);</span>
-<span class="fc" id="L36">		TableMapping tableMapping = sjmSupport.getTableMapping(object.getClass());</span>
-<span class="fc" id="L37">		BeanWrapper bw = sjmSupport.getBeanWrapper(object);</span>
-<span class="fc" id="L38">		return deleteById(object.getClass(), bw.getPropertyValue(tableMapping.getIdPropertyName()));</span>
+<span class="fc" id="L34">		Assert.notNull(object, &quot;object must not be null&quot;);</span>
+<span class="fc" id="L35">		TableMapping tableMapping = sjmSupport.getTableMapping(object.getClass());</span>
+<span class="fc" id="L36">		EntityWrapper ew = new EntityWrapper(object, tableMapping);</span>
+<span class="fc" id="L37">		return deleteById(object.getClass(), ew.getPropertyValue(tableMapping.getIdPropertyMapping()));</span>
 	}
 
 	public Integer deleteById(Class&lt;?&gt; entityType, Object id) {
-<span class="fc" id="L42">		Assert.notNull(entityType, &quot;entityType must not be null&quot;);</span>
-<span class="fc" id="L43">		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);</span>
-<span class="fc" id="L44">		String sql = deleteSqlCache.get(entityType);</span>
-<span class="fc bfc" id="L45" title="All 2 branches covered.">		if (sql == null) {</span>
-<span class="fc" id="L46">			sql = &quot;DELETE FROM &quot; + tableMapping.fullyQualifiedTableName() + &quot; WHERE &quot; + tableMapping.getIdColumnName()</span>
+<span class="fc" id="L41">		Assert.notNull(entityType, &quot;entityType must not be null&quot;);</span>
+<span class="fc" id="L42">		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);</span>
+<span class="fc" id="L43">		String sql = deleteSqlCache.get(entityType);</span>
+<span class="fc bfc" id="L44" title="All 2 branches covered.">		if (sql == null) {</span>
+<span class="fc" id="L45">			sql = &quot;DELETE FROM &quot; + tableMapping.fullyQualifiedTableName() + &quot; WHERE &quot; + tableMapping.getIdColumnName()</span>
 					+ &quot; = ?&quot;;
-<span class="fc" id="L48">			deleteSqlCache.put(entityType, sql);</span>
+<span class="fc" id="L47">			deleteSqlCache.put(entityType, sql);</span>
 		}
-<span class="fc" id="L50">		return sjmSupport.getJdbcTemplate().update(sql,</span>
-<span class="fc" id="L51">				new SqlParameterValue(tableMapping.getIdPropertyMapping().getColumnSqlType(), id));</span>
+<span class="fc" id="L49">		return sjmSupport.getJdbcTemplate().update(sql,</span>
+<span class="fc" id="L50">				new SqlParameterValue(tableMapping.getIdPropertyMapping().getColumnSqlType(), id));</span>
 	}
 
 	SimpleCache&lt;Class&lt;?&gt;, String&gt; getDeleteSqlCache() {
-<span class="fc" id="L55">		return deleteSqlCache;</span>
+<span class="fc" id="L54">		return deleteSqlCache;</span>
 	}
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 29043d8be06a45c597791c13ac94742d1b4dcc33 2026-05-08T18:46:53</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 7bbc7842c14b3cb7cdc91c508c3bf7308f78238c 2026-05-08T19:14:40</div></body></html>

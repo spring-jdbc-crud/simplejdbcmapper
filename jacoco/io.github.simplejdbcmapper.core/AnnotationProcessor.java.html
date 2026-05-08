@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.PropertyAccessorFactory;
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.StringUtils;
 
@@ -109,7 +109,7 @@ import io.github.simplejdbcmapper.exception.AnnotationException;
 <span class="fc" id="L109">				propMapping = new PropertyMapping(propertyName, field.getType(), colName, sqlType);</span>
 <span class="fc" id="L110">				propNameToPropertyMapping.put(propertyName, propMapping);</span>
 			}
-<span class="fc" id="L112">			BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(propMapping);</span>
+<span class="fc" id="L112">			BeanWrapper bw = new BeanWrapperImpl(propMapping);</span>
 			// set idAnnotation, versionAnnotation, createdOnAnnotation etc on
 			// PropertyMapping object
 <span class="fc" id="L115">			bw.setPropertyValue(StringUtils.uncapitalize(annotationType.getSimpleName()) + &quot;Annotation&quot;, true);</span>
@@ -221,4 +221,4 @@ import io.github.simplejdbcmapper.exception.AnnotationException;
 <span class="fc" id="L221">	}</span>
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 29043d8be06a45c597791c13ac94742d1b4dcc33 2026-05-08T18:46:53</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 7bbc7842c14b3cb7cdc91c508c3bf7308f78238c 2026-05-08T19:14:40</div></body></html>

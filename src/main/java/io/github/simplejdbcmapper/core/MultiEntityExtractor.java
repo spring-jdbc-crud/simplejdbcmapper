@@ -73,28 +73,33 @@ class MultiEntityExtractor {
 				int rowCnt = 1;
 				while (rs.next()) {
 					for (EntityExtractor entityExtractor : entityExtractors) {
-						EntityRowMapper<?> rowMapper = entityExtractor.rowMapper();
-						// rowMapper will always return an object
-						Object obj = rowMapper.mapRow(rs, rowCnt);
-						try {
-							Object id = entityExtractor.idReadMethod().invoke(obj);
-							if (id != null && entityExtractor.idSet().add(id)) {
-								// not a duplicate
-								entityExtractor.result().add(obj);
-							}
-						} catch (Exception e) {
-							throw new MapperException(e.getMessage(), e);
-						}
+						processEntityRow(rs, rowCnt, entityExtractor);
 					}
 					rowCnt++;
 				}
-
 				RelationshipMapper relationshipMapper = new RelationshipMapper();
 				for (EntityExtractor entityExtractor : entityExtractors) {
 					relationshipMapper.addEntityResult(entityExtractor.entityType(), entityExtractor.result(),
 							entityExtractor.idPropertyName());
 				}
 				return relationshipMapper;
+			}
+
+			@SuppressWarnings("unchecked")
+			private void processEntityRow(ResultSet rs, int rowCnt, EntityExtractor entityExtractor)
+					throws SQLException {
+				EntityRowMapper<?> rowMapper = entityExtractor.rowMapper();
+				// rowMapper will always return an object
+				Object obj = rowMapper.mapRow(rs, rowCnt);
+				try {
+					Object id = entityExtractor.idReadMethod().invoke(obj);
+					if (id != null && entityExtractor.idSet().add(id)) {
+						// not a duplicate
+						entityExtractor.result().add(obj);
+					}
+				} catch (Exception e) {
+					throw new MapperException(e.getMessage(), e);
+				}
 			}
 		};
 	}

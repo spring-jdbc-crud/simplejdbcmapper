@@ -13,6 +13,7 @@
  */
 package io.github.simplejdbcmapper.relationship;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -23,73 +24,53 @@ import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 import io.github.simplejdbcmapper.exception.MapperException;
+import io.github.simplejdbcmapper.relationship.RelationshipMapper.ExtractorEntityResult;
 
 /**
- * This handles the toMany relationship including toMany through an intermediate
- * table.
+ * This handles the toMany relationship.
  * 
  * @author Antony Joseph
  */
-public class ToMany {
+class ToMany {
 
 	private Method mainObjIdPropertyReadMethod;
-
-	private Method relatedObjIdPropertyReadMethod;
 
 	private Method relatedObjFkPropertyReadMethod;
 
 	private Method mainObjPropertyToPopulateWriteMethod;
 
-	private IntermediateJoiner intermediateJoiner;
+	private Class<?> mainType;
+	private Class<?> relatedType;
+	private List<ExtractorEntityResult> results = new ArrayList<>();
 
-	void joinOn(String mainObjIdProperty, String relatedObjFkProperty, Class<?> mainType, Class<?> relatedType) {
+	ToMany(Class<?> mainType, Class<?> relatedType, List<ExtractorEntityResult> results) {
+		this.mainType = mainType;
+		this.relatedType = relatedType;
+		this.results = results;
+	}
+
+	void joinOn(String mainObjIdProperty, String relatedObjFkProperty) {
 		Assert.notNull(mainObjIdProperty, "mainObjIdProperty must not be null");
 		Assert.notNull(relatedObjFkProperty, "relatedObjFkProperty must not be null");
 
-		Class<?> mainObjIdPropertyType = Relationship.getPropertyType(mainType, mainObjIdProperty);
-		Class<?> relatedObjFkPropertyType = Relationship.getPropertyType(relatedType, relatedObjFkProperty);
+		Class<?> mainObjIdPropertyType = RelationshipMapper.getPropertyType(mainType, mainObjIdProperty);
+		Class<?> relatedObjFkPropertyType = RelationshipMapper.getPropertyType(relatedType, relatedObjFkProperty);
 		if (mainObjIdPropertyType != relatedObjFkPropertyType) {
 			throw new IllegalArgumentException("Conflicting property types. Property type of " + mainObjIdProperty
 					+ " on main object and " + relatedObjFkProperty + " on related object are not the same.");
 		}
-
-		this.mainObjIdPropertyReadMethod = Relationship.getReadMethod(mainType, mainObjIdProperty);
-		this.relatedObjFkPropertyReadMethod = Relationship.getReadMethod(relatedType, relatedObjFkProperty);
+		this.mainObjIdPropertyReadMethod = RelationshipMapper.getReadMethod(mainType, mainObjIdProperty);
+		this.relatedObjFkPropertyReadMethod = RelationshipMapper.getReadMethod(relatedType, relatedObjFkProperty);
 	}
 
-	void through(List<?> intermediateList, String fkPropertyToMainObjId, String fkPropertyToRelatedObjId,
-			Class<?> mainType, String mainObjIdProperty, Class<?> relatedType, String relatedObjIdProperty,
-			Class<?> intermediateType) {
-		Assert.notNull(fkPropertyToMainObjId, "fkPropertyToMainObjId must not be null");
-		Assert.notNull(fkPropertyToRelatedObjId, "fkPropertyToRelatedObjId must not be null");
-
-		Class<?> mainObjIdPropertyType = Relationship.getPropertyType(mainType, mainObjIdProperty);
-		Class<?> fkPropertyToMainObjIdType = Relationship.getPropertyType(intermediateType, fkPropertyToMainObjId);
-		if (mainObjIdPropertyType != fkPropertyToMainObjIdType) {
-			throw new IllegalArgumentException("Conflicting property types. Property type of " + mainObjIdProperty
-					+ " on main object and " + fkPropertyToMainObjIdType + " on intermediate object are not the same.");
-		}
-
-		Class<?> relatedObjIdPropertyType = Relationship.getPropertyType(relatedType, relatedObjIdProperty);
-		Class<?> fkPropertyToRelatedObjIdType = Relationship.getPropertyType(intermediateType,
-				fkPropertyToRelatedObjId);
-		if (relatedObjIdPropertyType != fkPropertyToRelatedObjIdType) {
-			throw new IllegalArgumentException("Conflicting property types. Property type of "
-					+ relatedObjIdPropertyType + " on related object and " + fkPropertyToRelatedObjIdType
-					+ " on intermediate object are not the same.");
-		}
-
-		this.mainObjIdPropertyReadMethod = Relationship.getReadMethod(mainType, mainObjIdProperty);
-		this.relatedObjIdPropertyReadMethod = Relationship.getReadMethod(relatedType, relatedObjIdProperty);
-
-		this.intermediateJoiner = new IntermediateJoiner(intermediateList, fkPropertyToMainObjId,
-				fkPropertyToRelatedObjId, intermediateType);
-
-	}
-
-	void populate(String mainObjPropertyToPopulate, Class<?> mainType) {
+	void populate(String mainObjPropertyToPopulate) {
 		Assert.notNull(mainObjPropertyToPopulate, "mainObjPropertyToPopulate must not be null");
-		this.mainObjPropertyToPopulateWriteMethod = Relationship.getWriteMethod(mainType, mainObjPropertyToPopulate);
+		this.mainObjPropertyToPopulateWriteMethod = RelationshipMapper.getWriteMethod(mainType,
+				mainObjPropertyToPopulate);
+
+		List<?> mainList = RelationshipMapper.getList(mainType, results);
+		List<?> relatedList = RelationshipMapper.getList(relatedType, results);
+		populateToMany(mainList, relatedList);
 	}
 
 	<T, U> void populateToMany(List<T> mainObjList, List<U> relatedObjList) {
@@ -97,27 +78,11 @@ public class ToMany {
 			return;
 		}
 		try {
-			// relatedObjFk - List of relatedObj
-			Map<Object, List<U>> foreignKeyToListMap = new HashMap<>();
-			for (U relatedObj : relatedObjList) {
-				if (relatedObj != null) {
-					Object foreignKeyPropertyValue = relatedObjFkPropertyReadMethod.invoke(relatedObj);
-					if (foreignKeyPropertyValue != null) {
-						List<U> list = foreignKeyToListMap.get(foreignKeyPropertyValue);
-						if (list == null) {
-							list = new ArrayList<>();
-							list.add(relatedObj);
-							foreignKeyToListMap.put(foreignKeyPropertyValue, list);
-						} else {
-							list.add(relatedObj);
-						}
-					}
-				}
-			}
+			Map<Object, List<U>> fkToRelatedObjListMap = getFkToRelatedObjListMap(relatedObjList);
 			for (T mainObj : mainObjList) {
 				if (mainObj != null) {
 					Object mainObjIdPropertyValue = mainObjIdPropertyReadMethod.invoke(mainObj);
-					List<U> populaterList = foreignKeyToListMap.get(mainObjIdPropertyValue);
+					List<U> populaterList = fkToRelatedObjListMap.get(mainObjIdPropertyValue);
 					if (populaterList == null) {
 						populaterList = new ArrayList<>();
 					}
@@ -134,90 +99,26 @@ public class ToMany {
 		}
 	}
 
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	<T, U> void populateToManyThrough(List<T> mainObjList, List<U> relatedObjList) {
-		if (CollectionUtils.isEmpty(mainObjList) || CollectionUtils.isEmpty(relatedObjList)) {
-			return;
-		}
-		try {
-			// relatedObjId - relatedObj
-			Map<Object, U> idToRelatedObjMap = new HashMap<>();
-			for (U relatedObj : relatedObjList) {
-				if (relatedObj != null) {
-					Object relatedObjIdValue = relatedObjIdPropertyReadMethod.invoke(relatedObj);
-					if (relatedObjIdValue != null) {
-						idToRelatedObjMap.put(relatedObjIdValue, relatedObj);
+	private <U> Map<Object, List<U>> getFkToRelatedObjListMap(List<U> relatedObjList)
+			throws IllegalAccessException, InvocationTargetException {
+		// relatedObjFk - List of relatedObj
+		Map<Object, List<U>> foreignKeyToListMap = new HashMap<>();
+		for (U relatedObj : relatedObjList) {
+			if (relatedObj != null) {
+				Object foreignKeyPropertyValue = relatedObjFkPropertyReadMethod.invoke(relatedObj);
+				if (foreignKeyPropertyValue != null) {
+					List<U> list = foreignKeyToListMap.get(foreignKeyPropertyValue);
+					if (list == null) {
+						list = new ArrayList<>();
+						list.add(relatedObj);
+						foreignKeyToListMap.put(foreignKeyPropertyValue, list);
+					} else {
+						list.add(relatedObj);
 					}
 				}
 			}
-			for (T mainObj : mainObjList) {
-				if (mainObj != null) {
-					Object mainObjIdValue = mainObjIdPropertyReadMethod.invoke(mainObj);
-					List relatedObjIdListFromJoiner = intermediateJoiner.getRelatedObjIds(mainObjIdValue);
-					List<U> populaterList = new ArrayList<>();
-					if (!CollectionUtils.isEmpty(relatedObjIdListFromJoiner)) {
-						for (Object relatedObjId : relatedObjIdListFromJoiner) {
-							U relatedObj = idToRelatedObjMap.get(relatedObjId);
-							if (relatedObj != null) {
-								populaterList.add(relatedObj);
-							}
-						}
-					}
-					try {
-						mainObjPropertyToPopulateWriteMethod.invoke(mainObj, populaterList);
-					} catch (Exception e) {
-						throw new MapperException(e.getMessage() + ". Invoking " + mainObjPropertyToPopulateWriteMethod
-								+ " with value " + populaterList, e);
-					}
-
-				}
-			}
-		} catch (Exception e) {
-			throw new MapperException(e.getMessage(), e);
 		}
+		return foreignKeyToListMap;
 	}
 
-	class IntermediateJoiner {
-		@SuppressWarnings("rawtypes")
-		// key: fkToMainObjIdValue,
-		// value: list of fkToRelatedObjIdValue
-		private Map<Object, List> mainObjIdMap = new HashMap<>();
-
-		@SuppressWarnings({ "unchecked", "rawtypes" })
-		public IntermediateJoiner(List<?> intermediateList, String fkPropertyToMainObjId,
-				String fkPropertyToRelatedObjId, Class<?> intermediateType) {
-			if (CollectionUtils.isEmpty(intermediateList)) {
-				return;
-			}
-			Method fkPropertyToMainObjIdReadMethod = Relationship.getReadMethod(intermediateType,
-					fkPropertyToMainObjId);
-			Method fkPropertyToRelatedObjIdReadMethod = Relationship.getReadMethod(intermediateType,
-					fkPropertyToRelatedObjId);
-			try {
-				for (Object intermediateObj : intermediateList) {
-					if (intermediateObj != null) {
-						Object fkToMainObjIdValue = fkPropertyToMainObjIdReadMethod.invoke(intermediateObj);
-						Object fkToRelatedObjIdValue = fkPropertyToRelatedObjIdReadMethod.invoke(intermediateObj);
-						if (fkToMainObjIdValue != null && fkToRelatedObjIdValue != null) {
-							if (mainObjIdMap.containsKey(fkToMainObjIdValue)) {
-								// add to list
-								mainObjIdMap.get(fkToMainObjIdValue).add(fkToRelatedObjIdValue);
-							} else {
-								List list = new ArrayList();
-								list.add(fkToRelatedObjIdValue);
-								mainObjIdMap.put(fkToMainObjIdValue, list);
-							}
-						}
-					}
-				}
-			} catch (Exception e) {
-				throw new MapperException(e.getMessage(), e);
-			}
-		}
-
-		@SuppressWarnings("rawtypes")
-		List getRelatedObjIds(Object mainObjId) {
-			return mainObjIdMap.get(mainObjId);
-		}
-	}
 }

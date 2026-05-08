@@ -13,10 +13,14 @@
  */
 package io.github.simplejdbcmapper.relationship;
 
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.springframework.util.Assert;
+import org.springframework.util.ReflectionUtils;
+import org.springframework.util.StringUtils;
 
 /**
  * This holds the results from a multi-entity query. See
@@ -33,6 +37,10 @@ import org.springframework.util.Assert;
  */
 public class RelationshipMapper {
 
+	static final String IS_PREFIX = "is";
+	static final String GET_PREFIX = "get";
+	static final String SET_PREFIX = "set";
+
 	private List<ExtractorEntityResult> results = new ArrayList<>();
 
 	/**
@@ -46,7 +54,6 @@ public class RelationshipMapper {
 	public <T> void addEntityResult(Class<T> entityType, List<T> list, String idPropertyName) {
 		Assert.notNull(entityType, "entityType must not be null");
 		Assert.notNull(list, "list must not be null");
-
 		results.add(new ExtractorEntityResult(entityType, list, idPropertyName));
 	}
 
@@ -60,7 +67,7 @@ public class RelationshipMapper {
 	public <T> RelationshipSpec type(Class<T> type) {
 		Assert.notNull(type, "type must not be null");
 		// will throw an exception for invalid type
-		getExtractorEntityResult(type);
+		getExtractorEntityResult(type, results);
 		return Relationship.newInstance(type, results);
 	}
 
@@ -73,21 +80,61 @@ public class RelationshipMapper {
 	 */
 	@SuppressWarnings("unchecked")
 	public <T> List<T> getList(Class<T> type) {
-		for (ExtractorEntityResult result : results) {
-			if (result.entityType() == type) {
-				return (List<T>) result.list;
-			}
-		}
-		throw new IllegalArgumentException(type + " was not part of the query result set");
+		ExtractorEntityResult result = getExtractorEntityResult(type, results);
+		return (List<T>) result.list();
 	}
 
-	ExtractorEntityResult getExtractorEntityResult(Class<?> type) {
+	@SuppressWarnings("unchecked")
+	static <T> List<T> getList(Class<?> type, List<ExtractorEntityResult> results) {
+		ExtractorEntityResult result = getExtractorEntityResult(type, results);
+		return (List<T>) result.list();
+	}
+
+	static ExtractorEntityResult getExtractorEntityResult(Class<?> type, List<ExtractorEntityResult> results) {
 		for (ExtractorEntityResult result : results) {
 			if (result.entityType() == type) {
 				return result;
 			}
 		}
 		throw new IllegalArgumentException(type + "was not part of the query result set");
+	}
+
+	static Method getReadMethod(Class<?> type, String propertyName) {
+		Method m = ReflectionUtils.findMethod(type, GET_PREFIX + StringUtils.capitalize(propertyName));
+		if (m == null) {
+			m = ReflectionUtils.findMethod(type, IS_PREFIX + StringUtils.capitalize(propertyName));
+		}
+		if (m == null) {
+			throw new IllegalArgumentException(
+					"Invalid argument. Could not find getter for " + type.getName() + "." + propertyName);
+		}
+		return m;
+	}
+
+	static Method getWriteMethod(Class<?> type, String propertyName) {
+		Field field = ReflectionUtils.findField(type, propertyName);
+		if (field == null) {
+			throw new IllegalArgumentException(
+					"Invalid argument. Property name " + propertyName + " does not exist for " + type.getName());
+		} else {
+			Method m = ReflectionUtils.findMethod(type, SET_PREFIX + StringUtils.capitalize(propertyName),
+					field.getType());
+			if (m == null) {
+				throw new IllegalArgumentException(
+						"Invalid argument. Could not find setter for " + type.getName() + "." + propertyName);
+			}
+			return m;
+		}
+	}
+
+	static Class<?> getPropertyType(Class<?> type, String propertyName) {
+		Field field = ReflectionUtils.findField(type, propertyName);
+		if (field != null) {
+			return field.getType();
+		} else {
+			throw new IllegalArgumentException(
+					"Invalid argument. Property name " + propertyName + " does not exist for " + type.getName());
+		}
 	}
 
 	record ExtractorEntityResult(Class<?> entityType, List<?> list, String idPropertyName) {

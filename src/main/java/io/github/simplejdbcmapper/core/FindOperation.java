@@ -40,6 +40,7 @@ import io.github.simplejdbcmapper.exception.MapperException;
 class FindOperation {
 	private static final Logger logger = LoggerFactory.getLogger(FindOperation.class);
 
+	private static final String ENTITY_TYPE_MUST_NOT_BE_NULL = "entityType must not be null";
 	private final SimpleJdbcMapperSupport sjmSupport;
 
 	private final SimpleCache<Class<?>, String> findByIdSqlCache = new SimpleCache<>();
@@ -55,7 +56,7 @@ class FindOperation {
 	}
 
 	public <T> T findById(Class<T> entityType, Object id) {
-		Assert.notNull(entityType, "entityType must not be null");
+		Assert.notNull(entityType, ENTITY_TYPE_MUST_NOT_BE_NULL);
 		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
 		String sql = findByIdSqlCache.get(entityType);
 		if (sql == null) {
@@ -74,7 +75,7 @@ class FindOperation {
 	}
 
 	public <T> List<T> findAll(Class<T> entityType, SortBy... sortByArray) {
-		Assert.notNull(entityType, "entityType must not be null");
+		Assert.notNull(entityType, ENTITY_TYPE_MUST_NOT_BE_NULL);
 		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
 		StringBuilder sql = new StringBuilder(256);
 		sql.append("SELECT ").append(getEntitySqlColumns(entityType)).append(" FROM ")
@@ -85,7 +86,7 @@ class FindOperation {
 
 	public <T> List<T> findByPropertyValue(Class<T> entityType, String propertyName, Object propertyValue,
 			SortBy... sortByArray) {
-		Assert.notNull(entityType, "entityType must not be null");
+		Assert.notNull(entityType, ENTITY_TYPE_MUST_NOT_BE_NULL);
 		Assert.notNull(propertyName, "propertyName must not be null");
 		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
 		PropertyMapping propMapping = tableMapping.getPropertyMappingByPropertyName(propertyName);
@@ -111,7 +112,7 @@ class FindOperation {
 
 	public <T, U> List<T> findByPropertyValues(Class<T> entityType, String propertyName, Collection<U> propertyValues,
 			SortBy... sortByArray) {
-		Assert.notNull(entityType, "entityType must not be null");
+		Assert.notNull(entityType, ENTITY_TYPE_MUST_NOT_BE_NULL);
 		Assert.notNull(propertyName, "propertyName must not be null");
 		Assert.notNull(propertyValues, "propertyValues must not be null");
 		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
@@ -148,7 +149,7 @@ class FindOperation {
 	}
 
 	public String getEntitySqlColumns(Class<?> entityType) {
-		Assert.notNull(entityType, "entityType must not be null");
+		Assert.notNull(entityType, ENTITY_TYPE_MUST_NOT_BE_NULL);
 		String columnsSql = entitySqlColumnsCache.get(entityType);
 		if (columnsSql == null) {
 			TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
@@ -163,7 +164,7 @@ class FindOperation {
 	}
 
 	public String getEntitySqlColumns(Class<?> entityType, String tableAlias) {
-		Assert.notNull(entityType, "entityType must not be null");
+		Assert.notNull(entityType, ENTITY_TYPE_MUST_NOT_BE_NULL);
 		InternalUtils.validateTableAlias(tableAlias);
 		String cacheKey = entityType.getName() + "-" + tableAlias;
 		String columnsSql = entitySqlColumnsAliasCache.get(cacheKey);
@@ -190,7 +191,7 @@ class FindOperation {
 	}
 
 	public String getBeanFriendlySqlColumns(Class<?> entityType) {
-		Assert.notNull(entityType, "entityType must not be null");
+		Assert.notNull(entityType, ENTITY_TYPE_MUST_NOT_BE_NULL);
 		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
 		StringJoiner sj = new StringJoiner(", ", " ", " ");
 		for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {
@@ -205,7 +206,7 @@ class FindOperation {
 	}
 
 	public String getBeanFriendlySqlColumns(Class<?> entityType, String tableAlias) {
-		Assert.notNull(entityType, "entityType must not be null");
+		Assert.notNull(entityType, ENTITY_TYPE_MUST_NOT_BE_NULL);
 		InternalUtils.validateTableAlias(tableAlias);
 		String tablePrefix = tableAlias + ".";
 		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
@@ -222,7 +223,7 @@ class FindOperation {
 	}
 
 	public Map<String, String> getPropertyToColumnMappings(Class<?> entityType) {
-		Assert.notNull(entityType, "entityType must not be null");
+		Assert.notNull(entityType, ENTITY_TYPE_MUST_NOT_BE_NULL);
 		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
 		Map<String, String> map = new LinkedHashMap<>();
 		for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {

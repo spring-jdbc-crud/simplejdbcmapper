@@ -15,6 +15,8 @@ import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import io.github.simplejdbcmapper.model.Employee;
 import io.github.simplejdbcmapper.model.EmployeeSkill;
+import io.github.simplejdbcmapper.model.EmployeeSkill2;
+import io.github.simplejdbcmapper.model.EmployeeSkill3;
 import io.github.simplejdbcmapper.model.Skill;
 import io.github.simplejdbcmapper.relationship.RelationshipMapper;
 
@@ -212,6 +214,56 @@ class ToManyThroughTest {
 			relMapper.type(Employee.class).toMany(Skill.class).through(EmployeeSkill.class, "employeeId", "skillId")
 					.populate("skills");
 		});
+
+	}
+
+	@Test
+	void toManyThrough_typeMismatch_Employee_Id_TO_EmployeeSkill_employeeId_test() {
+		MultiEntity multiEntity = new MultiEntity().add(Employee.class, "emp").add(EmployeeSkill2.class, "es")
+				.add(Skill.class, "s");
+
+		String sql = """
+				SELECT %s
+				FROM employee emp
+				LEFT JOIN employee_skill es ON emp.id = es.employee_id
+				LEFT JOIN skill s ON es.skill_id = s.id
+				WHERE emp.id <= 4
+				ORDER BY emp.id, s.name
+				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
+
+		RelationshipMapper relMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
+
+		Exception exception = Assertions.assertThrows(Exception.class, () -> {
+			relMapper.type(Employee.class).toMany(Skill.class).through(EmployeeSkill2.class, "employeeId", "skillId")
+					.populate("skills").getList(Employee.class);
+		});
+
+		assertTrue(exception.getMessage().contains("Conflicting property types"));
+
+	}
+
+	@Test
+	void toManyThrough_typeMismatch_Skill_Id_TO_EmployeeSkill_skillId_test() {
+		MultiEntity multiEntity = new MultiEntity().add(Employee.class, "emp").add(EmployeeSkill3.class, "es")
+				.add(Skill.class, "s");
+
+		String sql = """
+				SELECT %s
+				FROM employee emp
+				LEFT JOIN employee_skill es ON emp.id = es.employee_id
+				LEFT JOIN skill s ON es.skill_id = s.id
+				WHERE emp.id <= 4
+				ORDER BY emp.id, s.name
+				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
+
+		RelationshipMapper relMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
+
+		Exception exception = Assertions.assertThrows(Exception.class, () -> {
+			relMapper.type(Employee.class).toMany(Skill.class).through(EmployeeSkill3.class, "employeeId", "skillId")
+					.populate("skills").getList(Employee.class);
+		});
+
+		assertTrue(exception.getMessage().contains("Conflicting property types"));
 
 	}
 

@@ -96,7 +96,7 @@ public class RelationshipMapper {
 				return result;
 			}
 		}
-		throw new IllegalArgumentException(type + "was not part of the query result set");
+		throw new IllegalArgumentException(type + " was not part of the query result set");
 	}
 
 	static Method getReadMethod(Class<?> type, String propertyName) {

@@ -1,22 +1,20 @@
 package io.github.simplejdbcmapper.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import io.github.simplejdbcmapper.annotation.Column;
 import io.github.simplejdbcmapper.annotation.Id;
 import io.github.simplejdbcmapper.annotation.IdType;
 import io.github.simplejdbcmapper.annotation.Table;
 
-@Table(name = "skill")
-public class Skill {
+@Table(name = "employee_skill")
+public class EmployeeSkill3 {
+
 	@Id(type = IdType.AUTO_GENERATED)
 	private Integer id;
 
 	@Column
-	private String name;
-
-	private List<Employee> employees = new ArrayList<>();
+	private Integer employeeId;
+	@Column
+	private Long skillId;
 
 	public Integer getId() {
 		return id;
@@ -26,19 +24,20 @@ public class Skill {
 		this.id = id;
 	}
 
-	public String getName() {
-		return name;
+	public Integer getEmployeeId() {
+		return employeeId;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setEmployeeId(Integer employeeId) {
+		this.employeeId = employeeId;
 	}
 
-	public List<Employee> getEmployees() {
-		return employees;
+	public Long getSkillId() {
+		return skillId;
 	}
 
-	public void setEmployees(List<Employee> employees) {
-		this.employees = employees;
+	public void setSkillId(Long skillId) {
+		this.skillId = skillId;
 	}
+
 }

@@ -67,8 +67,9 @@ class ToManyThrough {
 		Class<?> mainObjIdPropertyType = RelationshipMapper.getPropertyType(mainType, mainObjIdProperty);
 		Class<?> fkPropertyToMainObjIdType = RelationshipMapper.getPropertyType(throughType, fkPropertyToMainObjId);
 		if (mainObjIdPropertyType != fkPropertyToMainObjIdType) {
-			throw new IllegalArgumentException("Conflicting property types. Property type of " + mainObjIdProperty
-					+ " on main object and " + fkPropertyToMainObjIdType + " on through object are not the same.");
+			throw new IllegalArgumentException("Conflicting property types. Property type of "
+					+ mainType.getSimpleName() + "." + mainObjIdProperty + " and " + throughType.getSimpleName() + "."
+					+ fkPropertyToMainObjId + " are not the same.");
 		}
 
 		Class<?> relatedObjIdPropertyType = RelationshipMapper.getPropertyType(relatedType, relatedObjIdProperty);
@@ -76,8 +77,8 @@ class ToManyThrough {
 				fkPropertyToRelatedObjId);
 		if (relatedObjIdPropertyType != fkPropertyToRelatedObjIdType) {
 			throw new IllegalArgumentException("Conflicting property types. Property type of "
-					+ relatedObjIdPropertyType + " on related object and " + fkPropertyToRelatedObjIdType
-					+ " on through object are not the same.");
+					+ relatedType.getSimpleName() + "." + relatedObjIdProperty + " and " + throughType.getSimpleName()
+					+ "." + fkPropertyToRelatedObjId + " are not the same.");
 		}
 
 		this.mainObjIdPropertyReadMethod = RelationshipMapper.getReadMethod(mainType, mainObjIdProperty);
@@ -127,11 +128,11 @@ class ToManyThrough {
 					}
 				}
 			}
-			setValue(mainObj, populaterList);
+			setMainObjValue(mainObj, populaterList);
 		}
 	}
 
-	private <T, U> void setValue(T mainObj, List<U> populaterList) {
+	private <T, U> void setMainObjValue(T mainObj, List<U> populaterList) {
 		try {
 			mainObjPropertyToPopulateWriteMethod.invoke(mainObj, populaterList);
 		} catch (Exception e) {

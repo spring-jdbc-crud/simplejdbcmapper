@@ -20,14 +20,6 @@ public class Employee {
 
 	private List<Skill> skills = new ArrayList<>();
 
-	public Employee() {
-	}
-
-	public Employee(String firstName, String lastName) {
-		this.lastName = lastName;
-		this.firstName = firstName;
-	}
-
 	public Integer getId() {
 		return id;
 	}

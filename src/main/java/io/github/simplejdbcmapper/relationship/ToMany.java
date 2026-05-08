@@ -56,8 +56,9 @@ class ToMany {
 		Class<?> mainObjIdPropertyType = RelationshipMapper.getPropertyType(mainType, mainObjIdProperty);
 		Class<?> relatedObjFkPropertyType = RelationshipMapper.getPropertyType(relatedType, relatedObjFkProperty);
 		if (mainObjIdPropertyType != relatedObjFkPropertyType) {
-			throw new IllegalArgumentException("Conflicting property types. Property type of " + mainObjIdProperty
-					+ " on main object and " + relatedObjFkProperty + " on related object are not the same.");
+			throw new IllegalArgumentException("Conflicting property types. Property type of "
+					+ mainType.getSimpleName() + "." + mainObjIdProperty + " and " + relatedType.getSimpleName() + "."
+					+ relatedObjFkProperty + " are not the same.");
 		}
 		this.mainObjIdPropertyReadMethod = RelationshipMapper.getReadMethod(mainType, mainObjIdProperty);
 		this.relatedObjFkPropertyReadMethod = RelationshipMapper.getReadMethod(relatedType, relatedObjFkProperty);

@@ -55,8 +55,9 @@ class ToOne {
 		Class<?> mainObjJoinPropertyType = RelationshipMapper.getPropertyType(mainType, mainObjJoinProperty);
 		Class<?> relatedObjJoinPropertyType = RelationshipMapper.getPropertyType(relatedType, relatedObjJoinProperty);
 		if (mainObjJoinPropertyType != relatedObjJoinPropertyType) {
-			throw new IllegalArgumentException("Conflicting property types. Property type of " + mainObjJoinProperty
-					+ " on main object and " + relatedObjJoinProperty + " on related object are not the same.");
+			throw new IllegalArgumentException("Conflicting property types. Property type of "
+					+ mainType.getSimpleName() + "." + mainObjJoinProperty + " and " + relatedType.getSimpleName() + "."
+					+ relatedObjJoinProperty + " are not the same.");
 		}
 
 		this.mainObjJoinPropertyReadMethod = RelationshipMapper.getReadMethod(mainType, mainObjJoinProperty);

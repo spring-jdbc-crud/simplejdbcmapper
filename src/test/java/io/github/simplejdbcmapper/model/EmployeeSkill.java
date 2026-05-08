@@ -20,14 +20,6 @@ public class EmployeeSkill {
 
 	private Employee employee;
 
-	public EmployeeSkill() {
-	}
-
-	public EmployeeSkill(Integer employeeId, Integer skillId) {
-		this.employeeId = employeeId;
-		this.skillId = skillId;
-	}
-
 	public Integer getId() {
 		return id;
 	}

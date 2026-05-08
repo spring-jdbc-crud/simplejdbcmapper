@@ -17,8 +17,6 @@ import java.util.function.Supplier;
 
 import javax.sql.DataSource;
 
-import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.PropertyAccessorFactory;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -131,12 +129,6 @@ class SimpleJdbcMapperSupport {
 
 	TableMapping getTableMapping(Class<?> entityType) {
 		return tableMappingProvider.getTableMapping(entityType);
-	}
-
-	BeanWrapper getBeanWrapper(Object object) {
-		BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(object);
-		bw.setConversionService(conversionService);
-		return bw;
 	}
 
 	@SuppressWarnings("rawtypes")

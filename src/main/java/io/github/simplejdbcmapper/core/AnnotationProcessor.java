@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.PropertyAccessorFactory;
+import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.StringUtils;
 
@@ -109,7 +109,7 @@ class AnnotationProcessor {
 				propMapping = new PropertyMapping(propertyName, field.getType(), colName, sqlType);
 				propNameToPropertyMapping.put(propertyName, propMapping);
 			}
-			BeanWrapper bw = PropertyAccessorFactory.forBeanPropertyAccess(propMapping);
+			BeanWrapper bw = new BeanWrapperImpl(propMapping);
 			// set idAnnotation, versionAnnotation, createdOnAnnotation etc on
 			// PropertyMapping object
 			bw.setPropertyValue(StringUtils.uncapitalize(annotationType.getSimpleName()) + "Annotation", true);

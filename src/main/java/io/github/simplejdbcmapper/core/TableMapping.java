@@ -149,13 +149,7 @@ class TableMapping {
 	}
 
 	public PropertyMapping getIdPropertyMapping() {
-		PropertyMapping propMapping = propertyNameMap.get(idPropertyName);
-		if (propMapping != null) {
-			return propMapping;
-		} else {
-			throw new MapperException("For @Id property " + idPropertyName
-					+ " could not find corresponding column in database table " + tableName);
-		}
+		return propertyNameMap.get(idPropertyName);
 	}
 
 	public PropertyMapping[] getPropertyMappings() {

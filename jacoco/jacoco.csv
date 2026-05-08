@@ -1,11 +1,11 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
-simplejdbcmapper,io.github.simplejdbcmapper.relationship,ToOne,0,221,1,19,0,54,1,16,0,7
+simplejdbcmapper,io.github.simplejdbcmapper.relationship,ToOne,0,227,1,19,0,55,1,16,0,7
 simplejdbcmapper,io.github.simplejdbcmapper.relationship,RelationshipMapper.ExtractorEntityResult,0,12,0,0,0,1,0,1,0,1
 simplejdbcmapper,io.github.simplejdbcmapper.relationship,RelationshipMapper,22,137,3,11,5,35,3,13,0,9
-simplejdbcmapper,io.github.simplejdbcmapper.relationship,ToManyThrough,17,262,4,20,2,65,4,15,0,7
+simplejdbcmapper,io.github.simplejdbcmapper.relationship,ToManyThrough,0,286,2,22,0,69,2,17,0,7
 simplejdbcmapper,io.github.simplejdbcmapper.relationship,ToManyThrough.ThroughJoiner,8,83,1,11,2,20,1,7,0,2
-simplejdbcmapper,io.github.simplejdbcmapper.relationship,Relationship,0,149,1,7,0,35,1,11,0,8
-simplejdbcmapper,io.github.simplejdbcmapper.relationship,ToMany,0,211,1,19,0,52,1,14,0,5
+simplejdbcmapper,io.github.simplejdbcmapper.relationship,Relationship,0,146,1,7,0,34,1,11,0,8
+simplejdbcmapper,io.github.simplejdbcmapper.relationship,ToMany,0,217,1,19,0,53,1,14,0,5
 simplejdbcmapper,io.github.simplejdbcmapper.core,SimpleCache,0,60,1,3,0,15,1,8,0,7
 simplejdbcmapper,io.github.simplejdbcmapper.core,InternalUtils,13,168,4,26,3,33,4,18,0,7
 simplejdbcmapper,io.github.simplejdbcmapper.core,EntityWrapper,17,77,0,2,4,18,1,7,1,6
@@ -13,7 +13,7 @@ simplejdbcmapper,io.github.simplejdbcmapper.core,DeleteOperation,0,83,0,2,0,17,0
 simplejdbcmapper,io.github.simplejdbcmapper.core,InsertOperation,0,369,5,41,0,81,5,30,0,12
 simplejdbcmapper,io.github.simplejdbcmapper.core,SortBy,0,43,0,6,0,13,0,7,0,4
 simplejdbcmapper,io.github.simplejdbcmapper.core,TableMappingProvider,9,331,2,26,2,79,2,23,0,11
-simplejdbcmapper,io.github.simplejdbcmapper.core,EntityRowMapper,34,270,6,29,10,64,6,26,0,5
+simplejdbcmapper,io.github.simplejdbcmapper.core,EntityRowMapper,26,269,6,29,8,64,6,26,0,5
 simplejdbcmapper,io.github.simplejdbcmapper.core,AnnotationProcessor,0,408,0,68,0,115,0,49,0,15
 simplejdbcmapper,io.github.simplejdbcmapper.core,PropertyMapping,5,194,7,19,1,59,7,33,0,27
 simplejdbcmapper,io.github.simplejdbcmapper.core,MultiEntity,0,63,0,6,0,15,0,7,0,4

@@ -1,56 +1,72 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EntityWrapper.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">simplejdbcmapper</a> &gt; <a href="index.source.html" class="el_package">io.github.simplejdbcmapper.core</a> &gt; <span class="el_source">EntityWrapper.java</span></div><h1>EntityWrapper.java</h1><pre class="source lang-java linenums">package io.github.simplejdbcmapper.core;
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>EntityWrapper.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">simplejdbcmapper</a> &gt; <a href="index.source.html" class="el_package">io.github.simplejdbcmapper.core</a> &gt; <span class="el_source">EntityWrapper.java</span></div><h1>EntityWrapper.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2025-present the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ *
+ * https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
+ */
+package io.github.simplejdbcmapper.core;
 
 import org.springframework.core.convert.ConversionService;
 
 import io.github.simplejdbcmapper.exception.MapperException;
 
+/**
+ * Entity wrapper for get/set values
+ */
 class EntityWrapper {
 	private Object object;
 	private TableMapping tableMapping;
 
-<span class="fc" id="L11">	public EntityWrapper(Object object, TableMapping tableMapping) {</span>
-<span class="fc" id="L12">		this.object = object;</span>
-<span class="fc" id="L13">		this.tableMapping = tableMapping;</span>
-<span class="fc" id="L14">	}</span>
+<span class="fc" id="L27">	public EntityWrapper(Object object, TableMapping tableMapping) {</span>
+<span class="fc" id="L28">		this.object = object;</span>
+<span class="fc" id="L29">		this.tableMapping = tableMapping;</span>
+<span class="fc" id="L30">	}</span>
 
 	public Object getPropertyValue(PropertyMapping propMapping) {
 		try {
-<span class="fc" id="L18">			return propMapping.getReadMethod().invoke(object);</span>
-<span class="nc" id="L19">		} catch (Exception e) {</span>
-<span class="nc" id="L20">			throw new MapperException(e.getMessage() + &quot; error while trying to get value of &quot;</span>
-<span class="nc" id="L21">					+ object.getClass().getSimpleName() + &quot;.&quot; + propMapping.getPropertyName());</span>
+<span class="fc" id="L34">			return propMapping.getReadMethod().invoke(object);</span>
+<span class="nc" id="L35">		} catch (Exception e) {</span>
+<span class="nc" id="L36">			throw new MapperException(e.getMessage() + &quot; error while trying to get value of &quot;</span>
+<span class="nc" id="L37">					+ object.getClass().getSimpleName() + &quot;.&quot; + propMapping.getPropertyName());</span>
 		}
 	}
 
 	public void setPropertyValue(PropertyMapping propMapping, Object val) {
-<span class="fc" id="L26">		setPropertyValue(propMapping, val, null);</span>
-<span class="fc" id="L27">	}</span>
+<span class="fc" id="L42">		setPropertyValue(propMapping, val, null);</span>
+<span class="fc" id="L43">	}</span>
 
 	public void setPropertyValue(PropertyMapping propMapping, Object val, ConversionService conversionService) {
 		try {
-<span class="fc bfc" id="L31" title="All 2 branches covered.">			if (conversionService == null) {</span>
-<span class="fc" id="L32">				propMapping.getWriteMethod().invoke(object, val);</span>
+<span class="fc bfc" id="L47" title="All 2 branches covered.">			if (conversionService == null) {</span>
+<span class="fc" id="L48">				propMapping.getWriteMethod().invoke(object, val);</span>
 			} else {
-<span class="fc" id="L34">				propMapping.getWriteMethod().invoke(object,</span>
-<span class="fc" id="L35">						conversionService.convert(val, propMapping.getPropertyType()));</span>
+<span class="fc" id="L50">				propMapping.getWriteMethod().invoke(object,</span>
+<span class="fc" id="L51">						conversionService.convert(val, propMapping.getPropertyType()));</span>
 			}
-<span class="fc" id="L37">		} catch (Exception e) {</span>
-<span class="fc" id="L38">			throw new MapperException(</span>
-<span class="fc" id="L39">					e.getMessage() + &quot;. Invoking &quot; + propMapping.getWriteMethod() + &quot; with value &quot; + val, e);</span>
-<span class="fc" id="L40">		}</span>
-<span class="fc" id="L41">	}</span>
+<span class="fc" id="L53">		} catch (Exception e) {</span>
+<span class="fc" id="L54">			throw new MapperException(</span>
+<span class="fc" id="L55">					e.getMessage() + &quot;. Invoking &quot; + propMapping.getWriteMethod() + &quot; with value &quot; + val, e);</span>
+<span class="fc" id="L56">		}</span>
+<span class="fc" id="L57">	}</span>
 
 	public Class&lt;?&gt; getWrappedClass() {
-<span class="fc" id="L44">		return object.getClass();</span>
+<span class="fc" id="L60">		return object.getClass();</span>
 	}
 
 	public Object getWrappedInstance() {
-<span class="nc" id="L48">		return object;</span>
+<span class="nc" id="L64">		return object;</span>
 	}
 
 	public TableMapping getTableMapping() {
-<span class="fc" id="L52">		return tableMapping;</span>
+<span class="fc" id="L68">		return tableMapping;</span>
 	}
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main e778276c76672b5996b308ee93813189715b311e 2026-05-08T10:24:59</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 3c282da7a87e1dfe411021ebe2eb03b2ab31574f 2026-05-08T15:40:33</div></body></html>

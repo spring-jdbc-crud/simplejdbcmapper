@@ -43,7 +43,7 @@ class ToManyThrough {
 
 	private Method mainObjPropertyToPopulateWriteMethod;
 
-	private IntermediateJoiner intermediateJoiner;
+	private ThroughJoiner throughJoiner;
 
 	ToManyThrough(Class<?> mainType, Class<?> relatedType, List<ExtractorEntityResult> results) {
 		this.mainType = mainType;
@@ -57,7 +57,7 @@ class ToManyThrough {
 		Assert.notNull(fkPropertyToRelatedObjId, "fkPropertyToRelatedObjId must not be null");
 
 		// will throw an exception for invalid type
-		List<?> intermediateList = RelationshipMapper.getList(throughType, results);
+		List<?> throughList = RelationshipMapper.getList(throughType, results);
 
 		ExtractorEntityResult mainResult = RelationshipMapper.getExtractorEntityResult(mainType, results);
 		String mainObjIdProperty = mainResult.idPropertyName();
@@ -68,7 +68,7 @@ class ToManyThrough {
 		Class<?> fkPropertyToMainObjIdType = RelationshipMapper.getPropertyType(throughType, fkPropertyToMainObjId);
 		if (mainObjIdPropertyType != fkPropertyToMainObjIdType) {
 			throw new IllegalArgumentException("Conflicting property types. Property type of " + mainObjIdProperty
-					+ " on main object and " + fkPropertyToMainObjIdType + " on intermediate object are not the same.");
+					+ " on main object and " + fkPropertyToMainObjIdType + " on through object are not the same.");
 		}
 
 		Class<?> relatedObjIdPropertyType = RelationshipMapper.getPropertyType(relatedType, relatedObjIdProperty);
@@ -77,14 +77,14 @@ class ToManyThrough {
 		if (relatedObjIdPropertyType != fkPropertyToRelatedObjIdType) {
 			throw new IllegalArgumentException("Conflicting property types. Property type of "
 					+ relatedObjIdPropertyType + " on related object and " + fkPropertyToRelatedObjIdType
-					+ " on intermediate object are not the same.");
+					+ " on through object are not the same.");
 		}
 
 		this.mainObjIdPropertyReadMethod = RelationshipMapper.getReadMethod(mainType, mainObjIdProperty);
 		this.relatedObjIdPropertyReadMethod = RelationshipMapper.getReadMethod(relatedType, relatedObjIdProperty);
 
-		this.intermediateJoiner = new IntermediateJoiner(intermediateList, fkPropertyToMainObjId,
-				fkPropertyToRelatedObjId, throughType);
+		this.throughJoiner = new ThroughJoiner(throughList, fkPropertyToMainObjId, fkPropertyToRelatedObjId,
+				throughType);
 
 	}
 
@@ -117,7 +117,7 @@ class ToManyThrough {
 			throws IllegalAccessException, InvocationTargetException {
 		if (mainObj != null) {
 			Object mainObjIdValue = mainObjIdPropertyReadMethod.invoke(mainObj);
-			List relatedObjIdListFromJoiner = intermediateJoiner.getRelatedObjIds(mainObjIdValue);
+			List relatedObjIdListFromJoiner = throughJoiner.getRelatedObjIds(mainObjIdValue);
 			List<U> populaterList = new ArrayList<>();
 			if (!CollectionUtils.isEmpty(relatedObjIdListFromJoiner)) {
 				for (Object relatedObjId : relatedObjIdListFromJoiner) {
@@ -155,27 +155,27 @@ class ToManyThrough {
 		return idToRelatedObjMap;
 	}
 
-	class IntermediateJoiner {
+	class ThroughJoiner {
 		@SuppressWarnings("rawtypes")
 		// key: fkToMainObjIdValue,
 		// value: list of fkToRelatedObjIdValue
 		private Map<Object, List> mainObjIdMap = new HashMap<>();
 
 		@SuppressWarnings({ "unchecked", "rawtypes" })
-		public IntermediateJoiner(List<?> intermediateList, String fkPropertyToMainObjId,
-				String fkPropertyToRelatedObjId, Class<?> intermediateType) {
-			if (CollectionUtils.isEmpty(intermediateList)) {
+		public ThroughJoiner(List<?> throughList, String fkPropertyToMainObjId, String fkPropertyToRelatedObjId,
+				Class<?> throughType) {
+			if (CollectionUtils.isEmpty(throughList)) {
 				return;
 			}
-			Method fkPropertyToMainObjIdReadMethod = RelationshipMapper.getReadMethod(intermediateType,
+			Method fkPropertyToMainObjIdReadMethod = RelationshipMapper.getReadMethod(throughType,
 					fkPropertyToMainObjId);
-			Method fkPropertyToRelatedObjIdReadMethod = RelationshipMapper.getReadMethod(intermediateType,
+			Method fkPropertyToRelatedObjIdReadMethod = RelationshipMapper.getReadMethod(throughType,
 					fkPropertyToRelatedObjId);
 			try {
-				for (Object intermediateObj : intermediateList) {
-					if (intermediateObj != null) {
-						Object fkToMainObjIdValue = fkPropertyToMainObjIdReadMethod.invoke(intermediateObj);
-						Object fkToRelatedObjIdValue = fkPropertyToRelatedObjIdReadMethod.invoke(intermediateObj);
+				for (Object throughObj : throughList) {
+					if (throughObj != null) {
+						Object fkToMainObjIdValue = fkPropertyToMainObjIdReadMethod.invoke(throughObj);
+						Object fkToRelatedObjIdValue = fkPropertyToRelatedObjIdReadMethod.invoke(throughObj);
 						if (fkToMainObjIdValue != null && fkToRelatedObjIdValue != null) {
 							if (mainObjIdMap.containsKey(fkToMainObjIdValue)) {
 								// add to list

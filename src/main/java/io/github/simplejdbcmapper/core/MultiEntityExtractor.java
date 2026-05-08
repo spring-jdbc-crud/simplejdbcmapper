@@ -77,7 +77,6 @@ class MultiEntityExtractor {
 					}
 					rowCnt++;
 				}
-
 				RelationshipMapper relationshipMapper = new RelationshipMapper();
 				for (EntityExtractor entityExtractor : entityExtractors) {
 					relationshipMapper.addEntityResult(entityExtractor.entityType(), entityExtractor.result(),

@@ -25,7 +25,7 @@ import io.github.simplejdbcmapper.relationship.RelationshipMapper.ExtractorEntit
  * populates the target property.
  * 
  * <p>
- * Does not access database or use SimpleJdbcMapper
+ * Does not access database or use SimpleJdbcMapper.
  * 
  * <p>
  * For more details on its use see the <a href=

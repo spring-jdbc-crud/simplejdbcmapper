@@ -54,7 +54,6 @@ public class RelationshipMapper {
 	public <T> void addEntityResult(Class<T> entityType, List<T> list, String idPropertyName) {
 		Assert.notNull(entityType, "entityType must not be null");
 		Assert.notNull(list, "list must not be null");
-
 		results.add(new ExtractorEntityResult(entityType, list, idPropertyName));
 	}
 

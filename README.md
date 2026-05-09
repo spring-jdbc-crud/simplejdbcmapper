@@ -514,7 +514,7 @@ Use Multi-entity processing to populate multiple relationships:
   """.formatted(sjm.getMultiEntitySqlColumns(multiEntity));
  
     // Use JdbcTemplate with the framework extractor to extract results for the entities.
-    RelationshipMapper RelationshipMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
+    RelationshipMapper relationshipMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
     
     // populate employee.skills property. Here we are using toMany() with through(). 
     List<Employee> employees = relationshipMapper.type(Employee.class)

@@ -34,7 +34,7 @@ class EntityWrapper {
 			return propMapping.getReadMethod().invoke(object);
 		} catch (Exception e) {
 			throw new MapperException(e.getMessage() + " error while trying to get value of "
-					+ object.getClass().getSimpleName() + "." + propMapping.getPropertyName());
+					+ object.getClass().getSimpleName() + "." + propMapping.getPropertyName(), e);
 		}
 	}
 

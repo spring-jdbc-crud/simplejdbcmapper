@@ -35,8 +35,7 @@ import org.springframework.util.StringUtils;
  * 
  * @author Antony Joseph
  */
-public class RelationshipMapper {
-
+public class RelationshipMapper implements GetListSpec {
 	static final String IS_PREFIX = "is";
 	static final String GET_PREFIX = "get";
 	static final String SET_PREFIX = "set";

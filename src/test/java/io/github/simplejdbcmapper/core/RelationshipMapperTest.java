@@ -1,5 +1,6 @@
 package io.github.simplejdbcmapper.core;
 
+import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -28,10 +29,20 @@ class RelationshipMapperTest {
 		List<Product> products = sjm.findAll(Product.class);
 
 		RelationshipMapper relMapper = new RelationshipMapper();
-		relMapper.addEntityResult(OrderLine.class, orderLines, null);
-		relMapper.addEntityResult(Product.class, products, null);
+		assertDoesNotThrow(() -> {
+			relMapper.addEntityResult(OrderLine.class, orderLines, null);
+		});
+
+		assertDoesNotThrow(() -> {
+			relMapper.addEntityResult(Product.class, products, null);
+		});
 
 		Exception exception = Assertions.assertThrows(Exception.class, () -> {
+			relMapper.addEntityResult(Product.class, products, null);
+		});
+		assertTrue(exception.getMessage().contains("duplicate entityType"));
+
+		exception = Assertions.assertThrows(Exception.class, () -> {
 			relMapper.type(null);
 		});
 		assertTrue(exception.getMessage().contains("type must not be null"));
@@ -39,6 +50,8 @@ class RelationshipMapperTest {
 		exception = Assertions.assertThrows(Exception.class, () -> {
 			relMapper.type(Employee.class);
 		});
+		assertTrue(exception.getMessage().contains("was not part of the query result set"));
+
 		assertTrue(exception.getMessage().contains("was not part of the query result set"));
 
 	}

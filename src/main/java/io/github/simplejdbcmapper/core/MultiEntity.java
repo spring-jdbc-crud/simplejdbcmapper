@@ -44,7 +44,7 @@ public class MultiEntity {
 	public MultiEntity add(Class<?> entityType, String tableAlias) {
 		Assert.notNull(entityType, "entityType must not be null");
 		InternalUtils.validateTableAlias(tableAlias);
-		checkDuplicateAlias(tableAlias);
+		checkDuplicates(entityType, tableAlias);
 		entries.add(Map.entry(entityType, tableAlias));
 		return this;
 	}
@@ -56,10 +56,13 @@ public class MultiEntity {
 		return entries;
 	}
 
-	private void checkDuplicateAlias(String tableAlias) {
+	private void checkDuplicates(Class<?> entityType, String tableAlias) {
 		for (Map.Entry<Class<?>, String> entry : entries) {
 			if (entry.getValue().equals(tableAlias)) {
 				throw new IllegalArgumentException("duplicate tableAlias " + tableAlias);
+			}
+			if (entry.getKey() == entityType) {
+				throw new IllegalArgumentException("duplicate entityType " + entityType);
 			}
 		}
 	}

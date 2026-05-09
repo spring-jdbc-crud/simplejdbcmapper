@@ -2,7 +2,7 @@
 
 A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations and relationship queries by making them less verbose. Use it as needed and keep using JdbcTemplate/JdbcClient for other functionality.
 
-Just by annotating the models that you would use with JdbcTemplate/JdbcClient, you get single-line CRUD.
+Just by annotating the models that you would use with JdbcTemplate/JdbcClient, you get single-line CRUD and a fluent API to populate relationships from your custom queries.
 
 **New Feature Alert:** Relationships can be populated from custom queries. :sparkler:
 
@@ -470,7 +470,7 @@ Use Multi-entity processing to populate multiple relationships:
   // define your entities. The aliases should exactly match the aliases used in the query.
   MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol").add(Product.class,"p");
   
-  // build your custom sql using the sql columns from sjm.getMultiEntitySqlColumns(multiEntity)
+   // build your custom sql using the sql columns from sjm.getMultiEntitySqlColumns(multiEntity)
   String sql = """
       SELECT %s
       FROM orders o
@@ -504,7 +504,7 @@ Use Multi-entity processing to populate multiple relationships:
   // Define the entities. The intermediate table employe_skill (in this case corresponds to EmpolyeeSkill class) needs to be selected also.
   MultiEntity multiEntity = new MultiEntity().add(Employee.class, "emp").add(EmployeeSkill.class, "es").add(Skill.class, "s");
   
- // build your custom sql using the sql columns from sjm.getMultiEntitySqlColumns(multiEntity)
+   // build your custom sql using the sql columns from sjm.getMultiEntitySqlColumns(multiEntity)
   String sql = """
       SELECT %s
       FROM employee emp
@@ -526,47 +526,47 @@ Use Multi-entity processing to populate multiple relationships:
 
 ### 4.Using multiple queries to populate relationships.
 The Relationship api is agnostic of the source of the data. Results from multiple queries can be used to populate relationships. 
-- Order has many OrderLine  - Will do this in one query  
-- OrderLine has one Product  - Will do this in another query   
+- Order paginated list       - 1st query
+- OrderLine has one Product  - 2nd query to get the corresponding OrderLine and Product for the orders
 
-From the results of these 2 queries the relationships can be populated.
+From the results of these 2 queries the relationships can be built.
 
 ```
-  // first query
-  MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol");
+  // The paginated query. Note the PAGINATED SYNTAX is different for different databases. Use the one for your database.
+  String orderSql = """
+      SELECT %s
+      FROM orders
+      ORDER BY orders.id
+      OFFSET %d ROWS FETCH NEXT %d ROWS ONLY
+      """.formatted(sjm.getEntitySqlColumns(Order.class), 0, 10);
+
+  List<Order> orders = sjm.getJdbcTemplate().query(orderSql, sjm.newEntityRowMapper(Order.class));
+
+  // get the order id list
+  List<Integer> orderIdList = orders.stream().map(Order::getId).toList();
+
+  // 2nd query. For IN clauses we have to use a named parameter
+  MultiEntity multiEntity = new MultiEntity().add(OrderLine.class, "ol").add(Product.class, "p");
   String sql = """
       SELECT %s
-      FROM orders o
-      LEFT JOIN order_line ol ON  o.id = ol.order_id
-      WHERE o.total_amount >= ?
-      ORDER BY o.order_date DESC, ol.id
-   """.formatted(sjm.getMultiEntitySqlColumns(multiEntity));
-   
-   RelationshipMapper relationshipMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity), someAmount); 
+      FROM order_line ol
+      LEFT JOIN product p ON ol.product_id = p.id
+      WHERE ol.order_id IN (:orderIdList)
+      ORDER BY ol.id
+      """.formatted(sjm.getMultiEntitySqlColumns(multiEntity));
 
-   // get the results for the OrderLine entity
-   List<OrderLine> orderLines = relationshipMapper.getList(OrderLine.class)
-   // get the productId list from orderLines list
-   List<Integer> productIdList = orderLines.stream().map(OrderLine::getProductId).toList();
-   
-   // Second query. findByPropertyValues() uses an IN clause so even if there are duplicate product ids we are fine.
-   List<Product> products = sjm.findByPropertyValues(Product.class, "id", productIdList);  
-   
-  // add products to the relationshipmapper so that we can build a relationship from it.
-  relationshipMapper.addEntityResult(Product.class, products, "id");
+  MapSqlParameterSource param = new MapSqlParameterSource().addValue("orderIdList", orderIdList);
+  // Since the query has a named parameter we are using NamedParameterJdbcTemplate for this query
+  RelationshipMapper relationshipMapper = sjm.getNamedParameterJdbcTemplate().query(sql, param, sjm.resultSetExtractor(multiEntity));
+
+  // add orders from the first query to the relationshipMapper so that we can build a relationship from it.
+  relationshipMapper.addEntityResult(Order.class, orders, "id");
 
   // The toOne relationship populates orderLine.product.
-   relationshipMapper.type(OrderLine.class)
-                     .toOne(Product.class)
-                     .joinOn("productId", "id")
-                     .populate("product");
+  relationshipMapper.type(OrderLine.class).toOne(Product.class).joinOn("productId", "id").populate("product");
 
   // The toMany relationship populates order.orderLines and getList() returns the orders
-   List<Order> orders = relationshipMapper.type(Order.class)
-                                          .toMany(OrderLine.class) 
-                                          .joinOn("id", "orderId")
-                                          .populate("orderLines")
-                                          .getList(Order.class);
+  orders = relationshipMapper.type(Order.class).toMany(OrderLine.class).joinOn("id", "orderId").populate("orderLines").getList(Order.class);
    
 ```
 

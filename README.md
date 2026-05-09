@@ -570,7 +570,7 @@ From the results of these 2 queries the relationships can be populated.
    
 ```
 
-This feature works well for paginated results. You could get the paginated orders in one query and in the second query you could get related orderlines and products and then build the relationship.
+This feature works well for paginated results. You could get the paginated orders in one query and in the second query you could get the related orderlines and products and then build the relationship.
 
 
 ## BLOB CLOB mapping

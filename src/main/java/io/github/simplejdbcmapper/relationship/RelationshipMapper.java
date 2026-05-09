@@ -67,7 +67,7 @@ public class RelationshipMapper {
 	public <T> RelationshipSpec type(Class<T> type) {
 		Assert.notNull(type, "type must not be null");
 		// will throw an exception for invalid type
-		getExtractorEntityResult(type, results);
+		getList(type);
 		return Relationship.newInstance(type, results);
 	}
 

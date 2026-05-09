@@ -2,7 +2,7 @@
 
 A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations and relationship queries by making them less verbose. Use it as needed and keep using JdbcTemplate/JdbcClient for other functionality.
 
-Just by annotating the models that you would use with JdbcTemplate/JdbcClient, you get single-line CRUD.
+Just by annotating the models that you would use with JdbcTemplate/JdbcClient, you get single-line CRUD and a fluent API to populate relationships from your custom queries.
 
 **New Feature Alert:** Relationships can be populated from custom queries. :sparkler:
 

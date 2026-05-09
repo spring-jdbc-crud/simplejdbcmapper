@@ -1,6 +1,6 @@
 [![CI SimpleJdbcMapper](https://github.com/spring-jdbc-crud/simplejdbcmapper/actions/workflows/ci.yml/badge.svg)](https://github.com/spring-jdbc-crud/simplejdbcmapper/actions/workflows/ci.yml)  [![coverage](https://spring-jdbc-crud.github.io/simplejdbcmapper/jacoco/jacoco.svg)](https://spring-jdbc-crud.github.io/simplejdbcmapper/jacoco/index.html)  [![maven-central](https://img.shields.io/maven-central/v/io.github.spring-jdbc-crud/simplejdbcmapper)](https://central.sonatype.com/artifact/io.github.spring-jdbc-crud/simplejdbcmapper)  [![License](https://img.shields.io/:license-apache-brightgreen.svg)](https://central.sonatype.com/artifact/io.github.spring-jdbc-crud/simplejdbcmapper)
 
-A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations by making them less verbose. Use it as needed and keep using JdbcTemplate/JdbcClient for other functionality.
+A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations and relationship queries by making them less verbose. Use it as needed and keep using JdbcTemplate/JdbcClient for other functionality.
 
 Just by annotating the models that you would use with JdbcTemplate/JdbcClient, you get single-line CRUD.
 
@@ -470,7 +470,7 @@ Use Multi-entity processing to populate multiple relationships:
   // define your entities. The aliases should exactly match the aliases used in the query.
   MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol").add(Product.class,"p");
   
-  // build your custom sql using the columns sql from sjm.getMultiEntitySqlColumns(multiEntity)
+  // build your custom sql using the sql columns from sjm.getMultiEntitySqlColumns(multiEntity)
   String sql = """
       SELECT %s
       FROM orders o
@@ -504,7 +504,7 @@ Use Multi-entity processing to populate multiple relationships:
   // Define the entities. The intermediate table employe_skill (in this case corresponds to EmpolyeeSkill class) needs to be selected also.
   MultiEntity multiEntity = new MultiEntity().add(Employee.class, "emp").add(EmployeeSkill.class, "es").add(Skill.class, "s");
   
-  // build your custom sql using the columns sql from sjm.getMultiEntitySqlColumns(multiEntity)
+ // build your custom sql using the sql columns from sjm.getMultiEntitySqlColumns(multiEntity)
   String sql = """
       SELECT %s
       FROM employee emp

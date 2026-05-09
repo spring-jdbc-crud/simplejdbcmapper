@@ -569,8 +569,8 @@ From the results of these 2 queries the relationships can be built.
   orders = relationshipMapper.type(Order.class)
                              .toMany(OrderLine.class)
                              .joinOn("id", "orderId")
-				  .populate("orderLines")
-				  .getList(Order.class);
+                             .populate("orderLines")
+                             .getList(Order.class);
    
 ```
 

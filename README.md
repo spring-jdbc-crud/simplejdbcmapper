@@ -540,37 +540,37 @@ From the results of these 2 queries the relationships can be built.
       OFFSET %d ROWS FETCH NEXT %d ROWS ONLY
       """.formatted(sjm.getEntitySqlColumns(Order.class), 0, 10);
 
-      List<Order> orders = sjm.getJdbcTemplate().query(orderSql, sjm.newEntityRowMapper(Order.class));
+  List<Order> orders = sjm.getJdbcTemplate().query(orderSql, sjm.newEntityRowMapper(Order.class));
 
-      // get the order id list
-	List<Integer> orderIdList = orders.stream().map(Order::getId).toList();
+  // get the order id list
+  List<Integer> orderIdList = orders.stream().map(Order::getId).toList();
 
-      // 2nd query. For IN clauses we have to use a named parameter
-      MultiEntity multiEntity = new MultiEntity().add(OrderLine.class, "ol").add(Product.class, "p");
-      String sql = """
-          SELECT %s
-	   FROM order_line ol
-	   LEFT JOIN product p ON ol.product_id = p.id
-	   WHERE ol.order_id IN (:orderIdList)
-	   ORDER BY ol.id
-	   """.formatted(sjm.getMultiEntitySqlColumns(multiEntity));
+  // 2nd query. For IN clauses we have to use a named parameter
+  MultiEntity multiEntity = new MultiEntity().add(OrderLine.class, "ol").add(Product.class, "p");
+  String sql = """
+      SELECT %s
+      FROM order_line ol
+      LEFT JOIN product p ON ol.product_id = p.id
+      WHERE ol.order_id IN (:orderIdList)
+      ORDER BY ol.id
+      """.formatted(sjm.getMultiEntitySqlColumns(multiEntity));
 
-      MapSqlParameterSource param = new MapSqlParameterSource().addValue("orderIdList", orderIdList);
-      // Since the query has a named parameter we are using NamedParameterJdbcTemplate for this query
-      RelationshipMapper relationshipMapper = sjm.getNamedParameterJdbcTemplate().query(sql, param, sjm.resultSetExtractor(multiEntity));
+  MapSqlParameterSource param = new MapSqlParameterSource().addValue("orderIdList", orderIdList);
+  // Since the query has a named parameter we are using NamedParameterJdbcTemplate for this query
+  RelationshipMapper relationshipMapper = sjm.getNamedParameterJdbcTemplate().query(sql, param, sjm.resultSetExtractor(multiEntity));
 
-      // add orders from the first query to the relationshipMapper so that we can build a relationship from it.
-      relationshipMapper.addEntityResult(Order.class, orders, "id");
+  // add orders from the first query to the relationshipMapper so that we can build a relationship from it.
+  relationshipMapper.addEntityResult(Order.class, orders, "id");
 
-      // The toOne relationship populates orderLine.product.
-      relationshipMapper.type(OrderLine.class).toOne(Product.class).joinOn("productId", "id").populate("product");
+  // The toOne relationship populates orderLine.product.
+  relationshipMapper.type(OrderLine.class).toOne(Product.class).joinOn("productId", "id").populate("product");
 
-      // The toMany relationship populates order.orderLines and getList() returns the orders
-      orders = relationshipMapper.type(Order.class)
-                                 .toMany(OrderLine.class)
-                                 .joinOn("id", "orderId")
-				       .populate("orderLines")
-				       .getList(Order.class);
+  // The toMany relationship populates order.orderLines and getList() returns the orders
+  orders = relationshipMapper.type(Order.class)
+                             .toMany(OrderLine.class)
+                             .joinOn("id", "orderId")
+				  .populate("orderLines")
+				  .getList(Order.class);
    
 ```
 

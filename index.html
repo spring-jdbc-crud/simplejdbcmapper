@@ -20,6 +20,8 @@
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"WebSite","description":"Simplify Spring CRUD JdbcTemplate/JdbcClient operations by making them less verbose using SimpleJdbcMapper","headline":"Simplify Spring CRUD JdbcTemplate/JdbcClient operations by making them less verbose using SimpleJdbcMapper #","name":"Simplify Spring CRUD JdbcTemplate/JdbcClient operations by making them less verbose using SimpleJdbcMapper","url":"https://spring-jdbc-crud.github.io/simplejdbcmapper"}</script>
 
+<!-- End SEO tag -->
+
     <link type="text/css" rel="stylesheet" href="assets/css/bootstrap.css"/>
     <link type="text/css" rel="stylesheet" href="assets/css/bootstrap-responsive.css"/>
     <link type="text/css" rel="stylesheet" href="assets/css/pilcrow.css"/>
@@ -37,7 +39,7 @@
   <div class="container-fluid">
     <div class="row-fluid">
       <div class="span3"><ul class="nav nav-list">
-    <li class="sidebar-header-1"><a href="#simplejdbcmapper">SimpleJdbcMapper</a></li>
+       <li class="sidebar-header-1"><a href="#simplejdbcmapper">SimpleJdbcMapper</a></li>
     <li class="sidebar-header-2"><a href="#table-of-contents">Table of contents</a></li>
     <li class="sidebar-header-2"><a href="#features">Features</a></li>
     <li class="sidebar-header-2"><a href="#maven-coordinates">Maven coordinates</a></li>
@@ -56,21 +58,23 @@
     <li class="sidebar-header-2"><a href="#troubleshooting">TroubleShooting</a></li>
 </ul>
       </div>
-      <div class="span9 main"><h1 id="simplejdbcmapper"><a class="header-link" href="#simplejdbcmapper"></a>SimpleJdbcMapper</h1>
-<p><a href="https://github.com/spring-jdbc-crud/simplejdbcmapper/actions/workflows/ci.yml"><img src="https://github.com/spring-jdbc-crud/simplejdbcmapper/actions/workflows/ci.yml/badge.svg" alt="CI SimpleJdbcMapper"></a>  <a href="https://spring-jdbc-crud.github.io/simplejdbcmapper/jacoco/index.html"><img src="https://spring-jdbc-crud.github.io/simplejdbcmapper/jacoco/jacoco.svg" alt="coverage"></a>  <a href="https://central.sonatype.com/artifact/io.github.spring-jdbc-crud/simplejdbcmapper"><img src="https://img.shields.io/maven-central/v/io.github.spring-jdbc-crud/simplejdbcmapper" alt="maven-central"></a>  <a href="https://central.sonatype.com/artifact/io.github.spring-jdbc-crud/simplejdbcmapper"><img src="https://img.shields.io/:license-apache-brightgreen.svg" alt="License"></a></p>
-<p>A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations by making them less verbose. Use it as needed and keep using JdbcTemplate/JdbcClient for other functionality.</p>
-<p>Just by annotating the models that you would use with JdbcTemplate/JdbcClient, you get single-line CRUD.</p>
-<p><strong>New Feature Alert:</strong> Relationships can be populated from your custom queries.</p>
+      <div class="span9 main">
+      <h1 id="simplejdbcmapper"><a class="header-link" href="#simplejdbcmapper"></a>SimpleJdbcMapper</h1>
+      <p><a href="https://github.com/spring-jdbc-crud/simplejdbcmapper/actions/workflows/ci.yml"><img src="https://github.com/spring-jdbc-crud/simplejdbcmapper/actions/workflows/ci.yml/badge.svg" alt="CI SimpleJdbcMapper"></a>  <a href="https://spring-jdbc-crud.github.io/simplejdbcmapper/jacoco/index.html"><img src="https://spring-jdbc-crud.github.io/simplejdbcmapper/jacoco/jacoco.svg" alt="coverage"></a>  <a href="https://central.sonatype.com/artifact/io.github.spring-jdbc-crud/simplejdbcmapper"><img src="https://img.shields.io/maven-central/v/io.github.spring-jdbc-crud/simplejdbcmapper" alt="maven-central"></a>  <a href="https://central.sonatype.com/artifact/io.github.spring-jdbc-crud/simplejdbcmapper"><img src="https://img.shields.io/:license-apache-brightgreen.svg" alt="License"></a></p>
+<p>A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations and relationship queries by making them less verbose. Use it as needed and keep using JdbcTemplate/JdbcClient for other functionality.</p>
+<p>Just by annotating the models that you would use with JdbcTemplate/JdbcClient, you get single-line CRUD and a fluent API to populate relationships from your custom queries.</p>
+<p><strong>New Feature Alert:</strong> Relationships can be populated from custom queries.  </p>
 <p>
 	<a href="https://github.com/spring-jdbc-crud/simplejdbcmapper">github</a> |
 	<a href="https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/index.html">Javadoc</a> |
 	<a href="https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper">Demo Application</a>
 </p>
+
 <h2 id="features"><a class="header-link" href="#features"></a>Features</h2>
 <ol class="list">
 <li>One liners for CRUD</li>
-<li>Simple configuration similar to Jdbctemplate/JdbClient configuration.</li>
-<li>Helper methods to populate relationships from mutli-table queries</li>
+<li>Simple configuration similar to JdbcTemplate/JdbClient configuration.</li>
+<li>A fluent style API to populate relationships from mutli-table queries.</li>
 <li>Method to construct SQL for the mapped objects that can be used with Spring row mappers like BeanPropertyRowMapper, SimplePropertyRowMapper or the framework&#39;s EntityRowMapper which avoids writing custom row mappers.</li>
 <li>Auto assign properties<ul class="list">
 <li>auto assign audited  by (created by, updated by) by providing a Supplier</li>
@@ -185,6 +189,8 @@ to work with EntityRowMapper (see its javadoc). Note in this case the &#x27;name
  JdbcTemplate jdbcTemplate = sjm.getJdbcTemplate();
  NamedParameterJdbcTemplate namedParameterJdbcTemplate = sjm.getNamedParameterJdbcTemplate();
  
+ <span class="hljs-comment">// see relationships section on how to populate relationships with custom queries.</span>
+ 
  <span class="hljs-comment">// The demo application (link provided at top) is easy to install and run where you can see example code in action.</span>
  
  <span class="hljs-comment">// See logging section for details to view the SQL</span>
@@ -277,7 +283,7 @@ spring.datasource.driver-<span class="hljs-class"><span class="hljs-keyword">cla
   </code></pre><h2 id="annotations"><a class="header-link" href="#annotations"></a>Annotations</h2>
 <p><strong>@Table</strong></p>
 <p>Required class level annotation. The table or view should exist in database. The schema/catalog attributes set with @Table will override corresponding values on the SimpleJdbcMapper() constructor (if any). <strong>Note that table names with spaces are not supported.</strong></p>
-<p>Multiple objects can be mapped to the same table. For example if you have a table with large number of columns you could have 2 objects mapped to it. One with a few commonly used columns and another with all the columns.</p>
+<p>Multiple classes can be mapped to the same table. For example if you have a table with large number of columns you could have 2 objects mapped to it. One with a few commonly used columns and another with all the columns.</p>
 <pre class="hljs"><code>
 <span class="hljs-meta">@Table(name=&quot;product&quot;)</span>
 <span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Product</span> </span>{
@@ -397,35 +403,36 @@ If a Supplier is configured using simpleJdbcMapper.setRecordAuditedBySupplier(),
 <ul class="list">
 <li>Order has many OrderLine</li>
 </ul>
-<pre class="hljs"><code>  <span class="hljs-comment">// Define the multiple mapped entities you want to select. Explanation on the next step.</span>
-  MultiEntity multiEntity = new MultiEntity().add(<span class="hljs-keyword">Order</span>.<span class="hljs-keyword">class</span>, <span class="hljs-string1">&quot;o&quot;</span>).add(OrderLine.<span class="hljs-keyword">class</span>, <span class="hljs-string1">&quot;ol&quot;</span>);
-  
-  <span class="hljs-comment">/* 
-     Get the columns for your &#x27;SELECT&#x27; using getMultiEntitySqlColumns(). For the method to generate the columns 
-     sql correctly, the table alias argument for each entity in &#x27;MultiEntity&#x27; should match exactly the table aliases in 
-     your custom query. In this case &#x27;o&#x27; for Order.class which has been mapped to the &#x27;orders&#x27; table and
-     &#x27;ol&#x27; for OrderLine.class which has been mapped to &#x27;order_line&#x27; table.
-     Creating the SQL using java String blocks makes the queries more readable.
+<pre class="hljs"><code>  <span class="hljs-comment">/* 
+     Define the multiple mapped entities you want to select. Make sure the table aliases match that in query.
+     Mapped Class    | Table      |Alias
+     ------------------------------------
+     Order.class     | orders     | &quot;o&quot;
+     OrderLine.class | order_line | &quot;ol&quot;
   */</span>
-  String sql = <span class="hljs-string1">&quot;&quot;</span>&quot;
+  <span class="hljs-type">MultiEntity</span> multiEntity = <span class="hljs-keyword">new</span> <span class="hljs-type">MultiEntity</span>().add(<span class="hljs-type">Order</span>.<span class="hljs-keyword">class</span>, <span class="hljs-string1">&quot;o&quot;</span>).add(<span class="hljs-type">OrderLine</span>.<span class="hljs-keyword">class</span>, <span class="hljs-string1">&quot;ol&quot;</span>);
+  
+  <span class="hljs-comment">// Get the columns for your &#x27;SELECT&#x27; using getMultiEntitySqlColumns().</span>
+  <span class="hljs-comment">// Using java String blocks makes the queries more readable.</span>
+  <span class="hljs-type">String</span> sql = <span class="hljs-string1">&quot;&quot;&quot;
       SELECT %s
       FROM orders o
-      LEFT JOIN order_line ol <span class="hljs-keyword">ON</span>  o.id = ol.order_id
+      LEFT JOIN order_line ol ON  o.id = ol.order_id
       WHERE o.total_amount &gt;= ?
-      <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> o.order_date <span class="hljs-keyword">DESC</span>, ol.id
-   <span class="hljs-string1">&quot;&quot;</span>&quot;.formatted(sjm.getMultiEntitySqlColumns(multiEntity));
+      ORDER BY o.order_date DESC, ol.id
+   &quot;&quot;&quot;</span>.formatted(sjm.getMultiEntitySqlColumns(multiEntity));
    
-   <span class="hljs-comment">// Use the framework ResultSetExtractor with JdbcTemplate to extract the data for the </span>
-   <span class="hljs-comment">// multiple entities. The return value &#x27;RelationshipMapper&#x27; holds the query results.</span>
-   RelationshipMapper relationshipMapper = sjm.getJdbcTemplate().<span class="hljs-keyword">query</span>(sql, sjm.resultSetExtractor(multiEntity), someAmount); 
+   <span class="hljs-comment">// Use the framework ResultSetExtractor with JdbcTemplate to extract the results.</span>
+   <span class="hljs-type">RelationshipMapper</span> relationshipMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity), someAmount); 
    
-   <span class="hljs-comment">// populate() method triggers the processing of the relationship and getList() returns the list</span>
-   <span class="hljs-keyword">List</span>&lt;<span class="hljs-keyword">Order</span>&gt; orders = relationshipMapper.<span class="hljs-keyword">type</span>(<span class="hljs-keyword">Order</span>.<span class="hljs-keyword">class</span>).toMany(OrderLine.<span class="hljs-keyword">class</span>).joinOn(<span class="hljs-string1">&quot;id&quot;</span>, <span class="hljs-string1">&quot;orderId&quot;</span>).populate(<span class="hljs-string1">&quot;orderLines&quot;</span>).getList(<span class="hljs-keyword">Order</span>.<span class="hljs-keyword">class</span>);</code></pre><ol class="list">
-<li>When creating an instance of <a href="https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/io/github/simplejdbcmapper/core/MultiEntity.html">MultiEntity</a> make sure the table aliases <strong>exactly match</strong> what you have in your custom query. </li>
-<li>The columns sql generated by <a href="https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#resultSetExtractor%28io.github.simplejdbcmapper.core.MultiEntity%29">getMultiEntitySqlColumns()</a> and the <a href="https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#resultSetExtractor%28io.github.simplejdbcmapper.core.MultiEntity%29">ResultSetExtractor</a> work together. The extractor expects columns to be exactly in a specific order, so <strong>absolutely do not modify the columns sql string</strong>.</li>
-<li><a href="https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/io/github/simplejdbcmapper/relationship/Relationship.html">Relationship</a> works with the information provided by the API. It does not access the database or use SimpleJdbcMapper.</li>
-<li>The collection property populated by toMany <strong>always has to be of type &#39;List&#39;</strong>. In the above example order.orderLines has to be of type List.</li>
-<li>In the example, there was only one query parameter so JdbcTemplate was used. If you have many parameters you can use NamedParameterJdbcTemplate with the framework&#39;s ResultSetExtractor (It implements Spring&#39;s org.springframework.jdbc.core.ResultSetExtractor).</li>
+   <span class="hljs-comment">// populate() does the processing and populates Order.orderLines and getList() returns the orders</span>
+   <span class="hljs-type">List</span>&lt;<span class="hljs-type">Order</span>&gt; orders = relationshipMapper.<span class="hljs-keyword">type</span>(<span class="hljs-type">Order</span>.<span class="hljs-keyword">class</span>)
+                                          .toMany(<span class="hljs-type">OrderLine</span>.<span class="hljs-keyword">class</span>)
+                                          .joinOn(<span class="hljs-string1">&quot;id&quot;</span>, <span class="hljs-string1">&quot;orderId&quot;</span>)
+                                          .populate(<span class="hljs-string1">&quot;orderLines&quot;</span>)
+                                          .getList(<span class="hljs-type">Order</span>.<span class="hljs-keyword">class</span>);</code></pre><ol class="list">
+<li>The sql columns generated by <a href="https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#resultSetExtractor%28io.github.simplejdbcmapper.core.MultiEntity%29">getMultiEntitySqlColumns()</a> and the <a href="https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#resultSetExtractor%28io.github.simplejdbcmapper.core.MultiEntity%29">ResultSetExtractor</a> work together. The extractor expects columns to be in a specific order, so <strong>do not modify the sql columns string</strong> from getMultiEntitySqlColumns().</li>
+<li><a href="https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/io/github/simplejdbcmapper/relationship/Relationship.html">Relationship</a> works with the query results and information provided by the API. It does not access the database or use SimpleJdbcMapper.</li>
 </ol>
 <h3 id="2multiple-relationships-with-one-query-toone-and-tomany"><a class="header-link" href="#2multiple-relationships-with-one-query-toone-and-tomany"></a>2.Multiple relationships with one query (toOne and toMany)</h3>
 <p>Use Multi-entity processing to populate multiple relationships:  </p>
@@ -436,7 +443,7 @@ If a Supplier is configured using simpleJdbcMapper.setRecordAuditedBySupplier(),
 <pre class="hljs"><code>  <span class="hljs-comment">// define your entities. The aliases should exactly match the aliases used in the query.</span>
   MultiEntity multiEntity = new MultiEntity().add(<span class="hljs-keyword">Order</span>.<span class="hljs-keyword">class</span>, <span class="hljs-string1">&quot;o&quot;</span>).add(OrderLine.<span class="hljs-keyword">class</span>, <span class="hljs-string1">&quot;ol&quot;</span>).add(Product.<span class="hljs-keyword">class</span>,<span class="hljs-string1">&quot;p&quot;</span>);
   
-  <span class="hljs-comment">// build your custom sql using the columns sql from sjm.getMultiEntitySqlColumns(multiEntity)</span>
+   <span class="hljs-comment">// build your custom sql using the sql columns from sjm.getMultiEntitySqlColumns(multiEntity)</span>
   String sql = <span class="hljs-string1">&quot;&quot;</span>&quot;
       SELECT %s
       FROM orders o
@@ -445,22 +452,29 @@ If a Supplier is configured using simpleJdbcMapper.setRecordAuditedBySupplier(),
       WHERE o.total_amount &gt;= ? 
       <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> o.order_date <span class="hljs-keyword">DESC</span>, ol.id
       <span class="hljs-string1">&quot;&quot;</span>&quot;.formatted(sjm.getMultiEntitySqlColumns(multiEntity));
- 
- <span class="hljs-comment">// Use JdbcTemplate with the framework extractor to execute the query and extract results</span>
+      
+  <span class="hljs-comment">// Use JdbcTemplate with the framework extractor to execute the query and extract results</span>
   RelationshipMapper relationshipMapper = sjm.getJdbcTemplate().<span class="hljs-keyword">query</span>(sql, sjm.resultSetExtractor(multiEntity), someAmount);
   
+  <span class="hljs-comment">// populate property OrderLine.product using toOne() since its a toOne relationship. populate() method does the processing.</span>
+  relationshipMapper.<span class="hljs-keyword">type</span>(OrderLine.<span class="hljs-keyword">class</span>)
+                    .toOne(Product.<span class="hljs-keyword">class</span>)
+                    .joinOn(<span class="hljs-string1">&quot;productId&quot;</span>, <span class="hljs-string1">&quot;id&quot;</span>)
+                    .populate(<span class="hljs-string1">&quot;product&quot;</span>);
   
-   <span class="hljs-comment">// populate  the &#x27;product&#x27; property on OrderLine using toOne() since its a toOne relationship. populate() method triggers the processing.</span>
-  relationshipMapper.<span class="hljs-keyword">type</span>(OrderLine.<span class="hljs-keyword">class</span>).toOne(Product.<span class="hljs-keyword">class</span>).joinOn(<span class="hljs-string1">&quot;productId&quot;</span>, <span class="hljs-string1">&quot;id&quot;</span>).populate(<span class="hljs-string1">&quot;product&quot;</span>);
-  <span class="hljs-comment">// populate orderLines property on order and use getList() to return the list</span>
-  <span class="hljs-keyword">List</span>&lt;<span class="hljs-keyword">Order</span>&gt; orders = relationshipMapper.<span class="hljs-keyword">type</span>(<span class="hljs-keyword">Order</span>.<span class="hljs-keyword">class</span>).toMany(OrderLine.<span class="hljs-keyword">class</span>).joinOn(<span class="hljs-string1">&quot;id&quot;</span>, <span class="hljs-string1">&quot;orderId&quot;</span>).populate(<span class="hljs-string1">&quot;orderLines&quot;</span>).getList(<span class="hljs-keyword">Order</span>.<span class="hljs-keyword">class</span>)</code></pre><h3 id="3tomany-relationship-through-an-intermediate-table-one-side-of-many-to-many"><a class="header-link" href="#3tomany-relationship-through-an-intermediate-table-one-side-of-many-to-many"></a>3.ToMany relationship through an intermediate table (one side of many to many)</h3>
+  <span class="hljs-comment">// populate Order.orderLines property and use getList() to return the orders</span>
+  <span class="hljs-keyword">List</span>&lt;<span class="hljs-keyword">Order</span>&gt; orders = relationshipMapper.<span class="hljs-keyword">type</span>(<span class="hljs-keyword">Order</span>.<span class="hljs-keyword">class</span>)
+                                          .toMany(OrderLine.<span class="hljs-keyword">class</span>)
+                                          .joinOn(<span class="hljs-string1">&quot;id&quot;</span>, <span class="hljs-string1">&quot;orderId&quot;</span>)
+                                          .populate(<span class="hljs-string1">&quot;orderLines&quot;</span>)
+                                          .getList(<span class="hljs-keyword">Order</span>.<span class="hljs-keyword">class</span>)</code></pre><h3 id="3tomany-relationship-through-an-intermediate-table-one-side-of-many-to-many"><a class="header-link" href="#3tomany-relationship-through-an-intermediate-table-one-side-of-many-to-many"></a>3.ToMany relationship through an intermediate table (one side of many to many)</h3>
 <ul class="list">
 <li>Employee has many Skill through intermediate table &#39;employee_skill&#39;</li>
 </ul>
 <pre class="hljs"><code>  // Define the entities. The intermediate <span class="hljs-keyword">table</span> employe_skill (<span class="hljs-keyword">in</span> this <span class="hljs-keyword">case</span> corresponds <span class="hljs-keyword">to</span> EmpolyeeSkill <span class="hljs-keyword">class</span>) needs <span class="hljs-keyword">to</span> be selected <span class="hljs-keyword">also</span>.
   MultiEntity multiEntity = <span class="hljs-built_in">new</span> MultiEntity().<span class="hljs-keyword">add</span>(Employee.<span class="hljs-keyword">class</span>, &quot;emp&quot;).<span class="hljs-keyword">add</span>(EmployeeSkill.<span class="hljs-keyword">class</span>, &quot;es&quot;).<span class="hljs-keyword">add</span>(Skill.<span class="hljs-keyword">class</span>, &quot;s&quot;);
   
-  // build your custom <span class="hljs-keyword">sql</span> <span class="hljs-keyword">using</span> the <span class="hljs-keyword">columns</span> <span class="hljs-keyword">sql</span> <span class="hljs-keyword">from</span> sjm.getMultiEntitySqlColumns(multiEntity)
+   // build your custom <span class="hljs-keyword">sql</span> <span class="hljs-keyword">using</span> the <span class="hljs-keyword">sql</span> <span class="hljs-keyword">columns</span> <span class="hljs-keyword">from</span> sjm.getMultiEntitySqlColumns(multiEntity)
   String <span class="hljs-keyword">sql</span> = &quot;&quot;&quot;
       SELECT %s
       FROM employee emp
@@ -470,45 +484,55 @@ If a Supplier is configured using simpleJdbcMapper.setRecordAuditedBySupplier(),
   &quot;&quot;&quot;.formatted(sjm.getMultiEntitySqlColumns(multiEntity));
  
     // Use JdbcTemplate <span class="hljs-keyword">with</span> the framework extractor <span class="hljs-keyword">to</span> extract results <span class="hljs-keyword">for</span> the entities.
-    RelationshipMapper RelationshipMapper = sjm.getJdbcTemplate().query(<span class="hljs-keyword">sql</span>, sjm.resultSetExtractor(multiEntity));
+    RelationshipMapper relationshipMapper = sjm.getJdbcTemplate().query(<span class="hljs-keyword">sql</span>, sjm.resultSetExtractor(multiEntity));
     
     // populate employee.skills property. Here we are <span class="hljs-keyword">using</span> toMany() <span class="hljs-keyword">with</span> through(). 
-    List&lt;Employee&gt; employees = relationshipMapper.<span class="hljs-keyword">type</span>(Employee.<span class="hljs-keyword">class</span>).toMany(Skill.<span class="hljs-keyword">class</span>).through(EmployeeSkill.<span class="hljs-keyword">class</span>, &quot;employeeId&quot;, &quot;skillId&quot;).populate(&quot;skills&quot;).getList(Employee.<span class="hljs-keyword">class</span>);</code></pre><h3 id="4using-multiple-queries-to-populate-relationships"><a class="header-link" href="#4using-multiple-queries-to-populate-relationships"></a>4.Using multiple queries to populate relationships.</h3>
+    List&lt;Employee&gt; employees = relationshipMapper.<span class="hljs-keyword">type</span>(Employee.<span class="hljs-keyword">class</span>)
+                                                 .toMany(Skill.<span class="hljs-keyword">class</span>)
+                                                 .through(EmployeeSkill.<span class="hljs-keyword">class</span>, &quot;employeeId&quot;, &quot;skillId&quot;)
+                                                 .populate(&quot;skills&quot;)
+                                                 .getList(Employee.<span class="hljs-keyword">class</span>);</code></pre><h3 id="4using-multiple-queries-to-populate-relationships"><a class="header-link" href="#4using-multiple-queries-to-populate-relationships"></a>4.Using multiple queries to populate relationships.</h3>
 <p>The Relationship api is agnostic of the source of the data. Results from multiple queries can be used to populate relationships. </p>
 <ul class="list">
-<li>Order has many OrderLine  - Will do this in one query  </li>
-<li>OrderLine has one Product  - Will do this in another query   </li>
+<li>Order paginated list       - 1st query</li>
+<li>OrderLine has one Product  - 2nd query to get the corresponding OrderLine and Product for the orders</li>
 </ul>
-<p>From the results of these 2 queries the relationships can be populated.</p>
-<pre class="hljs"><code>  <span class="hljs-comment">// first query</span>
-  MultiEntity multiEntity = new MultiEntity().add(<span class="hljs-keyword">Order</span>.<span class="hljs-keyword">class</span>, <span class="hljs-string1">&quot;o&quot;</span>).add(OrderLine.<span class="hljs-keyword">class</span>, <span class="hljs-string1">&quot;ol&quot;</span>);
-  String sql = <span class="hljs-string1">&quot;&quot;</span>&quot;
+<p>From the results of these 2 queries the relationships can be built.</p>
+<pre class="hljs"><code>  <span class="hljs-comment">// The paginated query. Note the PAGINATED SYNTAX is different for different databases. Use the one for your database.</span>
+  <span class="hljs-type">String</span> orderSql = <span class="hljs-string1">&quot;&quot;&quot;
       SELECT %s
-      FROM orders o
-      LEFT JOIN order_line ol <span class="hljs-keyword">ON</span>  o.id = ol.order_id
-      WHERE o.total_amount &gt;= ?
-      <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> o.order_date <span class="hljs-keyword">DESC</span>, ol.id
-   <span class="hljs-string1">&quot;&quot;</span>&quot;.formatted(sjm.getMultiEntitySqlColumns(multiEntity));
-   
-   RelationshipMapper relationshipMapper = sjm.getJdbcTemplate().<span class="hljs-keyword">query</span>(sql, sjm.resultSetExtractor(multiEntity), someAmount); 
+      FROM orders
+      ORDER BY orders.id
+      OFFSET %d ROWS FETCH NEXT %d ROWS ONLY
+      &quot;&quot;&quot;</span>.formatted(sjm.getEntitySqlColumns(<span class="hljs-type">Order</span>.<span class="hljs-keyword">class</span>), <span class="hljs-number">0</span>, <span class="hljs-number">10</span>);
 
-   <span class="hljs-comment">// get the results for the OrderLine entity</span>
-   <span class="hljs-keyword">List</span>&lt;OrderLine&gt; orderLines = relationshipMapper.getList(OrderLine.<span class="hljs-keyword">class</span>)
-   <span class="hljs-comment">// get the productId list from orderLines list</span>
-   <span class="hljs-keyword">List</span>&lt;Integer&gt; productIdList = orderLines.stream().map(OrderLine::getProductId).toList();
-   
-   <span class="hljs-comment">// Second query. findByPropertyValues() uses an IN clause so even if there are duplicate product ids we are fine.</span>
-   <span class="hljs-keyword">List</span>&lt;Product&gt; products = sjm.findByPropertyValues(Product.<span class="hljs-keyword">class</span>, <span class="hljs-string1">&quot;id&quot;</span>, productIdList);  
-   
-  <span class="hljs-comment">// add products to the relationshipmapper so that we can build a relationship from it.</span>
-  relationshipMapper.addEntityResult(Product.<span class="hljs-keyword">class</span>, products, <span class="hljs-string1">&quot;id&quot;</span>);
-  
+  <span class="hljs-type">List</span>&lt;<span class="hljs-type">Order</span>&gt; orders = sjm.getJdbcTemplate().query(orderSql, sjm.newEntityRowMapper(<span class="hljs-type">Order</span>.<span class="hljs-keyword">class</span>));
+
+  <span class="hljs-comment">// get the order id list</span>
+  <span class="hljs-type">List</span>&lt;<span class="hljs-type">Integer</span>&gt; orderIdList = orders.stream().map(<span class="hljs-type">Order</span>::getId).toList();
+
+  <span class="hljs-comment">// 2nd query. For IN clauses we have to use a named parameter</span>
+  <span class="hljs-type">MultiEntity</span> multiEntity = <span class="hljs-keyword">new</span> <span class="hljs-type">MultiEntity</span>().add(<span class="hljs-type">OrderLine</span>.<span class="hljs-keyword">class</span>, <span class="hljs-string1">&quot;ol&quot;</span>).add(<span class="hljs-type">Product</span>.<span class="hljs-keyword">class</span>, <span class="hljs-string1">&quot;p&quot;</span>);
+  <span class="hljs-type">String</span> sql = <span class="hljs-string1">&quot;&quot;&quot;
+      SELECT %s
+      FROM order_line ol
+      LEFT JOIN product p ON ol.product_id = p.id
+      WHERE ol.order_id IN (:orderIdList)
+      ORDER BY ol.id
+      &quot;&quot;&quot;</span>.formatted(sjm.getMultiEntitySqlColumns(multiEntity));
+
+  <span class="hljs-type">MapSqlParameterSource</span> param = <span class="hljs-keyword">new</span> <span class="hljs-type">MapSqlParameterSource</span>().addValue(<span class="hljs-string1">&quot;orderIdList&quot;</span>, orderIdList);
+  <span class="hljs-comment">// Since the query has a named parameter we are using NamedParameterJdbcTemplate for this query</span>
+  <span class="hljs-type">RelationshipMapper</span> relationshipMapper = sjm.getNamedParameterJdbcTemplate().query(sql, param, sjm.resultSetExtractor(multiEntity));
+
+  <span class="hljs-comment">// add orders from the first query to the relationshipMapper so that we can build a relationship from it.</span>
+  relationshipMapper.addEntityResult(<span class="hljs-type">Order</span>.<span class="hljs-keyword">class</span>, orders, <span class="hljs-string1">&quot;id&quot;</span>);
+
   <span class="hljs-comment">// The toOne relationship populates orderLine.product.</span>
-   relationshipMapper.<span class="hljs-keyword">type</span>(OrderLine.<span class="hljs-keyword">class</span>).toOne(Product.<span class="hljs-keyword">class</span>).joinOn(<span class="hljs-string1">&quot;productId&quot;</span>, <span class="hljs-string1">&quot;id&quot;</span>).populate(<span class="hljs-string1">&quot;product&quot;</span>);
-   
-   <span class="hljs-comment">// The toMany relationship populates order.orderLines</span>
-   <span class="hljs-keyword">List</span>&lt;<span class="hljs-keyword">Order</span>&gt; orders = relationshipMapper.<span class="hljs-keyword">type</span>(<span class="hljs-keyword">Order</span>.<span class="hljs-keyword">class</span>).toMany(OrderLine.<span class="hljs-keyword">class</span>).joinOn(<span class="hljs-string1">&quot;id&quot;</span>, <span class="hljs-string1">&quot;orderId&quot;</span>).populate(<span class="hljs-string1">&quot;orderLines&quot;</span>).getList(<span class="hljs-keyword">Order</span>.<span class="hljs-keyword">class</span>);
-   
+  relationshipMapper.<span class="hljs-keyword">type</span>(<span class="hljs-type">OrderLine</span>.<span class="hljs-keyword">class</span>).toOne(<span class="hljs-type">Product</span>.<span class="hljs-keyword">class</span>).joinOn(<span class="hljs-string1">&quot;productId&quot;</span>, <span class="hljs-string1">&quot;id&quot;</span>).populate(<span class="hljs-string1">&quot;product&quot;</span>);
+
+  <span class="hljs-comment">// The toMany relationship populates order.orderLines and getList() returns the orders</span>
+  orders = relationshipMapper.<span class="hljs-keyword">type</span>(<span class="hljs-type">Order</span>.<span class="hljs-keyword">class</span>).toMany(<span class="hljs-type">OrderLine</span>.<span class="hljs-keyword">class</span>).joinOn(<span class="hljs-string1">&quot;id&quot;</span>, <span class="hljs-string1">&quot;orderId&quot;</span>).populate(<span class="hljs-string1">&quot;orderLines&quot;</span>).getList(<span class="hljs-type">Order</span>.<span class="hljs-keyword">class</span>);
    </code></pre><h2 id="blob-clob-mapping"><a class="header-link" href="#blob-clob-mapping"></a>BLOB CLOB mapping</h2>
 <ul class="list">
 <li> Binary large object database columns should be mapped to java type <strong>byte[]</strong>.<br>No other java type is supported. The &#39;sqlType&#39; attribute of the @Column annotation with the following values are considered as Binary Large Objects by SimpleJdbcMapper:<br>Types.BLOB<br>Types.ARRAY<br>Types.LONGVARBINARY<br>Types.VARBINARY  </li>

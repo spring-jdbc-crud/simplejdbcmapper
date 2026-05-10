@@ -17,5 +17,6 @@ The simplejdbcmapper website is published from the 'gh-pages' branch.
       2) replace all hljs-string with hljs-string1 to turn of red highlighting of quoted strings
       3) upgrading-to-2.x-from-1.x remove period
       4) remove :sparkler:
+      5) Remove subsections for relationships
 
 

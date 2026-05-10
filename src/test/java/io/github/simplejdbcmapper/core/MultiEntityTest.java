@@ -58,16 +58,18 @@ class MultiEntityTest {
 		});
 		assertTrue(exception.getMessage().contains("MultiEntity should have 2 or more entities configured"));
 
-		assertDoesNotThrow(() -> {
+		exception = Assertions.assertThrows(Exception.class, () -> {
 			new MultiEntity().add(Order.class, "t1").add(Order.class, "t2");
 		});
 
+		assertTrue(exception.getMessage().contains("duplicate entityType"));
+
 		assertDoesNotThrow(() -> {
-			new MultiEntity().add(Order.class, "t1_").add(Order.class, "_t2");
+			new MultiEntity().add(Order.class, "t1_").add(OrderLine.class, "_t2");
 		});
 
 		assertDoesNotThrow(() -> {
-			new MultiEntity().add(Order.class, "t1_2").add(Order.class, "__t2");
+			new MultiEntity().add(Order.class, "t1_2").add(OrderLine.class, "__t2");
 		});
 
 	}

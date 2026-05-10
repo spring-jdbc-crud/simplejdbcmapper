@@ -44,7 +44,7 @@ import io.github.simplejdbcmapper.exception.MapperException;
 	public MultiEntity add(Class&lt;?&gt; entityType, String tableAlias) {
 <span class="fc" id="L45">		Assert.notNull(entityType, &quot;entityType must not be null&quot;);</span>
 <span class="fc" id="L46">		InternalUtils.validateTableAlias(tableAlias);</span>
-<span class="fc" id="L47">		checkDuplicateAlias(tableAlias);</span>
+<span class="fc" id="L47">		checkDuplicates(entityType, tableAlias);</span>
 <span class="fc" id="L48">		entries.add(Map.entry(entityType, tableAlias));</span>
 <span class="fc" id="L49">		return this;</span>
 	}
@@ -56,13 +56,16 @@ import io.github.simplejdbcmapper.exception.MapperException;
 <span class="fc" id="L56">		return entries;</span>
 	}
 
-	private void checkDuplicateAlias(String tableAlias) {
+	private void checkDuplicates(Class&lt;?&gt; entityType, String tableAlias) {
 <span class="fc bfc" id="L60" title="All 2 branches covered.">		for (Map.Entry&lt;Class&lt;?&gt;, String&gt; entry : entries) {</span>
 <span class="fc bfc" id="L61" title="All 2 branches covered.">			if (entry.getValue().equals(tableAlias)) {</span>
 <span class="fc" id="L62">				throw new IllegalArgumentException(&quot;duplicate tableAlias &quot; + tableAlias);</span>
 			}
-<span class="fc" id="L64">		}</span>
-<span class="fc" id="L65">	}</span>
+<span class="fc bfc" id="L64" title="All 2 branches covered.">			if (entry.getKey() == entityType) {</span>
+<span class="fc" id="L65">				throw new IllegalArgumentException(&quot;duplicate entityType &quot; + entityType);</span>
+			}
+<span class="fc" id="L67">		}</span>
+<span class="fc" id="L68">	}</span>
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 21cae12f1d7d8ed81335bdd9bdfbf84cf4e502f0 2026-05-09T13:10:09</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main e0c252aeb13db0d1342c176afa38bde3f313585f 2026-05-10T15:30:40</div></body></html>

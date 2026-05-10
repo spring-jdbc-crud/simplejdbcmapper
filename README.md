@@ -542,21 +542,21 @@ From the results of these 2 queries the relationships can be built.
   List<Order> orders = sjm.getJdbcTemplate().query(orderSql, sjm.newEntityRowMapper(Order.class));
 
   // get the order id list
-  List<Integer> orderIdList = orders.stream().map(Order::getId).toList();
+  List<Integer> orderIds = orders.stream().map(Order::getId).toList();
 
-  // 2nd query. For IN clauses we have to use a named parameter
+  // 2nd query. Get the corresponding OrderLine/Product for the order ids. For the IN clause we have to use a named parameter.
   MultiEntity multiEntity = new MultiEntity().add(OrderLine.class, "ol").add(Product.class, "p");
   String sql = """
       SELECT %s
       FROM order_line ol
       LEFT JOIN product p ON ol.product_id = p.id
-      WHERE ol.order_id IN (:orderIdList)
+      WHERE ol.order_id IN (:orderIds)
       ORDER BY ol.id
       """.formatted(sjm.getMultiEntitySqlColumns(multiEntity));
       
   // create the named parameter
-  MapSqlParameterSource param = new MapSqlParameterSource().addValue("orderIdList", orderIdList);
-  // For named parameters used NamedParameterJdbcTemplate for the query
+  MapSqlParameterSource param = new MapSqlParameterSource().addValue("orderIds", orderIds);
+  // Since its a named parameter query use NamedParameterJdbcTemplate.
   RelationshipMapper relationshipMapper = sjm.getNamedParameterJdbcTemplate().query(sql, param, sjm.resultSetExtractor(multiEntity));
 
   // add orders from the first query to the relationshipMapper so that we can build a relationship from it.

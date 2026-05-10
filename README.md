@@ -538,6 +538,7 @@ From the results of these 2 queries the relationships can be built.
       OFFSET %d ROWS FETCH NEXT %d ROWS ONLY
       """.formatted(sjm.getEntitySqlColumns(Order.class), 0, 10);
 
+  // since its a single entity use EntityRowMapper with JdbcTemplate to get the results.
   List<Order> orders = sjm.getJdbcTemplate().query(orderSql, sjm.newEntityRowMapper(Order.class));
 
   // get the order id list
@@ -552,9 +553,10 @@ From the results of these 2 queries the relationships can be built.
       WHERE ol.order_id IN (:orderIdList)
       ORDER BY ol.id
       """.formatted(sjm.getMultiEntitySqlColumns(multiEntity));
-
+      
+  // create the named parameter
   MapSqlParameterSource param = new MapSqlParameterSource().addValue("orderIdList", orderIdList);
-  // Since the query has a named parameter we are using NamedParameterJdbcTemplate for this query
+  // For named parameters used NamedParameterJdbcTemplate for the query
   RelationshipMapper relationshipMapper = sjm.getNamedParameterJdbcTemplate().query(sql, param, sjm.resultSetExtractor(multiEntity));
 
   // add orders from the first query to the relationshipMapper so that we can build a relationship from it.

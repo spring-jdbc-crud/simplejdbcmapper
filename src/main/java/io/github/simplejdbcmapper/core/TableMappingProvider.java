@@ -92,7 +92,7 @@ class TableMappingProvider {
 		}
 		List<PropertyMapping> propertyMappings = new ArrayList<>(propNameToPropertyMapping.values());
 		ap.validateAnnotations(propertyMappings, entityType);
-		assignReflectionWriteMethods(entityType, propertyMappings);
+		assignReflectionReadWriteMethods(entityType, propertyMappings);
 		assignResultSetTypes(propertyMappings);
 		return propertyMappings;
 	}
@@ -110,7 +110,7 @@ class TableMappingProvider {
 		return fields.stream().filter(p -> set.add(p.getName())).toList();
 	}
 
-	private void assignReflectionWriteMethods(Class<?> entityType, List<PropertyMapping> propertyMappings) {
+	private void assignReflectionReadWriteMethods(Class<?> entityType, List<PropertyMapping> propertyMappings) {
 		try {
 			BeanWrapperImpl bw = new BeanWrapperImpl(entityType);
 			for (PropertyMapping propMapping : propertyMappings) {

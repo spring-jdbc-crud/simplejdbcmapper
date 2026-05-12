@@ -445,7 +445,7 @@ An implementation of the relationship examples below and other features of the f
       ORDER BY o.order_date DESC, ol.id
    """.formatted(sjm.getMultiEntitySqlColumns(multiEntity));
    
-   // Use the framework ResultSetExtractor with JdbcTemplate to extract the results.
+   // Use JdbcTemplate with the framework's ResulSetExtractor to execute the query and get the results.
    RelationshipMapper relationshipMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity), someAmount); 
    
    // populate() does the processing and populates Order.orderLines and getList() returns the orders
@@ -477,7 +477,7 @@ Use Multi-entity processing to populate multiple relationships:
       ORDER BY o.order_date DESC, ol.id
       """.formatted(sjm.getMultiEntitySqlColumns(multiEntity));
       
-  // Use JdbcTemplate with the framework extractor to execute the query and extract results
+  // Use JdbcTemplate with the framework's ResulSetExtractor to execute the query and get the results.
   RelationshipMapper relationshipMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity), someAmount);
   
   // populate property OrderLine.product using toOne() since its a toOne relationship. populate() method does the processing.
@@ -510,7 +510,7 @@ Use Multi-entity processing to populate multiple relationships:
       ORDER BY emp.id, s.id
   """.formatted(sjm.getMultiEntitySqlColumns(multiEntity));
  
-    // Use JdbcTemplate with the framework extractor to extract results for the entities.
+    // Use JdbcTemplate with the framework's ResulSetExtractor to execute the query and get the results.
     RelationshipMapper relationshipMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
     
     // populate employee.skills property. Here we are using toMany() with through(). 

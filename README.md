@@ -28,7 +28,7 @@ Just by annotating the models that you would use with JdbcTemplate/JdbcClient, y
 
 ## Features
 1. One liners for CRUD
-2. A fluent style API to populate relationships from mutli-table queries.
+2. A fluent style API to populate relationships from your custom queries.
 3. Simple configuration similar to JdbcTemplate/JdbClient configuration.
 4. Methods to construct SQL for the mapped objects that can be used with Spring row mappers like BeanPropertyRowMapper, SimplePropertyRowMapper or the framework's EntityRowMapper which avoids writing custom row mappers.
 5. Auto assign properties

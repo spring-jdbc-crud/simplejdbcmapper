@@ -60,6 +60,9 @@ public class Relationship implements RelationshipSpec, ToManySpec, ToOneSpec, Po
 
 	public ToOneSpec toOne(Class<?> relatedType) {
 		Assert.notNull(relatedType, "relatedType must not be null");
+		if (mainType == relatedType) {
+			throw new IllegalArgumentException("mainType and relatedType cannot be same.");
+		}
 		// will throw an exception for invalid type
 		getList(relatedType);
 
@@ -70,6 +73,9 @@ public class Relationship implements RelationshipSpec, ToManySpec, ToOneSpec, Po
 
 	public ToManySpec toMany(Class<?> relatedType) {
 		Assert.notNull(relatedType, "relatedType must not be null");
+		if (mainType == relatedType) {
+			throw new IllegalArgumentException("mainType and relatedType cannot be same.");
+		}
 		// will throw an exception for invalid type
 		getList(relatedType);
 

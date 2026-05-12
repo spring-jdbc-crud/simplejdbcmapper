@@ -45,6 +45,10 @@ class RelationshipTest {
 		});
 		assertTrue(exception.getMessage().contains("was not part of the query result set"));
 
+		exception = Assertions.assertThrows(Exception.class, () -> {
+			relMapper.type(OrderLine.class).toOne(OrderLine.class);
+		});
+		assertTrue(exception.getMessage().contains("mainType and relatedType cannot be same"));
 	}
 
 	@Test
@@ -65,6 +69,11 @@ class RelationshipTest {
 			relMapper.type(OrderLine.class).toMany(Employee.class);
 		});
 		assertTrue(exception.getMessage().contains("was not part of the query result set"));
+
+		exception = Assertions.assertThrows(Exception.class, () -> {
+			relMapper.type(Order.class).toMany(Order.class);
+		});
+		assertTrue(exception.getMessage().contains("mainType and relatedType cannot be same"));
 
 	}
 

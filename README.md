@@ -36,7 +36,7 @@ Just by annotating the models that you would use with JdbcTemplate/JdbcClient, y
     * auto assign audited on (created on, updated on) by providing a Supplier
     * optimistic locking feature for updates using versioning.
 6. Transaction management is the same as in Spring applications since the library is using JdbcTemplate behind the scenes.
-7. To log the SQL statements use the same SQL logging configurations as Spring. See the logging section further below.
+7. To log the SQL statements use the same SQL logging configurations as Spring. See the [logging](#logging)  section further below.
 8. Tests are run against PostgreSQL, MySQL, Oracle, SQLServer. Should work with other databases.
 [![CI SimpleJdbcMapper](https://github.com/spring-jdbc-crud/simplejdbcmapper/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/spring-jdbc-crud/simplejdbcmapper/actions/workflows/ci.yml)
 9. Only dependency is Spring JDBC libraries. No other external dependencies.

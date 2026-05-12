@@ -4,7 +4,7 @@ A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations and rel
 
 Just by annotating the models that you would use with JdbcTemplate/JdbcClient, you get single-line CRUD and a fluent API to assemble relationships from your custom queries.
 
-**New Feature Alert:** Relationships can be assembled from custom queries. :sparkler:
+**New Feature Alert:** Relationships can be assembled from your custom queries. :sparkler:
 
 [Javadoc](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/index.html) | [Demo Application](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper)  
 

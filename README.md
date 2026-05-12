@@ -1,6 +1,6 @@
 [![CI SimpleJdbcMapper](https://github.com/spring-jdbc-crud/simplejdbcmapper/actions/workflows/ci.yml/badge.svg)](https://github.com/spring-jdbc-crud/simplejdbcmapper/actions/workflows/ci.yml)  [![coverage](https://spring-jdbc-crud.github.io/simplejdbcmapper/jacoco/jacoco.svg)](https://spring-jdbc-crud.github.io/simplejdbcmapper/jacoco/index.html)  [![maven-central](https://img.shields.io/maven-central/v/io.github.spring-jdbc-crud/simplejdbcmapper)](https://central.sonatype.com/artifact/io.github.spring-jdbc-crud/simplejdbcmapper)  [![License](https://img.shields.io/:license-apache-brightgreen.svg)](https://central.sonatype.com/artifact/io.github.spring-jdbc-crud/simplejdbcmapper)
 
-A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations and relationship queries by making them less verbose. Use it as needed and keep using JdbcTemplate/JdbcClient for other functionality.
+A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations and relationship queries by making them less verbose. Use its API where beneficial and keep using JdbcTemplate/JdbcClient for other functionality.
 
 Just by annotating the models that you would use with JdbcTemplate/JdbcClient, you get single-line CRUD and a fluent API to populate relationships from your custom queries.
 

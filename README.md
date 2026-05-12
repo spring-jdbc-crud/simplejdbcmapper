@@ -459,7 +459,6 @@ An implementation of the relationship examples below and other features of the f
 2. [RelationshipMapper](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/io/github/simplejdbcmapper/relationship/RelationshipMapper.html) works with the query results and information provided by the API. It does not access the database or use SimpleJdbcMapper.
 
 ### 2.Multiple relationships with one query (toOne and toMany)
-Use Multi-entity processing to populate multiple relationships:  
 - Order has many OrderLine   
 - OrderLine has one Product
 

@@ -79,7 +79,7 @@ class MultiEntityExtractor {
 		@SuppressWarnings("unchecked")
 		@Override
 		public RelationshipMapper extractData(ResultSet rs) throws SQLException, DataAccessException {
-			List<EntityExtractor> entityExtractors = getEntityExtractors(multiEntity);
+			List<EntityExtractor> entityExtractors = createEntityExtractors(multiEntity);
 			int rowCnt = 1;
 			while (rs.next()) {
 				for (EntityExtractor entityExtractor : entityExtractors) {
@@ -112,7 +112,7 @@ class MultiEntityExtractor {
 		}
 
 		@SuppressWarnings("rawtypes")
-		private List<EntityExtractor> getEntityExtractors(MultiEntity multiEntity) {
+		private List<EntityExtractor> createEntityExtractors(MultiEntity multiEntity) {
 			int offset = 1;
 			List<EntityExtractor> entityExtractors = new ArrayList<>();
 			for (Map.Entry<Class<?>, String> entry : multiEntity.getEntries()) {

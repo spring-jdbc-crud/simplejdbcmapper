@@ -105,7 +105,7 @@ class MultiEntityExtractor {
 	}
 
 	@SuppressWarnings("rawtypes")
-	List<EntityExtractor> getEntityExtractors(MultiEntity multiEntity) {
+	private List<EntityExtractor> getEntityExtractors(MultiEntity multiEntity) {
 		int offset = 1;
 		List<EntityExtractor> entityExtractors = new ArrayList<>();
 		for (Map.Entry<Class<?>, String> entry : multiEntity.getEntries()) {
@@ -120,7 +120,7 @@ class MultiEntityExtractor {
 		return entityExtractors;
 	}
 
-	public <T> EntityRowMapper<T> newEntityRowMapper(Class<T> entityType, int offset) {
+	private <T> EntityRowMapper<T> newEntityRowMapper(Class<T> entityType, int offset) {
 		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
 		EntityRowMapper<T> rowMapper = new EntityRowMapper<>(tableMapping, sjmSupport.getConversionService(), offset);
 		if (logger.isDebugEnabled()) {

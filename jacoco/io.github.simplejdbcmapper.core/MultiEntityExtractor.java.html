@@ -79,7 +79,7 @@ class MultiEntityExtractor {
 		@SuppressWarnings(&quot;unchecked&quot;)
 		@Override
 		public RelationshipMapper extractData(ResultSet rs) throws SQLException, DataAccessException {
-<span class="fc" id="L82">			List&lt;EntityExtractor&gt; entityExtractors = getEntityExtractors(multiEntity);</span>
+<span class="fc" id="L82">			List&lt;EntityExtractor&gt; entityExtractors = createEntityExtractors(multiEntity);</span>
 <span class="fc" id="L83">			int rowCnt = 1;</span>
 <span class="fc bfc" id="L84" title="All 2 branches covered.">			while (rs.next()) {</span>
 <span class="fc bfc" id="L85" title="All 2 branches covered.">				for (EntityExtractor entityExtractor : entityExtractors) {</span>
@@ -112,7 +112,7 @@ class MultiEntityExtractor {
 <span class="fc" id="L112">		}</span>
 
 		@SuppressWarnings(&quot;rawtypes&quot;)
-		private List&lt;EntityExtractor&gt; getEntityExtractors(MultiEntity multiEntity) {
+		private List&lt;EntityExtractor&gt; createEntityExtractors(MultiEntity multiEntity) {
 <span class="fc" id="L116">			int offset = 1;</span>
 <span class="fc" id="L117">			List&lt;EntityExtractor&gt; entityExtractors = new ArrayList&lt;&gt;();</span>
 <span class="fc bfc" id="L118" title="All 2 branches covered.">			for (Map.Entry&lt;Class&lt;?&gt;, String&gt; entry : multiEntity.getEntries()) {</span>
@@ -144,4 +144,4 @@ class MultiEntityExtractor {
 	}
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main eecce48c3dd8373f447ff4b26c0c1b2f970d43bb 2026-05-13T15:03:47</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main e0f5f4eaf7868cc0b71647c7f2cb769ceb76c75a 2026-05-13T15:41:09</div></body></html>

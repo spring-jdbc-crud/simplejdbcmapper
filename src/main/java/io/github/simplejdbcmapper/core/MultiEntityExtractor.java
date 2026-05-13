@@ -64,74 +64,83 @@ class MultiEntityExtractor {
 	}
 
 	public ResultSetExtractor<RelationshipMapper> resultSetExtractor(MultiEntity multiEntity) {
-		List<EntityExtractor> entityExtractors = getEntityExtractors(multiEntity);
+		return new RelationshipMapperExtractor(multiEntity, sjmSupport);
+	}
 
-		return new ResultSetExtractor<RelationshipMapper>() {
-			@SuppressWarnings("unchecked")
-			@Override
-			public RelationshipMapper extractData(ResultSet rs) throws SQLException, DataAccessException {
-				int rowCnt = 1;
-				while (rs.next()) {
-					for (EntityExtractor entityExtractor : entityExtractors) {
-						processEntityRow(rs, rowCnt, entityExtractor);
-					}
-					rowCnt++;
-				}
-				RelationshipMapper relationshipMapper = new RelationshipMapper();
+	private static class RelationshipMapperExtractor implements ResultSetExtractor<RelationshipMapper> {
+		private MultiEntity multiEntity;
+		private SimpleJdbcMapperSupport sjmSupport;
+
+		public RelationshipMapperExtractor(MultiEntity multiEntity, SimpleJdbcMapperSupport sjmSupport) {
+			this.multiEntity = multiEntity;
+			this.sjmSupport = sjmSupport;
+		}
+
+		@SuppressWarnings("unchecked")
+		@Override
+		public RelationshipMapper extractData(ResultSet rs) throws SQLException, DataAccessException {
+			List<EntityExtractor> entityExtractors = getEntityExtractors(multiEntity);
+			int rowCnt = 1;
+			while (rs.next()) {
 				for (EntityExtractor entityExtractor : entityExtractors) {
-					relationshipMapper.addEntityResult(entityExtractor.entityType(), entityExtractor.result(),
-							entityExtractor.idPropertyName());
+					processEntityRow(rs, rowCnt, entityExtractor);
 				}
-				return relationshipMapper;
+				rowCnt++;
 			}
+			RelationshipMapper relationshipMapper = new RelationshipMapper();
+			for (EntityExtractor entityExtractor : entityExtractors) {
+				relationshipMapper.addEntityResult(entityExtractor.entityType(), entityExtractor.result(),
+						entityExtractor.idPropertyName());
+			}
+			return relationshipMapper;
+		}
 
-			@SuppressWarnings("unchecked")
-			private void processEntityRow(ResultSet rs, int rowCnt, EntityExtractor entityExtractor)
-					throws SQLException {
-				EntityRowMapper<?> rowMapper = entityExtractor.rowMapper();
-				// rowMapper will always return an object
-				Object obj = rowMapper.mapRow(rs, rowCnt);
-				try {
-					Object id = entityExtractor.idReadMethod().invoke(obj);
-					if (id != null && entityExtractor.idSet().add(id)) {
-						// not a duplicate
-						entityExtractor.result().add(obj);
-					}
-				} catch (Exception e) {
-					throw new MapperException(e.getMessage(), e);
+		@SuppressWarnings("unchecked")
+		private void processEntityRow(ResultSet rs, int rowCnt, EntityExtractor entityExtractor) throws SQLException {
+			EntityRowMapper<?> rowMapper = entityExtractor.rowMapper();
+			// rowMapper will always return an object
+			Object obj = rowMapper.mapRow(rs, rowCnt);
+			try {
+				Object id = entityExtractor.idReadMethod().invoke(obj);
+				if (id != null && entityExtractor.idSet().add(id)) {
+					// not a duplicate
+					entityExtractor.result().add(obj);
 				}
+			} catch (Exception e) {
+				throw new MapperException(e.getMessage(), e);
 			}
-		};
-	}
+		}
 
-	@SuppressWarnings("rawtypes")
-	private List<EntityExtractor> getEntityExtractors(MultiEntity multiEntity) {
-		int offset = 1;
-		List<EntityExtractor> entityExtractors = new ArrayList<>();
-		for (Map.Entry<Class<?>, String> entry : multiEntity.getEntries()) {
-			Class<?> entityType = entry.getKey();
-			EntityRowMapper<?> rowMapper = newEntityRowMapper(entityType, offset);
+		@SuppressWarnings("rawtypes")
+		private List<EntityExtractor> getEntityExtractors(MultiEntity multiEntity) {
+			int offset = 1;
+			List<EntityExtractor> entityExtractors = new ArrayList<>();
+			for (Map.Entry<Class<?>, String> entry : multiEntity.getEntries()) {
+				Class<?> entityType = entry.getKey();
+				EntityRowMapper<?> rowMapper = newEntityRowMapper(entityType, offset);
+				TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
+				Method idReadMethod = tableMapping.getIdPropertyMapping().getReadMethod();
+				entityExtractors.add(new EntityExtractor(entityType, rowMapper, new ArrayList(), idReadMethod,
+						tableMapping.getIdPropertyName(), new HashSet()));
+				offset += tableMapping.getPropertyMappings().length;
+			}
+			return entityExtractors;
+		}
+
+		private <T> EntityRowMapper<T> newEntityRowMapper(Class<T> entityType, int offset) {
 			TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
-			Method idReadMethod = tableMapping.getIdPropertyMapping().getReadMethod();
-			entityExtractors.add(new EntityExtractor(entityType, rowMapper, new ArrayList(), idReadMethod,
-					tableMapping.getIdPropertyName(), new HashSet()));
-			offset += tableMapping.getPropertyMappings().length;
+			EntityRowMapper<T> rowMapper = new EntityRowMapper<>(tableMapping, sjmSupport.getConversionService(),
+					offset);
+			if (logger.isDebugEnabled()) {
+				logger.debug("EntityRowMapper: {}", rowMapper);
+			}
+			return rowMapper;
 		}
-		return entityExtractors;
-	}
 
-	private <T> EntityRowMapper<T> newEntityRowMapper(Class<T> entityType, int offset) {
-		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
-		EntityRowMapper<T> rowMapper = new EntityRowMapper<>(tableMapping, sjmSupport.getConversionService(), offset);
-		if (logger.isDebugEnabled()) {
-			logger.debug("EntityRowMapper: {}", rowMapper);
+		@SuppressWarnings("rawtypes")
+		record EntityExtractor(Class<?> entityType, EntityRowMapper<?> rowMapper, List result, Method idReadMethod,
+				String idPropertyName, Set idSet) {
 		}
-		return rowMapper;
-	}
-
-	@SuppressWarnings("rawtypes")
-	record EntityExtractor(Class<?> entityType, EntityRowMapper<?> rowMapper, List result, Method idReadMethod,
-			String idPropertyName, Set idSet) {
 	}
 
 }

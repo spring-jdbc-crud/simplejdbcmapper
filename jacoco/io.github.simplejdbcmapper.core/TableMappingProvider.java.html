@@ -92,7 +92,7 @@ class TableMappingProvider {
 <span class="fc" id="L92">		}</span>
 <span class="fc" id="L93">		List&lt;PropertyMapping&gt; propertyMappings = new ArrayList&lt;&gt;(propNameToPropertyMapping.values());</span>
 <span class="fc" id="L94">		ap.validateAnnotations(propertyMappings, entityType);</span>
-<span class="fc" id="L95">		assignReflectionWriteMethods(entityType, propertyMappings);</span>
+<span class="fc" id="L95">		assignReflectionReadWriteMethods(entityType, propertyMappings);</span>
 <span class="fc" id="L96">		assignResultSetTypes(propertyMappings);</span>
 <span class="fc" id="L97">		return propertyMappings;</span>
 	}
@@ -110,7 +110,7 @@ class TableMappingProvider {
 <span class="fc" id="L110">		return fields.stream().filter(p -&gt; set.add(p.getName())).toList();</span>
 	}
 
-	private void assignReflectionWriteMethods(Class&lt;?&gt; entityType, List&lt;PropertyMapping&gt; propertyMappings) {
+	private void assignReflectionReadWriteMethods(Class&lt;?&gt; entityType, List&lt;PropertyMapping&gt; propertyMappings) {
 		try {
 <span class="fc" id="L115">			BeanWrapperImpl bw = new BeanWrapperImpl(entityType);</span>
 <span class="fc bfc" id="L116" title="All 2 branches covered.">			for (PropertyMapping propMapping : propertyMappings) {</span>
@@ -171,4 +171,4 @@ class TableMappingProvider {
 <span class="fc bfc" id="L171" title="All 2 branches covered.">		return StringUtils.hasText(tableAnnotation.schema()) ? tableAnnotation.schema() : schemaName;</span>
 	}
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main fd227459690ef9d912914361bd4644bb6cc5091e 2026-05-10T15:39:08</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main eecce48c3dd8373f447ff4b26c0c1b2f970d43bb 2026-05-13T15:03:47</div></body></html>

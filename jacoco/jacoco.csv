@@ -4,7 +4,7 @@ simplejdbcmapper,io.github.simplejdbcmapper.relationship,RelationshipMapper.Extr
 simplejdbcmapper,io.github.simplejdbcmapper.relationship,RelationshipMapper,22,163,3,15,5,41,3,16,0,10
 simplejdbcmapper,io.github.simplejdbcmapper.relationship,ToManyThrough,0,286,2,22,0,69,2,17,0,7
 simplejdbcmapper,io.github.simplejdbcmapper.relationship,ToManyThrough.ThroughJoiner,8,83,1,11,2,20,1,7,0,2
-simplejdbcmapper,io.github.simplejdbcmapper.relationship,Relationship,0,146,1,7,0,34,1,11,0,8
+simplejdbcmapper,io.github.simplejdbcmapper.relationship,Relationship,0,164,1,11,0,38,1,13,0,8
 simplejdbcmapper,io.github.simplejdbcmapper.relationship,ToMany,0,217,1,19,0,53,1,14,0,5
 simplejdbcmapper,io.github.simplejdbcmapper.core,SimpleCache,0,60,1,3,0,15,1,8,0,7
 simplejdbcmapper,io.github.simplejdbcmapper.core,InternalUtils,13,168,4,26,3,33,4,18,0,7
@@ -16,14 +16,14 @@ simplejdbcmapper,io.github.simplejdbcmapper.core,TableMappingProvider,9,331,2,26
 simplejdbcmapper,io.github.simplejdbcmapper.core,EntityRowMapper,29,269,8,29,9,64,7,26,0,5
 simplejdbcmapper,io.github.simplejdbcmapper.core,AnnotationProcessor,0,410,0,68,0,115,0,49,0,15
 simplejdbcmapper,io.github.simplejdbcmapper.core,PropertyMapping,5,194,7,19,1,59,7,33,0,27
+simplejdbcmapper,io.github.simplejdbcmapper.core,MultiEntityExtractor.RelationshipMapperExtractor.EntityExtractor,0,21,0,0,0,1,0,1,0,1
 simplejdbcmapper,io.github.simplejdbcmapper.core,MultiEntity,0,75,0,8,0,17,0,8,0,4
 simplejdbcmapper,io.github.simplejdbcmapper.core,TableMapping,13,305,1,31,3,68,1,36,0,21
-simplejdbcmapper,io.github.simplejdbcmapper.core,MultiEntityExtractor.new ResultSetExtractor() {...},8,85,0,10,2,20,0,8,0,3
 simplejdbcmapper,io.github.simplejdbcmapper.core,UpdateOperation,0,693,2,72,0,158,2,52,0,17
 simplejdbcmapper,io.github.simplejdbcmapper.core,SqlAndParams,5,21,2,2,1,7,2,3,0,3
-simplejdbcmapper,io.github.simplejdbcmapper.core,MultiEntityExtractor.EntityExtractor,0,21,0,0,0,1,0,1,0,1
 simplejdbcmapper,io.github.simplejdbcmapper.core,SimpleJdbcMapperUtils,0,199,6,32,0,53,6,16,0,3
-simplejdbcmapper,io.github.simplejdbcmapper.core,MultiEntityExtractor,0,186,1,7,0,37,1,9,0,6
+simplejdbcmapper,io.github.simplejdbcmapper.core,MultiEntityExtractor,0,99,0,4,0,19,0,6,0,4
+simplejdbcmapper,io.github.simplejdbcmapper.core,MultiEntityExtractor.RelationshipMapperExtractor,8,175,1,13,2,41,1,11,0,5
 simplejdbcmapper,io.github.simplejdbcmapper.core,ResultSetType,0,209,0,36,0,40,0,20,0,2
 simplejdbcmapper,io.github.simplejdbcmapper.core,SimpleJdbcMapperSupport,0,134,0,6,0,38,0,18,0,15
 simplejdbcmapper,io.github.simplejdbcmapper.core,IdPropertyInfo,5,22,1,1,1,8,1,3,0,3

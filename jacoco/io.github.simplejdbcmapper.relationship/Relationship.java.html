@@ -60,58 +60,64 @@ public class Relationship implements RelationshipSpec, ToManySpec, ToOneSpec, Po
 
 	public ToOneSpec toOne(Class&lt;?&gt; relatedType) {
 <span class="fc" id="L62">		Assert.notNull(relatedType, &quot;relatedType must not be null&quot;);</span>
+<span class="fc bfc" id="L63" title="All 2 branches covered.">		if (mainType == relatedType) {</span>
+<span class="fc" id="L64">			throw new IllegalArgumentException(&quot;mainType and relatedType cannot be same.&quot;);</span>
+		}
 		// will throw an exception for invalid type
-<span class="fc" id="L64">		getList(relatedType);</span>
+<span class="fc" id="L67">		getList(relatedType);</span>
 
-<span class="fc" id="L66">		this.relationshipType = TO_ONE;</span>
-<span class="fc" id="L67">		this.toOne = new ToOne(mainType, relatedType, results);</span>
-<span class="fc" id="L68">		return this;</span>
+<span class="fc" id="L69">		this.relationshipType = TO_ONE;</span>
+<span class="fc" id="L70">		this.toOne = new ToOne(mainType, relatedType, results);</span>
+<span class="fc" id="L71">		return this;</span>
 	}
 
 	public ToManySpec toMany(Class&lt;?&gt; relatedType) {
-<span class="fc" id="L72">		Assert.notNull(relatedType, &quot;relatedType must not be null&quot;);</span>
+<span class="fc" id="L75">		Assert.notNull(relatedType, &quot;relatedType must not be null&quot;);</span>
+<span class="fc bfc" id="L76" title="All 2 branches covered.">		if (mainType == relatedType) {</span>
+<span class="fc" id="L77">			throw new IllegalArgumentException(&quot;mainType and relatedType cannot be same.&quot;);</span>
+		}
 		// will throw an exception for invalid type
-<span class="fc" id="L74">		getList(relatedType);</span>
+<span class="fc" id="L80">		getList(relatedType);</span>
 
-<span class="fc" id="L76">		this.relatedType = relatedType;</span>
-<span class="fc" id="L77">		this.toMany = new ToMany(mainType, relatedType, results);</span>
-<span class="fc" id="L78">		this.relationshipType = TO_MANY;</span>
-<span class="fc" id="L79">		return this;</span>
+<span class="fc" id="L82">		this.relatedType = relatedType;</span>
+<span class="fc" id="L83">		this.toMany = new ToMany(mainType, relatedType, results);</span>
+<span class="fc" id="L84">		this.relationshipType = TO_MANY;</span>
+<span class="fc" id="L85">		return this;</span>
 	}
 
 	public PopulateSpec joinOn(String mainObjJoinProperty, String relatedObjJoinProperty) {
-<span class="fc bfc" id="L83" title="All 2 branches covered.">		if (relationshipType.equals(TO_ONE)) {</span>
-<span class="fc" id="L84">			toOne.joinOn(mainObjJoinProperty, relatedObjJoinProperty);</span>
-<span class="pc bpc" id="L85" title="1 of 2 branches missed.">		} else if (relationshipType.equals(TO_MANY)) {</span>
-<span class="fc" id="L86">			toMany.joinOn(mainObjJoinProperty, relatedObjJoinProperty);</span>
+<span class="fc bfc" id="L89" title="All 2 branches covered.">		if (relationshipType.equals(TO_ONE)) {</span>
+<span class="fc" id="L90">			toOne.joinOn(mainObjJoinProperty, relatedObjJoinProperty);</span>
+<span class="pc bpc" id="L91" title="1 of 2 branches missed.">		} else if (relationshipType.equals(TO_MANY)) {</span>
+<span class="fc" id="L92">			toMany.joinOn(mainObjJoinProperty, relatedObjJoinProperty);</span>
 		}
-<span class="fc" id="L88">		return this;</span>
+<span class="fc" id="L94">		return this;</span>
 	}
 
 	public PopulateSpec through(Class&lt;?&gt; throughType, String fkPropertyToMainObjId, String fkPropertyToRelatedObjId) {
-<span class="fc" id="L92">		this.relationshipType = TO_MANY_THROUGH;</span>
-<span class="fc" id="L93">		this.toManyThrough = new ToManyThrough(mainType, relatedType, results);</span>
-<span class="fc" id="L94">		toManyThrough.through(throughType, fkPropertyToMainObjId, fkPropertyToRelatedObjId);</span>
-<span class="fc" id="L95">		return this;</span>
+<span class="fc" id="L98">		this.relationshipType = TO_MANY_THROUGH;</span>
+<span class="fc" id="L99">		this.toManyThrough = new ToManyThrough(mainType, relatedType, results);</span>
+<span class="fc" id="L100">		toManyThrough.through(throughType, fkPropertyToMainObjId, fkPropertyToRelatedObjId);</span>
+<span class="fc" id="L101">		return this;</span>
 	}
 
 	public GetListSpec populate(String propertyToPopulateOnMainObj) {
-<span class="fc bfc" id="L99" title="All 2 branches covered.">		if (relationshipType.equals(TO_ONE)) {</span>
-<span class="fc" id="L100">			toOne.populate(propertyToPopulateOnMainObj);</span>
-<span class="fc bfc" id="L101" title="All 2 branches covered.">		} else if (relationshipType.equals(TO_MANY)) {</span>
-<span class="fc" id="L102">			toMany.populate(propertyToPopulateOnMainObj);</span>
+<span class="fc bfc" id="L105" title="All 2 branches covered.">		if (relationshipType.equals(TO_ONE)) {</span>
+<span class="fc" id="L106">			toOne.populate(propertyToPopulateOnMainObj);</span>
+<span class="fc bfc" id="L107" title="All 2 branches covered.">		} else if (relationshipType.equals(TO_MANY)) {</span>
+<span class="fc" id="L108">			toMany.populate(propertyToPopulateOnMainObj);</span>
 		} else {
 			// toManyThrough
-<span class="fc" id="L105">			toManyThrough.populate(propertyToPopulateOnMainObj);</span>
+<span class="fc" id="L111">			toManyThrough.populate(propertyToPopulateOnMainObj);</span>
 		}
-<span class="fc" id="L107">		return this;</span>
+<span class="fc" id="L113">		return this;</span>
 	}
 
 	@SuppressWarnings(&quot;unchecked&quot;)
 	public &lt;T&gt; List&lt;T&gt; getList(Class&lt;T&gt; type) {
-<span class="fc" id="L112">		ExtractorEntityResult result = RelationshipMapper.getExtractorEntityResult(type, results);</span>
-<span class="fc" id="L113">		return (List&lt;T&gt;) result.list();</span>
+<span class="fc" id="L118">		ExtractorEntityResult result = RelationshipMapper.getExtractorEntityResult(type, results);</span>
+<span class="fc" id="L119">		return (List&lt;T&gt;) result.list();</span>
 	}
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main fd227459690ef9d912914361bd4644bb6cc5091e 2026-05-10T15:39:08</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main eecce48c3dd8373f447ff4b26c0c1b2f970d43bb 2026-05-13T15:03:47</div></body></html>

@@ -1,6 +1,6 @@
 [![CI SimpleJdbcMapper](https://github.com/spring-jdbc-crud/simplejdbcmapper/actions/workflows/ci.yml/badge.svg)](https://github.com/spring-jdbc-crud/simplejdbcmapper/actions/workflows/ci.yml)  [![coverage](https://spring-jdbc-crud.github.io/simplejdbcmapper/jacoco/jacoco.svg)](https://spring-jdbc-crud.github.io/simplejdbcmapper/jacoco/index.html)  [![maven-central](https://img.shields.io/maven-central/v/io.github.spring-jdbc-crud/simplejdbcmapper)](https://central.sonatype.com/artifact/io.github.spring-jdbc-crud/simplejdbcmapper)  [![](https://img.shields.io/badge/lines_of_code-2.7k-blue)](https://github.com/spring-jdbc-crud/simplejdbcmapper/tree/main/src/main/java/io/github/simplejdbcmapper) [![](https://img.shields.io/badge/files-43-blue])](https://github.com/spring-jdbc-crud/simplejdbcmapper/tree/main/src/main/java/io/github/simplejdbcmapper)  [![license](https://img.shields.io/:license-apache-brightgreen.svg)](https://central.sonatype.com/artifact/io.github.spring-jdbc-crud/simplejdbcmapper)
 
-A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations and relationship queries by making them less verbose. Use its API where beneficial and keep using JdbcTemplate/JdbcClient for other functionality.
+A small library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations and relationship queries by making them less verbose. Use its API where beneficial and keep using JdbcTemplate/JdbcClient for other functionality.
 
 Just by annotating the models that you would use with JdbcTemplate/JdbcClient, you get single-line CRUD and a fluent API to assemble relationships from your custom queries.
 
@@ -30,7 +30,7 @@ Just by annotating the models that you would use with JdbcTemplate/JdbcClient, y
 1. One liners for CRUD
 2. A fluent API to assemble relationships from your custom queries.
 3. Simple configuration similar to JdbcTemplate/JdbClient configuration.
-4. Methods to construct SQL for the mapped objects that can be used with Spring row mappers like BeanPropertyRowMapper, SimplePropertyRowMapper or the framework's EntityRowMapper which avoids writing custom row mappers.
+4. Methods to construct SQL for the mapped objects that can be used with Spring row mappers like BeanPropertyRowMapper, SimplePropertyRowMapper or the librarie's EntityRowMapper which avoids writing custom row mappers.
 5. Auto assign properties
     * auto assign audited  by (created by, updated by) by providing a Supplier
     * auto assign audited on (created on, updated on) by providing a Supplier
@@ -128,7 +128,7 @@ Just by annotating the models that you would use with JdbcTemplate/JdbcClient, y
         WHERE product_name = ?"
       """.formatted(sjm.getEntitySqlColumns(Product.class));
       
- // Using Spring's JdbcTemplate and framework's EntityRowMapper to get the results for the above sql
+ // Using Spring's JdbcTemplate and librarie's EntityRowMapper to get the results for the above sql
  List<Product> products = sjm.getJdbcTemplate().query(sql, sjm.newEntityRowMapper(Product.class), "someProductName");
  
  // find by a property value
@@ -445,7 +445,7 @@ An implementation of the relationship examples below and other features of the f
       ORDER BY o.order_date DESC, ol.id
    """.formatted(sjm.getMultiEntitySqlColumns(multiEntity));
    
-   // Use JdbcTemplate with the framework's ResulSetExtractor to execute the query and get the results.
+   // Use JdbcTemplate with the librarie's ResulSetExtractor to execute the query and get the results.
    RelationshipMapper relationshipMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity), someAmount); 
    
    // populate() does the processing and populates Order.orderLines and getList() returns the orders
@@ -476,7 +476,7 @@ An implementation of the relationship examples below and other features of the f
       ORDER BY o.order_date DESC, ol.id
       """.formatted(sjm.getMultiEntitySqlColumns(multiEntity));
       
-  // Use JdbcTemplate with the framework's ResulSetExtractor to execute the query and get the results.
+  // Use JdbcTemplate with the librarie's ResulSetExtractor to execute the query and get the results.
   RelationshipMapper relationshipMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity), someAmount);
   
   // populate property OrderLine.product using toOne() since its a toOne relationship. populate() method does the processing.
@@ -509,7 +509,7 @@ An implementation of the relationship examples below and other features of the f
       ORDER BY emp.id, s.id
   """.formatted(sjm.getMultiEntitySqlColumns(multiEntity));
  
-    // Use JdbcTemplate with the framework's ResulSetExtractor to execute the query and get the results.
+    // Use JdbcTemplate with the librarie's ResulSetExtractor to execute the query and get the results.
     RelationshipMapper relationshipMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
     
     // populate employee.skills property. Here we are using toMany() with through(). 

@@ -560,7 +560,7 @@ From the results of these 2 queries the relationships can be built.
   // add orders from the first query to the relationshipMapper so that we can build a relationship from it.
   relationshipMapper.addEntityResult(Order.class, orders, "id");
 
-  // The toOne relationship populates orderLine.product.
+  // The toOne relationship populates OrderLine.product.
   relationshipMapper.type(OrderLine.class).toOne(Product.class).joinOn("productId", "id").populate("product");
 
   // The toMany relationship populates Order.orderLines and getList() returns the orders

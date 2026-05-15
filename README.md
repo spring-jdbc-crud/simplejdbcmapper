@@ -436,7 +436,7 @@ An implementation of the relationship examples below and other features of the f
   MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol");
   
   // Get the columns for your 'SELECT' using getMultiEntitySqlColumns().
-  // Using java String blocks makes the queries more readable.
+  // Using java text blocks makes the queries more readable.
   String sql = """
       SELECT %s
       FROM orders o
@@ -512,7 +512,7 @@ An implementation of the relationship examples below and other features of the f
     // Use JdbcTemplate with the library's ResulSetExtractor to execute the query and get the results.
     RelationshipMapper relationshipMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
     
-    // populate employee.skills property. Here we are using toMany() with through(). 
+    // populate Employee.skills property. Here we are using toMany() with through(). 
     List<Employee> employees = relationshipMapper.type(Employee.class)
                                                  .toMany(Skill.class)
                                                  .through(EmployeeSkill.class, "employeeId", "skillId")

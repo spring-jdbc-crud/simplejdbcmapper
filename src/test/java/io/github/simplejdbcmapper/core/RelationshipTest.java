@@ -32,8 +32,8 @@ class RelationshipTest {
 		List<Product> products = sjm.findAll(Product.class);
 
 		RelationshipMapper relMapper = new RelationshipMapper();
-		relMapper.addEntityResult(OrderLine.class, orderLines, null);
-		relMapper.addEntityResult(Product.class, products, null);
+		relMapper.addEntityResult(OrderLine.class, orderLines, "orderLineId");
+		relMapper.addEntityResult(Product.class, products, "id");
 
 		Exception exception = Assertions.assertThrows(Exception.class, () -> {
 			relMapper.type(OrderLine.class).toOne(null);
@@ -57,8 +57,8 @@ class RelationshipTest {
 		List<OrderLine> orderLines = sjm.findAll(OrderLine.class);
 
 		RelationshipMapper relMapper = new RelationshipMapper();
-		relMapper.addEntityResult(Order.class, orders, null);
-		relMapper.addEntityResult(OrderLine.class, orderLines, null);
+		relMapper.addEntityResult(Order.class, orders, "id");
+		relMapper.addEntityResult(OrderLine.class, orderLines, "orderLineId");
 
 		Exception exception = Assertions.assertThrows(Exception.class, () -> {
 			relMapper.type(OrderLine.class).toMany(null);

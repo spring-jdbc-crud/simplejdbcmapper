@@ -30,15 +30,15 @@ class RelationshipMapperTest {
 
 		RelationshipMapper relMapper = new RelationshipMapper();
 		assertDoesNotThrow(() -> {
-			relMapper.addEntityResult(OrderLine.class, orderLines, null);
+			relMapper.addEntityResult(OrderLine.class, orderLines, "orderLineId");
 		});
 
 		assertDoesNotThrow(() -> {
-			relMapper.addEntityResult(Product.class, products, null);
+			relMapper.addEntityResult(Product.class, products, "id");
 		});
 
 		Exception exception = Assertions.assertThrows(Exception.class, () -> {
-			relMapper.addEntityResult(Product.class, products, null);
+			relMapper.addEntityResult(Product.class, products, "id");
 		});
 		assertTrue(exception.getMessage().contains("duplicate entityType"));
 
@@ -62,14 +62,19 @@ class RelationshipMapperTest {
 		List<OrderLine> orderLines = sjm.findAll(OrderLine.class);
 
 		Exception exception = Assertions.assertThrows(Exception.class, () -> {
-			relMapper.addEntityResult(null, orderLines, null);
+			relMapper.addEntityResult(null, orderLines, "id");
 		});
 		assertTrue(exception.getMessage().contains("entityType must not be null"));
 
 		exception = Assertions.assertThrows(Exception.class, () -> {
-			relMapper.addEntityResult(OrderLine.class, null, null);
+			relMapper.addEntityResult(OrderLine.class, null, "id");
 		});
 		assertTrue(exception.getMessage().contains("list must not be null"));
+
+		exception = Assertions.assertThrows(Exception.class, () -> {
+			relMapper.addEntityResult(OrderLine.class, orderLines, null);
+		});
+		assertTrue(exception.getMessage().contains("idPropertyName must not be null"));
 
 	}
 

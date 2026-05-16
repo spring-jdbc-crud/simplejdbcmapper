@@ -71,6 +71,7 @@ public class RelationshipMapper implements GetListSpec {
 	public <T> void addEntityResult(Class<T> entityType, List<T> list, String idPropertyName) {
 		Assert.notNull(entityType, "entityType must not be null");
 		Assert.notNull(list, "list must not be null");
+		Assert.notNull(idPropertyName, "idPropertyName must not be null");
 		checkDuplicates(entityType);
 		results.add(new ExtractorEntityResult(entityType, list, idPropertyName));
 	}

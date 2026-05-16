@@ -103,7 +103,7 @@ class MultiEntityExtractor {
 			try {
 <span class="fc" id="L104">				Object id = entityExtractor.idReadMethod().invoke(obj);</span>
 <span class="fc bfc" id="L105" title="All 4 branches covered.">				if (id != null &amp;&amp; entityExtractor.idSet().add(id)) {</span>
-					// not a duplicate
+					// unique by id
 <span class="fc" id="L107">					entityExtractor.result().add(obj);</span>
 				}
 <span class="nc" id="L109">			} catch (Exception e) {</span>
@@ -144,4 +144,4 @@ class MultiEntityExtractor {
 	}
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main ba7389905fd8bc451ea12fe013ce90c08178c4e8 2026-05-13T16:01:12</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main ba5ca3a85cca23a97c2291a35726156093033866 2026-05-16T09:34:00</div></body></html>

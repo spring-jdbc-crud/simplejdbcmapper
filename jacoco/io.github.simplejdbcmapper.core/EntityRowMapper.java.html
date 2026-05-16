@@ -106,24 +106,25 @@ public final class EntityRowMapper&lt;T&gt; implements RowMapper&lt;T&gt; {
 		try {
 <span class="fc" id="L107">			obj = mappedObjConstructor.newInstance();</span>
 <span class="fc" id="L108">			boolean[] typedValueExtracted = { true };</span>
-			// since the columns sql was generated using the property mappings the resultset
+			// since the sql columns were generated using the property mappings the
+			// resultset
 			// columns will be in same order.
-<span class="fc bfc" id="L111" title="All 2 branches covered.">			for (int index = startIndex; index &lt;= endIndex; index++) {</span>
+<span class="fc bfc" id="L112" title="All 2 branches covered.">			for (int index = startIndex; index &lt;= endIndex; index++) {</span>
 				// propertyMappings index starts at 0
-<span class="fc" id="L113">				PropertyMapping propMapping = propertyMappings[index - startIndex];</span>
-<span class="fc" id="L114">				Object value = getResultSetValue(rs, index, propMapping.getResultSetType(),</span>
-<span class="fc" id="L115">						propMapping.getPropertyType(), typedValueExtracted);</span>
-<span class="fc bfc" id="L116" title="All 4 branches covered.">				if (typedValueExtracted[0] || value == null) {</span>
-<span class="fc" id="L117">					propMapping.getWriteMethod().invoke(obj, value);</span>
+<span class="fc" id="L114">				PropertyMapping propMapping = propertyMappings[index - startIndex];</span>
+<span class="fc" id="L115">				Object value = getResultSetValue(rs, index, propMapping.getResultSetType(),</span>
+<span class="fc" id="L116">						propMapping.getPropertyType(), typedValueExtracted);</span>
+<span class="fc bfc" id="L117" title="All 4 branches covered.">				if (typedValueExtracted[0] || value == null) {</span>
+<span class="fc" id="L118">					propMapping.getWriteMethod().invoke(obj, value);</span>
 				} else {
-<span class="fc" id="L119">					propMapping.getWriteMethod().invoke(obj,</span>
-<span class="fc" id="L120">							conversionService.convert(value, propMapping.getPropertyType()));</span>
+<span class="fc" id="L120">					propMapping.getWriteMethod().invoke(obj,</span>
+<span class="fc" id="L121">							conversionService.convert(value, propMapping.getPropertyType()));</span>
 				}
 			}
-<span class="fc" id="L123">		} catch (Exception e) {</span>
-<span class="fc" id="L124">			throw new MapperException(e.getMessage(), e);</span>
-<span class="fc" id="L125">		}</span>
-<span class="fc" id="L126">		return obj;</span>
+<span class="fc" id="L124">		} catch (Exception e) {</span>
+<span class="fc" id="L125">			throw new MapperException(e.getMessage(), e);</span>
+<span class="fc" id="L126">		}</span>
+<span class="fc" id="L127">		return obj;</span>
 	}
 
 	/*
@@ -136,103 +137,103 @@ public final class EntityRowMapper&lt;T&gt; implements RowMapper&lt;T&gt; {
 	 */
 	private Object getResultSetValue(ResultSet rs, int index, ResultSetType resultSetType, Class&lt;?&gt; requiredType,
 			boolean[] typedValueExtracted) throws SQLException {
-<span class="fc" id="L139">		typedValueExtracted[0] = true;</span>
+<span class="fc" id="L140">		typedValueExtracted[0] = true;</span>
 		Object value;
 		// Explicitly extract typed value, as far as possible.
-<span class="pc bpc" id="L142" title="2 of 19 branches missed.">		switch (resultSetType) {</span>
+<span class="pc bpc" id="L143" title="2 of 19 branches missed.">		switch (resultSetType) {</span>
 		case ResultSetType.STRING:
-<span class="fc" id="L144">			return rs.getString(index);</span>
+<span class="fc" id="L145">			return rs.getString(index);</span>
 		case ResultSetType.BOOLEAN:
-<span class="fc" id="L146">			value = rs.getBoolean(index);</span>
-<span class="fc" id="L147">			break;</span>
+<span class="fc" id="L147">			value = rs.getBoolean(index);</span>
+<span class="fc" id="L148">			break;</span>
 		case ResultSetType.BYTE:
-<span class="fc" id="L149">			value = rs.getByte(index);</span>
-<span class="fc" id="L150">			break;</span>
+<span class="fc" id="L150">			value = rs.getByte(index);</span>
+<span class="fc" id="L151">			break;</span>
 		case ResultSetType.SHORT:
-<span class="fc" id="L152">			value = rs.getShort(index);</span>
-<span class="fc" id="L153">			break;</span>
+<span class="fc" id="L153">			value = rs.getShort(index);</span>
+<span class="fc" id="L154">			break;</span>
 		case ResultSetType.INTEGER:
-<span class="fc" id="L155">			value = rs.getInt(index);</span>
-<span class="fc" id="L156">			break;</span>
+<span class="fc" id="L156">			value = rs.getInt(index);</span>
+<span class="fc" id="L157">			break;</span>
 		case ResultSetType.LONG:
-<span class="fc" id="L158">			value = rs.getLong(index);</span>
-<span class="fc" id="L159">			break;</span>
+<span class="fc" id="L159">			value = rs.getLong(index);</span>
+<span class="fc" id="L160">			break;</span>
 		case ResultSetType.FLOAT:
-<span class="fc" id="L161">			value = rs.getFloat(index);</span>
-<span class="fc" id="L162">			break;</span>
+<span class="fc" id="L162">			value = rs.getFloat(index);</span>
+<span class="fc" id="L163">			break;</span>
 		case ResultSetType.DOUBLE:
-<span class="fc" id="L164">			value = rs.getDouble(index);</span>
-<span class="fc" id="L165">			break;</span>
+<span class="fc" id="L165">			value = rs.getDouble(index);</span>
+<span class="fc" id="L166">			break;</span>
 		case ResultSetType.NUMBER: // same as double
-<span class="fc" id="L167">			value = rs.getDouble(index);</span>
-<span class="fc" id="L168">			break;</span>
+<span class="fc" id="L168">			value = rs.getDouble(index);</span>
+<span class="fc" id="L169">			break;</span>
 		case ResultSetType.BIGDECIMAL:
-<span class="fc" id="L170">			return rs.getBigDecimal(index);</span>
+<span class="fc" id="L171">			return rs.getBigDecimal(index);</span>
 		case ResultSetType.DATE:
-<span class="fc" id="L172">			return rs.getDate(index);</span>
+<span class="fc" id="L173">			return rs.getDate(index);</span>
 		case ResultSetType.TIME:
-<span class="fc" id="L174">			return rs.getTime(index);</span>
+<span class="fc" id="L175">			return rs.getTime(index);</span>
 		case ResultSetType.TIMESTAMP:
-<span class="fc" id="L176">			return rs.getTimestamp(index);</span>
+<span class="fc" id="L177">			return rs.getTimestamp(index);</span>
 		case ResultSetType.UTILDATE: // java.util.Date. same as timestamp
-<span class="fc" id="L178">			return rs.getTimestamp(index);</span>
+<span class="fc" id="L179">			return rs.getTimestamp(index);</span>
 		case ResultSetType.BYTEARRAY:
-<span class="fc" id="L180">			return rs.getBytes(index);</span>
+<span class="fc" id="L181">			return rs.getBytes(index);</span>
 		case ResultSetType.BLOB:
-<span class="nc" id="L182">			return rs.getBlob(index);</span>
+<span class="nc" id="L183">			return rs.getBlob(index);</span>
 		case ResultSetType.CLOB:
-<span class="nc" id="L184">			return rs.getClob(index);</span>
+<span class="nc" id="L185">			return rs.getClob(index);</span>
 		case ResultSetType.ENUM:
-<span class="fc" id="L186">			typedValueExtracted[0] = false;</span>
+<span class="fc" id="L187">			typedValueExtracted[0] = false;</span>
 			// Enums are represented as a String in simpleJdbcMapper.
 			// leave enum type conversion up to the caller (for example, a
 			// ConversionService)
 			// but make sure that we return nothing other than a String
-<span class="fc" id="L191">			Object obj = rs.getObject(index);</span>
-<span class="fc bfc" id="L192" title="All 2 branches covered.">			if (obj instanceof String) {</span>
-<span class="fc" id="L193">				return obj;</span>
+<span class="fc" id="L192">			Object obj = rs.getObject(index);</span>
+<span class="fc bfc" id="L193" title="All 2 branches covered.">			if (obj instanceof String) {</span>
+<span class="fc" id="L194">				return obj;</span>
 			} else {
 				// for example, on Postgres: getObject returns a PGObject, but we need a String
-<span class="fc" id="L196">				return rs.getString(index);</span>
+<span class="fc" id="L197">				return rs.getString(index);</span>
 			}
 		default:
 			// Some unknown type desired -&gt; rely on getObject.
 			try {
-<span class="fc" id="L201">				return rs.getObject(index, requiredType);</span>
-<span class="nc" id="L202">			} catch (SQLFeatureNotSupportedException | AbstractMethodError ex) {</span>
-<span class="nc bnc" id="L203" title="All 2 branches missed.">				if (logger.isDebugEnabled()) {</span>
-<span class="nc" id="L204">					logger.debug(&quot;JDBC driver does not support JDBC 4.1 'getObject(int, Class)' method&quot;, ex);</span>
+<span class="fc" id="L202">				return rs.getObject(index, requiredType);</span>
+<span class="nc" id="L203">			} catch (SQLFeatureNotSupportedException | AbstractMethodError ex) {</span>
+<span class="nc bnc" id="L204" title="All 2 branches missed.">				if (logger.isDebugEnabled()) {</span>
+<span class="nc" id="L205">					logger.debug(&quot;JDBC driver does not support JDBC 4.1 'getObject(int, Class)' method&quot;, ex);</span>
 				}
-<span class="fc" id="L206">			} catch (SQLException ex) {</span>
-<span class="pc bpc" id="L207" title="1 of 2 branches missed.">				if (logger.isDebugEnabled()) {</span>
-<span class="fc" id="L208">					logger.debug(&quot;JDBC driver has limited support for 'getObject(int, Class)' with column type: &quot;</span>
-<span class="fc" id="L209">							+ requiredType.getName(), ex);</span>
+<span class="fc" id="L207">			} catch (SQLException ex) {</span>
+<span class="pc bpc" id="L208" title="1 of 2 branches missed.">				if (logger.isDebugEnabled()) {</span>
+<span class="fc" id="L209">					logger.debug(&quot;JDBC driver has limited support for 'getObject(int, Class)' with column type: &quot;</span>
+<span class="fc" id="L210">							+ requiredType.getName(), ex);</span>
 				}
-<span class="nc" id="L211">			}</span>
-<span class="fc" id="L212">			typedValueExtracted[0] = false;</span>
+<span class="nc" id="L212">			}</span>
+<span class="fc" id="L213">			typedValueExtracted[0] = false;</span>
 
 			// Corresponding SQL types for JSR-310, left up to the caller to convert
 			// them (for example, through a ConversionService).
-<span class="fc" id="L216">			String typeName = requiredType.getSimpleName();</span>
-<span class="pc bpc" id="L217" title="3 of 4 branches missed.">			return switch (typeName) {</span>
-<span class="nc" id="L218">			case &quot;LocalDate&quot; -&gt; rs.getDate(index);</span>
-<span class="nc" id="L219">			case &quot;LocalTime&quot; -&gt; rs.getTime(index);</span>
-<span class="nc" id="L220">			case &quot;LocalDateTime&quot; -&gt; rs.getTimestamp(index);</span>
+<span class="fc" id="L217">			String typeName = requiredType.getSimpleName();</span>
+<span class="pc bpc" id="L218" title="3 of 4 branches missed.">			return switch (typeName) {</span>
+<span class="nc" id="L219">			case &quot;LocalDate&quot; -&gt; rs.getDate(index);</span>
+<span class="nc" id="L220">			case &quot;LocalTime&quot; -&gt; rs.getTime(index);</span>
+<span class="nc" id="L221">			case &quot;LocalDateTime&quot; -&gt; rs.getTimestamp(index);</span>
 			// Fall back to getObject without type specification, again
 			// left up to the caller to convert the value if necessary.
-<span class="fc" id="L223">			default -&gt; JdbcUtils.getResultSetValue(rs, index);</span>
+<span class="fc" id="L224">			default -&gt; JdbcUtils.getResultSetValue(rs, index);</span>
 			};
 
 		}
 		// Perform was-null check if necessary (for results that the JDBC driver returns
 		// as primitives).
-<span class="fc bfc" id="L229" title="All 2 branches covered.">		return (rs.wasNull() ? null : value);</span>
+<span class="fc bfc" id="L230" title="All 2 branches covered.">		return (rs.wasNull() ? null : value);</span>
 	}
 
 	@Override
 	public String toString() {
-<span class="fc" id="L234">		return mappedObjConstructor.getName() + &quot; startIndex: &quot; + startIndex + &quot; endIndex: &quot; + endIndex;</span>
+<span class="fc" id="L235">		return mappedObjConstructor.getName() + &quot; startIndex: &quot; + startIndex + &quot; endIndex: &quot; + endIndex;</span>
 	}
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main ba7389905fd8bc451ea12fe013ce90c08178c4e8 2026-05-13T16:01:12</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main ba5ca3a85cca23a97c2291a35726156093033866 2026-05-16T09:34:00</div></body></html>

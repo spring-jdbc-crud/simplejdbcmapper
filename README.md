@@ -264,7 +264,7 @@ spring.datasource.driver-class-name=com.microsoft.sqlserver.jdbc.SQLServerDriver
 ```
 
 ## Annotations
-Using the 3 annotations @Table, @Id and @Column you get single line CRUD and are able to assemble relationships from custom queries. Other annotations are for audit fields and optimistic locking.
+Using the 3 annotations @Table, @Id and @Column you get single line CRUD and also will be able to assemble relationships from custom queries. Other annotations are for audit fields and optimistic locking.
 
 **@Table**
 

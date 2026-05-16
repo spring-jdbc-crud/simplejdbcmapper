@@ -57,6 +57,16 @@ class ToManyThroughTest {
 		});
 		assertTrue(exception.getMessage().contains("does not exist for"));
 
+		exception = Assertions.assertThrows(Exception.class, () -> {
+			relMapper.type(Employee.class).toMany(Skill.class).through(Employee.class, "employeeId", "skillId");
+		});
+		assertTrue(exception.getMessage().contains("throughType cannot be same as mainType or relatedType"));
+
+		exception = Assertions.assertThrows(Exception.class, () -> {
+			relMapper.type(Employee.class).toMany(Skill.class).through(Skill.class, "employeeId", "skillId");
+		});
+		assertTrue(exception.getMessage().contains("throughType cannot be same as mainType or relatedType"));
+
 	}
 
 	@Test

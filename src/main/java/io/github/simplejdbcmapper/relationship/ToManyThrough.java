@@ -55,6 +55,9 @@ class ToManyThrough {
 		Assert.notNull(throughType, "throughType must not be null");
 		Assert.notNull(fkPropertyToMainObjId, "fkPropertyToMainObjId must not be null");
 		Assert.notNull(fkPropertyToRelatedObjId, "fkPropertyToRelatedObjId must not be null");
+		if (mainType == throughType || relatedType == throughType) {
+			throw new IllegalArgumentException("throughType cannot be same as mainType or relatedType.");
+		}
 
 		// will throw an exception for invalid type
 		List<?> throughList = RelationshipMapper.getList(throughType, results);

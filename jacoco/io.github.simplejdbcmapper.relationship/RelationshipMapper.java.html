@@ -47,18 +47,21 @@ import org.springframework.util.StringUtils;
  * 
  * &lt;/pre&gt;
  * 
- * For more details see the &lt;a href=
+ * 
+ * 
+ * For more details see &lt;a href=
  * &quot;https://github.com/spring-jdbc-crud/simplejdbcmapper#populating-relationships-from-custom-queries&quot;&gt;documentation&lt;/a&gt;
+ * and {@link io.github.simplejdbcmapper.relationship.Relationship}
  *
  * 
  * @author Antony Joseph
  */
-<span class="fc" id="L56">public class RelationshipMapper implements GetListSpec {</span>
+<span class="fc" id="L59">public class RelationshipMapper implements GetListSpec {</span>
 	static final String IS_PREFIX = &quot;is&quot;;
 	static final String GET_PREFIX = &quot;get&quot;;
 	static final String SET_PREFIX = &quot;set&quot;;
 
-<span class="fc" id="L61">	private List&lt;ExtractorEntityResult&gt; results = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L64">	private List&lt;ExtractorEntityResult&gt; results = new ArrayList&lt;&gt;();</span>
 
 	/**
 	 * Add an entity result
@@ -69,12 +72,12 @@ import org.springframework.util.StringUtils;
 	 * @param idPropertyName the id property name of the entity
 	 */
 	public &lt;T&gt; void addEntityResult(Class&lt;T&gt; entityType, List&lt;T&gt; list, String idPropertyName) {
-<span class="fc" id="L72">		Assert.notNull(entityType, &quot;entityType must not be null&quot;);</span>
-<span class="fc" id="L73">		Assert.notNull(list, &quot;list must not be null&quot;);</span>
-<span class="fc" id="L74">		Assert.notNull(idPropertyName, &quot;idPropertyName must not be null&quot;);</span>
-<span class="fc" id="L75">		checkDuplicates(entityType);</span>
-<span class="fc" id="L76">		results.add(new ExtractorEntityResult(entityType, list, idPropertyName));</span>
-<span class="fc" id="L77">	}</span>
+<span class="fc" id="L75">		Assert.notNull(entityType, &quot;entityType must not be null&quot;);</span>
+<span class="fc" id="L76">		Assert.notNull(list, &quot;list must not be null&quot;);</span>
+<span class="fc" id="L77">		Assert.notNull(idPropertyName, &quot;idPropertyName must not be null&quot;);</span>
+<span class="fc" id="L78">		checkDuplicates(entityType);</span>
+<span class="fc" id="L79">		results.add(new ExtractorEntityResult(entityType, list, idPropertyName));</span>
+<span class="fc" id="L80">	}</span>
 
 	/**
 	 * Starts the relationship processing flow.
@@ -84,10 +87,10 @@ import org.springframework.util.StringUtils;
 	 * @return RelationshipSpec the relationship spec
 	 */
 	public &lt;T&gt; RelationshipSpec type(Class&lt;T&gt; type) {
-<span class="fc" id="L87">		Assert.notNull(type, &quot;type must not be null&quot;);</span>
+<span class="fc" id="L90">		Assert.notNull(type, &quot;type must not be null&quot;);</span>
 		// will throw an exception for invalid type
-<span class="fc" id="L89">		getList(type);</span>
-<span class="fc" id="L90">		return Relationship.newInstance(type, results);</span>
+<span class="fc" id="L92">		getList(type);</span>
+<span class="fc" id="L93">		return Relationship.newInstance(type, results);</span>
 	}
 
 	/**
@@ -99,73 +102,73 @@ import org.springframework.util.StringUtils;
 	 */
 	@SuppressWarnings(&quot;unchecked&quot;)
 	public &lt;T&gt; List&lt;T&gt; getList(Class&lt;T&gt; type) {
-<span class="fc" id="L102">		ExtractorEntityResult result = getExtractorEntityResult(type, results);</span>
-<span class="fc" id="L103">		return (List&lt;T&gt;) result.list();</span>
+<span class="fc" id="L105">		ExtractorEntityResult result = getExtractorEntityResult(type, results);</span>
+<span class="fc" id="L106">		return (List&lt;T&gt;) result.list();</span>
 	}
 
 	private void checkDuplicates(Class&lt;?&gt; entityType) {
-<span class="fc bfc" id="L107" title="All 2 branches covered.">		for (ExtractorEntityResult result : results) {</span>
-<span class="fc bfc" id="L108" title="All 2 branches covered.">			if (result.entityType() == entityType) {</span>
-<span class="fc" id="L109">				throw new IllegalArgumentException(&quot;duplicate entityType &quot; + entityType);</span>
+<span class="fc bfc" id="L110" title="All 2 branches covered.">		for (ExtractorEntityResult result : results) {</span>
+<span class="fc bfc" id="L111" title="All 2 branches covered.">			if (result.entityType() == entityType) {</span>
+<span class="fc" id="L112">				throw new IllegalArgumentException(&quot;duplicate entityType &quot; + entityType);</span>
 			}
-<span class="fc" id="L111">		}</span>
-<span class="fc" id="L112">	}</span>
+<span class="fc" id="L114">		}</span>
+<span class="fc" id="L115">	}</span>
 
 	@SuppressWarnings(&quot;unchecked&quot;)
 	static &lt;T&gt; List&lt;T&gt; getList(Class&lt;?&gt; type, List&lt;ExtractorEntityResult&gt; results) {
-<span class="fc" id="L116">		ExtractorEntityResult result = getExtractorEntityResult(type, results);</span>
-<span class="fc" id="L117">		return (List&lt;T&gt;) result.list();</span>
+<span class="fc" id="L119">		ExtractorEntityResult result = getExtractorEntityResult(type, results);</span>
+<span class="fc" id="L120">		return (List&lt;T&gt;) result.list();</span>
 	}
 
 	static ExtractorEntityResult getExtractorEntityResult(Class&lt;?&gt; type, List&lt;ExtractorEntityResult&gt; results) {
-<span class="fc bfc" id="L121" title="All 2 branches covered.">		for (ExtractorEntityResult result : results) {</span>
-<span class="fc bfc" id="L122" title="All 2 branches covered.">			if (result.entityType() == type) {</span>
-<span class="fc" id="L123">				return result;</span>
+<span class="fc bfc" id="L124" title="All 2 branches covered.">		for (ExtractorEntityResult result : results) {</span>
+<span class="fc bfc" id="L125" title="All 2 branches covered.">			if (result.entityType() == type) {</span>
+<span class="fc" id="L126">				return result;</span>
 			}
-<span class="fc" id="L125">		}</span>
-<span class="fc" id="L126">		throw new IllegalArgumentException(type + &quot; was not part of the query result set&quot;);</span>
+<span class="fc" id="L128">		}</span>
+<span class="fc" id="L129">		throw new IllegalArgumentException(type + &quot; was not part of the query result set&quot;);</span>
 	}
 
 	static Method getReadMethod(Class&lt;?&gt; type, String propertyName) {
-<span class="fc" id="L130">		Method m = ReflectionUtils.findMethod(type, GET_PREFIX + StringUtils.capitalize(propertyName));</span>
-<span class="pc bpc" id="L131" title="1 of 2 branches missed.">		if (m == null) {</span>
-<span class="nc" id="L132">			m = ReflectionUtils.findMethod(type, IS_PREFIX + StringUtils.capitalize(propertyName));</span>
-		}
+<span class="fc" id="L133">		Method m = ReflectionUtils.findMethod(type, GET_PREFIX + StringUtils.capitalize(propertyName));</span>
 <span class="pc bpc" id="L134" title="1 of 2 branches missed.">		if (m == null) {</span>
-<span class="nc" id="L135">			throw new IllegalArgumentException(</span>
-<span class="nc" id="L136">					&quot;Invalid argument. Could not find getter for &quot; + type.getName() + &quot;.&quot; + propertyName);</span>
+<span class="nc" id="L135">			m = ReflectionUtils.findMethod(type, IS_PREFIX + StringUtils.capitalize(propertyName));</span>
 		}
-<span class="fc" id="L138">		return m;</span>
+<span class="pc bpc" id="L137" title="1 of 2 branches missed.">		if (m == null) {</span>
+<span class="nc" id="L138">			throw new IllegalArgumentException(</span>
+<span class="nc" id="L139">					&quot;Invalid argument. Could not find getter for &quot; + type.getName() + &quot;.&quot; + propertyName);</span>
+		}
+<span class="fc" id="L141">		return m;</span>
 	}
 
 	static Method getWriteMethod(Class&lt;?&gt; type, String propertyName) {
-<span class="fc" id="L142">		Field field = ReflectionUtils.findField(type, propertyName);</span>
-<span class="fc bfc" id="L143" title="All 2 branches covered.">		if (field == null) {</span>
-<span class="fc" id="L144">			throw new IllegalArgumentException(</span>
-<span class="fc" id="L145">					&quot;Invalid argument. Property name &quot; + propertyName + &quot; does not exist for &quot; + type.getName());</span>
+<span class="fc" id="L145">		Field field = ReflectionUtils.findField(type, propertyName);</span>
+<span class="fc bfc" id="L146" title="All 2 branches covered.">		if (field == null) {</span>
+<span class="fc" id="L147">			throw new IllegalArgumentException(</span>
+<span class="fc" id="L148">					&quot;Invalid argument. Property name &quot; + propertyName + &quot; does not exist for &quot; + type.getName());</span>
 		} else {
-<span class="fc" id="L147">			Method m = ReflectionUtils.findMethod(type, SET_PREFIX + StringUtils.capitalize(propertyName),</span>
-<span class="fc" id="L148">					field.getType());</span>
-<span class="pc bpc" id="L149" title="1 of 2 branches missed.">			if (m == null) {</span>
-<span class="nc" id="L150">				throw new IllegalArgumentException(</span>
-<span class="nc" id="L151">						&quot;Invalid argument. Could not find setter for &quot; + type.getName() + &quot;.&quot; + propertyName);</span>
+<span class="fc" id="L150">			Method m = ReflectionUtils.findMethod(type, SET_PREFIX + StringUtils.capitalize(propertyName),</span>
+<span class="fc" id="L151">					field.getType());</span>
+<span class="pc bpc" id="L152" title="1 of 2 branches missed.">			if (m == null) {</span>
+<span class="nc" id="L153">				throw new IllegalArgumentException(</span>
+<span class="nc" id="L154">						&quot;Invalid argument. Could not find setter for &quot; + type.getName() + &quot;.&quot; + propertyName);</span>
 			}
-<span class="fc" id="L153">			return m;</span>
+<span class="fc" id="L156">			return m;</span>
 		}
 	}
 
 	static Class&lt;?&gt; getPropertyType(Class&lt;?&gt; type, String propertyName) {
-<span class="fc" id="L158">		Field field = ReflectionUtils.findField(type, propertyName);</span>
-<span class="fc bfc" id="L159" title="All 2 branches covered.">		if (field != null) {</span>
-<span class="fc" id="L160">			return field.getType();</span>
+<span class="fc" id="L161">		Field field = ReflectionUtils.findField(type, propertyName);</span>
+<span class="fc bfc" id="L162" title="All 2 branches covered.">		if (field != null) {</span>
+<span class="fc" id="L163">			return field.getType();</span>
 		} else {
-<span class="fc" id="L162">			throw new IllegalArgumentException(</span>
-<span class="fc" id="L163">					&quot;Invalid argument. Property name &quot; + propertyName + &quot; does not exist for &quot; + type.getName());</span>
+<span class="fc" id="L165">			throw new IllegalArgumentException(</span>
+<span class="fc" id="L166">					&quot;Invalid argument. Property name &quot; + propertyName + &quot; does not exist for &quot; + type.getName());</span>
 		}
 	}
 
-<span class="fc" id="L167">	record ExtractorEntityResult(Class&lt;?&gt; entityType, List&lt;?&gt; list, String idPropertyName) {</span>
+<span class="fc" id="L170">	record ExtractorEntityResult(Class&lt;?&gt; entityType, List&lt;?&gt; list, String idPropertyName) {</span>
 	}
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main ba5ca3a85cca23a97c2291a35726156093033866 2026-05-16T09:34:00</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main ab7996ddef666b48156c28e8a215aa50aff66432 2026-05-16T10:06:28</div></body></html>

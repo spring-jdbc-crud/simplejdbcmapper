@@ -271,7 +271,6 @@ jobs:
         #count lines of code
         docker run -v $PWD:/tmp aldanial/cloc --out ./target/output.txt ./src/main/java 
         docker run -v $PWD:/tmp aldanial/cloc --json --out ./target/output.json ./src/main/java 
-        cp target/output.* ./cloc
         
         # remove the exec files since they are not needed anymore.
         rm *-jacoco.exec
@@ -289,7 +288,7 @@ jobs:
         #copy javadocs
         cp -rf ./target/reports/apidocs/. ./javadoc
         
- 
+        cp target/output.* ./cloc
         echo "simplejdbcmapper ${{ github.ref_name }} ${{ github.sha }} ${{env.NOW}}" >> ./cloc/output.txt
         cat ./cloc/output.txt
         cat ./cloc/output.json

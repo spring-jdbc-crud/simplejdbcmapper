@@ -2,7 +2,7 @@ name: CI SimpleJdbcMapper
 
 on:
   push:
-    branches: [ "none" ]
+    branches: [ "main" ]
     paths-ignore:
       - 'README.md'
 # pull_request:

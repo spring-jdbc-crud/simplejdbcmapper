@@ -27,7 +27,7 @@ Just by annotating the models that you would use with JdbcTemplate/JdbcClient, y
 [Bug Report](https://github.com/spring-jdbc-crud/simplejdbcmapper/issues) 
 
 ## Features
-1. One liners for CRUD
+1. One liners for CRUD. All it takes is to use the 3 annotations @Table, @Id and @Column.
 2. A fluent API to assemble relationships from your custom queries.
 3. Simple configuration similar to JdbcTemplate/JdbClient configuration.
 4. Methods to construct SQL for the mapped objects that can be used with Spring row mappers like BeanPropertyRowMapper, SimplePropertyRowMapper or the library's EntityRowMapper which avoids writing custom row mappers.
@@ -264,6 +264,7 @@ spring.datasource.driver-class-name=com.microsoft.sqlserver.jdbc.SQLServerDriver
 ```
 
 ## Annotations
+Using the 3 annotations @Table, @Id and @Column you get single line CRUD and are able to assemble relationships from custom queries. Other annotations are for audit fields and optimistic locking.
 
 **@Table**
 

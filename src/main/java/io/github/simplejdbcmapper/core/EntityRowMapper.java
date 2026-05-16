@@ -106,7 +106,8 @@ public final class EntityRowMapper<T> implements RowMapper<T> {
 		try {
 			obj = mappedObjConstructor.newInstance();
 			boolean[] typedValueExtracted = { true };
-			// since the columns sql was generated using the property mappings the resultset
+			// since the sql columns were generated using the property mappings the
+			// resultset
 			// columns will be in same order.
 			for (int index = startIndex; index <= endIndex; index++) {
 				// propertyMappings index starts at 0

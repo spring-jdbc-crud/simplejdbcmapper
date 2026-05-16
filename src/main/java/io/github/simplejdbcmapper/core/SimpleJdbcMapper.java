@@ -310,7 +310,7 @@ public final class SimpleJdbcMapper {
 	}
 
 	/**
-	 * Gets the columns SQL that works with EntityRowMapper. EntityRowMapper expects
+	 * Gets the sql columns that works with EntityRowMapper. EntityRowMapper expects
 	 * the sql columns to be exactly in a specific order because it uses position
 	 * indexes to retrieve the data from the query ResultSet
 	 * <p>
@@ -335,7 +335,7 @@ public final class SimpleJdbcMapper {
 	}
 
 	/**
-	 * Gets the columns SQL with table aliases that works with EntityRowMapper.
+	 * Gets the sql columns with table aliases that works with EntityRowMapper.
 	 * EntityRowMapper expects the sql columns to be exactly in a specific order
 	 * because it uses position indexes to retrieve the data from the query
 	 * ResultSet
@@ -366,7 +366,7 @@ public final class SimpleJdbcMapper {
 	}
 
 	/**
-	 * Gets the columns sql for multi-entity processing.
+	 * Gets the sql columns for multi-entity processing.
 	 * 
 	 * For the following multi-entity:
 	 * 
@@ -374,7 +374,7 @@ public final class SimpleJdbcMapper {
 	 * new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol")
 	 * </pre>
 	 * 
-	 * this will generate columns sql like below:
+	 * this will generate sql columns like below:
 	 * 
 	 * <pre>
 	 * o.id AS o_id, o.order_date AS o_order_date, ol.id AS ol_id, ol.product_id AS
@@ -384,7 +384,7 @@ public final class SimpleJdbcMapper {
 	 * It's good practice to keep the table aliases short and succinct.
 	 * 
 	 * @param multiEntity the MultiEntity
-	 * @return columns sql string
+	 * @return sql columns string
 	 */
 	public String getMultiEntitySqlColumns(MultiEntity multiEntity) {
 		return multiEntityExtractor.getMultiEntitySqlColumns(multiEntity);
@@ -393,11 +393,11 @@ public final class SimpleJdbcMapper {
 	/**
 	 * The ResultSeExtractor for multiple entities. The results are returned in
 	 * {@link io.github.simplejdbcmapper.relationship.RelationshipMapper}. It
-	 * expects the columns sql to <b>always</b> be generated using
+	 * expects the sql columns to <b>always</b> be generated using
 	 * {@link #getMultiEntitySqlColumns}.
 	 * <p>
-	 * The result lists held in RelationshipMapper for each entity will be <b>Unique
-	 * by ID</b> , ie there will no duplicate records for each entity.
+	 * From the query ResultSet a result list is created for each entity. The list
+	 * for each entity will be <b>Unique by ID</b>.
 	 * <p>
 	 * It will handle the cases where the column to property mappings do not follow
 	 * the underscore to camel case naming convention.
@@ -410,7 +410,7 @@ public final class SimpleJdbcMapper {
 	 * <pre>
 	 * // Define the multiple mapped entities you want to select.
 	 * MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol");
-	 * // build sql using columns sql from getMultiEntitySqlColumns()
+	 * // build sql using sql columns from getMultiEntitySqlColumns()
 	 * String sql = """
 	 * 		   SELECT %s
 	 * 		   FROM orders o
@@ -437,7 +437,7 @@ public final class SimpleJdbcMapper {
 	}
 
 	/**
-	 * Gets the columns SQL. Works well with Spring row mappers like
+	 * Gets the sql columns. Works well with Spring row mappers like
 	 * BeanPropertyRowMapper(), SimplePropertyRowMapper() etc. Will create the
 	 * needed column aliases where the column name does not match the corresponding
 	 * underscore case property name.
@@ -483,7 +483,7 @@ public final class SimpleJdbcMapper {
 	}
 
 	/**
-	 * Gets the columns SQL with columns prefixed with the table alias. Works well
+	 * Gets the sql columns with columns prefixed with the table alias. Works well
 	 * with Spring row mappers like BeanPropertyRowMapper(),
 	 * SimplePropertyRowMapper() etc. Will prefix table column names with the
 	 * 'tableAlias.' and will create the needed column aliases where the column name

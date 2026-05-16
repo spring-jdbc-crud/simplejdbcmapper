@@ -103,7 +103,7 @@ class MultiEntityExtractor {
 			try {
 				Object id = entityExtractor.idReadMethod().invoke(obj);
 				if (id != null && entityExtractor.idSet().add(id)) {
-					// not a duplicate
+					// unique by id
 					entityExtractor.result().add(obj);
 				}
 			} catch (Exception e) {

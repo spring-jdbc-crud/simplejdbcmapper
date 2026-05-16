@@ -14,15 +14,13 @@
 package io.github.simplejdbcmapper.relationship;
 
 /**
- * The populate specification for the populate method which triggers processing
- * of the relationship.
+ * The populate specification.
  * 
  * @author Antony Joseph
  */
 public interface PopulateSpec {
 	/**
-	 * Triggers processing of the relationship. Once invoked the relationship gets
-	 * processed and the target property gets set.
+	 * Processes the relationship and populates the target property.
 	 * 
 	 * <p>
 	 * For a toMany relationship the target property <b>always has to be a List</b>.

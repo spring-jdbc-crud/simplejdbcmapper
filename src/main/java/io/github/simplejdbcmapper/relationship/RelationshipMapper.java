@@ -29,6 +29,24 @@ import org.springframework.util.StringUtils;
  * <p>
  * Starts the relationship processing flow.
  * 
+ * <p>
+ * You can build relationships from multiple lists. For example if you have a
+ * list of orders and another list of related orderLines you can do something
+ * like:
+ * 
+ * <pre>
+ * RelationhipMapper relationshipMapper = new RelationshipMapper();
+ * relationshipMapper.addEntityResult(Order.class, orders, "id");
+ * relationshipMapper.addEntityResult(OrderLine.class, orderLines, "id");
+ * 
+ * {@code List<Order>} orders = relationshipMapper.type(Order.class)
+ *                                                .toMany(OrderLine.class)
+ *                                                .joinOn("id", "orderId")
+ *                                                .populate("orderLines")
+ *                                                .getList(Order.class);
+ * 
+ * </pre>
+ * 
  * For more details see the <a href=
  * "https://github.com/spring-jdbc-crud/simplejdbcmapper#populating-relationships-from-custom-queries">documentation</a>
  *

@@ -25,7 +25,8 @@ import org.springframework.util.CollectionUtils;
 
 /**
  * 
- * @deprecated Use {@link io.github.simplejdbcmapper.relationship.Relationship}
+ * @deprecated Use
+ *             {@link io.github.simplejdbcmapper.relationship.RelationshipMapper}
  *             instead.
  *             <p>
  *             Some utility methods.

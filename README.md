@@ -498,7 +498,7 @@ An implementation of the relationship examples below and other features of the l
 - Employee has many Skill through intermediate table 'employee_skill'
 
 ```
-  // Define the entities. The intermediate table employe_skill (in this case corresponds to EmpolyeeSkill class) needs to be selected also.
+  // Define the entities. The intermediate table employe_skill (in this case corresponds to EmployeeSkill class) needs to be selected also.
   MultiEntity multiEntity = new MultiEntity().add(Employee.class, "emp").add(EmployeeSkill.class, "es").add(Skill.class, "s");
   
    // build your custom sql using the sql columns from sjm.getMultiEntitySqlColumns(multiEntity)

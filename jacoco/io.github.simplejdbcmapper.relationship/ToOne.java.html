@@ -84,52 +84,37 @@ class ToOne {
 <span class="fc" id="L84">			return;</span>
 		}
 		try {
-<span class="fc" id="L87">			Map&lt;Object, T&gt; joinPropToMainObjMap = getJoinPropToMainObjMap(mainObjList);</span>
-<span class="fc" id="L88">			Map&lt;Object, U&gt; joinPropToRelatedObjMap = getJoinPropToRelatedObjMap(relatedObjList);</span>
-
-<span class="fc bfc" id="L90" title="All 2 branches covered.">			for (Map.Entry&lt;Object, T&gt; entry : joinPropToMainObjMap.entrySet()) {</span>
-<span class="fc" id="L91">				Object mainObjJoinPropertyValue = entry.getKey();</span>
-<span class="fc" id="L92">				Object mainObj = entry.getValue();</span>
-<span class="fc" id="L93">				U relatedObj = joinPropToRelatedObjMap.get(mainObjJoinPropertyValue);</span>
-				try {
-<span class="fc" id="L95">					mainObjPropertyToPopulateWriteMethod.invoke(mainObj, relatedObj);</span>
-<span class="fc" id="L96">				} catch (Exception e) {</span>
-<span class="fc" id="L97">					throw new MapperException(e.getMessage() + &quot;. Invoking &quot; + mainObjPropertyToPopulateWriteMethod</span>
-							+ &quot; with value &quot; + relatedObj, e);
-<span class="fc" id="L99">				}</span>
-<span class="fc" id="L100">			}</span>
-<span class="fc" id="L101">		} catch (Exception e) {</span>
-<span class="fc" id="L102">			throw new MapperException(e.getMessage(), e);</span>
-<span class="fc" id="L103">		}</span>
-<span class="fc" id="L104">	}</span>
+<span class="fc" id="L87">			Map&lt;Object, U&gt; joinPropToRelatedObjMap = getJoinPropToRelatedObjMap(relatedObjList);</span>
+<span class="fc bfc" id="L88" title="All 2 branches covered.">			for (T mainObj : mainObjList) {</span>
+<span class="fc bfc" id="L89" title="All 2 branches covered.">				if (mainObj != null) {</span>
+<span class="fc" id="L90">					Object mainObjJoinPropertyValue = mainObjJoinPropertyReadMethod.invoke(mainObj);</span>
+<span class="fc" id="L91">					U relatedObj = joinPropToRelatedObjMap.get(mainObjJoinPropertyValue);</span>
+					try {
+<span class="fc" id="L93">						mainObjPropertyToPopulateWriteMethod.invoke(mainObj, relatedObj);</span>
+<span class="fc" id="L94">					} catch (Exception e) {</span>
+<span class="fc" id="L95">						throw new MapperException(e.getMessage() + &quot;. Invoking &quot; + mainObjPropertyToPopulateWriteMethod</span>
+								+ &quot; with value &quot; + relatedObj, e);
+<span class="fc" id="L97">					}</span>
+				}
+<span class="fc" id="L99">			}</span>
+<span class="fc" id="L100">		} catch (Exception e) {</span>
+<span class="fc" id="L101">			throw new MapperException(e.getMessage(), e);</span>
+<span class="fc" id="L102">		}</span>
+<span class="fc" id="L103">	}</span>
 
 	private &lt;U&gt; Map&lt;Object, U&gt; getJoinPropToRelatedObjMap(List&lt;U&gt; relatedObjList)
 			throws IllegalAccessException, InvocationTargetException {
-<span class="fc" id="L108">		Map&lt;Object, U&gt; joinPropToRelatedObjMap = new HashMap&lt;&gt;();</span>
-<span class="fc bfc" id="L109" title="All 2 branches covered.">		for (U relatedObj : relatedObjList) {</span>
-<span class="fc bfc" id="L110" title="All 2 branches covered.">			if (relatedObj != null) {</span>
-<span class="fc" id="L111">				Object relatedObjJoinPropertyValue = relatedObjJoinPropertyReadMethod.invoke(relatedObj);</span>
-<span class="fc bfc" id="L112" title="All 2 branches covered.">				if (relatedObjJoinPropertyValue != null) {</span>
-<span class="fc" id="L113">					joinPropToRelatedObjMap.put(relatedObjJoinPropertyValue, relatedObj);</span>
+<span class="fc" id="L107">		Map&lt;Object, U&gt; joinPropToRelatedObjMap = new HashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L108" title="All 2 branches covered.">		for (U relatedObj : relatedObjList) {</span>
+<span class="fc bfc" id="L109" title="All 2 branches covered.">			if (relatedObj != null) {</span>
+<span class="fc" id="L110">				Object relatedObjJoinPropertyValue = relatedObjJoinPropertyReadMethod.invoke(relatedObj);</span>
+<span class="fc bfc" id="L111" title="All 2 branches covered.">				if (relatedObjJoinPropertyValue != null) {</span>
+<span class="fc" id="L112">					joinPropToRelatedObjMap.put(relatedObjJoinPropertyValue, relatedObj);</span>
 				}
 			}
-<span class="fc" id="L116">		}</span>
-<span class="fc" id="L117">		return joinPropToRelatedObjMap;</span>
-	}
-
-	private &lt;T&gt; Map&lt;Object, T&gt; getJoinPropToMainObjMap(List&lt;T&gt; mainObjList)
-			throws IllegalAccessException, InvocationTargetException {
-<span class="fc" id="L122">		Map&lt;Object, T&gt; joinPropToMainObjMap = new HashMap&lt;&gt;();</span>
-<span class="fc bfc" id="L123" title="All 2 branches covered.">		for (T mainObj : mainObjList) {</span>
-<span class="fc bfc" id="L124" title="All 2 branches covered.">			if (mainObj != null) {</span>
-<span class="fc" id="L125">				Object mainObjJoinPropertyValue = mainObjJoinPropertyReadMethod.invoke(mainObj);</span>
-<span class="fc bfc" id="L126" title="All 2 branches covered.">				if (mainObjJoinPropertyValue != null) {</span>
-<span class="fc" id="L127">					joinPropToMainObjMap.put(mainObjJoinPropertyValue, mainObj);</span>
-				}
-			}
-<span class="fc" id="L130">		}</span>
-<span class="fc" id="L131">		return joinPropToMainObjMap;</span>
+<span class="fc" id="L115">		}</span>
+<span class="fc" id="L116">		return joinPropToRelatedObjMap;</span>
 	}
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 6f599854c949f65833826e142a94bcb3387b2bec 2026-05-16T21:08:51</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 4e6d5aabda80c1f46952d479cb8d9b55dcd2f879 2026-05-20T10:52:14</div></body></html>

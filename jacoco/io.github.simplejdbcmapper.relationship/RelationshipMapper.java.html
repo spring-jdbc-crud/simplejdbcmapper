@@ -138,37 +138,41 @@ import org.springframework.util.StringUtils;
 <span class="nc" id="L138">			throw new IllegalArgumentException(</span>
 <span class="nc" id="L139">					&quot;Invalid argument. Could not find getter for &quot; + type.getName() + &quot;.&quot; + propertyName);</span>
 		}
-<span class="fc" id="L141">		return m;</span>
+		// turn off jvm access verification for invoke()
+<span class="fc" id="L142">		m.trySetAccessible();</span>
+<span class="fc" id="L143">		return m;</span>
 	}
 
 	static Method getWriteMethod(Class&lt;?&gt; type, String propertyName) {
-<span class="fc" id="L145">		Field field = ReflectionUtils.findField(type, propertyName);</span>
-<span class="fc bfc" id="L146" title="All 2 branches covered.">		if (field == null) {</span>
-<span class="fc" id="L147">			throw new IllegalArgumentException(</span>
-<span class="fc" id="L148">					&quot;Invalid argument. Property name &quot; + propertyName + &quot; does not exist for &quot; + type.getName());</span>
+<span class="fc" id="L147">		Field field = ReflectionUtils.findField(type, propertyName);</span>
+<span class="fc bfc" id="L148" title="All 2 branches covered.">		if (field == null) {</span>
+<span class="fc" id="L149">			throw new IllegalArgumentException(</span>
+<span class="fc" id="L150">					&quot;Invalid argument. Property name &quot; + propertyName + &quot; does not exist for &quot; + type.getName());</span>
 		} else {
-<span class="fc" id="L150">			Method m = ReflectionUtils.findMethod(type, SET_PREFIX + StringUtils.capitalize(propertyName),</span>
-<span class="fc" id="L151">					field.getType());</span>
-<span class="pc bpc" id="L152" title="1 of 2 branches missed.">			if (m == null) {</span>
-<span class="nc" id="L153">				throw new IllegalArgumentException(</span>
-<span class="nc" id="L154">						&quot;Invalid argument. Could not find setter for &quot; + type.getName() + &quot;.&quot; + propertyName);</span>
+<span class="fc" id="L152">			Method m = ReflectionUtils.findMethod(type, SET_PREFIX + StringUtils.capitalize(propertyName),</span>
+<span class="fc" id="L153">					field.getType());</span>
+<span class="pc bpc" id="L154" title="1 of 2 branches missed.">			if (m == null) {</span>
+<span class="nc" id="L155">				throw new IllegalArgumentException(</span>
+<span class="nc" id="L156">						&quot;Invalid argument. Could not find setter for &quot; + type.getName() + &quot;.&quot; + propertyName);</span>
 			}
-<span class="fc" id="L156">			return m;</span>
+			// turn off jvm access verification for invoke()
+<span class="fc" id="L159">			m.trySetAccessible();</span>
+<span class="fc" id="L160">			return m;</span>
 		}
 	}
 
 	static Class&lt;?&gt; getPropertyType(Class&lt;?&gt; type, String propertyName) {
-<span class="fc" id="L161">		Field field = ReflectionUtils.findField(type, propertyName);</span>
-<span class="fc bfc" id="L162" title="All 2 branches covered.">		if (field != null) {</span>
-<span class="fc" id="L163">			return field.getType();</span>
+<span class="fc" id="L165">		Field field = ReflectionUtils.findField(type, propertyName);</span>
+<span class="fc bfc" id="L166" title="All 2 branches covered.">		if (field != null) {</span>
+<span class="fc" id="L167">			return field.getType();</span>
 		} else {
-<span class="fc" id="L165">			throw new IllegalArgumentException(</span>
-<span class="fc" id="L166">					&quot;Invalid argument. Property name &quot; + propertyName + &quot; does not exist for &quot; + type.getName());</span>
+<span class="fc" id="L169">			throw new IllegalArgumentException(</span>
+<span class="fc" id="L170">					&quot;Invalid argument. Property name &quot; + propertyName + &quot; does not exist for &quot; + type.getName());</span>
 		}
 	}
 
-<span class="fc" id="L170">	record ExtractorEntityResult(Class&lt;?&gt; entityType, List&lt;?&gt; list, String idPropertyName) {</span>
+<span class="fc" id="L174">	record ExtractorEntityResult(Class&lt;?&gt; entityType, List&lt;?&gt; list, String idPropertyName) {</span>
 	}
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 6f599854c949f65833826e142a94bcb3387b2bec 2026-05-16T21:08:51</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 4e6d5aabda80c1f46952d479cb8d9b55dcd2f879 2026-05-20T10:52:14</div></body></html>

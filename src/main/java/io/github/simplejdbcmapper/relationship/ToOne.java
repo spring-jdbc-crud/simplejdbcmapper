@@ -84,18 +84,17 @@ class ToOne {
 			return;
 		}
 		try {
-			Map<Object, T> joinPropToMainObjMap = getJoinPropToMainObjMap(mainObjList);
 			Map<Object, U> joinPropToRelatedObjMap = getJoinPropToRelatedObjMap(relatedObjList);
-
-			for (Map.Entry<Object, T> entry : joinPropToMainObjMap.entrySet()) {
-				Object mainObjJoinPropertyValue = entry.getKey();
-				Object mainObj = entry.getValue();
-				U relatedObj = joinPropToRelatedObjMap.get(mainObjJoinPropertyValue);
-				try {
-					mainObjPropertyToPopulateWriteMethod.invoke(mainObj, relatedObj);
-				} catch (Exception e) {
-					throw new MapperException(e.getMessage() + ". Invoking " + mainObjPropertyToPopulateWriteMethod
-							+ " with value " + relatedObj, e);
+			for (T mainObj : mainObjList) {
+				if (mainObj != null) {
+					Object mainObjJoinPropertyValue = mainObjJoinPropertyReadMethod.invoke(mainObj);
+					U relatedObj = joinPropToRelatedObjMap.get(mainObjJoinPropertyValue);
+					try {
+						mainObjPropertyToPopulateWriteMethod.invoke(mainObj, relatedObj);
+					} catch (Exception e) {
+						throw new MapperException(e.getMessage() + ". Invoking " + mainObjPropertyToPopulateWriteMethod
+								+ " with value " + relatedObj, e);
+					}
 				}
 			}
 		} catch (Exception e) {
@@ -115,20 +114,6 @@ class ToOne {
 			}
 		}
 		return joinPropToRelatedObjMap;
-	}
-
-	private <T> Map<Object, T> getJoinPropToMainObjMap(List<T> mainObjList)
-			throws IllegalAccessException, InvocationTargetException {
-		Map<Object, T> joinPropToMainObjMap = new HashMap<>();
-		for (T mainObj : mainObjList) {
-			if (mainObj != null) {
-				Object mainObjJoinPropertyValue = mainObjJoinPropertyReadMethod.invoke(mainObj);
-				if (mainObjJoinPropertyValue != null) {
-					joinPropToMainObjMap.put(mainObjJoinPropertyValue, mainObj);
-				}
-			}
-		}
-		return joinPropToMainObjMap;
 	}
 
 }

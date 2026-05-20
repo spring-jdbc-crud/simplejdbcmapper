@@ -18,7 +18,7 @@ import org.springframework.core.convert.ConversionService;
 import io.github.simplejdbcmapper.exception.MapperException;
 
 /**
- * Entity wrapper for getters and setters.
+ * Entity wrapper to get and set property values.
  * 
  * @author Antony Joseph
  */

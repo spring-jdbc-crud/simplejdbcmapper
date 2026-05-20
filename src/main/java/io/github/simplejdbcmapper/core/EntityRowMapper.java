@@ -107,8 +107,7 @@ public final class EntityRowMapper<T> implements RowMapper<T> {
 			obj = mappedObjConstructor.newInstance();
 			boolean[] typedValueExtracted = { true };
 			// since the sql columns were generated using the property mappings the
-			// resultset
-			// columns will be in same order.
+			// resultset columns will be in same order.
 			for (int index = startIndex; index <= endIndex; index++) {
 				// propertyMappings index starts at 0
 				PropertyMapping propMapping = propertyMappings[index - startIndex];
@@ -128,7 +127,7 @@ public final class EntityRowMapper<T> implements RowMapper<T> {
 	}
 
 	/*
-	 * Same logic as Springs JdbcUtil.getResultSetValue().
+	 * Same logic as Spring's JdbcUtil.getResultSetValue().
 	 * JdbcUtil.getResultSetValue() logic has been proven over the years, retaining
 	 * its logic but changed the structure to use 'switch' statement with enums
 	 * instead of the bunch of if/else's for performance reasons. As was the goal,
@@ -187,8 +186,7 @@ public final class EntityRowMapper<T> implements RowMapper<T> {
 			typedValueExtracted[0] = false;
 			// Enums are represented as a String in simpleJdbcMapper.
 			// leave enum type conversion up to the caller (for example, a
-			// ConversionService)
-			// but make sure that we return nothing other than a String
+			// ConversionService) but make sure that we return nothing other than a String
 			Object obj = rs.getObject(index);
 			if (obj instanceof String) {
 				return obj;

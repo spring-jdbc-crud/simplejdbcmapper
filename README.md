@@ -526,7 +526,7 @@ The Relationship api is agnostic of the source of the data. Results from multipl
 - Order paginated list       - 1st query
 - OrderLine has one Product  - 2nd query to get the corresponding OrderLine and Product for the orders
 
-From the results of these 2 queries the relationships can be built.
+From the results of these 2 queries the relationships can be assembled.
 
 ```
   // The paginated query. Note the PAGINATED SYNTAX is different for different databases. Use the one for your database.
@@ -558,7 +558,7 @@ From the results of these 2 queries the relationships can be built.
   // Since its a named parameter query use NamedParameterJdbcTemplate.
   RelationshipMapper relationshipMapper = sjm.getNamedParameterJdbcTemplate().query(sql, param, sjm.resultSetExtractor(multiEntity));
 
-  // add orders from the first query to the relationshipMapper so that we can build a relationship from it.
+  // add orders from the first query to the relationshipMapper so that we can assemble a relationship from it.
   relationshipMapper.addEntityResult(Order.class, orders, "id");
 
   // The toOne relationship populates OrderLine.product.
@@ -596,7 +596,7 @@ Types.LONGNVARCHAR
 
 Use the pertinent SQL type for your database and database column type. 
 
-In both the cases above the whole object (image files etc) will be read into memory. For very large objects this could create memory issues and you may want to use InputStream/Reader.  To use InputStream/Reader you will have to use  JdbcTemplate directly since SimpleJdbcMapper does not support these.
+In both the cases above the **whole object (images, files etc) will be read into memory**. For very large objects this could create memory issues and you may want to use InputStream/Reader.  To use InputStream/Reader you will have to use  JdbcTemplate directly since SimpleJdbcMapper does not support these.
 
 Some BLOB/CLOB examples below. Keep in mind depending on the versions of the databases and database column types these could be different.
 

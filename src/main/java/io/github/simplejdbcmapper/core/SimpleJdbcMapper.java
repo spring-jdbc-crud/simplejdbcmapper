@@ -398,7 +398,15 @@ public final class SimpleJdbcMapper {
 	 * <p>
 	 * From the query ResultSet a result list is created for each entity. The list
 	 * for each entity will be <b>Unique by ID</b>.
-	 * <p>
+	 * 
+	 * <pre>
+	 * For example:
+	 * new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol");
+	 * The extractor will create 2 lists for RelationshipMapper:
+	 * 1. Order list unique by IDs
+	 * 2. OrderLine list unique by IDs
+	 * </pre>
+	 * 
 	 * It will handle the cases where the column to property mappings do not follow
 	 * the underscore to camel case naming convention.
 	 * <p>

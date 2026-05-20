@@ -288,10 +288,9 @@ jobs:
         #copy javadocs
         cp -rf ./target/reports/apidocs/. ./javadoc
         
+        #copy cloc and tack on build info
         cp target/output.* ./cloc
         echo "simplejdbcmapper ${{ github.ref_name }} ${{ github.sha }} ${{env.NOW}}" >> ./cloc/output.txt
-        cat ./cloc/output.txt
-        cat ./cloc/output.json
  
         # Commit and push
         git add .

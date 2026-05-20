@@ -120,6 +120,8 @@ class TableMappingProvider {
 					throw new MapperException("setter method was not accessible for property " + entityType.getName()
 							+ "." + propMapping.getPropertyName() + " Check the method's visibility.");
 				}
+				// turn off jvm access verification for invoke()
+				writeMethod.trySetAccessible();
 				propMapping.setWriteMethod(writeMethod);
 
 				Method readMethod = pd.getReadMethod();
@@ -127,8 +129,9 @@ class TableMappingProvider {
 					throw new MapperException("getter method was not accessible for property " + entityType.getName()
 							+ "." + propMapping.getPropertyName() + " Check the method's visibility.");
 				}
+				// turn off jvm access verification for invoke()
+				readMethod.trySetAccessible();
 				propMapping.setReadMethod(readMethod);
-
 			}
 		} catch (Exception e) {
 			throw new MapperException(e.getMessage(), e);

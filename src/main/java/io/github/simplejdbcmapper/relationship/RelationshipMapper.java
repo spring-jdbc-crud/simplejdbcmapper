@@ -138,6 +138,8 @@ public class RelationshipMapper implements GetListSpec {
 			throw new IllegalArgumentException(
 					"Invalid argument. Could not find getter for " + type.getName() + "." + propertyName);
 		}
+		// turn off jvm access verification for invoke()
+		m.trySetAccessible();
 		return m;
 	}
 
@@ -153,6 +155,8 @@ public class RelationshipMapper implements GetListSpec {
 				throw new IllegalArgumentException(
 						"Invalid argument. Could not find setter for " + type.getName() + "." + propertyName);
 			}
+			// turn off jvm access verification for invoke()
+			m.trySetAccessible();
 			return m;
 		}
 	}

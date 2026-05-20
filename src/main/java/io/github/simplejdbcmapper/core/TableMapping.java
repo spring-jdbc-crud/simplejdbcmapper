@@ -110,7 +110,9 @@ class TableMapping {
 		this.propertyMappings = propertyMappings.toArray(new PropertyMapping[0]);
 
 		try {
-			this.mappedObjConstructor = mappedObjType.getDeclaredConstructor();
+			Constructor<?> cnst = mappedObjType.getDeclaredConstructor();
+			cnst.trySetAccessible();
+			this.mappedObjConstructor = cnst;
 		} catch (Exception e) {
 			throw new MapperException(e.getMessage(), e);
 		}

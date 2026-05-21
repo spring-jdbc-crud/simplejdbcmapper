@@ -518,7 +518,7 @@ An implementation of the relationship examples below and other features of the l
 ```
 
 ### 4.Using multiple queries to populate relationships.
-The Relationship api is agnostic of the source of the data. Results from multiple queries can be used to populate relationships. 
+The [RelationshipMapper](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/io/github/simplejdbcmapper/relationship/RelationshipMapper.html) is agnostic of the source of the data. Results from multiple queries can be used to populate relationships. 
 - Order paginated list       - 1st query
 - OrderLine has one Product  - 2nd query to get the corresponding OrderLine and Product for the orders
 

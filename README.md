@@ -30,16 +30,12 @@ Just by annotating the models that you would use with JdbcTemplate/JdbcClient, y
 1. One liners for CRUD. All it takes is to use the 3 annotations @Table, @Id and @Column.
 2. A fluent API to assemble relationships from your custom queries.
 3. Simple configuration similar to JdbcTemplate/JdbClient configuration.
-4. Methods to construct SQL for the mapped objects that can be used with Spring row mappers like BeanPropertyRowMapper, SimplePropertyRowMapper or the library's EntityRowMapper which avoids writing custom row mappers.
-5. Auto assign properties
-    * auto assign audited  by (created by, updated by) by providing a Supplier
-    * auto assign audited on (created on, updated on) by providing a Supplier
-    * optimistic locking feature for updates using versioning.
-6. Transaction management is the same as in Spring applications since the library is using JdbcTemplate behind the scenes.
-7. To log the SQL statements use the same SQL logging configurations as Spring. See the [logging](#logging)  section further below.
-8. Tests are run against PostgreSQL, MySQL, Oracle, SQLServer. Should work with other databases.
+4. No need to write custom row mappers for your queries by using the library's EntityRowMapper.
+5. Transactions are managed using Spring as the library uses JdbcTemplate for database interaction.
+6. To view the SQL use Spring logging (See [logging](#logging)).
+7. Tests are run against PostgreSQL, MySQL, Oracle, SQLServer. Should work with other databases.
 [![CI SimpleJdbcMapper](https://github.com/spring-jdbc-crud/simplejdbcmapper/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/spring-jdbc-crud/simplejdbcmapper/actions/workflows/ci.yml)
-9. Only dependency is Spring JDBC libraries. No other external dependencies.
+8. Only dependency is Spring JDBC libraries. No other external dependencies.
  
 ## Maven coordinates
 [![maven-central](https://img.shields.io/maven-central/v/io.github.spring-jdbc-crud/simplejdbcmapper)](https://central.sonatype.com/artifact/io.github.spring-jdbc-crud/simplejdbcmapper) 

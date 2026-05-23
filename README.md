@@ -478,13 +478,13 @@ An implementation of the relationship examples below and other features of the l
   RelationshipMapper relationshipMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity), someAmount);
   
   // Define the toOne relationship between OrderLine and Product.
-  Relationship ordLineToOneProduct = Relationship.type(OrderLine.class).toOne(Product.class).joinOn("productId", "id").populate("product");
+  Relationship orderLineToOneProduct = Relationship.type(OrderLine.class).toOne(Product.class).joinOn("productId", "id").populate("product");
   
   // Define the toMany relationship between order and orderLine.
   Relationship orderToManyOrderLine = Relationship.type(Order.class).toMany(OrderLine.class).joinOn("id", "orderId").populate("orderLines");
   
-  // Assemble the relationships. getList() returns the orders;
-  List<Order> orders = relationshipMapper.assemble(ordLineToOneProduct, orderToManyOrderLine).getList(Order.class);
+  // Assemble the relationships. getList() returns the orders.
+  List<Order> orders = relationshipMapper.assemble(orderLineToOneProduct, orderToManyOrderLine).getList(Order.class);
 ```
 
 ### 3.ToMany relationship through an intermediate table (one side of many to many)

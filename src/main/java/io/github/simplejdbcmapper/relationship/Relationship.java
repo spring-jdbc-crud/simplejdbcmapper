@@ -52,6 +52,12 @@ public class Relationship {
 		this.relationshipType = builder.relationshipType;
 	}
 
+	/**
+	 * Starts the relationship fluent flow.
+	 * 
+	 * @param type the main object type
+	 * @return RelationshipFluent.RelationshipType
+	 */
 	public static RelationshipFluent.RelationshipType type(Class<?> type) {
 		Assert.notNull(type, "type must not be null");
 		return new RelationshipBuilder(type);

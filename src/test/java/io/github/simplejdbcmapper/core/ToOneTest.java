@@ -103,7 +103,8 @@ class ToOneTest {
 		assertTrue(exception.getMessage().contains("mainObjPropertyToPopulate must not be null"));
 
 		exception = Assertions.assertThrows(Exception.class, () -> {
-			Relationship.type(OrderLine.class).toOne(Product.class).joinOn("productId", "id").populate("x");
+			relMapper.assemble(
+					Relationship.type(OrderLine.class).toOne(Product.class).joinOn("productId", "id").populate("x"));
 		});
 		assertTrue(exception.getMessage().contains("Invalid argument. Property name"));
 

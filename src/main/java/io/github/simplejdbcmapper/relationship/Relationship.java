@@ -42,20 +42,19 @@ public class Relationship {
 	private ToManyThrough toManyThrough;
 	private String relationshipType;
 
-	Relationship(Class<?> mainType, Class<?> relatedType, Class<?> throughType, ToOne toOne, ToMany toMany,
-			ToManyThrough toManyThrough, String relationshipType) {
-		this.mainType = mainType;
-		this.relatedType = relatedType;
-		this.throughType = throughType;
-		this.toOne = toOne;
-		this.toMany = toMany;
-		this.toManyThrough = toManyThrough;
-		this.relationshipType = relationshipType;
+	Relationship(RelationshipBuilder builder) {
+		this.mainType = builder.mainType;
+		this.relatedType = builder.relatedType;
+		this.throughType = builder.throughType;
+		this.toOne = builder.toOne;
+		this.toMany = builder.toMany;
+		this.toManyThrough = builder.toManyThrough;
+		this.relationshipType = builder.relationshipType;
 	}
 
 	public static RelationshipFluent.RelationshipType type(Class<?> type) {
 		Assert.notNull(type, "type must not be null");
-		return new RelationshipFluentx(type);
+		return new RelationshipBuilder(type);
 	}
 
 	Class<?> getMainType() {
@@ -91,7 +90,7 @@ public class Relationship {
 		return mainType.getSimpleName() + " " + relationshipType + " " + relatedType.getSimpleName();
 	}
 
-	private static class RelationshipFluentx implements RelationshipFluent.RelationshipType, RelationshipFluent.ToOne,
+	private static class RelationshipBuilder implements RelationshipFluent.RelationshipType, RelationshipFluent.ToOne,
 			RelationshipFluent.ToMany, RelationshipFluent.Populate {
 		private Class<?> mainType;
 		private Class<?> relatedType;
@@ -101,7 +100,7 @@ public class Relationship {
 		private ToManyThrough toManyThrough;
 		private String relationshipType;
 
-		public RelationshipFluentx(Class<?> mainType) {
+		public RelationshipBuilder(Class<?> mainType) {
 			this.mainType = mainType;
 		}
 
@@ -154,7 +153,7 @@ public class Relationship {
 				// toManyThrough
 				toManyThrough.populate(mainObjPropertyToPopulate);
 			}
-			return new Relationship(mainType, relatedType, throughType, toOne, toMany, toManyThrough, relationshipType);
+			return new Relationship(this);
 		}
 
 	}

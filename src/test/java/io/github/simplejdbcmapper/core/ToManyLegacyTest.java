@@ -20,12 +20,11 @@ import io.github.simplejdbcmapper.model.Order;
 import io.github.simplejdbcmapper.model.OrderLine;
 import io.github.simplejdbcmapper.model.OrderLineOrderIdInteger;
 import io.github.simplejdbcmapper.model.Product;
-import io.github.simplejdbcmapper.relationship.Relationship;
 import io.github.simplejdbcmapper.relationship.RelationshipMapper;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-class ToManyTest {
+class ToManyLegacyTest {
 	@Autowired
 	private SimpleJdbcMapper sjm;
 
@@ -39,22 +38,22 @@ class ToManyTest {
 		relMapper.addEntityResult(OrderLine.class, orderLines, "orderLineId");
 
 		Exception exception = Assertions.assertThrows(Exception.class, () -> {
-			Relationship.type(Order.class).toMany(OrderLine.class).joinOn(null, "orderId");
+			relMapper.type(Order.class).toMany(OrderLine.class).joinOn(null, "orderId");
 		});
 		assertTrue(exception.getMessage().contains("mainObjIdProperty must not be null"));
 
 		exception = Assertions.assertThrows(Exception.class, () -> {
-			Relationship.type(Order.class).toMany(OrderLine.class).joinOn("orderId", null);
+			relMapper.type(Order.class).toMany(OrderLine.class).joinOn("orderId", null);
 		});
 		assertTrue(exception.getMessage().contains("relatedObjFkProperty must not be null"));
 
 		exception = Assertions.assertThrows(Exception.class, () -> {
-			Relationship.type(Order.class).toMany(OrderLine.class).joinOn("x", "orderId");
+			relMapper.type(Order.class).toMany(OrderLine.class).joinOn("x", "orderId");
 		});
 		assertTrue(exception.getMessage().contains("does not exist for"));
 
 		exception = Assertions.assertThrows(Exception.class, () -> {
-			Relationship.type(Order.class).toMany(OrderLine.class).joinOn("orderId", "x");
+			relMapper.type(Order.class).toMany(OrderLine.class).joinOn("orderId", "x");
 		});
 		assertTrue(exception.getMessage().contains("does not exist for"));
 
@@ -72,7 +71,7 @@ class ToManyTest {
 		relMapper.addEntityResult(OrderLineOrderIdInteger.class, orderLines, "orderLineId");
 
 		Exception exception = Assertions.assertThrows(Exception.class, () -> {
-			Relationship.type(Order.class).toMany(OrderLineOrderIdInteger.class).joinOn("id", "orderId")
+			relMapper.type(Order.class).toMany(OrderLineOrderIdInteger.class).joinOn("id", "orderId")
 					.populate("orderLines");
 		});
 		assertTrue(exception.getMessage().contains("Conflicting property types."));
@@ -95,19 +94,17 @@ class ToManyTest {
 		RelationshipMapper relMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 
 		Exception exception = Assertions.assertThrows(Exception.class, () -> {
-			Relationship.type(Order.class).toMany(OrderLine.class).joinOn("id", "orderId").populate(null);
+			relMapper.type(Order.class).toMany(OrderLine.class).joinOn("id", "orderId").populate(null);
 		});
 		assertTrue(exception.getMessage().contains("mainObjPropertyToPopulate must not be null"));
 
 		exception = Assertions.assertThrows(Exception.class, () -> {
-			relMapper.assemble(Relationship.type(Order.class).toMany(OrderLine.class).joinOn("id", "orderId")
-					.populate("x"));
+			relMapper.type(Order.class).toMany(OrderLine.class).joinOn("id", "orderId").populate("x");
 		});
 		assertTrue(exception.getMessage().contains("Invalid argument. Property name"));
 
 		exception = Assertions.assertThrows(MapperException.class, () -> {
-			relMapper.assemble(Relationship.type(Order.class).toMany(OrderLine.class).joinOn("id", "orderId")
-					.populate("customerId"));
+			relMapper.type(Order.class).toMany(OrderLine.class).joinOn("id", "orderId").populate("customerId");
 		});
 
 		assertTrue(exception.getMessage().contains("argument type mismatch"));
@@ -129,9 +126,8 @@ class ToManyTest {
 
 		RelationshipMapper relMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 
-		Relationship orderToManyOrderLines = Relationship.type(Order.class).toMany(OrderLine.class)
-				.joinOn("id", "orderId").populate("orderLines");
-		List<Order> orders = relMapper.assemble(orderToManyOrderLines).getList(Order.class);
+		List<Order> orders = relMapper.type(Order.class).toMany(OrderLine.class).joinOn("id", "orderId")
+				.populate("orderLines").getList(Order.class);
 
 		assertEquals(4, orders.size());
 		assertEquals(2, orders.get(0).getOrderLines().size(), "ord 1 lines count failed");
@@ -160,10 +156,8 @@ class ToManyTest {
 
 		RelationshipMapper relMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 
-		Relationship orderToManyOrderLines = Relationship.type(Order.class).toMany(OrderLine.class)
-				.joinOn("id", "orderId").populate("orderLines");
-
-		List<Order> orders = relMapper.assemble(orderToManyOrderLines).getList(Order.class);
+		List<Order> orders = relMapper.type(Order.class).toMany(OrderLine.class).joinOn("id", "orderId")
+				.populate("orderLines").getList(Order.class);
 
 		assertEquals(4, orders.size());
 		assertEquals(2, orders.get(0).getOrderLines().size(), "ord 1 lines count failed");
@@ -194,15 +188,9 @@ class ToManyTest {
 		assertEquals(0, relMapper.getList(Order.class).size());
 		assertEquals(0, relMapper.getList(Order.class).size());
 
-		Relationship orderToManyOrderLines = Relationship.type(Order.class).toMany(OrderLine.class)
-				.joinOn("id", "orderId").populate("orderLines");
-
 		assertDoesNotThrow(() -> {
-			relMapper.assemble(orderToManyOrderLines);
+			relMapper.type(Order.class).toMany(OrderLine.class).joinOn("id", "orderId").populate("orderLines");
 		});
-
-		List<Order> orders = relMapper.assemble(orderToManyOrderLines).getList(Order.class);
-		assertEquals(0, orders.size());
 
 	}
 
@@ -228,8 +216,7 @@ class ToManyTest {
 
 		orderLines.add(1, null);
 
-		relMapper.assemble(Relationship.type(Order.class).toMany(OrderLine.class).joinOn("id", "orderId")
-				.populate("orderLines"));
+		relMapper.type(Order.class).toMany(OrderLine.class).joinOn("id", "orderId").populate("orderLines");
 
 		assertEquals(5, orders.get(0).getOrderLines().get(1).getNumOfUnits());
 
@@ -259,10 +246,7 @@ class ToManyTest {
 
 		orderLines.add(1, new OrderLine());
 
-		Relationship orderToManyOrderLines = Relationship.type(Order.class).toMany(OrderLine.class)
-				.joinOn("id", "orderId").populate("orderLines");
-
-		orders = relMapper.assemble(orderToManyOrderLines).getList(Order.class);
+		relMapper.type(Order.class).toMany(OrderLine.class).joinOn("id", "orderId").populate("orderLines");
 
 		assertEquals(5, orders.get(0).getOrderLines().get(1).getNumOfUnits());
 
@@ -272,6 +256,7 @@ class ToManyTest {
 
 	@Test
 	void OrderToManyOrderLinesWhichHasOneProduct_success() {
+
 		MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol").add(Product.class,
 				"p");
 
@@ -285,13 +270,10 @@ class ToManyTest {
 
 		RelationshipMapper relMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 
-		Relationship orderLineToOneProduct = Relationship.type(OrderLine.class).toOne(Product.class)
-				.joinOn("productId", "id").populate("product");
+		relMapper.type(OrderLine.class).toOne(Product.class).joinOn("productId", "id").populate("product");
 
-		Relationship orderToManyOrderLine = Relationship.type(Order.class).toMany(OrderLine.class)
-				.joinOn("id", "orderId").populate("orderLines");
-
-		List<Order> orders = relMapper.assemble(orderToManyOrderLine, orderLineToOneProduct).getList(Order.class);
+		List<Order> orders = relMapper.type(Order.class).toMany(OrderLine.class).joinOn("id", "orderId")
+				.populate("orderLines").getList(Order.class);
 
 		assertEquals(4, orders.size());
 		assertEquals(2, orders.get(0).getOrderLines().size(), "ord 1 lines count failed");

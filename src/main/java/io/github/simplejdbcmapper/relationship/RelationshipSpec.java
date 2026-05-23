@@ -14,10 +14,11 @@
 package io.github.simplejdbcmapper.relationship;
 
 /**
- * A relationship specification.
+ * @deprecated A relationship specification.
  * 
  * @author Antony Joseph
  */
+@Deprecated(since = "2.4.0", forRemoval = true)
 public interface RelationshipSpec {
 
 	/**

@@ -24,25 +24,31 @@ import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 import io.github.simplejdbcmapper.exception.MapperException;
+import io.github.simplejdbcmapper.relationship.RelationshipMapper.ExtractorEntityResult;
 
 /**
  * This handles the toManyThrough relationship.
  * 
  * @author Antony Joseph
  */
-class ToManyThrough {
+class ToManyThroughLegacy {
+
 	private Class<?> mainType;
 	private Class<?> relatedType;
-	private Class<?> throughType;
-	private String fkPropertyToMainObjId;
-	private String fkPropertyToRelatedObjId;
-	private String mainObjPropertyToPopulate;
+	private List<ExtractorEntityResult> results = new ArrayList<>();
 
-	ToManyThrough(Class<?> mainType, Class<?> relatedType) {
-		Assert.notNull(mainType, "mainType must not be null");
-		Assert.notNull(relatedType, "relatedType must not be null");
+	private Method mainObjIdPropertyReadMethod;
+
+	private Method relatedObjIdPropertyReadMethod;
+
+	private Method mainObjPropertyToPopulateWriteMethod;
+
+	private ThroughJoiner throughJoiner;
+
+	ToManyThroughLegacy(Class<?> mainType, Class<?> relatedType, List<ExtractorEntityResult> results) {
 		this.mainType = mainType;
 		this.relatedType = relatedType;
+		this.results = results;
 	}
 
 	void through(Class<?> throughType, String fkPropertyToMainObjId, String fkPropertyToRelatedObjId) {
@@ -52,17 +58,15 @@ class ToManyThrough {
 		if (mainType == throughType || relatedType == throughType) {
 			throw new IllegalArgumentException("throughType cannot be same as mainType or relatedType.");
 		}
-		this.throughType = throughType;
-		this.fkPropertyToMainObjId = fkPropertyToMainObjId;
-		this.fkPropertyToRelatedObjId = fkPropertyToRelatedObjId;
-	}
 
-	void populate(String mainObjPropertyToPopulate) {
-		Assert.notNull(mainObjPropertyToPopulate, "mainObjPropertyToPopulate must not be null");
-		this.mainObjPropertyToPopulate = mainObjPropertyToPopulate;
-	}
+		// will throw an exception for invalid type
+		List<?> throughList = RelationshipMapper.getList(throughType, results);
 
-	void validateThrough(String mainObjIdProperty, String relatedObjIdProperty) {
+		ExtractorEntityResult mainResult = RelationshipMapper.getExtractorEntityResult(mainType, results);
+		String mainObjIdProperty = mainResult.idPropertyName();
+		ExtractorEntityResult relatedResult = RelationshipMapper.getExtractorEntityResult(relatedType, results);
+		String relatedObjIdProperty = relatedResult.idPropertyName();
+
 		Class<?> mainObjIdPropertyType = RelationshipMapper.getPropertyType(mainType, mainObjIdProperty);
 		Class<?> fkPropertyToMainObjIdType = RelationshipMapper.getPropertyType(throughType, fkPropertyToMainObjId);
 		if (mainObjIdPropertyType != fkPropertyToMainObjIdType) {
@@ -79,25 +83,33 @@ class ToManyThrough {
 					+ relatedType.getSimpleName() + "." + relatedObjIdProperty + " and " + throughType.getSimpleName()
 					+ "." + fkPropertyToRelatedObjId + " are not the same.");
 		}
+
+		this.mainObjIdPropertyReadMethod = RelationshipMapper.getReadMethod(mainType, mainObjIdProperty);
+		this.relatedObjIdPropertyReadMethod = RelationshipMapper.getReadMethod(relatedType, relatedObjIdProperty);
+
+		this.throughJoiner = new ThroughJoiner(throughList, fkPropertyToMainObjId, fkPropertyToRelatedObjId,
+				throughType);
+
 	}
 
-	<T, U> void process(List<T> mainObjList, List<U> relatedObjList, List<?> throughList, String mainObjIdProperty,
-			String relatedObjIdProperty) {
+	void populate(String mainObjPropertyToPopulate) {
+		Assert.notNull(mainObjPropertyToPopulate, "mainObjPropertyToPopulate must not be null");
+		this.mainObjPropertyToPopulateWriteMethod = RelationshipMapper.getWriteMethod(mainType,
+				mainObjPropertyToPopulate);
+
+		List<?> mainList = RelationshipMapper.getList(mainType, results);
+		List<?> relatedList = RelationshipMapper.getList(relatedType, results);
+		processToManyThrough(mainList, relatedList);
+	}
+
+	private <T, U> void processToManyThrough(List<T> mainObjList, List<U> relatedObjList) {
 		if (CollectionUtils.isEmpty(mainObjList) || CollectionUtils.isEmpty(relatedObjList)) {
 			return;
 		}
-		validateThrough(mainObjIdProperty, relatedObjIdProperty);
-		Method mainObjIdPropertyReadMethod = RelationshipMapper.getReadMethod(mainType, mainObjIdProperty);
-		Method relatedObjIdPropertyReadMethod = RelationshipMapper.getReadMethod(relatedType, relatedObjIdProperty);
-		Method mainObjPropertyToPopulateWriteMethod = RelationshipMapper.getWriteMethod(mainType,
-				mainObjPropertyToPopulate);
-		ThroughJoiner throughJoiner = new ThroughJoiner(throughList, fkPropertyToMainObjId, fkPropertyToRelatedObjId,
-				throughType);
 		try {
-			Map<Object, U> idToRelatedObjMap = getIdToRelatedObjMap(relatedObjList, relatedObjIdPropertyReadMethod);
+			Map<Object, U> idToRelatedObjMap = getIdToRelatedObjMap(relatedObjList);
 			for (T mainObj : mainObjList) {
-				processMainObj(mainObj, idToRelatedObjMap, throughJoiner, mainObjIdPropertyReadMethod,
-						mainObjPropertyToPopulateWriteMethod);
+				processMainObj(mainObj, idToRelatedObjMap);
 			}
 		} catch (Exception e) {
 			throw new MapperException(e.getMessage(), e);
@@ -105,8 +117,7 @@ class ToManyThrough {
 	}
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private <U, T> void processMainObj(T mainObj, Map<Object, U> idToRelatedObjMap, ThroughJoiner throughJoiner,
-			Method mainObjIdPropertyReadMethod, Method mainObjPropertyToPopulateWriteMethod)
+	private <U, T> void processMainObj(T mainObj, Map<Object, U> idToRelatedObjMap)
 			throws IllegalAccessException, InvocationTargetException {
 		if (mainObj != null) {
 			Object mainObjIdValue = mainObjIdPropertyReadMethod.invoke(mainObj);
@@ -120,11 +131,11 @@ class ToManyThrough {
 					}
 				}
 			}
-			setMainObjValue(mainObj, populaterList, mainObjPropertyToPopulateWriteMethod);
+			setMainObjValue(mainObj, populaterList);
 		}
 	}
 
-	private <T, U> void setMainObjValue(T mainObj, List<U> populaterList, Method mainObjPropertyToPopulateWriteMethod) {
+	private <T, U> void setMainObjValue(T mainObj, List<U> populaterList) {
 		try {
 			mainObjPropertyToPopulateWriteMethod.invoke(mainObj, populaterList);
 		} catch (Exception e) {
@@ -133,7 +144,7 @@ class ToManyThrough {
 		}
 	}
 
-	private <U> Map<Object, U> getIdToRelatedObjMap(List<U> relatedObjList, Method relatedObjIdPropertyReadMethod)
+	private <U> Map<Object, U> getIdToRelatedObjMap(List<U> relatedObjList)
 			throws IllegalAccessException, InvocationTargetException {
 		// relatedObjId - relatedObj
 		Map<Object, U> idToRelatedObjMap = new HashMap<>();
@@ -148,7 +159,7 @@ class ToManyThrough {
 		return idToRelatedObjMap;
 	}
 
-	private static class ThroughJoiner {
+	private class ThroughJoiner {
 		@SuppressWarnings("rawtypes")
 		// key: fkToMainObjIdValue,
 		// value: list of fkToRelatedObjIdValue

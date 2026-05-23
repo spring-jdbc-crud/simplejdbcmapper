@@ -16,7 +16,7 @@ package io.github.simplejdbcmapper.relationship;
 import java.util.List;
 
 /**
- * Gets list by type for the relationship
+ * Get list by type interface.
  * 
  * @author Antony Joseph
  */

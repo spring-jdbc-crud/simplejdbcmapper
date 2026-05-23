@@ -14,10 +14,11 @@
 package io.github.simplejdbcmapper.relationship;
 
 /**
- * The populate specification.
+ * @deprecated The populate specification.
  * 
  * @author Antony Joseph
  */
+@Deprecated(since = "2.4.0", forRemoval = true)
 public interface PopulateSpec {
 	/**
 	 * Processes the relationship and populates the target property.

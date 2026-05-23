@@ -13,111 +13,128 @@
  */
 package io.github.simplejdbcmapper.relationship;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import org.springframework.util.Assert;
 
-import io.github.simplejdbcmapper.relationship.RelationshipMapper.ExtractorEntityResult;
-
 /**
- * The relationship. It uses the query results and information provided through
- * the API to populate the target property.
+ * The relationship definition. It is thread safe and can be used with different
+ * query results which have the same relationship.
  * 
- * <p>
- * Does not access database or use SimpleJdbcMapper. It just assembles the
- * relationship tree.
+ * <pre>
+ * Relationship orderToManyOrderLine = 
+ *      Relationshp.type(Order.class).toMany(OrderLine.class).joinOn("id", "orderId".populate("orderLines");
+ *                                               
+ * {@code List<Order>} orders = relationshipMapper.assemble(orderToManyOrderLine).getList(Order.class);
  * 
+ * </pre>
  * <p>
  * For more details see the <a href=
- * "https://github.com/spring-jdbc-crud/simplejdbcmapper#populating-relationships-from-custom-queries">documentation</a>
+ * "https://github.com/spring-jdbc-crud/simplejdbcmapper#assembling-relationships-from-custom-queries">documentation</a>
  * 
  * 
  * @author Antony Joseph
  */
-public class Relationship implements RelationshipSpec, ToManySpec, ToOneSpec, PopulateSpec, GetListSpec {
-	static final String TO_MANY = "toMany";
-	static final String TO_ONE = "toOne";
-	static final String TO_MANY_THROUGH = "toManyThrough";
-
+public class Relationship implements RelationshipBuilder.RelationshipType, RelationshipBuilder.ToOne,
+		RelationshipBuilder.ToMany, RelationshipBuilder.Populate {
 	private Class<?> mainType;
 	private Class<?> relatedType;
-	private List<ExtractorEntityResult> results = new ArrayList<>();
-
+	private Class<?> throughType;
 	private ToOne toOne;
 	private ToMany toMany;
 	private ToManyThrough toManyThrough;
-
 	private String relationshipType;
 
-	private Relationship(Class<?> mainType, List<ExtractorEntityResult> results) {
+	private Relationship(Class<?> mainType) {
 		this.mainType = mainType;
-		this.results = results;
 	}
 
-	static RelationshipSpec newInstance(Class<?> type, List<ExtractorEntityResult> results) {
-		return new Relationship(type, results);
+	public static RelationshipBuilder.RelationshipType type(Class<?> type) {
+		Assert.notNull(type, "type must not be null");
+		return new Relationship(type);
 	}
 
-	public ToOneSpec toOne(Class<?> relatedType) {
+	public RelationshipBuilder.ToOne toOne(Class<?> relatedType) {
 		Assert.notNull(relatedType, "relatedType must not be null");
 		if (mainType == relatedType) {
 			throw new IllegalArgumentException("mainType and relatedType cannot be same.");
 		}
-		// will throw an exception for invalid type
-		getList(relatedType);
-
-		this.relationshipType = TO_ONE;
-		this.toOne = new ToOne(mainType, relatedType, results);
-		return this;
-	}
-
-	public ToManySpec toMany(Class<?> relatedType) {
-		Assert.notNull(relatedType, "relatedType must not be null");
-		if (mainType == relatedType) {
-			throw new IllegalArgumentException("mainType and relatedType cannot be same.");
-		}
-		// will throw an exception for invalid type
-		getList(relatedType);
-
 		this.relatedType = relatedType;
-		this.toMany = new ToMany(mainType, relatedType, results);
-		this.relationshipType = TO_MANY;
+		this.relationshipType = RelationshipMapper.TO_ONE;
+		this.toOne = new ToOne(mainType, relatedType);
 		return this;
 	}
 
-	public PopulateSpec joinOn(String mainObjJoinProperty, String relatedObjJoinProperty) {
-		if (relationshipType.equals(TO_ONE)) {
+	public RelationshipBuilder.ToMany toMany(Class<?> relatedType) {
+		Assert.notNull(relatedType, "relatedType must not be null");
+		if (mainType == relatedType) {
+			throw new IllegalArgumentException("mainType and relatedType cannot be same.");
+		}
+		this.relatedType = relatedType;
+		this.relationshipType = RelationshipMapper.TO_MANY;
+		this.toMany = new ToMany(mainType, relatedType);
+		return this;
+	}
+
+	public RelationshipBuilder.Populate joinOn(String mainObjJoinProperty, String relatedObjJoinProperty) {
+		if (relationshipType.equals(RelationshipMapper.TO_ONE)) {
 			toOne.joinOn(mainObjJoinProperty, relatedObjJoinProperty);
-		} else if (relationshipType.equals(TO_MANY)) {
+		} else if (relationshipType.equals(RelationshipMapper.TO_MANY)) {
 			toMany.joinOn(mainObjJoinProperty, relatedObjJoinProperty);
 		}
 		return this;
 	}
 
-	public PopulateSpec through(Class<?> throughType, String fkPropertyToMainObjId, String fkPropertyToRelatedObjId) {
-		this.relationshipType = TO_MANY_THROUGH;
-		this.toManyThrough = new ToManyThrough(mainType, relatedType, results);
+	public RelationshipBuilder.Populate through(Class<?> throughType, String fkPropertyToMainObjId,
+			String fkPropertyToRelatedObjId) {
+		this.throughType = throughType;
+		this.relationshipType = RelationshipMapper.TO_MANY_THROUGH;
+		this.toManyThrough = new ToManyThrough(mainType, relatedType);
 		toManyThrough.through(throughType, fkPropertyToMainObjId, fkPropertyToRelatedObjId);
 		return this;
 	}
 
-	public GetListSpec populate(String propertyToPopulateOnMainObj) {
-		if (relationshipType.equals(TO_ONE)) {
-			toOne.populate(propertyToPopulateOnMainObj);
-		} else if (relationshipType.equals(TO_MANY)) {
-			toMany.populate(propertyToPopulateOnMainObj);
+	public Relationship populate(String mainObjPropertyToPopulate) {
+		if (relationshipType.equals(RelationshipMapper.TO_ONE)) {
+			toOne.populate(mainObjPropertyToPopulate);
+		} else if (relationshipType.equals(RelationshipMapper.TO_MANY)) {
+			toMany.populate(mainObjPropertyToPopulate);
 		} else {
 			// toManyThrough
-			toManyThrough.populate(propertyToPopulateOnMainObj);
+			toManyThrough.populate(mainObjPropertyToPopulate);
 		}
 		return this;
 	}
 
-	@SuppressWarnings("unchecked")
-	public <T> List<T> getList(Class<T> type) {
-		ExtractorEntityResult result = RelationshipMapper.getExtractorEntityResult(type, results);
-		return (List<T>) result.list();
+	Class<?> getMainType() {
+		return mainType;
+	}
+
+	Class<?> getRelatedType() {
+		return relatedType;
+	}
+
+	String getRelationshipType() {
+		return relationshipType;
+	}
+
+	Class<?> getThroughType() {
+		return throughType;
+	}
+
+	ToOne getToOne() {
+		return toOne;
+	}
+
+	ToMany getToMany() {
+		return toMany;
+	}
+
+	ToManyThrough getToManyThrough() {
+		return toManyThrough;
+	}
+
+	@Override
+	public String toString() {
+		return mainType.getSimpleName() + " " + relationshipType + " " + relatedType.getSimpleName();
 	}
 
 }

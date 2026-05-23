@@ -16,7 +16,9 @@ package io.github.simplejdbcmapper.relationship;
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 import org.springframework.util.Assert;
 import org.springframework.util.ReflectionUtils;
@@ -27,39 +29,36 @@ import org.springframework.util.StringUtils;
  * {@link io.github.simplejdbcmapper.core.SimpleJdbcMapper#resultSetExtractor}
  * 
  * <p>
- * Starts the relationship processing flow.
- * 
- * <p>
- * You can build relationships from multiple lists. For example if you have a
- * list of orders and another list of related orderLines you can do something
- * like:
+ * You can build relationships from multiple individual related lists. For
+ * example if you have a list of orders and another list of related orderLines
+ * you can do something like:
  * 
  * <pre>
  * RelationhipMapper relationshipMapper = new RelationshipMapper();
  * relationshipMapper.addEntityResult(Order.class, orders, "id");
  * relationshipMapper.addEntityResult(OrderLine.class, orderLines, "id");
  * 
- * {@code List<Order>} orders = relationshipMapper.type(Order.class)
- *                                                .toMany(OrderLine.class)
- *                                                .joinOn("id", "orderId")
- *                                                .populate("orderLines")
- *                                                .getList(Order.class);
+ * Relationship orderToManyOrderLine = 
+ *      Relationshp.type(Order.class).toMany(OrderLine.class).joinOn("id", "orderId".populate("orderLines");
+ *                                               
+ * {@code List<Order>} orders = relationshipMapper.assemble(orderToManyOrderLine).getList(Order.class);
  * 
  * </pre>
- * 
- * 
  * 
  * For more details see <a href=
  * "https://github.com/spring-jdbc-crud/simplejdbcmapper#populating-relationships-from-custom-queries">documentation</a>
  * and {@link io.github.simplejdbcmapper.relationship.Relationship}
  *
- * 
  * @author Antony Joseph
  */
 public class RelationshipMapper implements GetListSpec {
 	static final String IS_PREFIX = "is";
 	static final String GET_PREFIX = "get";
 	static final String SET_PREFIX = "set";
+
+	static final String TO_MANY = "toMany";
+	static final String TO_ONE = "toOne";
+	static final String TO_MANY_THROUGH = "toManyThrough";
 
 	private List<ExtractorEntityResult> results = new ArrayList<>();
 
@@ -75,22 +74,54 @@ public class RelationshipMapper implements GetListSpec {
 		Assert.notNull(entityType, "entityType must not be null");
 		Assert.notNull(list, "list must not be null");
 		Assert.notNull(idPropertyName, "idPropertyName must not be null");
-		checkDuplicates(entityType);
+		checkDuplicatesForAddEntityResult(entityType);
 		results.add(new ExtractorEntityResult(entityType, list, idPropertyName));
 	}
 
 	/**
-	 * Starts the relationship processing flow.
+	 * @deprecated As of release 2.4.0, Replaced by
+	 *             {@link io.github.simplejdbcmapper.relationship.Relationship#type}
+	 *             Starts the relationship processing flow.
 	 * 
 	 * @param <T>  the type
 	 * @param type the type
 	 * @return RelationshipSpec the relationship spec
 	 */
+	@Deprecated(since = "2.4.0", forRemoval = true)
 	public <T> RelationshipSpec type(Class<T> type) {
 		Assert.notNull(type, "type must not be null");
 		// will throw an exception for invalid type
 		getList(type);
-		return Relationship.newInstance(type, results);
+		return RelationshipLegacy.newInstance(type, results);
+	}
+
+	/**
+	 * Assembles the relationships from the query results.
+	 * 
+	 * @param relationships an array of relationships
+	 * @return GetListSpec
+	 */
+	public GetListSpec assemble(Relationship... relationships) {
+		validateAssemble(relationships);
+		for (Relationship rel : relationships) {
+			process(rel);
+		}
+		return this;
+	}
+
+	void process(Relationship rel) {
+		List<?> mainList = getList(rel.getMainType());
+		List<?> relatedList = getList(rel.getRelatedType());
+		if (rel.getRelationshipType().equals(TO_ONE)) {
+			rel.getToOne().process(mainList, relatedList);
+		} else if (rel.getRelationshipType().equals(TO_MANY)) {
+			rel.getToMany().process(mainList, relatedList);
+		} else {
+			// toManyThrough
+			List<?> throughList = getList(rel.getThroughType());
+			rel.getToManyThrough().process(mainList, relatedList, throughList, getIdPropertyName(rel.getMainType()),
+					getIdPropertyName(rel.getRelatedType()));
+		}
 	}
 
 	/**
@@ -106,10 +137,31 @@ public class RelationshipMapper implements GetListSpec {
 		return (List<T>) result.list();
 	}
 
-	private void checkDuplicates(Class<?> entityType) {
+	String getIdPropertyName(Class<?> type) {
+		ExtractorEntityResult result = getExtractorEntityResult(type, results);
+		return result.idPropertyName();
+	}
+
+	private void checkDuplicatesForAddEntityResult(Class<?> entityType) {
 		for (ExtractorEntityResult result : results) {
 			if (result.entityType() == entityType) {
 				throw new IllegalArgumentException("duplicate entityType " + entityType);
+			}
+		}
+	}
+
+	private void validateAssemble(Relationship... relationships) {
+		Assert.notNull(relationships, "relationships must not be null");
+		if (relationships.length == 0) {
+			throw new IllegalArgumentException("relationships array must not be empty.");
+		}
+		Set<String> set = new HashSet<>();
+		for (Relationship rel : relationships) {
+			if (rel == null) {
+				throw new IllegalArgumentException("relationship must not be null");
+			}
+			if (!set.add(rel.getMainType().getName() + "-" + rel.getMainType().getName())) {
+				throw new IllegalArgumentException("Duplicate relationship. " + rel);
 			}
 		}
 	}
@@ -126,7 +178,7 @@ public class RelationshipMapper implements GetListSpec {
 				return result;
 			}
 		}
-		throw new IllegalArgumentException(type + " was not part of the query result set");
+		throw new IllegalArgumentException(type + " was not part of the query results");
 	}
 
 	static Method getReadMethod(Class<?> type, String propertyName) {

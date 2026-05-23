@@ -17,36 +17,17 @@ import io.github.simplejdbcmapper.model.Order;
 import io.github.simplejdbcmapper.model.OrderLine;
 import io.github.simplejdbcmapper.model.Product;
 import io.github.simplejdbcmapper.model.Skill;
-import io.github.simplejdbcmapper.relationship.Relationship;
 import io.github.simplejdbcmapper.relationship.RelationshipMapper;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-class RelationshipTest {
+class RelationshipLegacyTest {
 
 	@Autowired
 	private SimpleJdbcMapper sjm;
 
 	@Test
-	void relationship_type_test() {
-		Exception exception = Assertions.assertThrows(Exception.class, () -> {
-			Relationship.type(null).toOne(OrderLine.class);
-		});
-		assertTrue(exception.getMessage().contains("type must not be null"));
-	}
-
-	@Test
 	void toOne_relatedObj_test() {
-		Exception exception = Assertions.assertThrows(Exception.class, () -> {
-			Relationship.type(OrderLine.class).toOne(null);
-		});
-		assertTrue(exception.getMessage().contains("relatedType must not be null"));
-
-		exception = Assertions.assertThrows(Exception.class, () -> {
-			Relationship.type(OrderLine.class).toOne(OrderLine.class);
-		});
-		assertTrue(exception.getMessage().contains("mainType and relatedType cannot be same"));
-
 		List<OrderLine> orderLines = sjm.findAll(OrderLine.class);
 		List<Product> products = sjm.findAll(Product.class);
 
@@ -54,26 +35,29 @@ class RelationshipTest {
 		relMapper.addEntityResult(OrderLine.class, orderLines, "orderLineId");
 		relMapper.addEntityResult(Product.class, products, "id");
 
-		Relationship rel = Relationship.type(OrderLine.class).toOne(Employee.class).joinOn("orderLineId", "id")
-				.populate("product");
-		exception = Assertions.assertThrows(Exception.class, () -> {
-			relMapper.assemble(rel);
-		});
-		assertTrue(exception.getMessage().contains("was not part of the query results"));
-	}
-
-	@Test
-	void toMany_relatedObj_test() {
 		Exception exception = Assertions.assertThrows(Exception.class, () -> {
-			Relationship.type(OrderLine.class).toMany(null);
+			relMapper.type(null).toOne(OrderLine.class);
+		});
+		assertTrue(exception.getMessage().contains("type must not be null"));
+
+		exception = Assertions.assertThrows(Exception.class, () -> {
+			relMapper.type(OrderLine.class).toOne(null);
 		});
 		assertTrue(exception.getMessage().contains("relatedType must not be null"));
 
 		exception = Assertions.assertThrows(Exception.class, () -> {
-			Relationship.type(Order.class).toMany(Order.class);
+			relMapper.type(OrderLine.class).toOne(Employee.class);
+		});
+		assertTrue(exception.getMessage().contains("was not part of the query results"));
+
+		exception = Assertions.assertThrows(Exception.class, () -> {
+			relMapper.type(OrderLine.class).toOne(OrderLine.class);
 		});
 		assertTrue(exception.getMessage().contains("mainType and relatedType cannot be same"));
+	}
 
+	@Test
+	void toMany_relatedObj_test() {
 		List<Order> orders = sjm.findAll(Order.class);
 		List<OrderLine> orderLines = sjm.findAll(OrderLine.class);
 
@@ -81,12 +65,20 @@ class RelationshipTest {
 		relMapper.addEntityResult(Order.class, orders, "id");
 		relMapper.addEntityResult(OrderLine.class, orderLines, "orderLineId");
 
-		Relationship rel = Relationship.type(OrderLine.class).toMany(Employee.class).joinOn("orderLineId", "id")
-				.populate("orderLines");
+		Exception exception = Assertions.assertThrows(Exception.class, () -> {
+			relMapper.type(OrderLine.class).toMany(null);
+		});
+		assertTrue(exception.getMessage().contains("relatedType must not be null"));
+
 		exception = Assertions.assertThrows(Exception.class, () -> {
-			relMapper.assemble(rel);
+			relMapper.type(OrderLine.class).toMany(Employee.class);
 		});
 		assertTrue(exception.getMessage().contains("was not part of the query results"));
+
+		exception = Assertions.assertThrows(Exception.class, () -> {
+			relMapper.type(Order.class).toMany(Order.class);
+		});
+		assertTrue(exception.getMessage().contains("mainType and relatedType cannot be same"));
 
 	}
 
@@ -102,14 +94,12 @@ class RelationshipTest {
 		relMapper.addEntityResult(EmployeeSkill.class, employeeSkillList, "id");
 
 		Exception exception = Assertions.assertThrows(Exception.class, () -> {
-			Relationship.type(Employee.class).toMany(Skill.class).through(null, "employeeId", "skillId");
+			relMapper.type(Employee.class).toMany(Skill.class).through(null, "employeeId", "skillId");
 		});
 		assertTrue(exception.getMessage().contains("throughType must not be null"));
 
-		Relationship empToManySkill = Relationship.type(Employee.class).toMany(Skill.class)
-				.through(Order.class, "employeeId", "skillId").populate("skills");
 		exception = Assertions.assertThrows(Exception.class, () -> {
-			relMapper.assemble(empToManySkill);
+			relMapper.type(Employee.class).toMany(Skill.class).through(Order.class, "employeeId", "skillId");
 		});
 		assertTrue(exception.getMessage().contains("was not part of the query results"));
 

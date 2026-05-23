@@ -15,6 +15,7 @@ package io.github.simplejdbcmapper.relationship;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -23,24 +24,28 @@ import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 import io.github.simplejdbcmapper.exception.MapperException;
+import io.github.simplejdbcmapper.relationship.RelationshipMapper.ExtractorEntityResult;
 
 /**
  * This handles the toOne relationship.
  * 
  * @author Antony Joseph
  */
-class ToOne {
+class ToOneLegacy {
+
 	private Class<?> mainType;
 	private Class<?> relatedType;
-	private String mainObjJoinProperty;
-	private String relatedObjJoinProperty;
-	private String mainObjPropertyToPopulate;
+	private List<ExtractorEntityResult> results = new ArrayList<>();
 
-	ToOne(Class<?> mainType, Class<?> relatedType) {
-		Assert.notNull(mainType, "mainType must not be null");
-		Assert.notNull(relatedType, "relatedType must not be null");
+	private Method mainObjJoinPropertyReadMethod;
+	private Method relatedObjJoinPropertyReadMethod;
+
+	private Method mainObjPropertyToPopulateWriteMethod;
+
+	ToOneLegacy(Class<?> mainType, Class<?> relatedType, List<ExtractorEntityResult> results) {
 		this.mainType = mainType;
 		this.relatedType = relatedType;
+		this.results = results;
 	}
 
 	void joinOn(String mainObjJoinProperty, String relatedObjJoinProperty) {
@@ -54,27 +59,32 @@ class ToOne {
 					+ mainType.getSimpleName() + "." + mainObjJoinProperty + " and " + relatedType.getSimpleName() + "."
 					+ relatedObjJoinProperty + " are not the same.");
 		}
-		this.mainObjJoinProperty = mainObjJoinProperty;
-		this.relatedObjJoinProperty = relatedObjJoinProperty;
+
+		this.mainObjJoinPropertyReadMethod = RelationshipMapper.getReadMethod(mainType, mainObjJoinProperty);
+		this.relatedObjJoinPropertyReadMethod = RelationshipMapper.getReadMethod(relatedType, relatedObjJoinProperty);
+
 	}
 
 	void populate(String mainObjPropertyToPopulate) {
 		Assert.notNull(mainObjPropertyToPopulate, "mainObjPropertyToPopulate must not be null");
-		this.mainObjPropertyToPopulate = mainObjPropertyToPopulate;
+		this.mainObjPropertyToPopulateWriteMethod = RelationshipMapper.getWriteMethod(mainType,
+				mainObjPropertyToPopulate);
+
+		processToOne(getList(mainType), getList(relatedType));
 	}
 
-	<T, U> void process(List<T> mainObjList, List<U> relatedObjList) {
+	@SuppressWarnings("unchecked")
+	private <T> List<T> getList(Class<T> type) {
+		ExtractorEntityResult result = RelationshipMapper.getExtractorEntityResult(type, results);
+		return (List<T>) result.list();
+	}
+
+	private <T, U> void processToOne(List<T> mainObjList, List<U> relatedObjList) {
 		if (CollectionUtils.isEmpty(mainObjList) || CollectionUtils.isEmpty(relatedObjList)) {
 			return;
 		}
-		Method mainObjJoinPropertyReadMethod = RelationshipMapper.getReadMethod(mainType, mainObjJoinProperty);
-		Method relatedObjJoinPropertyReadMethod = RelationshipMapper.getReadMethod(relatedType, relatedObjJoinProperty);
-		Method mainObjPropertyToPopulateWriteMethod = RelationshipMapper.getWriteMethod(mainType,
-				mainObjPropertyToPopulate);
-
 		try {
-			Map<Object, U> joinPropToRelatedObjMap = getJoinPropToRelatedObjMap(relatedObjList,
-					relatedObjJoinPropertyReadMethod);
+			Map<Object, U> joinPropToRelatedObjMap = getJoinPropToRelatedObjMap(relatedObjList);
 			for (T mainObj : mainObjList) {
 				if (mainObj != null) {
 					Object mainObjJoinPropertyValue = mainObjJoinPropertyReadMethod.invoke(mainObj);
@@ -92,8 +102,8 @@ class ToOne {
 		}
 	}
 
-	private <U> Map<Object, U> getJoinPropToRelatedObjMap(List<U> relatedObjList,
-			Method relatedObjJoinPropertyReadMethod) throws IllegalAccessException, InvocationTargetException {
+	private <U> Map<Object, U> getJoinPropToRelatedObjMap(List<U> relatedObjList)
+			throws IllegalAccessException, InvocationTargetException {
 		Map<Object, U> joinPropToRelatedObjMap = new HashMap<>();
 		for (U relatedObj : relatedObjList) {
 			if (relatedObj != null) {

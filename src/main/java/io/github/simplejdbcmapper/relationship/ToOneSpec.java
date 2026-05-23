@@ -14,10 +14,11 @@
 package io.github.simplejdbcmapper.relationship;
 
 /**
- * Specification for the ToOne relationship
+ * @deprecated Specification for the ToOne relationship
  * 
  * @author Antony Joseph
  */
+@Deprecated(since = "2.4.0", forRemoval = true)
 public interface ToOneSpec {
 	/**
 	 * The properties on the two lists whose values should be matched to populate

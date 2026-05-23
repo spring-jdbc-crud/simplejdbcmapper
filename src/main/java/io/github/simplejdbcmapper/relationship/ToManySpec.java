@@ -14,10 +14,11 @@
 package io.github.simplejdbcmapper.relationship;
 
 /**
- * Specification for the ToMany relationship
+ * @deprecated Specification for the ToMany relationship
  * 
  * @author Antony Joseph
  */
+@Deprecated(since = "2.4.0", forRemoval = true)
 public interface ToManySpec {
 
 	/**

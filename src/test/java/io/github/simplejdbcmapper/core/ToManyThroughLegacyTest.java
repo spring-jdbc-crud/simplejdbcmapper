@@ -18,12 +18,11 @@ import io.github.simplejdbcmapper.model.EmployeeSkill;
 import io.github.simplejdbcmapper.model.EmployeeSkill2;
 import io.github.simplejdbcmapper.model.EmployeeSkill3;
 import io.github.simplejdbcmapper.model.Skill;
-import io.github.simplejdbcmapper.relationship.Relationship;
 import io.github.simplejdbcmapper.relationship.RelationshipMapper;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-class ToManyThroughTest {
+class ToManyThroughLegacyTest {
 	@Autowired
 	private SimpleJdbcMapper sjm;
 
@@ -39,41 +38,39 @@ class ToManyThroughTest {
 		relMapper.addEntityResult(EmployeeSkill.class, employeeSkillList, "id");
 
 		Exception exception = Assertions.assertThrows(Exception.class, () -> {
-			Relationship.type(Employee.class).toMany(Skill.class).through(EmployeeSkill.class, null, "skillId");
+			relMapper.type(Employee.class).toMany(Skill.class).through(EmployeeSkill.class, null, "skillId");
 		});
 		assertTrue(exception.getMessage().contains("fkPropertyToMainObjId must not be null"));
 
 		exception = Assertions.assertThrows(Exception.class, () -> {
-			Relationship.type(Employee.class).toMany(Skill.class).through(EmployeeSkill.class, "employeeId", null);
+			relMapper.type(Employee.class).toMany(Skill.class).through(EmployeeSkill.class, "employeeId", null);
 		});
 		assertTrue(exception.getMessage().contains("fkPropertyToRelatedObjId must not be null"));
 
 		exception = Assertions.assertThrows(Exception.class, () -> {
-			relMapper.assemble(Relationship.type(Employee.class).toMany(Skill.class)
-					.through(EmployeeSkill.class, "x", "skillId").populate("skills"));
+			relMapper.type(Employee.class).toMany(Skill.class).through(EmployeeSkill.class, "x", "skillId");
 		});
 		assertTrue(exception.getMessage().contains("does not exist for"));
 
 		exception = Assertions.assertThrows(Exception.class, () -> {
-			relMapper.assemble(Relationship.type(Employee.class).toMany(Skill.class)
-					.through(EmployeeSkill.class, "employeeId", "x").populate("skills"));
+			relMapper.type(Employee.class).toMany(Skill.class).through(EmployeeSkill.class, "employeeId", "x");
 		});
 		assertTrue(exception.getMessage().contains("does not exist for"));
 
 		exception = Assertions.assertThrows(Exception.class, () -> {
-			Relationship.type(Employee.class).toMany(Skill.class).through(Employee.class, "employeeId", "skillId");
+			relMapper.type(Employee.class).toMany(Skill.class).through(Employee.class, "employeeId", "skillId");
 		});
 		assertTrue(exception.getMessage().contains("throughType cannot be same as mainType or relatedType"));
 
 		exception = Assertions.assertThrows(Exception.class, () -> {
-			Relationship.type(Employee.class).toMany(Skill.class).through(Skill.class, "employeeId", "skillId");
+			relMapper.type(Employee.class).toMany(Skill.class).through(Skill.class, "employeeId", "skillId");
 		});
 		assertTrue(exception.getMessage().contains("throughType cannot be same as mainType or relatedType"));
 
 	}
 
 	@Test
-	void toManythrough_setProperty_validation_test() {
+	void toManythrough_populate_validation_test() {
 		List<Employee> employees = sjm.findAll(Employee.class);
 		List<Skill> skills = sjm.findAll(Skill.class);
 		List<EmployeeSkill> employeeSkillList = sjm.findAll(EmployeeSkill.class);
@@ -84,21 +81,21 @@ class ToManyThroughTest {
 		relMapper.addEntityResult(EmployeeSkill.class, employeeSkillList, "id");
 
 		Exception exception = Assertions.assertThrows(Exception.class, () -> {
-			relMapper.assemble(Relationship.type(Employee.class).toMany(Skill.class)
-					.through(EmployeeSkill.class, "employeeId", "skillId").populate(null));
+			relMapper.type(Employee.class).toMany(Skill.class).through(EmployeeSkill.class, "employeeId", "skillId")
+					.populate(null);
 		});
 		assertTrue(exception.getMessage().contains("mainObjPropertyToPopulate must not be null"));
 
 		exception = Assertions.assertThrows(Exception.class, () -> {
-			relMapper.assemble(Relationship.type(Employee.class).toMany(Skill.class)
-					.through(EmployeeSkill.class, "employeeId", "skillId").populate("x"));
+			relMapper.type(Employee.class).toMany(Skill.class).through(EmployeeSkill.class, "employeeId", "skillId")
+					.populate("x");
 		});
 		assertTrue(exception.getMessage().contains("Invalid argument. Property name"));
 
 		// type mismatch ie property exits but of different type
 		exception = Assertions.assertThrows(Exception.class, () -> {
-			relMapper.assemble(Relationship.type(Employee.class).toMany(Skill.class)
-					.through(EmployeeSkill.class, "employeeId", "skillId").populate("lastName"));
+			relMapper.type(Employee.class).toMany(Skill.class).through(EmployeeSkill.class, "employeeId", "skillId")
+					.populate("lastName");
 		});
 		assertTrue(exception.getMessage().contains("argument type mismatch"));
 
@@ -121,10 +118,8 @@ class ToManyThroughTest {
 
 		RelationshipMapper relMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 
-		Relationship empToManySkills = Relationship.type(Employee.class).toMany(Skill.class)
-				.through(EmployeeSkill.class, "employeeId", "skillId").populate("skills");
-
-		List<Employee> employees = relMapper.assemble(empToManySkills).getList(Employee.class);
+		List<Employee> employees = relMapper.type(Employee.class).toMany(Skill.class)
+				.through(EmployeeSkill.class, "employeeId", "skillId").populate("skills").getList(Employee.class);
 
 		assertEquals(4, employees.size());
 		assertEquals(2, employees.get(0).getSkills().size(), "emp 1 size failed");
@@ -163,10 +158,8 @@ class ToManyThroughTest {
 		List<Skill> skills = relMapper.getList(Skill.class);
 		skills.add(2, null);
 
-		employees = relMapper
-				.assemble(Relationship.type(Employee.class).toMany(Skill.class)
-						.through(EmployeeSkill.class, "employeeId", "skillId").populate("skills"))
-				.getList(Employee.class);
+		relMapper.type(Employee.class).toMany(Skill.class).through(EmployeeSkill.class, "employeeId", "skillId")
+				.populate("skills");
 
 		assertEquals("ruby", employees.get(3).getSkills().get(2).getName());
 
@@ -196,10 +189,8 @@ class ToManyThroughTest {
 		List<Skill> skills = relMapper.getList(Skill.class);
 		skills.add(2, new Skill());
 
-		employees = relMapper
-				.assemble(Relationship.type(Employee.class).toMany(Skill.class)
-						.through(EmployeeSkill.class, "employeeId", "skillId").populate("skills"))
-				.getList(Employee.class);
+		relMapper.type(Employee.class).toMany(Skill.class).through(EmployeeSkill.class, "employeeId", "skillId")
+				.populate("skills");
 
 		assertEquals("ruby", employees.get(3).getSkills().get(2).getName());
 
@@ -229,15 +220,10 @@ class ToManyThroughTest {
 		assertEquals(0, employeeSkillList.size());
 		assertEquals(0, skills.size());
 
-		Relationship empToManySkills = Relationship.type(Employee.class).toMany(Skill.class)
-				.through(EmployeeSkill.class, "employeeId", "skillId").populate("skills");
 		assertDoesNotThrow(() -> {
-			relMapper.assemble(empToManySkills);
+			relMapper.type(Employee.class).toMany(Skill.class).through(EmployeeSkill.class, "employeeId", "skillId")
+					.populate("skills");
 		});
-
-		employees = relMapper.assemble(empToManySkills).getList(Employee.class);
-
-		assertEquals(0, employees.size());
 
 	}
 
@@ -258,10 +244,8 @@ class ToManyThroughTest {
 		RelationshipMapper relMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 
 		Exception exception = Assertions.assertThrows(Exception.class, () -> {
-			relMapper
-					.assemble(Relationship.type(Employee.class).toMany(Skill.class)
-							.through(EmployeeSkill2.class, "employeeId", "skillId").populate("skills"))
-					.getList(Employee.class);
+			relMapper.type(Employee.class).toMany(Skill.class).through(EmployeeSkill2.class, "employeeId", "skillId")
+					.populate("skills").getList(Employee.class);
 		});
 
 		assertTrue(exception.getMessage().contains("Conflicting property types"));
@@ -285,10 +269,8 @@ class ToManyThroughTest {
 		RelationshipMapper relMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 
 		Exception exception = Assertions.assertThrows(Exception.class, () -> {
-			relMapper
-					.assemble(Relationship.type(Employee.class).toMany(Skill.class)
-							.through(EmployeeSkill3.class, "employeeId", "skillId").populate("skills"))
-					.getList(Employee.class);
+			relMapper.type(Employee.class).toMany(Skill.class).through(EmployeeSkill3.class, "employeeId", "skillId")
+					.populate("skills").getList(Employee.class);
 		});
 
 		assertTrue(exception.getMessage().contains("Conflicting property types"));

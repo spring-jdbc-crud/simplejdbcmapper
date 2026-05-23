@@ -24,24 +24,29 @@ import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
 import io.github.simplejdbcmapper.exception.MapperException;
+import io.github.simplejdbcmapper.relationship.RelationshipMapper.ExtractorEntityResult;
 
 /**
  * This handles the toMany relationship.
  * 
  * @author Antony Joseph
  */
-class ToMany {
+class ToManyLegacy {
+
+	private Method mainObjIdPropertyReadMethod;
+
+	private Method relatedObjFkPropertyReadMethod;
+
+	private Method mainObjPropertyToPopulateWriteMethod;
+
 	private Class<?> mainType;
 	private Class<?> relatedType;
-	private String mainObjIdProperty;
-	private String relatedObjFkProperty;
-	private String mainObjPropertyToPopulate;
+	private List<ExtractorEntityResult> results = new ArrayList<>();
 
-	ToMany(Class<?> mainType, Class<?> relatedType) {
-		Assert.notNull(mainType, "mainType must not be null");
-		Assert.notNull(relatedType, "relatedType must not be null");
+	ToManyLegacy(Class<?> mainType, Class<?> relatedType, List<ExtractorEntityResult> results) {
 		this.mainType = mainType;
 		this.relatedType = relatedType;
+		this.results = results;
 	}
 
 	void joinOn(String mainObjIdProperty, String relatedObjFkProperty) {
@@ -55,26 +60,26 @@ class ToMany {
 					+ mainType.getSimpleName() + "." + mainObjIdProperty + " and " + relatedType.getSimpleName() + "."
 					+ relatedObjFkProperty + " are not the same.");
 		}
-		this.mainObjIdProperty = mainObjIdProperty;
-		this.relatedObjFkProperty = relatedObjFkProperty;
+		this.mainObjIdPropertyReadMethod = RelationshipMapper.getReadMethod(mainType, mainObjIdProperty);
+		this.relatedObjFkPropertyReadMethod = RelationshipMapper.getReadMethod(relatedType, relatedObjFkProperty);
 	}
 
 	void populate(String mainObjPropertyToPopulate) {
 		Assert.notNull(mainObjPropertyToPopulate, "mainObjPropertyToPopulate must not be null");
-		this.mainObjPropertyToPopulate = mainObjPropertyToPopulate;
+		this.mainObjPropertyToPopulateWriteMethod = RelationshipMapper.getWriteMethod(mainType,
+				mainObjPropertyToPopulate);
+
+		List<?> mainList = RelationshipMapper.getList(mainType, results);
+		List<?> relatedList = RelationshipMapper.getList(relatedType, results);
+		processToMany(mainList, relatedList);
 	}
 
-	<T, U> void process(List<T> mainObjList, List<U> relatedObjList) {
+	private <T, U> void processToMany(List<T> mainObjList, List<U> relatedObjList) {
 		if (CollectionUtils.isEmpty(mainObjList) || CollectionUtils.isEmpty(relatedObjList)) {
 			return;
 		}
-		Method mainObjIdPropertyReadMethod = RelationshipMapper.getReadMethod(mainType, mainObjIdProperty);
-		Method relatedObjFkPropertyReadMethod = RelationshipMapper.getReadMethod(relatedType, relatedObjFkProperty);
-		Method mainObjPropertyToPopulateWriteMethod = RelationshipMapper.getWriteMethod(mainType,
-				mainObjPropertyToPopulate);
 		try {
-			Map<Object, List<U>> fkToRelatedObjListMap = getFkToRelatedObjListMap(relatedObjList,
-					relatedObjFkPropertyReadMethod);
+			Map<Object, List<U>> fkToRelatedObjListMap = getFkToRelatedObjListMap(relatedObjList);
 			for (T mainObj : mainObjList) {
 				if (mainObj != null) {
 					Object mainObjIdPropertyValue = mainObjIdPropertyReadMethod.invoke(mainObj);
@@ -95,8 +100,8 @@ class ToMany {
 		}
 	}
 
-	private <U> Map<Object, List<U>> getFkToRelatedObjListMap(List<U> relatedObjList,
-			Method relatedObjFkPropertyReadMethod) throws IllegalAccessException, InvocationTargetException {
+	private <U> Map<Object, List<U>> getFkToRelatedObjListMap(List<U> relatedObjList)
+			throws IllegalAccessException, InvocationTargetException {
 		// relatedObjFk - List of relatedObj
 		Map<Object, List<U>> foreignKeyToListMap = new HashMap<>();
 		for (U relatedObj : relatedObjList) {

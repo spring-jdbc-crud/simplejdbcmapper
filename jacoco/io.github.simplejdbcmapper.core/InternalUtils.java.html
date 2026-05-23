@@ -30,12 +30,12 @@ import io.github.simplejdbcmapper.exception.MapperException;
  * @author Antony Joseph
  */
 class InternalUtils {
-	public static Integer javaTypeToSqlParameterType(Class&lt;?&gt; entityType) {
-<span class="fc bfc" id="L34" title="All 2 branches covered.">		if (entityType.isEnum()) {</span>
+	public static Integer javaTypeToSqlParameterType(Class&lt;?&gt; type) {
+<span class="fc bfc" id="L34" title="All 2 branches covered.">		if (type.isEnum()) {</span>
 <span class="fc" id="L35">			return Types.VARCHAR;</span>
 		} else {
 			// use springs default mappings.
-<span class="fc" id="L38">			return StatementCreatorUtils.javaTypeToSqlParameterType(entityType);</span>
+<span class="fc" id="L38">			return StatementCreatorUtils.javaTypeToSqlParameterType(type);</span>
 		}
 	}
 
@@ -114,4 +114,4 @@ class InternalUtils {
 	private InternalUtils() {
 	}
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 2d4e82f300b9672bec1a98a1e6f5baaffcc26b6f 2026-05-20T11:14:36</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 795bb68310f654df8cf568750ecacbafd1dc06bf 2026-05-23T20:35:32</div></body></html>

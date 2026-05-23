@@ -82,8 +82,7 @@ class ToOneTest {
 		relMapper.addEntityResult(ProfileUserIdLong.class, profiles, "id");
 
 		Exception exception = Assertions.assertThrows(Exception.class, () -> {
-			Relationship.type(User.class).toOne(ProfileUserIdLong.class).joinOn("id", "userId")
-					.populate("profile");
+			Relationship.type(User.class).toOne(ProfileUserIdLong.class).joinOn("id", "userId").populate("profile");
 		});
 		assertTrue(exception.getMessage().contains("Conflicting property types."));
 
@@ -104,9 +103,11 @@ class ToOneTest {
 		assertTrue(exception.getMessage().contains("mainObjPropertyToPopulate must not be null"));
 
 		exception = Assertions.assertThrows(Exception.class, () -> {
-			relMapper.type(OrderLine.class).toOne(Product.class).joinOn("productId", "id").populate("x");
+			Relationship.type(OrderLine.class).toOne(Product.class).joinOn("productId", "id").populate("x");
 		});
 		assertTrue(exception.getMessage().contains("Invalid argument. Property name"));
+
+		Relationship.type(OrderLine.class).toOne(Product.class).joinOn("productId", "id").populate("product");
 
 	}
 
@@ -290,8 +291,7 @@ class ToOneTest {
 		assertEquals("theme for user2", users.get(2).getProfile().getTheme());
 
 		// reverse test ie populate profile with user
-		relMapper.assemble(
-				Relationship.type(Profile.class).toOne(User.class).joinOn("userId", "id").populate("user"));
+		relMapper.assemble(Relationship.type(Profile.class).toOne(User.class).joinOn("userId", "id").populate("user"));
 		assertEquals("user1", profiles.get(1).getUser().getName());
 
 	}

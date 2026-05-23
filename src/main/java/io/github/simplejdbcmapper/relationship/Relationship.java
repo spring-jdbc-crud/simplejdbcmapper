@@ -33,8 +33,7 @@ import org.springframework.util.Assert;
  * 
  * @author Antony Joseph
  */
-public class Relationship implements RelationshipBuilder.RelationshipType, RelationshipBuilder.ToOne,
-		RelationshipBuilder.ToMany, RelationshipBuilder.Populate {
+public class Relationship {
 	private Class<?> mainType;
 	private Class<?> relatedType;
 	private Class<?> throughType;
@@ -43,65 +42,20 @@ public class Relationship implements RelationshipBuilder.RelationshipType, Relat
 	private ToManyThrough toManyThrough;
 	private String relationshipType;
 
-	private Relationship(Class<?> mainType) {
+	Relationship(Class<?> mainType, Class<?> relatedType, Class<?> throughType, ToOne toOne, ToMany toMany,
+			ToManyThrough toManyThrough, String relationshipType) {
 		this.mainType = mainType;
-	}
-
-	public static RelationshipBuilder.RelationshipType type(Class<?> type) {
-		Assert.notNull(type, "type must not be null");
-		return new Relationship(type);
-	}
-
-	public RelationshipBuilder.ToOne toOne(Class<?> relatedType) {
-		Assert.notNull(relatedType, "relatedType must not be null");
-		if (mainType == relatedType) {
-			throw new IllegalArgumentException("mainType and relatedType cannot be same.");
-		}
 		this.relatedType = relatedType;
-		this.relationshipType = RelationshipMapper.TO_ONE;
-		this.toOne = new ToOne(mainType, relatedType);
-		return this;
-	}
-
-	public RelationshipBuilder.ToMany toMany(Class<?> relatedType) {
-		Assert.notNull(relatedType, "relatedType must not be null");
-		if (mainType == relatedType) {
-			throw new IllegalArgumentException("mainType and relatedType cannot be same.");
-		}
-		this.relatedType = relatedType;
-		this.relationshipType = RelationshipMapper.TO_MANY;
-		this.toMany = new ToMany(mainType, relatedType);
-		return this;
-	}
-
-	public RelationshipBuilder.Populate joinOn(String mainObjJoinProperty, String relatedObjJoinProperty) {
-		if (relationshipType.equals(RelationshipMapper.TO_ONE)) {
-			toOne.joinOn(mainObjJoinProperty, relatedObjJoinProperty);
-		} else if (relationshipType.equals(RelationshipMapper.TO_MANY)) {
-			toMany.joinOn(mainObjJoinProperty, relatedObjJoinProperty);
-		}
-		return this;
-	}
-
-	public RelationshipBuilder.Populate through(Class<?> throughType, String fkPropertyToMainObjId,
-			String fkPropertyToRelatedObjId) {
 		this.throughType = throughType;
-		this.relationshipType = RelationshipMapper.TO_MANY_THROUGH;
-		this.toManyThrough = new ToManyThrough(mainType, relatedType);
-		toManyThrough.through(throughType, fkPropertyToMainObjId, fkPropertyToRelatedObjId);
-		return this;
+		this.toOne = toOne;
+		this.toMany = toMany;
+		this.toManyThrough = toManyThrough;
+		this.relationshipType = relationshipType;
 	}
 
-	public Relationship populate(String mainObjPropertyToPopulate) {
-		if (relationshipType.equals(RelationshipMapper.TO_ONE)) {
-			toOne.populate(mainObjPropertyToPopulate);
-		} else if (relationshipType.equals(RelationshipMapper.TO_MANY)) {
-			toMany.populate(mainObjPropertyToPopulate);
-		} else {
-			// toManyThrough
-			toManyThrough.populate(mainObjPropertyToPopulate);
-		}
-		return this;
+	public static RelationshipFluent.RelationshipType type(Class<?> type) {
+		Assert.notNull(type, "type must not be null");
+		return new RelationshipFluentx(type);
 	}
 
 	Class<?> getMainType() {
@@ -135,6 +89,74 @@ public class Relationship implements RelationshipBuilder.RelationshipType, Relat
 	@Override
 	public String toString() {
 		return mainType.getSimpleName() + " " + relationshipType + " " + relatedType.getSimpleName();
+	}
+
+	private static class RelationshipFluentx implements RelationshipFluent.RelationshipType, RelationshipFluent.ToOne,
+			RelationshipFluent.ToMany, RelationshipFluent.Populate {
+		private Class<?> mainType;
+		private Class<?> relatedType;
+		private Class<?> throughType;
+		private ToOne toOne;
+		private ToMany toMany;
+		private ToManyThrough toManyThrough;
+		private String relationshipType;
+
+		public RelationshipFluentx(Class<?> mainType) {
+			this.mainType = mainType;
+		}
+
+		public RelationshipFluent.ToOne toOne(Class<?> relatedType) {
+			Assert.notNull(relatedType, "relatedType must not be null");
+			if (mainType == relatedType) {
+				throw new IllegalArgumentException("mainType and relatedType cannot be same.");
+			}
+			this.relatedType = relatedType;
+			this.relationshipType = RelationshipMapper.TO_ONE;
+			this.toOne = new ToOne(mainType, relatedType);
+			return this;
+		}
+
+		public RelationshipFluent.ToMany toMany(Class<?> relatedType) {
+			Assert.notNull(relatedType, "relatedType must not be null");
+			if (mainType == relatedType) {
+				throw new IllegalArgumentException("mainType and relatedType cannot be same.");
+			}
+			this.relatedType = relatedType;
+			this.relationshipType = RelationshipMapper.TO_MANY;
+			this.toMany = new ToMany(mainType, relatedType);
+			return this;
+		}
+
+		public RelationshipFluent.Populate joinOn(String mainObjJoinProperty, String relatedObjJoinProperty) {
+			if (relationshipType.equals(RelationshipMapper.TO_ONE)) {
+				toOne.joinOn(mainObjJoinProperty, relatedObjJoinProperty);
+			} else if (relationshipType.equals(RelationshipMapper.TO_MANY)) {
+				toMany.joinOn(mainObjJoinProperty, relatedObjJoinProperty);
+			}
+			return this;
+		}
+
+		public RelationshipFluent.Populate through(Class<?> throughType, String fkPropertyToMainObjId,
+				String fkPropertyToRelatedObjId) {
+			this.throughType = throughType;
+			this.relationshipType = RelationshipMapper.TO_MANY_THROUGH;
+			this.toManyThrough = new ToManyThrough(mainType, relatedType);
+			toManyThrough.through(throughType, fkPropertyToMainObjId, fkPropertyToRelatedObjId);
+			return this;
+		}
+
+		public Relationship populate(String mainObjPropertyToPopulate) {
+			if (relationshipType.equals(RelationshipMapper.TO_ONE)) {
+				toOne.populate(mainObjPropertyToPopulate);
+			} else if (relationshipType.equals(RelationshipMapper.TO_MANY)) {
+				toMany.populate(mainObjPropertyToPopulate);
+			} else {
+				// toManyThrough
+				toManyThrough.populate(mainObjPropertyToPopulate);
+			}
+			return new Relationship(mainType, relatedType, throughType, toOne, toMany, toManyThrough, relationshipType);
+		}
+
 	}
 
 }

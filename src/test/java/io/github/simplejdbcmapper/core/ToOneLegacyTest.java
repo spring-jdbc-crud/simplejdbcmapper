@@ -57,6 +57,8 @@ class ToOneLegacyTest {
 		});
 		assertTrue(exception.getMessage().contains("does not exist for"));
 
+		relMapper.type(OrderLine.class).toOne(Product.class).joinOn("orderLineId", "x").populate("abc");
+
 	}
 
 	@Test

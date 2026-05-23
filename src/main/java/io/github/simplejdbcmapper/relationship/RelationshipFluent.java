@@ -14,7 +14,7 @@
 package io.github.simplejdbcmapper.relationship;
 
 /**
- * The relationship fluent interface.
+ * The relationship fluent api interface.
  */
 public interface RelationshipFluent {
 	/**

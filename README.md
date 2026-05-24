@@ -474,7 +474,7 @@ An implementation of the relationship examples below and other features of the l
       ORDER BY o.order_date DESC, ol.id
       """.formatted(sjm.getMultiEntitySqlColumns(multiEntity));
       
-  // Use JdbcTemplate with the library's ResulSetExtractor to execute the query and get the results.
+  // Use JdbcTemplate with the library's ResultSetExtractor to execute the query. RelationshipMapper holds the query results.
   RelationshipMapper relationshipMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity), someAmount);
   
   // Define the toOne relationship between OrderLine and Product.
@@ -503,7 +503,7 @@ An implementation of the relationship examples below and other features of the l
       ORDER BY emp.id, s.id
   """.formatted(sjm.getMultiEntitySqlColumns(multiEntity));
  
-    // Use JdbcTemplate with the library's ResulSetExtractor to execute the query and get the results.
+    // Use JdbcTemplate with the library's ResultSetExtractor to execute the query. RelationshipMapper holds the query results.
     RelationshipMapper relationshipMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
     
     // Define the toMany relationship between Employee and Skill through the intermediate class EmployeeSkill.
@@ -547,6 +547,7 @@ From the results of these 2 queries the relationships can be assembled.
       
   // Create the named parameter
   MapSqlParameterSource param = new MapSqlParameterSource().addValue("orderIds", orderIds);
+  
   // Since its a named parameter query use NamedParameterJdbcTemplate.
   RelationshipMapper relationshipMapper = sjm.getNamedParameterJdbcTemplate().query(sql, param, sjm.resultSetExtractor(multiEntity));
 

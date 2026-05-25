@@ -34,13 +34,13 @@ import org.springframework.util.Assert;
  * @author Antony Joseph
  */
 public class Relationship {
-	private Class&lt;?&gt; mainType;
-	private Class&lt;?&gt; relatedType;
-	private Class&lt;?&gt; throughType;
-	private ToOne toOne;
-	private ToMany toMany;
-	private ToManyThrough toManyThrough;
-	private String relationshipType;
+	private final Class&lt;?&gt; mainType;
+	private final Class&lt;?&gt; relatedType;
+	private final Class&lt;?&gt; throughType;
+	private final ToOne toOne;
+	private final ToMany toMany;
+	private final ToManyThrough toManyThrough;
+	private final String relationshipType;
 
 <span class="fc" id="L45">	Relationship(RelationshipBuilder builder) {</span>
 <span class="fc" id="L46">		this.mainType = builder.mainType;</span>
@@ -165,4 +165,4 @@ public class Relationship {
 	}
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 8a4873a955ec74c1088c8d48e59f8033f00bc7ae 2026-05-23T20:55:56</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main e895e705302c6c5f2ed3321be75ddbc0757e0fe8 2026-05-25T12:29:11</div></body></html>

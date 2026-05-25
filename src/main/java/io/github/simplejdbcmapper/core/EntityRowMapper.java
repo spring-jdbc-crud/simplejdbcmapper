@@ -42,6 +42,10 @@ import io.github.simplejdbcmapper.exception.MapperException;
  * {@link io.github.simplejdbcmapper.core.SimpleJdbcMapper#getEntitySqlColumns(Class<?> entityType, String tableAlias)}
  * </pre>
  * 
+ * <b>Do not modify the generated sql columns</b>. EntityRowMapper expects the
+ * sql columns to be exactly in a specific order since it uses position indexes
+ * to retrieve the data from the query ResultSet.
+ * 
  * <p>
  * It expects the sql columns to be exactly in a specific order because it uses
  * position indexes to retrieve the data from the query ResultSet. It will

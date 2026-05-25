@@ -311,12 +311,13 @@ public final class SimpleJdbcMapper {
 
 	/**
 	 * Gets the sql columns that works with EntityRowMapper. EntityRowMapper expects
-	 * the sql columns to be exactly in a specific order because it uses position
-	 * indexes to retrieve the data from the query ResultSet
+	 * the sql columns to be exactly in a specific order since it uses position
+	 * indexes to retrieve the data from the query ResultSet. <b>Do not modify the
+	 * generated sql columns</b>.
 	 * <p>
 	 * Always use this method (or its overloaded method
-	 * getEntitySqlColumns({@code Class<?>} entityType, String tableAlias) to create
-	 * your custom query columns when using EntityRowMapper.
+	 * {@link #getEntitySqlColumns(Class<?> entityType, String tableAlias)}) to
+	 * create your custom query columns when using EntityRowMapper.
 	 * {@link io.github.simplejdbcmapper.core.EntityRowMapper} will handle the
 	 * column to property mapping.
 	 * 
@@ -337,13 +338,15 @@ public final class SimpleJdbcMapper {
 	/**
 	 * Gets the sql columns with table aliases that works with EntityRowMapper.
 	 * EntityRowMapper expects the sql columns to be exactly in a specific order
-	 * because it uses position indexes to retrieve the data from the query
-	 * ResultSet
+	 * since it uses position indexes to retrieve the data from the query ResultSet.
+	 * <b>Do not modify the generated sql columns</b>.
 	 * <p>
 	 * Always use this method (or its overloaded method
-	 * getEntitySqlColumns({@code Class<?>} entityType) to create your custom query
-	 * columns when using EntityRowMapper. EntityRowMapper will handle the column to
-	 * property mapping.
+	 * {@link #getEntitySqlColumns(Class<?> entityType)}) to create your custom
+	 * query columns when using EntityRowMapper. create your custom query columns
+	 * when using EntityRowMapper.
+	 * {@link io.github.simplejdbcmapper.core.EntityRowMapper} will handle the
+	 * column to property mapping.
 	 * <p>
 	 * Use it in your custom queries when you are doing joins and need columns
 	 * corresponding to a table alias.
@@ -353,6 +356,8 @@ public final class SimpleJdbcMapper {
 	 * <pre>
 	 * "t1.somecolumn, t1.someothercolumn, t1.last_name"
 	 * </pre>
+	 * 
+	 * Its good practice to keep the table aliases short and succinct.
 	 * 
 	 * See {@link #newEntityRowMapper}
 	 * 
@@ -366,8 +371,11 @@ public final class SimpleJdbcMapper {
 	}
 
 	/**
-	 * Gets the sql columns for multi-entity processing.
-	 * 
+	 * Gets the sql columns for multi-entity processing. These sql columns are used
+	 * with the ResultSetExtractor and <b>should not be modified</b> since the
+	 * extractor uses position indexes to retrieve the data from the query
+	 * ResultSet.
+	 * <p>
 	 * For the following multi-entity:
 	 * 
 	 * <pre>
@@ -377,24 +385,28 @@ public final class SimpleJdbcMapper {
 	 * this will generate sql columns like below:
 	 * 
 	 * <pre>
-	 * o.id AS o_id, o.order_date AS o_order_date, ol.id AS ol_id, ol.product_id AS
-	 * ol_product_id  ...
+	 * o.id, o.order_date, ol.id, ol.product_id ...
 	 * </pre>
 	 * 
-	 * It's good practice to keep the table aliases short and succinct.
+	 * Its good practice to keep the table aliases short and succinct.
+	 * 
+	 * See {@link #resultSetExtractor}
 	 * 
 	 * @param multiEntity the MultiEntity
 	 * @return sql columns string
 	 */
 	public String getMultiEntitySqlColumns(MultiEntity multiEntity) {
-		return multiEntityExtractor.getMultiEntitySqlColumns(multiEntity);
+		return findOperation.getMultiEntitySqlColumns(multiEntity);
 	}
 
 	/**
-	 * The ResultSeExtractor for multiple entities. The results are returned in
+	 * The ResultSetExtractor for multiple entities. The results are returned in
 	 * {@link io.github.simplejdbcmapper.relationship.RelationshipMapper}. It
 	 * expects the sql columns to <b>always</b> be generated using
-	 * {@link #getMultiEntitySqlColumns}.
+	 * {@link #getMultiEntitySqlColumns}. The sql columns need to be exactly in a
+	 * specific order since it uses position indexes to retrieve the data from the
+	 * query ResultSet. <b>Do not modify the generated sql columns</b>.
+	 * 
 	 * <p>
 	 * From the query ResultSet a result list is created for each entity. The list
 	 * for each entity will be <b>Unique by ID</b>.

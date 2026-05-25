@@ -171,7 +171,7 @@ class FindOperation {
 		if (columnsSql == null) {
 			String tablePrefix = tableAlias + ".";
 			TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
-			StringJoiner sj = new StringJoiner(", ", " ", " ");
+			StringJoiner sj = new StringJoiner(", ");
 			for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {
 				sj.add(tablePrefix + propMapping.getColumnName());
 			}
@@ -179,6 +179,20 @@ class FindOperation {
 			entitySqlColumnsAliasCache.put(cacheKey, columnsSql);
 		}
 		return columnsSql;
+	}
+
+	public String getMultiEntitySqlColumns(MultiEntity multiEntity) {
+		Assert.notNull(multiEntity, "multiEntity must not be null");
+		StringBuffer sb = new StringBuffer(256);
+		int cnt = 0;
+		for (Map.Entry<Class<?>, String> entry : multiEntity.getEntries()) {
+			if (cnt > 0) {
+				sb.append(", ");
+			}
+			sb.append(getEntitySqlColumns(entry.getKey(), entry.getValue()));
+			cnt++;
+		}
+		return sb.toString();
 	}
 
 	public <T> EntityRowMapper<T> newEntityRowMapper(Class<T> entityType) {

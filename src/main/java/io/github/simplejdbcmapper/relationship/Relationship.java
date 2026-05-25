@@ -34,13 +34,13 @@ import org.springframework.util.Assert;
  * @author Antony Joseph
  */
 public class Relationship {
-	private Class<?> mainType;
-	private Class<?> relatedType;
-	private Class<?> throughType;
-	private ToOne toOne;
-	private ToMany toMany;
-	private ToManyThrough toManyThrough;
-	private String relationshipType;
+	private final Class<?> mainType;
+	private final Class<?> relatedType;
+	private final Class<?> throughType;
+	private final ToOne toOne;
+	private final ToMany toMany;
+	private final ToManyThrough toManyThrough;
+	private final String relationshipType;
 
 	Relationship(RelationshipBuilder builder) {
 		this.mainType = builder.mainType;

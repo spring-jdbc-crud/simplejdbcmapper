@@ -21,7 +21,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.StringJoiner;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -43,24 +42,6 @@ class MultiEntityExtractor {
 
 	public MultiEntityExtractor(SimpleJdbcMapperSupport sjmSupport) {
 		this.sjmSupport = sjmSupport;
-	}
-
-	public String getMultiEntitySqlColumns(MultiEntity multiEntity) {
-		StringBuilder sb = new StringBuilder(64);
-		StringJoiner sj = new StringJoiner(", ", " ", " ");
-		for (Map.Entry<Class<?>, String> entry : multiEntity.getEntries()) {
-			String tableAlias = entry.getValue();
-			String tablePrefix = tableAlias + ".";
-			String colPrefix = tableAlias + "_";
-			TableMapping tableMapping = sjmSupport.getTableMapping(entry.getKey());
-			for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {
-				sb.append(tablePrefix).append(propMapping.getColumnName()).append(" AS ").append(colPrefix)
-						.append(propMapping.getColumnName());
-				sj.add(sb);
-				sb.setLength(0);
-			}
-		}
-		return sj.toString();
 	}
 
 	public ResultSetExtractor<RelationshipMapper> resultSetExtractor(MultiEntity multiEntity) {

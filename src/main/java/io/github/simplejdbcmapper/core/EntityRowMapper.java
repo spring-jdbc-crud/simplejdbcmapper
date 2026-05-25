@@ -43,14 +43,12 @@ import io.github.simplejdbcmapper.exception.MapperException;
  * </pre>
  * 
  * <b>Do not modify the generated sql columns</b>. EntityRowMapper expects the
- * sql columns to be exactly in a specific order since it uses position indexes
- * to retrieve the data from the query ResultSet.
+ * sql columns to be in a specific order since it uses position indexes to
+ * retrieve the data from the query ResultSet.
  * 
  * <p>
- * It expects the sql columns to be exactly in a specific order because it uses
- * position indexes to retrieve the data from the query ResultSet. It will
- * handle the cases where the column to property mappings do not follow the
- * underscore to camel case naming convention.
+ * It will handle the cases where the column to property mappings do not follow
+ * the underscore to camel case naming convention.
  * 
  * <p>
  * This is the recommended row mapper to use when writing custom queries for

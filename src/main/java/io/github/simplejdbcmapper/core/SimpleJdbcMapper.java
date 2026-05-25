@@ -266,10 +266,10 @@ public final class SimpleJdbcMapper {
 	 * </pre>
 	 * 
 	 * <p>
-	 * It expects the sql columns to be exactly in a specific order because it uses
-	 * position indexes to retrieve the data from the query ResultSet. It will
-	 * handle the cases where the column to property mappings do not follow the
-	 * underscore to camel case naming convention.
+	 * It expects the sql columns to be in a specific order because it uses position
+	 * indexes to retrieve the data from the query ResultSet. It will handle the
+	 * cases where the column to property mappings do not follow the underscore to
+	 * camel case naming convention.
 	 * 
 	 * <p>
 	 * This is the recommended row mapper to use when writing custom queries for
@@ -311,9 +311,9 @@ public final class SimpleJdbcMapper {
 
 	/**
 	 * Gets the sql columns that works with EntityRowMapper. EntityRowMapper expects
-	 * the sql columns to be exactly in a specific order since it uses position
-	 * indexes to retrieve the data from the query ResultSet. <b>Do not modify the
-	 * generated sql columns</b>.
+	 * the sql columns to be in a specific order since it uses position indexes to
+	 * retrieve the data from the query ResultSet. <b>Do not modify the generated
+	 * sql columns</b>.
 	 * <p>
 	 * Always use this method (or its overloaded method
 	 * {@link #getEntitySqlColumns(Class<?> entityType, String tableAlias)}) to
@@ -337,9 +337,9 @@ public final class SimpleJdbcMapper {
 
 	/**
 	 * Gets the sql columns with table aliases that works with EntityRowMapper.
-	 * EntityRowMapper expects the sql columns to be exactly in a specific order
-	 * since it uses position indexes to retrieve the data from the query ResultSet.
-	 * <b>Do not modify the generated sql columns</b>.
+	 * EntityRowMapper expects the sql columns to be in a specific order since it
+	 * uses position indexes to retrieve the data from the query ResultSet. <b>Do
+	 * not modify the generated sql columns</b>.
 	 * <p>
 	 * Always use this method (or its overloaded method
 	 * {@link #getEntitySqlColumns(Class<?> entityType)}) to create your custom
@@ -403,9 +403,9 @@ public final class SimpleJdbcMapper {
 	 * The ResultSetExtractor for multiple entities. The results are returned in
 	 * {@link io.github.simplejdbcmapper.relationship.RelationshipMapper}. It
 	 * expects the sql columns to <b>always</b> be generated using
-	 * {@link #getMultiEntitySqlColumns}. The sql columns need to be exactly in a
-	 * specific order since it uses position indexes to retrieve the data from the
-	 * query ResultSet. <b>Do not modify the generated sql columns</b>.
+	 * {@link #getMultiEntitySqlColumns}. The sql columns need to be in a specific
+	 * order since it uses position indexes to retrieve the data from the query
+	 * ResultSet. <b>Do not modify the generated sql columns</b>.
 	 * 
 	 * <p>
 	 * From the query ResultSet a result list is created for each entity. The list

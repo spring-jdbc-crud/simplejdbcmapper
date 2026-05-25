@@ -522,15 +522,16 @@ From the results of these 2 queries the relationships can be assembled.
 
 ```
   // The paginated query. Note the PAGINATED SYNTAX is different for different databases. Use the one for your database.
-  String orderSql = """
-      SELECT %s
-      FROM orders
-      ORDER BY orders.id
-      OFFSET %d ROWS FETCH NEXT %d ROWS ONLY
-      """.formatted(sjm.getEntitySqlColumns(Order.class), 0, 10);
+  // Since its a single entity use getEntitySqlColumns() to get the sql columns
+ String orderSql = """
+		SELECT %s
+		FROM orders
+		ORDER BY orders.id
+		OFFSET ? ROWS FETCH NEXT ? ROWS ONLY
+	       """.formatted(sjm.getEntitySqlColumns(Order.class));
 
-  // Since its a single entity use EntityRowMapper with JdbcTemplate to get the results.
-  List<Order> orders = sjm.getJdbcTemplate().query(orderSql, sjm.newEntityRowMapper(Order.class));
+  // For a single entity use EntityRowMapper with JdbcTemplate to get the results.
+  List<Order> orders = sjm.getJdbcTemplate().query(orderSql, sjm.newEntityRowMapper(Order.class), 0, 10);
 
   // Get the order id list
   List<Integer> orderIds = orders.stream().map(Order::getId).toList();

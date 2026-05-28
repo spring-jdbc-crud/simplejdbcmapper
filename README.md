@@ -448,7 +448,7 @@ An implementation of the relationship examples below and other features of the l
    // Define the toMany relationship between Order and OrderLine.
    Relationship orderToManyOrderLine = Relationship.type(Order.class).toMany(OrderLine.class).joinOn("id", "orderId").populate("orderLines");
 
-   // Assemble the relationship from the query results.
+   // Assemble the relationship from the query results. getList() returns the orders
    List<Order> orders = relationshipMapper.assemble(orderToManyOrderLine).getList(Order.class);
   
 ```

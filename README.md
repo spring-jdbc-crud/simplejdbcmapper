@@ -139,7 +139,7 @@ Just by annotating the models that you would use with JdbcTemplate/JdbcClient, y
  JdbcTemplate jdbcTemplate = sjm.getJdbcTemplate();
  NamedParameterJdbcTemplate namedParameterJdbcTemplate = sjm.getNamedParameterJdbcTemplate();
  
- // see relationships section on how to populate relationships from your custom queries.
+ // See relationships section on how to asssemble relationships from your custom queries.
  
  // The demo application (link provided at top) is easy to install and run where you can see example code in action.
  
@@ -417,7 +417,7 @@ class Product {
 }
 ```
 ## Assembling relationships from custom queries
-An implementation of the relationship examples below and other features of the library are available in the [Demo Application](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper). It has an embedded H2 database with tables populated. There is no configuration required and is simple to install and run. 
+An implementation of the relationship examples below and other features of the library are available in the [Demo Application](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper). It has an embedded h2 database with tables populated. There is no configuration required and is simple to install and run. 
 
 ### 1.ToMany relationship:
 - Order has many OrderLine
@@ -491,10 +491,10 @@ An implementation of the relationship examples below and other features of the l
 - Employee has many Skill through intermediate table 'employee_skill'
 
 ```
-  // Define the entities. The intermediate table employe_skill (in this case corresponds to EmployeeSkill class) needs to be selected also.
+  // Define the entities. The intermediate table employe_skill corresponds to EmployeeSkill class and needs to be selected also.
   MultiEntity multiEntity = new MultiEntity().add(Employee.class, "emp").add(EmployeeSkill.class, "es").add(Skill.class, "s");
   
-   // Build your custom sql using the sql columns from sjm.getMultiEntitySqlColumns(multiEntity)
+   // Build your custom sql using the sql columns from getMultiEntitySqlColumns()
   String sql = """
       SELECT %s
       FROM employee emp

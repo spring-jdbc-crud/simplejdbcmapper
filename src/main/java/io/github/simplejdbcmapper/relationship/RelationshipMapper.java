@@ -160,7 +160,7 @@ public class RelationshipMapper implements GetListSpec {
 			if (rel == null) {
 				throw new IllegalArgumentException("relationship must not be null");
 			}
-			if (!set.add(rel.getMainType().getName() + "-" + rel.getMainType().getName())) {
+			if (!set.add(rel.getMainType().getName() + "-" + rel.getRelatedType().getName())) {
 				throw new IllegalArgumentException("Duplicate relationship. " + rel);
 			}
 		}

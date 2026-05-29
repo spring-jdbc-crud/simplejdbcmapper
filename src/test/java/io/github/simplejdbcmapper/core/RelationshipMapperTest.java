@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import io.github.simplejdbcmapper.model.Customer;
 import io.github.simplejdbcmapper.model.Employee;
 import io.github.simplejdbcmapper.model.EmployeeSkill;
 import io.github.simplejdbcmapper.model.Order;
@@ -108,12 +109,13 @@ class RelationshipMapperTest {
 
 	@Test
 	void assemble_validation_test() {
-		MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol").add(Product.class,
-				"p");
+		MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol")
+				.add(Product.class, "p").add(Customer.class, "c");
 
 		String sql = """
 						SELECT %s
 						FROM orders o
+						LEFT JOIN customer c ON o.customer_id = c.id
 						LEFT JOIN order_line ol ON o.id = ol.order_id
 						LEFT JOIN product p ON ol.product_id = p.id
 						WHERE o.id <= 4 ORDER BY o.id, ol.order_line_id
@@ -126,6 +128,9 @@ class RelationshipMapperTest {
 
 		Relationship orderToManyOrderLine = Relationship.type(Order.class).toMany(OrderLine.class)
 				.joinOn("id", "orderId").populate("orderLines");
+
+		Relationship orderToOneCustomer = Relationship.type(Order.class).toOne(Customer.class)
+				.joinOn("customerId", "id").populate("customer");
 
 		Exception exception = Assertions.assertThrows(Exception.class, () -> {
 			relMapper.assemble();
@@ -159,6 +164,8 @@ class RelationshipMapperTest {
 			relMapper.assemble(orderLineToOneProduct, empToManySkills);
 		});
 		assertTrue(exception.getMessage().contains("was not part of the query result"));
+
+		Assertions.assertDoesNotThrow(() -> relMapper.assemble(orderToManyOrderLine, orderToOneCustomer));
 
 	}
 

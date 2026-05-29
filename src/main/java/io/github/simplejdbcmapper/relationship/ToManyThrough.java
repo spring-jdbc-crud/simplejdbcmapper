@@ -170,13 +170,14 @@ class ToManyThrough {
 						Object fkToMainObjIdValue = fkPropertyToMainObjIdReadMethod.invoke(throughObj);
 						Object fkToRelatedObjIdValue = fkPropertyToRelatedObjIdReadMethod.invoke(throughObj);
 						if (fkToMainObjIdValue != null && fkToRelatedObjIdValue != null) {
-							if (mainObjIdMap.containsKey(fkToMainObjIdValue)) {
-								// add to list
-								mainObjIdMap.get(fkToMainObjIdValue).add(fkToRelatedObjIdValue);
-							} else {
-								List list = new ArrayList();
+							List list = mainObjIdMap.get(fkToMainObjIdValue);
+							if (list == null) {
+								list = new ArrayList();
 								list.add(fkToRelatedObjIdValue);
 								mainObjIdMap.put(fkToMainObjIdValue, list);
+							} else {
+								// add to list
+								list.add(fkToRelatedObjIdValue);
 							}
 						}
 					}

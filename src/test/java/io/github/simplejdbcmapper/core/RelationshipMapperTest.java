@@ -1,6 +1,7 @@
 package io.github.simplejdbcmapper.core;
 
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.util.List;
@@ -166,6 +167,29 @@ class RelationshipMapperTest {
 		assertTrue(exception.getMessage().contains("was not part of the query result"));
 
 		Assertions.assertDoesNotThrow(() -> relMapper.assemble(orderToManyOrderLine, orderToOneCustomer));
+
+	}
+
+	@Test
+	void idPropertyName_test() {
+		MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol");
+
+		String sql = """
+						SELECT %s
+						FROM orders o
+						LEFT JOIN order_line ol ON o.id = ol.order_id
+				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
+
+		RelationshipMapper relMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
+
+		assertEquals("id", relMapper.getIdPropertyName(Order.class));
+
+		assertEquals("orderLineId", relMapper.getIdPropertyName(OrderLine.class));
+
+		Exception exception = Assertions.assertThrows(Exception.class, () -> {
+			relMapper.getIdPropertyName(Employee.class);
+		});
+		assertTrue(exception.getMessage().contains("was not part of the query result"));
 
 	}
 

@@ -109,19 +109,15 @@ public class RelationshipMapper implements GetListSpec {
 		return this;
 	}
 
-	void process(Relationship rel) {
-		List<?> mainList = getList(rel.getMainType());
-		List<?> relatedList = getList(rel.getRelatedType());
-		if (rel.getRelationshipType().equals(TO_ONE)) {
-			rel.getToOne().process(mainList, relatedList);
-		} else if (rel.getRelationshipType().equals(TO_MANY)) {
-			rel.getToMany().process(mainList, relatedList);
-		} else {
-			// toManyThrough
-			List<?> throughList = getList(rel.getThroughType());
-			rel.getToManyThrough().process(mainList, relatedList, throughList, getIdPropertyName(rel.getMainType()),
-					getIdPropertyName(rel.getRelatedType()));
-		}
+	/**
+	 * Get the Id property name for type.
+	 * 
+	 * @param type The type
+	 * @return String the id property name
+	 */
+	public String getIdPropertyName(Class<?> type) {
+		ExtractorEntityResult result = getExtractorEntityResult(type, results);
+		return result.idPropertyName();
 	}
 
 	/**
@@ -137,9 +133,19 @@ public class RelationshipMapper implements GetListSpec {
 		return (List<T>) result.list();
 	}
 
-	String getIdPropertyName(Class<?> type) {
-		ExtractorEntityResult result = getExtractorEntityResult(type, results);
-		return result.idPropertyName();
+	void process(Relationship rel) {
+		List<?> mainList = getList(rel.getMainType());
+		List<?> relatedList = getList(rel.getRelatedType());
+		if (rel.getRelationshipType().equals(TO_ONE)) {
+			rel.getToOne().process(mainList, relatedList);
+		} else if (rel.getRelationshipType().equals(TO_MANY)) {
+			rel.getToMany().process(mainList, relatedList);
+		} else {
+			// toManyThrough
+			List<?> throughList = getList(rel.getThroughType());
+			rel.getToManyThrough().process(mainList, relatedList, throughList, getIdPropertyName(rel.getMainType()),
+					getIdPropertyName(rel.getRelatedType()));
+		}
 	}
 
 	private void checkDuplicatesForAddEntityResult(Class<?> entityType) {

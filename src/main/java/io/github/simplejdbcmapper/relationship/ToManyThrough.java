@@ -62,25 +62,6 @@ class ToManyThrough {
 		this.mainObjPropertyToPopulate = mainObjPropertyToPopulate;
 	}
 
-	void validateThrough(String mainObjIdProperty, String relatedObjIdProperty) {
-		Class<?> mainObjIdPropertyType = RelationshipMapper.getPropertyType(mainType, mainObjIdProperty);
-		Class<?> fkPropertyToMainObjIdType = RelationshipMapper.getPropertyType(throughType, fkPropertyToMainObjId);
-		if (mainObjIdPropertyType != fkPropertyToMainObjIdType) {
-			throw new IllegalArgumentException("Conflicting property types. Property type of "
-					+ mainType.getSimpleName() + "." + mainObjIdProperty + " and " + throughType.getSimpleName() + "."
-					+ fkPropertyToMainObjId + " are not the same.");
-		}
-
-		Class<?> relatedObjIdPropertyType = RelationshipMapper.getPropertyType(relatedType, relatedObjIdProperty);
-		Class<?> fkPropertyToRelatedObjIdType = RelationshipMapper.getPropertyType(throughType,
-				fkPropertyToRelatedObjId);
-		if (relatedObjIdPropertyType != fkPropertyToRelatedObjIdType) {
-			throw new IllegalArgumentException("Conflicting property types. Property type of "
-					+ relatedType.getSimpleName() + "." + relatedObjIdProperty + " and " + throughType.getSimpleName()
-					+ "." + fkPropertyToRelatedObjId + " are not the same.");
-		}
-	}
-
 	<T, U> void process(List<T> mainObjList, List<U> relatedObjList, List<?> throughList, String mainObjIdProperty,
 			String relatedObjIdProperty) {
 		if (CollectionUtils.isEmpty(mainObjList) || CollectionUtils.isEmpty(relatedObjList)) {
@@ -101,6 +82,25 @@ class ToManyThrough {
 			}
 		} catch (Exception e) {
 			throw new MapperException(e.getMessage(), e);
+		}
+	}
+
+	private void validateThrough(String mainObjIdProperty, String relatedObjIdProperty) {
+		Class<?> mainObjIdPropertyType = RelationshipMapper.getPropertyType(mainType, mainObjIdProperty);
+		Class<?> fkPropertyToMainObjIdType = RelationshipMapper.getPropertyType(throughType, fkPropertyToMainObjId);
+		if (mainObjIdPropertyType != fkPropertyToMainObjIdType) {
+			throw new IllegalArgumentException("Conflicting property types. Property type of "
+					+ mainType.getSimpleName() + "." + mainObjIdProperty + " and " + throughType.getSimpleName() + "."
+					+ fkPropertyToMainObjId + " are not the same.");
+		}
+
+		Class<?> relatedObjIdPropertyType = RelationshipMapper.getPropertyType(relatedType, relatedObjIdProperty);
+		Class<?> fkPropertyToRelatedObjIdType = RelationshipMapper.getPropertyType(throughType,
+				fkPropertyToRelatedObjId);
+		if (relatedObjIdPropertyType != fkPropertyToRelatedObjIdType) {
+			throw new IllegalArgumentException("Conflicting property types. Property type of "
+					+ relatedType.getSimpleName() + "." + relatedObjIdProperty + " and " + throughType.getSimpleName()
+					+ "." + fkPropertyToRelatedObjId + " are not the same.");
 		}
 	}
 

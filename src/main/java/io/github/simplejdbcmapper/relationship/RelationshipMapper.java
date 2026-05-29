@@ -46,7 +46,7 @@ import org.springframework.util.StringUtils;
  * </pre>
  * 
  * For more details see <a href=
- * "https://github.com/spring-jdbc-crud/simplejdbcmapper#populating-relationships-from-custom-queries">documentation</a>
+ * "https://github.com/spring-jdbc-crud/simplejdbcmapper#assembling-relationships-from-custom-queries">documentation</a>
  * and {@link io.github.simplejdbcmapper.relationship.Relationship}
  *
  * @author Antony Joseph

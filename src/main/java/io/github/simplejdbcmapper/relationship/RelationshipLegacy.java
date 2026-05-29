@@ -30,7 +30,7 @@ import io.github.simplejdbcmapper.relationship.RelationshipMapper.ExtractorEntit
  * 
  *             <p>
  *             For more details see the <a href=
- *             "https://github.com/spring-jdbc-crud/simplejdbcmapper#populating-relationships-from-custom-queries">documentation</a>
+ *             "https://github.com/spring-jdbc-crud/simplejdbcmapper#assembling-relationships-from-custom-queries">documentation</a>
  * 
  * 
  * @author Antony Joseph

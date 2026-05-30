@@ -328,7 +328,7 @@ In this case you will have to manually set the id value before invoking insert()
 
 **@Column**
 
-Properties that need be persisted to the database will need @Column annotation unless the property is already annotated with one of the other annotations (@Id, @Version, @CreatedOn @CreatedBy @UpdatedOn @UpdatedBy). @Column can be used along with the other annotations to map a property to a non-default column name. The default column name is camel case property name converted to underscore case name (e.g., property 'lastName' maps to column 'last_name' by default).
+Properties that need be persisted to the database will need @Column annotation unless the property is already annotated with one of the other annotations (@Id, @Version, @CreatedOn @CreatedBy @UpdatedOn @UpdatedBy). @Column can be used along with the other annotations to map a property to a non-default column name. The default column name is camel case property name converted to underscore case name (e.g., property 'lastName' maps to column 'last_name' by default). **Primitive java types are not supported**. Use corresponding wrapper classes.
 
 ***@Column*** 
 This will map the property to a column using the default naming convention of camel case to underscore case. For example property 'lastName' will map to column 'last_name' by default.  

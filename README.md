@@ -294,7 +294,7 @@ class Product {
 
 **@Id**
 
-The id property can be of any non-primitive java type. @Id can only be mapped to a single database column. **Multi-column ids  are not supported.** This is a **required** annotation for every entity.
+All entities are required to have a single column primary key. The id property can be of any non-primitive java type. @Id can only be mapped to a single database column. **Multi-column ids  are not supported.** This is a **required** annotation for every entity.
 
 There are 2 forms of usage for this.
 

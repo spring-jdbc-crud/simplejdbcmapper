@@ -262,9 +262,9 @@ spring.datasource.driver-class-name=com.microsoft.sqlserver.jdbc.SQLServerDriver
 ## Annotations
 Using the 3 annotations @Table, @Id and @Column you get single line CRUD and also will be able to assemble relationships from custom queries. Other annotations are for audit fields and optimistic locking.
 
-**@Table**
+1.**@Table**
 
-Required class level annotation. The schema/catalog attributes set with @Table will override corresponding values on the SimpleJdbcMapper() constructor (if any). **Note that table names with spaces are not supported.**
+Required class level annotation. The schema/catalog attributes set with @Table will override corresponding values on the SimpleJdbcMapper() constructor (if any). **Table names with spaces are not supported.**
 
 Multiple classes can be mapped to the same table. For example if you have a table with large number of columns you could have 2 objects mapped to it. One with a few commonly used columns and another with all the columns.
 
@@ -292,7 +292,7 @@ class Product {
 
 ```
 
-**@Id**
+2.**@Id**
 
 All entities are required to have a single column primary key. The id property can be of any non-primitive java type. @Id can only be mapped to a single database column. **Multi-column ids  are not supported.** This is a **required** annotation for every entity.
 
@@ -326,7 +326,7 @@ class Customer {
 
 In this case you will have to manually set the id value before invoking insert()  
 
-**@Column**
+3.**@Column**
 
 Properties that need be persisted to the database will need @Column annotation unless the property is already annotated with one of the other annotations (@Id, @Version, @CreatedOn @CreatedBy @UpdatedOn @UpdatedBy). @Column can be used along with the other annotations to map a property to a non-default column name. The default column name is camel case property name converted to underscore case name (e.g., property 'lastName' maps to column 'last_name' by default). **Primitive java types are not supported**. Use corresponding wrapper classes.
 
@@ -350,28 +350,28 @@ To identify which properties in the mappings the SQL type is unknown do the foll
 ```
    - For your specific database and database column type find the corresponding SQL type and assign it using @Column(sqlType = somesqltype).
 
-**@Version**
+4.**@Version**
 
 This annotation is used for optimistic locking. It has to be of type Integer.
 Will be set to 1 when record is created and will be incremented on updates. On updates if the version is stale an OptimisticLockingException will be thrown.  @Column annotation can be used with the property to map to a non-default column name.
 
-**@CreatedOn**
+5.**@CreatedOn**
 
 If a Supplier is configured using simpleJdbcMapper.setRecordAuditedOnSupplier(), it will be used to to set the value for the @CreatedOn property. The type of the Supplier should match the type of the property. @Column annotation can also be used with the property to map to a non-default  column name.
 
-**@UpdatedOn**
+6.**@UpdatedOn**
 
 If a Supplier is configured using simpleJdbcMapper.setRecordAuditedOnSupplier(), it will be used to to set the value for the @UpdatedOn property. The type of the Supplier should match the type of the property. @Column annotation can also be used with the property to map to a non-default  column name.
 
-**@CreatedBy**
+7.**@CreatedBy**
 
 If a Supplier is configured using simpleJdbcMapper.setRecordAuditedBySupplier(), it will be used to to set the value for the @CreatedBy property. The type of the Supplier should match the type of the property. @Column annotation can also be used with the property to map to a non-default column name.
 
-**@UpdatedBy**
+8.**@UpdatedBy**
 If a Supplier is configured using simpleJdbcMapper.setRecordAuditedBySupplier(), it will be used to to set the value for the @UpdatedBy property. The type of the Supplier should match the type of the property. @Column annotation can also be used with the property to map to a non-default column name.
 
 
- Annotation examples:
+**Annotation examples:**
 
 ```java 
 

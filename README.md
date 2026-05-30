@@ -264,7 +264,7 @@ Using the 3 annotations @Table, @Id and @Column you get single line CRUD and als
 
 **@Table**
 
-Required class level annotation. The table or view should exist in database. The schema/catalog attributes set with @Table will override corresponding values on the SimpleJdbcMapper() constructor (if any). **Note that table names with spaces are not supported.**
+Required class level annotation. The schema/catalog attributes set with @Table will override corresponding values on the SimpleJdbcMapper() constructor (if any). **Note that table names with spaces are not supported.**
 
 Multiple classes can be mapped to the same table. For example if you have a table with large number of columns you could have 2 objects mapped to it. One with a few commonly used columns and another with all the columns.
 
@@ -294,7 +294,7 @@ class Product {
 
 **@Id**
 
-The id property can be of any java type. @Id can only be mapped to a single database column. **Multi-column ids  are not supported.**
+The id property can be of any java type. @Id can only be mapped to a single database column. **Multi-column ids  are not supported.** This is a **required** annotation for every entity.
 
 There are 2 forms of usage for this.
 

@@ -492,7 +492,7 @@ An implementation of the relationship examples below and other features of the l
 
 ### 3.ToMany relationship through an intermediate table (one side of many to many)
 - Employee has many Skill through intermediate table 'employee_skill'.  
-The employ_skill table should be mapped to an entity. In this case it is mapped to EmployeeSkill.class. This means that the employee_skill table should have a primary key column as its id.
+The employ_skill table should be mapped to an entity. In this case it is mapped to EmployeeSkill.class. All entities are required to have a single column primary key so employee_skill table should have a single column primary key.
 
 ```
   // Define the entities. The intermediate table employe_skill corresponds to EmployeeSkill class and needs to be selected also.

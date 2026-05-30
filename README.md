@@ -381,11 +381,14 @@ class Product {
  @Id(type=IdType.AUTO_GENERATED)
  private Integer productId; 
  
- @Column(name="product_name")
- private String name;              // maps to product_name column
+ @Column(name="product_name") // maps to product_name column
+ private String name;              
  
  @Column
  private String productDescription // defaults to column product_description 
+ 
+ @Column(sqlType = Types.LONGVARCHAR) // mapped to a large_text column in database
+ private String largeText;
  
  @CreatedOn 
  private LocalDateTime createdTimestamp;  // defaults to column name created_timestamp. 

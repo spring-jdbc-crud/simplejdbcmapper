@@ -298,7 +298,7 @@ All entities are required to have a single column primary key. The id property c
 
 There are 2 forms of usage for this.
 
-* **auto generated id usage**
+* **Auto generated id **
 
 ```java 
 
@@ -312,7 +312,7 @@ class Product {
 ```
 After a successful insert() operation the productId property will be populated with the generated id.
 
-* **NON auto generated id usage**
+* **NON auto generated id **
 
 ```java 
 

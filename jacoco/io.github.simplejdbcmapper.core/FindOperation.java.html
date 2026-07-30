@@ -183,7 +183,7 @@ class FindOperation {
 
 	public String getMultiEntitySqlColumns(MultiEntity multiEntity) {
 <span class="fc" id="L185">		Assert.notNull(multiEntity, &quot;multiEntity must not be null&quot;);</span>
-<span class="fc" id="L186">		StringBuffer sb = new StringBuffer(256);</span>
+<span class="fc" id="L186">		StringBuilder sb = new StringBuilder(256);</span>
 <span class="fc" id="L187">		int cnt = 0;</span>
 <span class="fc bfc" id="L188" title="All 2 branches covered.">		for (Map.Entry&lt;Class&lt;?&gt;, String&gt; entry : multiEntity.getEntries()) {</span>
 <span class="fc bfc" id="L189" title="All 2 branches covered.">			if (cnt &gt; 0) {</span>
@@ -302,4 +302,4 @@ class FindOperation {
 	}
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 5294c94cfac172a8dc59fa1228ba63109f494e06 2026-07-30T10:41:03</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main cddd968e985b519eb0d92c0305fa47019a87a3de 2026-07-30T11:08:13</div></body></html>

@@ -48,16 +48,6 @@ class RelationshipMapperTest {
 		});
 		assertTrue(exception.getMessage().contains("duplicate entityType"));
 
-		exception = Assertions.assertThrows(Exception.class, () -> {
-			relMapper.type(null);
-		});
-		assertTrue(exception.getMessage().contains("type must not be null"));
-
-		exception = Assertions.assertThrows(Exception.class, () -> {
-			relMapper.type(Employee.class);
-		});
-		assertTrue(exception.getMessage().contains("was not part of the query results"));
-
 	}
 
 	@Test

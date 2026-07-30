@@ -79,23 +79,6 @@ public class RelationshipMapper implements GetListSpec {
 	}
 
 	/**
-	 * @deprecated As of release 2.4.0, Replaced by
-	 *             {@link io.github.simplejdbcmapper.relationship.Relationship#type}
-	 *             Starts the relationship processing flow.
-	 * 
-	 * @param <T>  the type
-	 * @param type the type
-	 * @return RelationshipSpec the relationship spec
-	 */
-	@Deprecated(since = "2.4.0", forRemoval = true)
-	public <T> RelationshipSpec type(Class<T> type) {
-		Assert.notNull(type, "type must not be null");
-		// will throw an exception for invalid type
-		getList(type);
-		return RelationshipLegacy.newInstance(type, results);
-	}
-
-	/**
 	 * Assembles the relationships from the query results.
 	 * 
 	 * @param relationships an array of relationships

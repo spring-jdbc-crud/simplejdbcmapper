@@ -183,7 +183,7 @@ class FindOperation {
 
 	public String getMultiEntitySqlColumns(MultiEntity multiEntity) {
 		Assert.notNull(multiEntity, "multiEntity must not be null");
-		StringBuffer sb = new StringBuffer(256);
+		StringBuilder sb = new StringBuilder(256);
 		int cnt = 0;
 		for (Map.Entry<Class<?>, String> entry : multiEntity.getEntries()) {
 			if (cnt > 0) {

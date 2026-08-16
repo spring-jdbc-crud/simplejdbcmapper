@@ -310,7 +310,8 @@ public final class SimpleJdbcMapper {
 	}
 
 	/**
-	 * @deprecated Use entityRowMapper(Class<T> entityType) instead.
+	 * @deprecated Use {@link #entityRowMapper(Class)} instead.
+	 *             <p>
 	 * 
 	 *             Returns a new EntityRowMapper.
 	 * 
@@ -377,8 +378,8 @@ public final class SimpleJdbcMapper {
 	 * sql columns</b>.
 	 * <p>
 	 * Always use this method (or its overloaded method
-	 * {@link #getEntitySqlColumns(Class<?> entityType, String tableAlias)}) to
-	 * create your custom query columns when using EntityRowMapper.
+	 * {@link #getSqlColumns(Class<?> entityType, String tableAlias)}) to create
+	 * your custom query columns when using EntityRowMapper.
 	 * {@link io.github.simplejdbcmapper.core.EntityRowMapper} will handle the
 	 * column to property mapping.
 	 * 
@@ -397,7 +398,8 @@ public final class SimpleJdbcMapper {
 	}
 
 	/**
-	 * @deprecated Use getSqlColumns(Class<?> entityType) instead.
+	 * @deprecated Use {@link #getSqlColumns(Class<?> entityType)} instead.
+	 *             <p>
 	 * 
 	 *             Gets the sql columns that works with EntityRowMapper.
 	 *             EntityRowMapper expects the sql columns to be in a specific order
@@ -462,8 +464,9 @@ public final class SimpleJdbcMapper {
 	}
 
 	/**
-	 * @deprecated Use getSqlColumns(Class<?> entityType, String tableAlias)
-	 *             instead.
+	 * @deprecated Use {@link #getSqlColumns(Class<?> entityType, String
+	 *             tableAlias)} instead.
+	 *             <p>
 	 * 
 	 *             Gets the sql columns with table aliases that works with
 	 *             EntityRowMapper. EntityRowMapper expects the sql columns to be in
@@ -531,7 +534,7 @@ public final class SimpleJdbcMapper {
 	}
 
 	/**
-	 * @deprecated Use getSqlColumns(MultiEntity multiEntity) instead.
+	 * @deprecated Use {@link #getSqlColumns(MultiEntity multiEntity)} instead.<br>
 	 * 
 	 *             Gets the sql columns for multi-entity processing. These sql
 	 *             columns are used with the ResultSetExtractor and <b>should not be

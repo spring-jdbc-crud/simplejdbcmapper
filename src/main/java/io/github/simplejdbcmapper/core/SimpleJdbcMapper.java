@@ -569,7 +569,7 @@ public final class SimpleJdbcMapper {
 	 * The ResultSetExtractor for multiple entities. The results are returned in
 	 * {@link io.github.simplejdbcmapper.relationship.RelationshipMapper}. It
 	 * expects the sql columns to <b>always</b> be generated using
-	 * {@link #getMultiEntitySqlColumns}. The sql columns need to be in a specific
+	 * {@link #getSqlColumns(MultiEntity)}. The sql columns need to be in a specific
 	 * order since it uses position indexes to retrieve the data from the query
 	 * ResultSet. <b>Do not modify the generated sql columns</b>.
 	 * 
@@ -596,14 +596,14 @@ public final class SimpleJdbcMapper {
 	 * <pre>
 	 * // Define the multiple mapped entities you want to select.
 	 * MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol");
-	 * // build sql using sql columns from getMultiEntitySqlColumns()
+	 * // build sql using sql columns from getSqlColumns()
 	 * String sql = """
 	 * 		   SELECT %s
 	 * 		   FROM orders o
 	 * 		   LEFT JOIN order_line ol ON  o.id = ol.order_id
 	 * 		   WHERE o.total_amount >= ?
 	 * 		   ORDER BY o.order_date DESC, ol.order_line_id
-	 * 		""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
+	 * 		""".formatted(sjm.getSqlColumns(multiEntity));
 	 * 
 	 * // Use this method with JdbcTemplate to extract the data for the multiple entities. 
 	 * RelationshipMapper relationshipMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity),

@@ -98,7 +98,7 @@ class MultiEntityExtractor {
 			List<EntityExtractor> entityExtractors = new ArrayList<>();
 			for (Map.Entry<Class<?>, String> entry : multiEntity.getEntries()) {
 				Class<?> entityType = entry.getKey();
-				EntityRowMapper<?> rowMapper = newEntityRowMapper(entityType, offset);
+				EntityRowMapper<?> rowMapper = getEntityRowMapperInstance(entityType, offset);
 				TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
 				Method idReadMethod = tableMapping.getIdPropertyMapping().getReadMethod();
 				entityExtractors.add(new EntityExtractor(entityType, rowMapper, new ArrayList(), idReadMethod,
@@ -108,7 +108,7 @@ class MultiEntityExtractor {
 			return entityExtractors;
 		}
 
-		private <T> EntityRowMapper<T> newEntityRowMapper(Class<T> entityType, int offset) {
+		private <T> EntityRowMapper<T> getEntityRowMapperInstance(Class<T> entityType, int offset) {
 			TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
 			EntityRowMapper<T> rowMapper = new EntityRowMapper<>(tableMapping, sjmSupport.getConversionService(),
 					offset);

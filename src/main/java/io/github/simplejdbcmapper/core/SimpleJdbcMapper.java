@@ -450,7 +450,7 @@ public final class SimpleJdbcMapper {
 	 * 
 	 * Its good practice to keep the table aliases short and succinct.
 	 * 
-	 * See {@link #newEntityRowMapper}
+	 * See {@link #entityRowMapper}
 	 * 
 	 * @param entityType the type
 	 * @param tableAlias the table alias

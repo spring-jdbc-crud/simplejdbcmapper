@@ -54,7 +54,7 @@ class MultiEntityTest {
 
 		MultiEntity me = new MultiEntity().add(Order.class, "t1");
 		exception = Assertions.assertThrows(Exception.class, () -> {
-			sjm.getMultiEntitySqlColumns(me);
+			sjm.getSqlColumns(me);
 		});
 		assertTrue(exception.getMessage().contains("MultiEntity should have 2 or more entities configured"));
 

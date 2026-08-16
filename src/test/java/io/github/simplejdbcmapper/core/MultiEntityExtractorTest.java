@@ -36,10 +36,9 @@ class MultiEntityExtractorTest {
 				LEFT JOIN order_line ol ON  o.id = ol.order_id
 				LEFT JOIN product p ON ol.product_id = p.id
 				WHERE o.id <= 4
-				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
+				""".formatted(sjm.getSqlColumns(multiEntity));
 
-		RelationshipMapper relationshipMapper = sjm.getJdbcTemplate().query(sql,
-				sjm.resultSetExtractor(multiEntity));
+		RelationshipMapper relationshipMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 
 		List<Order> orders = relationshipMapper.getList(Order.class);
 		List<OrderLine> orderLines = relationshipMapper.getList(OrderLine.class);

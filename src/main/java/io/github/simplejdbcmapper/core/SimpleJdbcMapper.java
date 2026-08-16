@@ -286,7 +286,7 @@ public final class SimpleJdbcMapper {
 	 * Example using JdbcTemplate:
 	 * 
 	 * <pre>
-	 * {@code List<Product>} products = sjm.getJdbcTemplate().query(sql,sjm.newEntityRowMapper(Product.class), "someProductName");
+	 * {@code List<Product>} products = sjm.getJdbcTemplate().query(sql,sjm.entityRowMapper(Product.class), "someProductName");
 	 * </pre>
 	 * 
 	 * <p>
@@ -297,7 +297,7 @@ public final class SimpleJdbcMapper {
 	 * <pre>
 	 * {@code List<Product>} products = sjm.getJdbcClient().sql(sql)
 	 *                                                     .param("someProductName")
-	 *                                                     .query(sjm.newEntityRowMapper(Product.class))
+	 *                                                     .query(sjm.entityRowMapper(Product.class))
 	 *                                                     .list();
 	 * </pre>
 	 * 
@@ -386,7 +386,7 @@ public final class SimpleJdbcMapper {
 	 * "somecolumn, some_other_column, last_name"
 	 * </pre>
 	 *
-	 * See {@link #newEntityRowMapper}
+	 * See {@link #entityRowMapper}
 	 * 
 	 * @param entityType the type
 	 * @return comma separated select column string

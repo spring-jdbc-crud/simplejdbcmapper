@@ -113,19 +113,18 @@ class SimpleJdbcMapperTest {
 	}
 
 	@Test
-	void getEntitySqlColumns_test() {
+	void getSqlColumns_test() {
 		NonDefaultNamingProduct p = new NonDefaultNamingProduct();
 		p.setId(5461);
 		p.setProductName("test5461");
 		p.setCost(10.25);
 		sjm.insert(p);
 
-		String sql = "SELECT " + sjm.getEntitySqlColumns(NonDefaultNamingProduct.class)
-				+ " FROM product WHERE name = ?";
+		String sql = "SELECT " + sjm.getSqlColumns(NonDefaultNamingProduct.class) + " FROM product WHERE name = ?";
 
 		// Using JdbcClient api for the above sql
 		List<NonDefaultNamingProduct> products = sjm.getJdbcClient().sql(sql).param("test5461")
-				.query(sjm.newEntityRowMapper(NonDefaultNamingProduct.class)).list();
+				.query(sjm.entityRowMapper(NonDefaultNamingProduct.class)).list();
 
 		assertEquals(1, products.size());
 		assertEquals(10.25, products.get(0).getCost());
@@ -133,7 +132,7 @@ class SimpleJdbcMapperTest {
 
 		// Using JdbcTemplate api for the above sql
 		List<NonDefaultNamingProduct> products2 = sjm.getJdbcTemplate().query(sql,
-				sjm.newEntityRowMapper(NonDefaultNamingProduct.class), "test5461");
+				sjm.entityRowMapper(NonDefaultNamingProduct.class), "test5461");
 
 		assertEquals(1, products2.size());
 		assertEquals(10.25, products2.get(0).getCost());
@@ -141,37 +140,37 @@ class SimpleJdbcMapperTest {
 	}
 
 	@Test
-	void getEntitySqlColumns_IllegalArgs_test() {
+	void getSqlColumns_IllegalArgs_test() {
 		Assertions.assertThrows(IllegalArgumentException.class, () -> {
-			sjm.getEntitySqlColumns(null);
+			sjm.getSqlColumns((Class<?>) null);
 		});
 
 		Assertions.assertThrows(IllegalArgumentException.class, () -> {
-			sjm.getEntitySqlColumns(null, "t1");
+			sjm.getSqlColumns(null, "t1");
 		});
 		Assertions.assertThrows(IllegalArgumentException.class, () -> {
-			sjm.getEntitySqlColumns(Product.class, null);
+			sjm.getSqlColumns(Product.class, null);
 		});
 
 		Assertions.assertThrows(IllegalArgumentException.class, () -> {
-			sjm.getEntitySqlColumns(Product.class, "   ");
+			sjm.getSqlColumns(Product.class, "   ");
 		});
 	}
 
 	@Test
-	void getEntitySqlColumns_withTableAlias_test() {
+	void getSqlColumns_withTableAlias_test() {
 		NonDefaultNamingProduct p = new NonDefaultNamingProduct();
 		p.setId(7190);
 		p.setProductName("test7190");
 		p.setCost(10.25);
 		sjm.insert(p);
 
-		String sql = "SELECT " + sjm.getEntitySqlColumns(NonDefaultNamingProduct.class, "t1")
+		String sql = "SELECT " + sjm.getSqlColumns(NonDefaultNamingProduct.class, "t1")
 				+ " FROM product t1 WHERE t1.name = ?";
 
 		// Using JdbcClient api for the above sql
 		List<NonDefaultNamingProduct> products = sjm.getJdbcClient().sql(sql).param("test7190")
-				.query(sjm.newEntityRowMapper(NonDefaultNamingProduct.class)).list();
+				.query(sjm.entityRowMapper(NonDefaultNamingProduct.class)).list();
 
 		assertEquals(1, products.size());
 		assertEquals(10.25, products.get(0).getCost());
@@ -179,7 +178,7 @@ class SimpleJdbcMapperTest {
 
 		// Using JdbcTemplate api for the above sql
 		List<NonDefaultNamingProduct> products2 = sjm.getJdbcTemplate().query(sql,
-				sjm.newEntityRowMapper(NonDefaultNamingProduct.class), "test7190");
+				sjm.entityRowMapper(NonDefaultNamingProduct.class), "test7190");
 
 		assertEquals(1, products2.size());
 		assertEquals(10.25, products2.get(0).getCost());

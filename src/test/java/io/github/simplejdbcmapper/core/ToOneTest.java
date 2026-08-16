@@ -306,7 +306,7 @@ class ToOneTest {
 					FROM order_line ol
 					LEFT JOIN product p ON ol.product_id = p.id
 				    WHERE ol.order_line_id <= 4 ORDER BY ol.order_line_id;
-				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
+				""".formatted(sjm.getSqlColumns(multiEntity));
 
 		RelationshipMapper relMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 
@@ -332,7 +332,7 @@ class ToOneTest {
 					LEFT JOIN product p ON ol.product_id = p.id
 					WHERE ol.order_line_id <= 4
 					ORDER BY ol.order_line_id;
-				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
+				""".formatted(sjm.getSqlColumns(multiEntity));
 
 		RelationshipMapper rMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 
@@ -356,7 +356,7 @@ class ToOneTest {
 				LEFT JOIN product p ON ol.product_id = p.id
 				WHERE ol.order_line_id < 0
 				ORDER BY ol.order_line_id;
-				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
+				""".formatted(sjm.getSqlColumns(multiEntity));
 
 		RelationshipMapper relMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 

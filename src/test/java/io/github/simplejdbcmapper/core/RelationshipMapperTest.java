@@ -83,7 +83,7 @@ class RelationshipMapperTest {
 						LEFT JOIN order_line ol ON o.id = ol.order_id
 						LEFT JOIN product p ON ol.product_id = p.id
 						WHERE o.id <= 4 ORDER BY o.id, ol.order_line_id
-				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
+				""".formatted(sjm.getSqlColumns(multiEntity));
 
 		RelationshipMapper relMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 
@@ -110,7 +110,7 @@ class RelationshipMapperTest {
 						LEFT JOIN order_line ol ON o.id = ol.order_id
 						LEFT JOIN product p ON ol.product_id = p.id
 						WHERE o.id <= 4 ORDER BY o.id, ol.order_line_id
-				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
+				""".formatted(sjm.getSqlColumns(multiEntity));
 
 		RelationshipMapper relMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 
@@ -168,7 +168,7 @@ class RelationshipMapperTest {
 						SELECT %s
 						FROM orders o
 						LEFT JOIN order_line ol ON o.id = ol.order_id
-				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
+				""".formatted(sjm.getSqlColumns(multiEntity));
 
 		RelationshipMapper relMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 

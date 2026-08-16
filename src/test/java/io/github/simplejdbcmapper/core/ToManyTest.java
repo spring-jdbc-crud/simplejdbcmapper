@@ -90,7 +90,7 @@ class ToManyTest {
 					LEFT JOIN order_line ol ON o.id =ol.order_id
 					WHERE o.id <= 4
 					ORDER BY o.id, ol.order_line_id
-				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
+				""".formatted(sjm.getSqlColumns(multiEntity));
 
 		RelationshipMapper relMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 
@@ -100,8 +100,8 @@ class ToManyTest {
 		assertTrue(exception.getMessage().contains("mainObjPropertyToPopulate must not be null"));
 
 		exception = Assertions.assertThrows(Exception.class, () -> {
-			relMapper.assemble(Relationship.type(Order.class).toMany(OrderLine.class).joinOn("id", "orderId")
-					.populate("x"));
+			relMapper.assemble(
+					Relationship.type(Order.class).toMany(OrderLine.class).joinOn("id", "orderId").populate("x"));
 		});
 		assertTrue(exception.getMessage().contains("Invalid argument. Property name"));
 
@@ -125,7 +125,7 @@ class ToManyTest {
 				LEFT JOIN order_line ol ON o.id = ol.order_id
 				WHERE o.id <= 4
 				ORDER BY o.id, ol.order_line_id
-				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
+				""".formatted(sjm.getSqlColumns(multiEntity));
 
 		RelationshipMapper relMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 
@@ -156,7 +156,7 @@ class ToManyTest {
 						LEFT JOIN order_line ol ON o.id = ol.order_id
 						WHERE o.id <= 4
 						ORDER BY o.id, ol.order_line_id
-				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
+				""".formatted(sjm.getSqlColumns(multiEntity));
 
 		RelationshipMapper relMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 
@@ -187,7 +187,7 @@ class ToManyTest {
 				LEFT JOIN order_line ol ON o.id = ol.order_id
 				WHERE o.id <= 0
 				ORDER BY o.id, ol.order_line_id
-				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
+				""".formatted(sjm.getSqlColumns(multiEntity));
 
 		RelationshipMapper relMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 
@@ -217,7 +217,7 @@ class ToManyTest {
 				LEFT JOIN order_line ol ON o.id = ol.order_id
 				WHERE o.id <= 4
 				ORDER BY o.id, ol.order_line_id
-				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
+				""".formatted(sjm.getSqlColumns(multiEntity));
 
 		RelationshipMapper relMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 
@@ -228,8 +228,8 @@ class ToManyTest {
 
 		orderLines.add(1, null);
 
-		relMapper.assemble(Relationship.type(Order.class).toMany(OrderLine.class).joinOn("id", "orderId")
-				.populate("orderLines"));
+		relMapper.assemble(
+				Relationship.type(Order.class).toMany(OrderLine.class).joinOn("id", "orderId").populate("orderLines"));
 
 		assertEquals(5, orders.get(0).getOrderLines().get(1).getNumOfUnits());
 
@@ -248,7 +248,7 @@ class ToManyTest {
 				LEFT JOIN order_line ol ON o.id = ol.order_id
 				WHERE o.id <= 4
 				ORDER BY o.id, ol.order_line_id
-				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
+				""".formatted(sjm.getSqlColumns(multiEntity));
 
 		RelationshipMapper relMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 
@@ -281,7 +281,7 @@ class ToManyTest {
 						LEFT JOIN order_line ol ON o.id = ol.order_id
 						LEFT JOIN product p ON ol.product_id = p.id
 						WHERE o.id <= 4 ORDER BY o.id, ol.order_line_id
-				""".formatted(sjm.getMultiEntitySqlColumns(multiEntity));
+				""".formatted(sjm.getSqlColumns(multiEntity));
 
 		RelationshipMapper relMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 

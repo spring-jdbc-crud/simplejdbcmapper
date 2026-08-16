@@ -261,8 +261,8 @@ public final class SimpleJdbcMapper {
 	 * either
 	 * 
 	 * <pre>
-	 * {@link #getEntitySqlColumns(Class<?> entityType)} or
-	 * {@link #getEntitySqlColumns(Class<?> entityType, String tableAlias)}
+	 * {@link #getSqlColumns(Class<?> entityType)} or
+	 * {@link #getSqlColumns(Class<?> entityType, String tableAlias)}
 	 * </pre>
 	 * 
 	 * <p>
@@ -435,9 +435,9 @@ public final class SimpleJdbcMapper {
 	 * not modify the generated sql columns</b>.
 	 * <p>
 	 * Always use this method (or its overloaded method
-	 * {@link #getEntitySqlColumns(Class<?> entityType)}) to create your custom
-	 * query columns when using EntityRowMapper. create your custom query columns
-	 * when using EntityRowMapper.
+	 * {@link #getSqlColumns(Class<?> entityType)}) to create your custom query
+	 * columns when using EntityRowMapper. create your custom query columns when
+	 * using EntityRowMapper.
 	 * {@link io.github.simplejdbcmapper.core.EntityRowMapper} will handle the
 	 * column to property mapping.
 	 * <p>

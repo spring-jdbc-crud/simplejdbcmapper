@@ -331,8 +331,38 @@ public final class SimpleJdbcMapper {
 	 * @return comma separated select column string
 	 * 
 	 */
+	public String getSqlColumns(Class<?> entityType) {
+		return findOperation.getSqlColumns(entityType);
+	}
+
+	/**
+	 * @deprecated Use getSqlColumns(Class<?> entityType) instead.
+	 * 
+	 *             Gets the sql columns that works with EntityRowMapper.
+	 *             EntityRowMapper expects the sql columns to be in a specific order
+	 *             since it uses position indexes to retrieve the data from the
+	 *             query ResultSet. <b>Do not modify the generated sql columns</b>.
+	 *             <p>
+	 *             Always use this method (or its overloaded method
+	 *             {@link #getEntitySqlColumns(Class<?> entityType, String
+	 *             tableAlias)}) to create your custom query columns when using
+	 *             EntityRowMapper.
+	 *             {@link io.github.simplejdbcmapper.core.EntityRowMapper} will
+	 *             handle the column to property mapping.
+	 * 
+	 *             <pre>
+	 *             "somecolumn, some_other_column, last_name"
+	 *             </pre>
+	 *
+	 *             See {@link #newEntityRowMapper}
+	 * 
+	 * @param entityType the type
+	 * @return comma separated select column string
+	 * 
+	 */
+	@Deprecated
 	public String getEntitySqlColumns(Class<?> entityType) {
-		return findOperation.getEntitySqlColumns(entityType);
+		return findOperation.getSqlColumns(entityType);
 	}
 
 	/**
@@ -366,8 +396,48 @@ public final class SimpleJdbcMapper {
 	 * @return comma separated select column string
 	 * 
 	 */
+	public String getSqlColumns(Class<?> entityType, String tableAlias) {
+		return findOperation.getSqlColumns(entityType, tableAlias);
+	}
+
+	/**
+	 * @deprecated Use getSqlColumns(Class<?> entityType, String tableAlias)
+	 *             instead.
+	 * 
+	 *             Gets the sql columns with table aliases that works with
+	 *             EntityRowMapper. EntityRowMapper expects the sql columns to be in
+	 *             a specific order since it uses position indexes to retrieve the
+	 *             data from the query ResultSet. <b>Do not modify the generated sql
+	 *             columns</b>.
+	 *             <p>
+	 *             Always use this method (or its overloaded method
+	 *             {@link #getEntitySqlColumns(Class<?> entityType)}) to create your
+	 *             custom query columns when using EntityRowMapper. create your
+	 *             custom query columns when using EntityRowMapper.
+	 *             {@link io.github.simplejdbcmapper.core.EntityRowMapper} will
+	 *             handle the column to property mapping.
+	 *             <p>
+	 *             Use it in your custom queries when you are doing joins and need
+	 *             columns corresponding to a table alias.
+	 *             <p>
+	 *             For tableAlias argument 't1' will return something like below:
+	 * 
+	 *             <pre>
+	 *             "t1.somecolumn, t1.someothercolumn, t1.last_name"
+	 *             </pre>
+	 * 
+	 *             Its good practice to keep the table aliases short and succinct.
+	 * 
+	 *             See {@link #newEntityRowMapper}
+	 * 
+	 * @param entityType the type
+	 * @param tableAlias the table alias
+	 * @return comma separated select column string
+	 * 
+	 */
+	@Deprecated
 	public String getEntitySqlColumns(Class<?> entityType, String tableAlias) {
-		return findOperation.getEntitySqlColumns(entityType, tableAlias);
+		return findOperation.getSqlColumns(entityType, tableAlias);
 	}
 
 	/**
@@ -395,8 +465,40 @@ public final class SimpleJdbcMapper {
 	 * @param multiEntity the MultiEntity
 	 * @return sql columns string
 	 */
+	public String getSqlColumns(MultiEntity multiEntity) {
+		return findOperation.getSqlColumns(multiEntity);
+	}
+
+	/**
+	 * @deprecated Use getSqlColumns(MultiEntity multiEntity) instead.
+	 * 
+	 *             Gets the sql columns for multi-entity processing. These sql
+	 *             columns are used with the ResultSetExtractor and <b>should not be
+	 *             modified</b> since the extractor uses position indexes to
+	 *             retrieve the data from the query ResultSet.
+	 *             <p>
+	 *             For the following multi-entity:
+	 * 
+	 *             <pre>
+	 *             new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol")
+	 *             </pre>
+	 * 
+	 *             this will generate sql columns like below:
+	 * 
+	 *             <pre>
+	 * o.id, o.order_date, ol.id, ol.product_id ...
+	 *             </pre>
+	 * 
+	 *             Its good practice to keep the table aliases short and succinct.
+	 * 
+	 *             See {@link #resultSetExtractor}
+	 * 
+	 * @param multiEntity the MultiEntity
+	 * @return sql columns string
+	 */
+	@Deprecated
 	public String getMultiEntitySqlColumns(MultiEntity multiEntity) {
-		return findOperation.getMultiEntitySqlColumns(multiEntity);
+		return findOperation.getSqlColumns(multiEntity);
 	}
 
 	/**

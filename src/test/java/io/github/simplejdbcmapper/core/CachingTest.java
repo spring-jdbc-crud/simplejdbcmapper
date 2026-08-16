@@ -160,16 +160,16 @@ class CachingTest {
 		SimpleCache<Class<?>, String> cache = fo.getEntitySqlColumnsCache();
 		cache.clear();
 
-		fo.getEntitySqlColumns(Customer.class);
+		fo.getSqlColumns(Customer.class);
 		assertEquals(1, cache.size());
 
-		fo.getEntitySqlColumns(Customer.class);
+		fo.getSqlColumns(Customer.class);
 		assertEquals(1, cache.size());
 
-		fo.getEntitySqlColumns(Product.class);
+		fo.getSqlColumns(Product.class);
 		assertEquals(2, cache.size());
 
-		fo.getEntitySqlColumns(Product.class);
+		fo.getSqlColumns(Product.class);
 		assertEquals(2, cache.size());
 
 	}
@@ -180,19 +180,19 @@ class CachingTest {
 		SimpleCache<String, String> cache = fo.getEntitySqlColumnsAliasCache();
 		cache.clear();
 
-		fo.getEntitySqlColumns(Customer.class, "t1");
+		fo.getSqlColumns(Customer.class, "t1");
 		assertEquals(1, cache.size());
 
-		fo.getEntitySqlColumns(Customer.class, "t1");
+		fo.getSqlColumns(Customer.class, "t1");
 		assertEquals(1, cache.size());
 
-		fo.getEntitySqlColumns(Product.class, "p1");
+		fo.getSqlColumns(Product.class, "p1");
 		assertEquals(2, cache.size());
 
-		fo.getEntitySqlColumns(Product.class, "p1");
+		fo.getSqlColumns(Product.class, "p1");
 		assertEquals(2, cache.size());
 
-		fo.getEntitySqlColumns(Product.class, "p2");
+		fo.getSqlColumns(Product.class, "p2");
 		assertEquals(3, cache.size());
 
 	}

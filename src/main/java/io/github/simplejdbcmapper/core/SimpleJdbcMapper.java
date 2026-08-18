@@ -280,7 +280,7 @@ public final class SimpleJdbcMapper {
 	 * Query:
 	 * 
 	 * <pre>
-	 * String sql = "SELECT " + sjm.getEntitySqlColumns(Product.class) + "FROM product WHERE name = ?";
+	 * String sql = "SELECT " + sjm.getSqlColumns(Product.class) + "FROM product WHERE name = ?";
 	 * </pre>
 	 * 
 	 * Example using JdbcTemplate:

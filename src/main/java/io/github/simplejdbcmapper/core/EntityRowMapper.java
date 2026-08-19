@@ -38,8 +38,8 @@ import io.github.simplejdbcmapper.exception.MapperException;
  * either
  * 
  * <pre>
- * {@link io.github.simplejdbcmapper.core.SimpleJdbcMapper#getEntitySqlColumns(Class<?> entityType)} or
- * {@link io.github.simplejdbcmapper.core.SimpleJdbcMapper#getEntitySqlColumns(Class<?> entityType, String tableAlias)}
+ * {@link io.github.simplejdbcmapper.core.SimpleJdbcMapper#getSqlColumns(Class<?> entityType)} or
+ * {@link io.github.simplejdbcmapper.core.SimpleJdbcMapper#getSqlColumns(Class<?> entityType, String tableAlias)}
  * </pre>
  * 
  * <b>Do not modify the generated sql columns</b>. EntityRowMapper expects the
@@ -59,7 +59,7 @@ import io.github.simplejdbcmapper.exception.MapperException;
  * Query:
  * 
  * <pre>
- * String sql = "SELECT " + sjm.getEntitySqlColumns(Product.class) + "FROM product WHERE name = ?";
+ * String sql = "SELECT " + sjm.getSqlColumns(Product.class) + "FROM product WHERE name = ?";
  * </pre>
  * 
  * Example using JdbcTemplate:

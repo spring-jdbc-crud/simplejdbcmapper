@@ -24,7 +24,7 @@ import io.github.simplejdbcmapper.exception.MapperException;
 /**
  * Used in multi-entity processing. Holds information used to generate the
  * multi-entity sql columns using
- * {@link io.github.simplejdbcmapper.core.SimpleJdbcMapper#getMultiEntitySqlColumns}
+ * {@link io.github.simplejdbcmapper.core.SimpleJdbcMapper#getSqlColumns(MultiEntity)}
  * and for the library's ResultSetExtractor
  * {@link io.github.simplejdbcmapper.core.SimpleJdbcMapper#resultSetExtractor}
  * 

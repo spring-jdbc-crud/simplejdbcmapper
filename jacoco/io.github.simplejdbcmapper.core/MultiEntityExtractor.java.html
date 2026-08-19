@@ -98,7 +98,7 @@ class MultiEntityExtractor {
 <span class="fc" id="L98">			List&lt;EntityExtractor&gt; entityExtractors = new ArrayList&lt;&gt;();</span>
 <span class="fc bfc" id="L99" title="All 2 branches covered.">			for (Map.Entry&lt;Class&lt;?&gt;, String&gt; entry : multiEntity.getEntries()) {</span>
 <span class="fc" id="L100">				Class&lt;?&gt; entityType = entry.getKey();</span>
-<span class="fc" id="L101">				EntityRowMapper&lt;?&gt; rowMapper = newEntityRowMapper(entityType, offset);</span>
+<span class="fc" id="L101">				EntityRowMapper&lt;?&gt; rowMapper = getEntityRowMapperInstance(entityType, offset);</span>
 <span class="fc" id="L102">				TableMapping tableMapping = sjmSupport.getTableMapping(entityType);</span>
 <span class="fc" id="L103">				Method idReadMethod = tableMapping.getIdPropertyMapping().getReadMethod();</span>
 <span class="fc" id="L104">				entityExtractors.add(new EntityExtractor(entityType, rowMapper, new ArrayList(), idReadMethod,</span>
@@ -108,7 +108,7 @@ class MultiEntityExtractor {
 <span class="fc" id="L108">			return entityExtractors;</span>
 		}
 
-		private &lt;T&gt; EntityRowMapper&lt;T&gt; newEntityRowMapper(Class&lt;T&gt; entityType, int offset) {
+		private &lt;T&gt; EntityRowMapper&lt;T&gt; getEntityRowMapperInstance(Class&lt;T&gt; entityType, int offset) {
 <span class="fc" id="L112">			TableMapping tableMapping = sjmSupport.getTableMapping(entityType);</span>
 <span class="fc" id="L113">			EntityRowMapper&lt;T&gt; rowMapper = new EntityRowMapper&lt;&gt;(tableMapping, sjmSupport.getConversionService(),</span>
 					offset);
@@ -125,4 +125,4 @@ class MultiEntityExtractor {
 	}
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main cddd968e985b519eb0d92c0305fa47019a87a3de 2026-07-30T11:08:13</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 7ecf3c49c41e5d1b4ee927d81de3d9cf8f67b675 2026-08-19T15:52:11</div></body></html>

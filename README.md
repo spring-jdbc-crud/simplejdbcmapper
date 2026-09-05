@@ -525,7 +525,6 @@ From the results of these 2 queries the relationships can be assembled.
 
 ```
   // The paginated query. Note the PAGINATED SYNTAX is different for different databases. Use the one for your database.
-  // Since its a single entity use getSqlColumns() to get the sql columns
  String orderSql = """
 		SELECT %s
 		FROM orders

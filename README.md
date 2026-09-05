@@ -31,7 +31,7 @@ Just by annotating the models that you would use with JdbcTemplate/JdbcClient, y
 2. A fluent API to assemble relationships from your custom queries.
 3. Simple configuration similar to JdbcTemplate/JdbClient configuration.
 4. No need to write custom row mappers for your queries by using the library's EntityRowMapper.
-5. Transactions are managed using Spring as the library uses JdbcTemplate for database interaction.
+5. Manage your transactions using Spring as the library uses JdbcTemplate for database interaction.
 6. To view the SQL use Spring logging (See [logging](#logging)).
 7. Tests are run against PostgreSQL, MySQL, Oracle, SQLServer. Should work with other databases.
 [![CI SimpleJdbcMapper](https://github.com/spring-jdbc-crud/simplejdbcmapper/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/spring-jdbc-crud/simplejdbcmapper/actions/workflows/ci.yml)

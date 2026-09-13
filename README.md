@@ -28,7 +28,7 @@ Just by annotating the models that you would use with JdbcTemplate/JdbcClient, y
 
 ## Features
 1. One liners for CRUD. All it takes is to use the 3 annotations @Table, @Id and @Column.
-2. A fluent API to assemble relationships from your custom queries.
+2. A fluent API to assemble relationships from your custom SQL queries.
 3. Simple configuration similar to JdbcTemplate/JdbClient configuration.
 4. No need to write custom row mappers for your queries by using the library's EntityRowMapper.
 5. Manage your transactions using Spring as the library uses JdbcTemplate for database interaction.

@@ -701,7 +701,7 @@ Use JdbcTemplate/JdbcClient directly to handle these cases.
 The 2.x release has removed the dependency on database table column meta-data for mapping totally.
 
 Difference from 1.x:  
-1. SimpleJdbcMapper 2.x tries to infer the correct SQL type from the Java types but some times it cannot (Mostly byte[] and database driver specific java types). In these cases explicitly declaring the SQL type is a best practice to ensure correctness, improve performance, and correctly handle NULL values. See documentation on @Column(sqlType="somesqltype") and BLOB/CLOB mapping further above on how to figure out and set the SQL type value.
+1. SimpleJdbcMapper tries to infer the correct SQL type from the Java types but for some rare cases it cannot; mostly byte[] and database driver specific java types. In these cases explicitly declaring the SQL type is a best practice to ensure correctness, improve performance, and correctly handle NULL values. See documentation on @Column(sqlType="somesqltype") and BLOB/CLOB mapping further above on how to figure out and set the SQL type value.
 2. Since 2.x does not use the database table column meta data, it cannot provide  detailed messages on what went wrong with a mapping. Mapping issues will surface through sql errors thrown, which is similar to what happens when using JdbcTemplate/JdbcClient directly.
 3. Primitives not supported. Use corresponding java wrapper classes in your mappings
 

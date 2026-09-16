@@ -2,9 +2,9 @@
 
 A small library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations and relationship queries by making them less verbose. Use its API where beneficial and keep using JdbcTemplate/JdbcClient for other functionality.
 
-Just by annotating the models that you would use with JdbcTemplate/JdbcClient, you get single line CRUD and a fluent API to assemble relationships from your custom SQL queries.
+Just by annotating the models that you would use with JdbcTemplate/JdbcClient, you get single line CRUD and an API to assemble relationships from your SQL queries.
 
-**New Feature Alert:** Relationships can be assembled from your custom SQL queries. :sparkler:
+**New Feature Alert:** Relationships can be assembled from your  SQL queries. :sparkler:
 
 [Javadoc](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/index.html) | [Demo Application](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper)  
 
@@ -15,7 +15,7 @@ Just by annotating the models that you would use with JdbcTemplate/JdbcClient, y
 [JDK and Spring version requirements](#jdk-and-spring-version-requirements)  
 [Spring bean configuration for SimpleJdbcMapper](#spring-bean-configuration-for-simplejdbcmapper)  
 [Annotations](#annotations)   
-[Assembling relationships from custom queries](#assembling-relationships-from-custom-queries) :sparkler:     
+[Assembling relationships from SQL queries](#assembling-relationships-from-sql-queries) :sparkler:     
 [BLOB CLOB mapping](#blob-clob-mapping)  
 [Enum mapping](#enum-mapping)  
 [Configuration for auto assigning @CreatedBy, @UpdateBy, @CreatedOn, @UpdatedOn](#configuration-for-auto-assigning-createdby-updateby-createdon-updatedon)  
@@ -28,7 +28,7 @@ Just by annotating the models that you would use with JdbcTemplate/JdbcClient, y
 
 ## Features
 1. One liners for CRUD. All it takes is to use the 3 annotations @Table, @Id and @Column.
-2. A fluent API to assemble relationships from your custom SQL queries.
+2. An API to assemble relationships from your SQL queries.
 3. Simple configuration similar to JdbcTemplate/JdbClient configuration.
 4. No need to write custom row mappers for your queries by using the library's EntityRowMapper.
 5. Manage your transactions using Spring as the library uses JdbcTemplate for database interaction.
@@ -115,7 +115,7 @@ Just by annotating the models that you would use with JdbcTemplate/JdbcClient, y
  sjm.deleteById(Product.class, 5);
  
  /*
-  For custom queries which retrieve mapped objects use getSqlColumns() to get the columns for the sql 
+  To retrieve mapped objects use getSqlColumns() to get the columns for the sql 
   to work with EntityRowMapper (see its javadoc). Note in this case the 'name' property is mapped to the 'product_name' column.
  */
  String sql = """
@@ -139,7 +139,7 @@ Just by annotating the models that you would use with JdbcTemplate/JdbcClient, y
  JdbcTemplate jdbcTemplate = sjm.getJdbcTemplate();
  NamedParameterJdbcTemplate namedParameterJdbcTemplate = sjm.getNamedParameterJdbcTemplate();
  
- // See relationships section on how to asssemble relationships from your custom queries.
+ // See relationships section on how to asssemble relationships from your  queries.
  
  // The demo application (link provided at top) is easy to install and run where you can see example code in action.
  
@@ -260,7 +260,7 @@ spring.datasource.driver-class-name=com.microsoft.sqlserver.jdbc.SQLServerDriver
 ```
 
 ## Annotations
-Using the 3 annotations @Table, @Id and @Column you get single line CRUD and also will be able to assemble relationships from custom queries. Other annotations are for audit fields and optimistic locking.
+Using the 3 annotations @Table, @Id and @Column you get single line CRUD and also will be able to assemble relationships from SQL queries. Other annotations are for audit fields and optimistic locking.
 
 1.**@Table**
 
@@ -316,8 +316,8 @@ After a successful insert() operation the productId property will be populated w
 
 ```java 
 
-@Table(name="customer")
-class Customer {
+@Table(name="er")
+class er {
  @Id
  private Integer id;
   ...
@@ -420,7 +420,7 @@ class Product {
   
 }
 ```
-## Assembling relationships from custom queries
+## Assembling relationships from SQL queries
 An implementation of the relationship examples below and other features of the library are available in the [Demo Application](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper). It has an embedded h2 database with tables populated. There is no configuration required and is simple to install and run. 
 
 ### 1.ToMany relationship:
@@ -470,7 +470,7 @@ Note: You can assemble as many relationships as your query supports. This exampl
   // Define your entities. The aliases should exactly match the aliases used in the query.
   MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol").add(Product.class,"p");
   
-   // Build your custom sql using the sql columns from sjm.getSqlColumns(multiEntity)
+   // Get the columns for your 'SELECT' using sjm.getSqlColumns()
   String sql = """
       SELECT %s
       FROM orders o
@@ -500,7 +500,7 @@ Note: You can assemble as many relationships as your query supports. This exampl
   // Define the entities. The intermediate table employee_skill corresponds to mapped EmployeeSkill class and needs to be selected also.
   MultiEntity multiEntity = new MultiEntity().add(Employee.class, "emp").add(EmployeeSkill.class, "es").add(Skill.class, "s");
   
-   // Build your custom sql using the sql columns from getSqlColumns()
+   // Get the columns for your 'SELECT' using sjm.getSqlColumns()
   String sql = """
       SELECT %s
       FROM employee emp
@@ -655,7 +655,7 @@ private StatusEnum status;  // Mapped to a String column in the database (e.g., 
 @Bean
 public SimpleJdbcMapper simpleJdbcMapper(DataSource dataSource) {
     SimpleJdbcMapper simpleJdbcMapper = new SimpleJdbcMapper(dataSource);
-    // Provide your own custom Supplier. Make Sure the type returned by Supplier matches the type 
+    // Provide your own  Supplier. Make Sure the type returned by Supplier matches the type 
     // of the Property you are annotating. Generally 'audited by' is got from a thread local variable 
     // for example when using spring security.
     simpleJdbcMapper.setRecordAuditedBySupplier(() -> "tester");
@@ -670,7 +670,7 @@ public SimpleJdbcMapper simpleJdbcMapper(DataSource dataSource) {
  JdbcTemplate jdbcTemplate = sjm.getJdbcTemplate();
  NamedParameterJdbcTemplate namedParameterJdbcTemplate = sjm.getNamedParameterJdbcTemplate();
 ```
-There is no requirement that you have to use the underlying JdbcClient/JdbcTemplate for your custom queries. You can create your own JdbcClient/JdbcTemplate and use it. 
+There is no requirement that you have to use the underlying JdbcClient/JdbcTemplate for your SQL queries. You can create your own JdbcClient/JdbcTemplate and use it. 
 
 ## Logging
  

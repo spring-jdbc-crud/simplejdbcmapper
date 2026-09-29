@@ -28,7 +28,7 @@ import org.springframework.util.Assert;
  * &lt;/pre&gt;
  * &lt;p&gt;
  * For more details see the &lt;a href=
- * &quot;https://github.com/spring-jdbc-crud/simplejdbcmapper#assembling-relationships-from-custom-queries&quot;&gt;documentation&lt;/a&gt;
+ * &quot;https://github.com/spring-jdbc-crud/simplejdbcmapper#assembling-relationships-from-sql-queries&quot;&gt;documentation&lt;/a&gt;
  * 
  * 
  * @author Antony Joseph
@@ -143,26 +143,27 @@ public class Relationship {
 
 		public RelationshipFluent.Populate through(Class&lt;?&gt; throughType, String fkPropertyToMainObjId,
 				String fkPropertyToRelatedObjId) {
-<span class="fc" id="L146">			this.throughType = throughType;</span>
-<span class="fc" id="L147">			this.relationshipType = RelationshipMapper.TO_MANY_THROUGH;</span>
-<span class="fc" id="L148">			this.toManyThrough = new ToManyThrough(mainType, relatedType);</span>
-<span class="fc" id="L149">			toManyThrough.through(throughType, fkPropertyToMainObjId, fkPropertyToRelatedObjId);</span>
-<span class="fc" id="L150">			return this;</span>
+<span class="fc" id="L146">			this.toMany = null;</span>
+<span class="fc" id="L147">			this.throughType = throughType;</span>
+<span class="fc" id="L148">			this.relationshipType = RelationshipMapper.TO_MANY_THROUGH;</span>
+<span class="fc" id="L149">			this.toManyThrough = new ToManyThrough(mainType, relatedType);</span>
+<span class="fc" id="L150">			toManyThrough.through(throughType, fkPropertyToMainObjId, fkPropertyToRelatedObjId);</span>
+<span class="fc" id="L151">			return this;</span>
 		}
 
 		public Relationship populate(String mainObjPropertyToPopulate) {
-<span class="fc bfc" id="L154" title="All 2 branches covered.">			if (relationshipType.equals(RelationshipMapper.TO_ONE)) {</span>
-<span class="fc" id="L155">				toOne.populate(mainObjPropertyToPopulate);</span>
-<span class="fc bfc" id="L156" title="All 2 branches covered.">			} else if (relationshipType.equals(RelationshipMapper.TO_MANY)) {</span>
-<span class="fc" id="L157">				toMany.populate(mainObjPropertyToPopulate);</span>
+<span class="fc bfc" id="L155" title="All 2 branches covered.">			if (relationshipType.equals(RelationshipMapper.TO_ONE)) {</span>
+<span class="fc" id="L156">				toOne.populate(mainObjPropertyToPopulate);</span>
+<span class="fc bfc" id="L157" title="All 2 branches covered.">			} else if (relationshipType.equals(RelationshipMapper.TO_MANY)) {</span>
+<span class="fc" id="L158">				toMany.populate(mainObjPropertyToPopulate);</span>
 			} else {
 				// toManyThrough
-<span class="fc" id="L160">				toManyThrough.populate(mainObjPropertyToPopulate);</span>
+<span class="fc" id="L161">				toManyThrough.populate(mainObjPropertyToPopulate);</span>
 			}
-<span class="fc" id="L162">			return new Relationship(this);</span>
+<span class="fc" id="L163">			return new Relationship(this);</span>
 		}
 
 	}
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 93fa7b29509b1d95c5f235d18f824633ff697a9d 2026-09-13T15:21:49</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 7fb1fd3cea4ef122407c75846ab1b67653145b45 2026-09-29T11:05:53</div></body></html>

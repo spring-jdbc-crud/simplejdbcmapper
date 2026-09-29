@@ -46,7 +46,7 @@ import org.springframework.util.StringUtils;
  * &lt;/pre&gt;
  * 
  * For more details see &lt;a href=
- * &quot;https://github.com/spring-jdbc-crud/simplejdbcmapper#assembling-relationships-from-custom-queries&quot;&gt;documentation&lt;/a&gt;
+ * &quot;https://github.com/spring-jdbc-crud/simplejdbcmapper#assembling-relationships-from-sql-queries&quot;&gt;documentation&lt;/a&gt;
  * and {@link io.github.simplejdbcmapper.relationship.Relationship}
  *
  * @author Antony Joseph
@@ -155,65 +155,53 @@ import org.springframework.util.StringUtils;
 		}
 <span class="fc" id="L156">	}</span>
 
-	@SuppressWarnings(&quot;unchecked&quot;)
-	static &lt;T&gt; List&lt;T&gt; getList(Class&lt;?&gt; type, List&lt;ExtractorEntityResult&gt; results) {
-<span class="nc" id="L160">		ExtractorEntityResult result = getExtractorEntityResult(type, results);</span>
-<span class="nc" id="L161">		return (List&lt;T&gt;) result.list();</span>
-	}
-
 	static ExtractorEntityResult getExtractorEntityResult(Class&lt;?&gt; type, List&lt;ExtractorEntityResult&gt; results) {
-<span class="fc bfc" id="L165" title="All 2 branches covered.">		for (ExtractorEntityResult result : results) {</span>
-<span class="fc bfc" id="L166" title="All 2 branches covered.">			if (result.entityType() == type) {</span>
-<span class="fc" id="L167">				return result;</span>
+<span class="fc bfc" id="L159" title="All 2 branches covered.">		for (ExtractorEntityResult result : results) {</span>
+<span class="fc bfc" id="L160" title="All 2 branches covered.">			if (result.entityType() == type) {</span>
+<span class="fc" id="L161">				return result;</span>
 			}
-<span class="fc" id="L169">		}</span>
-<span class="fc" id="L170">		throw new IllegalArgumentException(type + &quot; was not part of the query results&quot;);</span>
+<span class="fc" id="L163">		}</span>
+<span class="fc" id="L164">		throw new IllegalArgumentException(type + &quot; was not part of the query results&quot;);</span>
 	}
 
 	static Method getReadMethod(Class&lt;?&gt; type, String propertyName) {
-<span class="fc" id="L174">		Method m = ReflectionUtils.findMethod(type, GET_PREFIX + StringUtils.capitalize(propertyName));</span>
-<span class="pc bpc" id="L175" title="1 of 2 branches missed.">		if (m == null) {</span>
-<span class="nc" id="L176">			m = ReflectionUtils.findMethod(type, IS_PREFIX + StringUtils.capitalize(propertyName));</span>
+<span class="fc" id="L168">		Method m = ReflectionUtils.findMethod(type, GET_PREFIX + StringUtils.capitalize(propertyName));</span>
+<span class="pc bpc" id="L169" title="1 of 2 branches missed.">		if (m == null) {</span>
+<span class="nc" id="L170">			m = ReflectionUtils.findMethod(type, IS_PREFIX + StringUtils.capitalize(propertyName));</span>
 		}
-<span class="pc bpc" id="L178" title="1 of 2 branches missed.">		if (m == null) {</span>
-<span class="nc" id="L179">			throw new IllegalArgumentException(</span>
-<span class="nc" id="L180">					&quot;Invalid argument. Could not find getter for &quot; + type.getName() + &quot;.&quot; + propertyName);</span>
+<span class="pc bpc" id="L172" title="1 of 2 branches missed.">		if (m == null) {</span>
+<span class="nc" id="L173">			throw new IllegalArgumentException(</span>
+<span class="nc" id="L174">					&quot;Invalid argument. Could not find getter for &quot; + type.getName() + &quot;.&quot; + propertyName);</span>
 		}
 		// turn off jvm access verification for invoke()
-<span class="fc" id="L183">		m.trySetAccessible();</span>
-<span class="fc" id="L184">		return m;</span>
+<span class="fc" id="L177">		m.trySetAccessible();</span>
+<span class="fc" id="L178">		return m;</span>
 	}
 
 	static Method getWriteMethod(Class&lt;?&gt; type, String propertyName) {
-<span class="fc" id="L188">		Field field = ReflectionUtils.findField(type, propertyName);</span>
-<span class="fc bfc" id="L189" title="All 2 branches covered.">		if (field == null) {</span>
-<span class="fc" id="L190">			throw new IllegalArgumentException(</span>
-<span class="fc" id="L191">					&quot;Invalid argument. Property name &quot; + propertyName + &quot; does not exist for &quot; + type.getName());</span>
-		} else {
-<span class="fc" id="L193">			Method m = ReflectionUtils.findMethod(type, SET_PREFIX + StringUtils.capitalize(propertyName),</span>
-<span class="fc" id="L194">					field.getType());</span>
-<span class="pc bpc" id="L195" title="1 of 2 branches missed.">			if (m == null) {</span>
-<span class="nc" id="L196">				throw new IllegalArgumentException(</span>
-<span class="nc" id="L197">						&quot;Invalid argument. Could not find setter for &quot; + type.getName() + &quot;.&quot; + propertyName);</span>
-			}
-			// turn off jvm access verification for invoke()
-<span class="fc" id="L200">			m.trySetAccessible();</span>
-<span class="fc" id="L201">			return m;</span>
+<span class="fc" id="L182">		Class&lt;?&gt; propertyType = getPropertyType(type, propertyName);</span>
+<span class="fc" id="L183">		Method m = ReflectionUtils.findMethod(type, SET_PREFIX + StringUtils.capitalize(propertyName), propertyType);</span>
+<span class="pc bpc" id="L184" title="1 of 2 branches missed.">		if (m == null) {</span>
+<span class="nc" id="L185">			throw new IllegalArgumentException(</span>
+<span class="nc" id="L186">					&quot;Invalid argument. Could not find setter for &quot; + type.getName() + &quot;.&quot; + propertyName);</span>
 		}
+		// turn off jvm access verification for invoke()
+<span class="fc" id="L189">		m.trySetAccessible();</span>
+<span class="fc" id="L190">		return m;</span>
 	}
 
 	static Class&lt;?&gt; getPropertyType(Class&lt;?&gt; type, String propertyName) {
-<span class="fc" id="L206">		Field field = ReflectionUtils.findField(type, propertyName);</span>
-<span class="fc bfc" id="L207" title="All 2 branches covered.">		if (field != null) {</span>
-<span class="fc" id="L208">			return field.getType();</span>
+<span class="fc" id="L194">		Field field = ReflectionUtils.findField(type, propertyName);</span>
+<span class="fc bfc" id="L195" title="All 2 branches covered.">		if (field != null) {</span>
+<span class="fc" id="L196">			return field.getType();</span>
 		} else {
-<span class="fc" id="L210">			throw new IllegalArgumentException(</span>
-<span class="fc" id="L211">					&quot;Invalid argument. Property name &quot; + propertyName + &quot; does not exist for &quot; + type.getName());</span>
+<span class="fc" id="L198">			throw new IllegalArgumentException(</span>
+<span class="fc" id="L199">					&quot;Invalid argument. Property name &quot; + propertyName + &quot; does not exist for &quot; + type.getName());</span>
 		}
 	}
 
-<span class="fc" id="L215">	record ExtractorEntityResult(Class&lt;?&gt; entityType, List&lt;?&gt; list, String idPropertyName) {</span>
+<span class="fc" id="L203">	record ExtractorEntityResult(Class&lt;?&gt; entityType, List&lt;?&gt; list, String idPropertyName) {</span>
 	}
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 93fa7b29509b1d95c5f235d18f824633ff697a9d 2026-09-13T15:21:49</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 7fb1fd3cea4ef122407c75846ab1b67653145b45 2026-09-29T11:05:53</div></body></html>

@@ -36,6 +36,25 @@ class RelationshipTest {
 	}
 
 	@Test
+	void toOne_invalidProperty_test() {
+		Exception exception = Assertions.assertThrows(Exception.class, () -> {
+			Relationship.type(OrderLine.class).toOne(Product.class).joinOn("x", "id");
+		});
+		assertTrue(exception.getMessage().contains("Invalid argument."));
+
+		exception = Assertions.assertThrows(Exception.class, () -> {
+			Relationship.type(OrderLine.class).toOne(Product.class).joinOn("productId", "x");
+		});
+		assertTrue(exception.getMessage().contains("Invalid argument."));
+
+		exception = Assertions.assertThrows(Exception.class, () -> {
+			Relationship.type(OrderLine.class).toOne(Product.class).joinOn("productId", "id").populate("x");
+		});
+		assertTrue(exception.getMessage().contains("Invalid argument."));
+
+	}
+
+	@Test
 	void toOne_relatedObj_test() {
 		Exception exception = Assertions.assertThrows(Exception.class, () -> {
 			Relationship.type(OrderLine.class).toOne(null);
@@ -63,6 +82,27 @@ class RelationshipTest {
 	}
 
 	@Test
+	void toMany_invalidProperty_test() {
+		Exception exception = Assertions.assertThrows(Exception.class, () -> {
+			Relationship.type(Order.class).toMany(OrderLine.class).joinOn("x", "id");
+		});
+		assertTrue(exception.getMessage().contains("Invalid argument."));
+
+		exception = Assertions.assertThrows(Exception.class, () -> {
+			Relationship.type(Order.class).toMany(OrderLine.class).joinOn("orderLineId", "x");
+
+		});
+		assertTrue(exception.getMessage().contains("Invalid argument."));
+
+		exception = Assertions.assertThrows(Exception.class, () -> {
+			Relationship.type(Order.class).toMany(OrderLine.class).joinOn("orderLineId", "id").populate("x");
+
+		});
+		assertTrue(exception.getMessage().contains("Invalid argument."));
+
+	}
+
+	@Test
 	void toMany_relatedObj_test() {
 		Exception exception = Assertions.assertThrows(Exception.class, () -> {
 			Relationship.type(OrderLine.class).toMany(null);
@@ -81,8 +121,8 @@ class RelationshipTest {
 		relMapper.addEntityResult(Order.class, orders, "id");
 		relMapper.addEntityResult(OrderLine.class, orderLines, "orderLineId");
 
-		Relationship rel = Relationship.type(OrderLine.class).toMany(Employee.class).joinOn("orderLineId", "id")
-				.populate("orderLines");
+		Relationship rel = Relationship.type(Employee.class).toMany(EmployeeSkill.class).joinOn("id", "employeeId")
+				.populate("skills");
 		exception = Assertions.assertThrows(Exception.class, () -> {
 			relMapper.assemble(rel);
 		});

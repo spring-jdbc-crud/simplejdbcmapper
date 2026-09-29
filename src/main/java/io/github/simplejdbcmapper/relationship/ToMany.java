@@ -33,9 +33,9 @@ import io.github.simplejdbcmapper.exception.MapperException;
 class ToMany {
 	private Class<?> mainType;
 	private Class<?> relatedType;
-	private String mainObjIdProperty;
-	private String relatedObjFkProperty;
-	private String mainObjPropertyToPopulate;
+	private Method mainObjIdPropertyReadMethod;
+	private Method relatedObjFkPropertyReadMethod;
+	private Method mainObjPropertyToPopulateWriteMethod;
 
 	ToMany(Class<?> mainType, Class<?> relatedType) {
 		Assert.notNull(mainType, "mainType must not be null");
@@ -55,23 +55,20 @@ class ToMany {
 					+ mainType.getSimpleName() + "." + mainObjIdProperty + " and " + relatedType.getSimpleName() + "."
 					+ relatedObjFkProperty + " are not the same.");
 		}
-		this.mainObjIdProperty = mainObjIdProperty;
-		this.relatedObjFkProperty = relatedObjFkProperty;
+		this.mainObjIdPropertyReadMethod = RelationshipMapper.getReadMethod(mainType, mainObjIdProperty);
+		this.relatedObjFkPropertyReadMethod = RelationshipMapper.getReadMethod(relatedType, relatedObjFkProperty);
 	}
 
 	void populate(String mainObjPropertyToPopulate) {
 		Assert.notNull(mainObjPropertyToPopulate, "mainObjPropertyToPopulate must not be null");
-		this.mainObjPropertyToPopulate = mainObjPropertyToPopulate;
+		this.mainObjPropertyToPopulateWriteMethod = RelationshipMapper.getWriteMethod(mainType,
+				mainObjPropertyToPopulate);
 	}
 
 	<T, U> void process(List<T> mainObjList, List<U> relatedObjList) {
 		if (CollectionUtils.isEmpty(mainObjList) || CollectionUtils.isEmpty(relatedObjList)) {
 			return;
 		}
-		Method mainObjIdPropertyReadMethod = RelationshipMapper.getReadMethod(mainType, mainObjIdProperty);
-		Method relatedObjFkPropertyReadMethod = RelationshipMapper.getReadMethod(relatedType, relatedObjFkProperty);
-		Method mainObjPropertyToPopulateWriteMethod = RelationshipMapper.getWriteMethod(mainType,
-				mainObjPropertyToPopulate);
 		try {
 			Map<Object, List<U>> fkToRelatedObjListMap = getFkToRelatedObjListMap(relatedObjList,
 					relatedObjFkPropertyReadMethod);

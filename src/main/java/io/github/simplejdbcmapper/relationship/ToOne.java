@@ -32,9 +32,9 @@ import io.github.simplejdbcmapper.exception.MapperException;
 class ToOne {
 	private Class<?> mainType;
 	private Class<?> relatedType;
-	private String mainObjJoinProperty;
-	private String relatedObjJoinProperty;
-	private String mainObjPropertyToPopulate;
+	private Method mainObjJoinPropertyReadMethod;
+	private Method relatedObjJoinPropertyReadMethod;
+	private Method mainObjPropertyToPopulateWriteMethod;
 
 	ToOne(Class<?> mainType, Class<?> relatedType) {
 		Assert.notNull(mainType, "mainType must not be null");
@@ -54,23 +54,21 @@ class ToOne {
 					+ mainType.getSimpleName() + "." + mainObjJoinProperty + " and " + relatedType.getSimpleName() + "."
 					+ relatedObjJoinProperty + " are not the same.");
 		}
-		this.mainObjJoinProperty = mainObjJoinProperty;
-		this.relatedObjJoinProperty = relatedObjJoinProperty;
+
+		this.mainObjJoinPropertyReadMethod = RelationshipMapper.getReadMethod(mainType, mainObjJoinProperty);
+		this.relatedObjJoinPropertyReadMethod = RelationshipMapper.getReadMethod(relatedType, relatedObjJoinProperty);
 	}
 
 	void populate(String mainObjPropertyToPopulate) {
 		Assert.notNull(mainObjPropertyToPopulate, "mainObjPropertyToPopulate must not be null");
-		this.mainObjPropertyToPopulate = mainObjPropertyToPopulate;
+		this.mainObjPropertyToPopulateWriteMethod = RelationshipMapper.getWriteMethod(mainType,
+				mainObjPropertyToPopulate);
 	}
 
 	<T, U> void process(List<T> mainObjList, List<U> relatedObjList) {
 		if (CollectionUtils.isEmpty(mainObjList) || CollectionUtils.isEmpty(relatedObjList)) {
 			return;
 		}
-		Method mainObjJoinPropertyReadMethod = RelationshipMapper.getReadMethod(mainType, mainObjJoinProperty);
-		Method relatedObjJoinPropertyReadMethod = RelationshipMapper.getReadMethod(relatedType, relatedObjJoinProperty);
-		Method mainObjPropertyToPopulateWriteMethod = RelationshipMapper.getWriteMethod(mainType,
-				mainObjPropertyToPopulate);
 
 		try {
 			Map<Object, U> joinPropToRelatedObjMap = getJoinPropToRelatedObjMap(relatedObjList,

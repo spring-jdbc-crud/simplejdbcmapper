@@ -44,7 +44,7 @@ public interface RelationshipFluent {
 	/**
 	 * The toOne interface.
 	 */
-	public interface ToOne {
+	interface ToOne {
 		/**
 		 * The properties on the two lists whose values should be matched to populate
 		 * the toOne relationship. <b>The java type of both the properties have to be

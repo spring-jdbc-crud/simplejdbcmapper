@@ -46,7 +46,7 @@ import org.springframework.util.StringUtils;
  * </pre>
  * 
  * For more details see <a href=
- * "https://github.com/spring-jdbc-crud/simplejdbcmapper#assembling-relationships-from-custom-queries">documentation</a>
+ * "https://github.com/spring-jdbc-crud/simplejdbcmapper#assembling-relationships-from-sql-queries">documentation</a>
  * and {@link io.github.simplejdbcmapper.relationship.Relationship}
  *
  * @author Antony Joseph
@@ -155,12 +155,6 @@ public class RelationshipMapper implements GetListSpec {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	static <T> List<T> getList(Class<?> type, List<ExtractorEntityResult> results) {
-		ExtractorEntityResult result = getExtractorEntityResult(type, results);
-		return (List<T>) result.list();
-	}
-
 	static ExtractorEntityResult getExtractorEntityResult(Class<?> type, List<ExtractorEntityResult> results) {
 		for (ExtractorEntityResult result : results) {
 			if (result.entityType() == type) {
@@ -185,21 +179,15 @@ public class RelationshipMapper implements GetListSpec {
 	}
 
 	static Method getWriteMethod(Class<?> type, String propertyName) {
-		Field field = ReflectionUtils.findField(type, propertyName);
-		if (field == null) {
+		Class<?> propertyType = getPropertyType(type, propertyName);
+		Method m = ReflectionUtils.findMethod(type, SET_PREFIX + StringUtils.capitalize(propertyName), propertyType);
+		if (m == null) {
 			throw new IllegalArgumentException(
-					"Invalid argument. Property name " + propertyName + " does not exist for " + type.getName());
-		} else {
-			Method m = ReflectionUtils.findMethod(type, SET_PREFIX + StringUtils.capitalize(propertyName),
-					field.getType());
-			if (m == null) {
-				throw new IllegalArgumentException(
-						"Invalid argument. Could not find setter for " + type.getName() + "." + propertyName);
-			}
-			// turn off jvm access verification for invoke()
-			m.trySetAccessible();
-			return m;
+					"Invalid argument. Could not find setter for " + type.getName() + "." + propertyName);
 		}
+		// turn off jvm access verification for invoke()
+		m.trySetAccessible();
+		return m;
 	}
 
 	static Class<?> getPropertyType(Class<?> type, String propertyName) {

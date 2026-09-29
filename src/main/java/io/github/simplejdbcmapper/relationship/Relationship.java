@@ -28,7 +28,7 @@ import org.springframework.util.Assert;
  * </pre>
  * <p>
  * For more details see the <a href=
- * "https://github.com/spring-jdbc-crud/simplejdbcmapper#assembling-relationships-from-custom-queries">documentation</a>
+ * "https://github.com/spring-jdbc-crud/simplejdbcmapper#assembling-relationships-from-sql-queries">documentation</a>
  * 
  * 
  * @author Antony Joseph
@@ -143,6 +143,7 @@ public class Relationship {
 
 		public RelationshipFluent.Populate through(Class<?> throughType, String fkPropertyToMainObjId,
 				String fkPropertyToRelatedObjId) {
+			this.toMany = null;
 			this.throughType = throughType;
 			this.relationshipType = RelationshipMapper.TO_MANY_THROUGH;
 			this.toManyThrough = new ToManyThrough(mainType, relatedType);

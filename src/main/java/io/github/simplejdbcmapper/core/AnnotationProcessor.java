@@ -56,7 +56,6 @@ class AnnotationProcessor {
 			if ("[DEFAULT]".equals(colName)) {
 				colName = InternalUtils.toUnderscoreName(propertyName);
 			}
-			colName = InternalUtils.toLowerCase(colName);
 			Integer sqlType = InternalUtils.javaTypeToSqlParameterType(field.getType());
 			if (colAnnotation.sqlType() != Integer.MIN_VALUE) {
 				// sqlType has been configured in @Column
@@ -134,10 +133,10 @@ class AnnotationProcessor {
 						+ " is a primitive. Mapper does not support primitive types. Use the corresponding java wrapper type.");
 			} else if (propMapping.getPropertyType() == Blob.class) {
 				throw new AnnotationException(entityType.getSimpleName() + "." + propMapping.getPropertyName()
-						+ " is of type java.sql.Blob and is not supported.");
+						+ " is of type java.sql.Blob and is not supported. Try using java type byte[] instead.");
 			} else if (propMapping.getPropertyType() == Clob.class) {
 				throw new AnnotationException(entityType.getSimpleName() + "." + propMapping.getPropertyName()
-						+ " is of type java.sql.Clob and is not supported.");
+						+ " is of type java.sql.Clob and is not supported. Try using java type String instead.");
 			} else if (propMapping.isVersionAnnotation() && propMapping.getPropertyType() != Integer.class) {
 				throw new AnnotationException("@Version requires the type of property " + entityType.getSimpleName()
 						+ "." + propMapping.getPropertyName() + " to be Integer");

@@ -69,18 +69,18 @@ class InsertOperation {
 <span class="fc" id="L69">			Object val = ew.getPropertyValue(propMapping);</span>
 <span class="fc" id="L70">			Integer columnSqlType = propMapping.getColumnSqlType();</span>
 <span class="fc" id="L71">			String columnName = propMapping.getColumnName();</span>
-<span class="fc bfc" id="L72" title="All 2 branches covered.">			if (propMapping.isBinaryLargeObject()) {</span>
-<span class="fc" id="L73">				InternalUtils.assignBlobMapSqlParameterSource(mapSqlParameterSource, val, columnName, columnSqlType);</span>
-<span class="fc bfc" id="L74" title="All 2 branches covered.">			} else if (propMapping.isCharacterLargeObject()) {</span>
-<span class="fc" id="L75">				InternalUtils.assignClobMapSqlParameterSource(mapSqlParameterSource, val, columnName, columnSqlType);</span>
-<span class="fc bfc" id="L76" title="All 2 branches covered.">			} else if (propMapping.isEnum()) {</span>
-<span class="fc bfc" id="L77" title="All 2 branches covered.">				if (val == null) {</span>
-<span class="fc" id="L78">					mapSqlParameterSource.addValue(columnName, null, columnSqlType);</span>
+<span class="fc bfc" id="L72" title="All 2 branches covered.">			if (propMapping.isRegularObject()) {</span>
+<span class="fc" id="L73">				mapSqlParameterSource.addValue(columnName, val, columnSqlType);</span>
+<span class="fc bfc" id="L74" title="All 2 branches covered.">			} else if (propMapping.isEnumObject()) {</span>
+<span class="fc bfc" id="L75" title="All 2 branches covered.">				if (val == null) {</span>
+<span class="fc" id="L76">					mapSqlParameterSource.addValue(columnName, null, columnSqlType);</span>
 				} else {
-<span class="fc" id="L80">					mapSqlParameterSource.addValue(columnName, ((Enum&lt;?&gt;) val).name(), columnSqlType);</span>
+<span class="fc" id="L78">					mapSqlParameterSource.addValue(columnName, ((Enum&lt;?&gt;) val).name(), columnSqlType);</span>
 				}
-			} else {
-<span class="fc" id="L83">				mapSqlParameterSource.addValue(columnName, val, columnSqlType);</span>
+<span class="fc bfc" id="L80" title="All 2 branches covered.">			} else if (propMapping.isBinaryLargeObject()) {</span>
+<span class="fc" id="L81">				InternalUtils.assignBlobMapSqlParameterSource(mapSqlParameterSource, val, columnName, columnSqlType);</span>
+<span class="pc bpc" id="L82" title="1 of 2 branches missed.">			} else if (propMapping.isCharacterLargeObject()) {</span>
+<span class="fc" id="L83">				InternalUtils.assignClobMapSqlParameterSource(mapSqlParameterSource, val, columnName, columnSqlType);</span>
 			}
 		}
 <span class="fc" id="L86">		return mapSqlParameterSource;</span>
@@ -152,4 +152,4 @@ class InsertOperation {
 	}
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main fe913dd524a867e88995b0702a2097632a3e51a6 2026-09-29T11:20:28</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 21125466ca9b95bbda26eb1581fce759cc619fd8 2026-10-12T11:06:07</div></body></html>

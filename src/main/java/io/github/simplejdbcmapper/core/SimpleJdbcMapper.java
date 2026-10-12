@@ -589,7 +589,7 @@ public final class SimpleJdbcMapper {
 	 * the underscore to camel case naming convention.
 	 * <p>
 	 * For more details see the <a href=
-	 * "https://github.com/spring-jdbc-crud/simplejdbcmapper#assembling-relationships-from-custom-queries">documentation</a>
+	 * "https://github.com/spring-jdbc-crud/simplejdbcmapper#assembling-relationships-from-sql-queries">documentation</a>
 	 * <p>
 	 * Example code:
 	 * 

@@ -69,18 +69,18 @@ class InsertOperation {
 			Object val = ew.getPropertyValue(propMapping);
 			Integer columnSqlType = propMapping.getColumnSqlType();
 			String columnName = propMapping.getColumnName();
-			if (propMapping.isBinaryLargeObject()) {
-				InternalUtils.assignBlobMapSqlParameterSource(mapSqlParameterSource, val, columnName, columnSqlType);
-			} else if (propMapping.isCharacterLargeObject()) {
-				InternalUtils.assignClobMapSqlParameterSource(mapSqlParameterSource, val, columnName, columnSqlType);
-			} else if (propMapping.isEnum()) {
+			if (propMapping.isRegularObject()) {
+				mapSqlParameterSource.addValue(columnName, val, columnSqlType);
+			} else if (propMapping.isEnumObject()) {
 				if (val == null) {
 					mapSqlParameterSource.addValue(columnName, null, columnSqlType);
 				} else {
 					mapSqlParameterSource.addValue(columnName, ((Enum<?>) val).name(), columnSqlType);
 				}
-			} else {
-				mapSqlParameterSource.addValue(columnName, val, columnSqlType);
+			} else if (propMapping.isBinaryLargeObject()) {
+				InternalUtils.assignBlobMapSqlParameterSource(mapSqlParameterSource, val, columnName, columnSqlType);
+			} else if (propMapping.isCharacterLargeObject()) {
+				InternalUtils.assignClobMapSqlParameterSource(mapSqlParameterSource, val, columnName, columnSqlType);
 			}
 		}
 		return mapSqlParameterSource;

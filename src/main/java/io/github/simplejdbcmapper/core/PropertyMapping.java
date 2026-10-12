@@ -22,6 +22,7 @@ import java.sql.Types;
  * @author Antony Joseph
  */
 class PropertyMapping {
+
 	private String propertyName;
 
 	private Class<?> propertyType;
@@ -35,8 +36,6 @@ class PropertyMapping {
 	private String columnName;
 
 	private Integer columnSqlType;
-
-	private boolean isEnum = false;
 
 	private boolean idAnnotation = false;
 
@@ -54,6 +53,10 @@ class PropertyMapping {
 
 	private boolean characterLargeObject = false;
 
+	private boolean enumObject = false;
+
+	private boolean regularObject = false;
+
 	public PropertyMapping(String propertyName, Class<?> propertyType, String columnName, Integer columnSqlType) {
 		if (propertyName == null || propertyType == null || columnName == null) {
 			throw new IllegalArgumentException("propertyName, propertyType, columnName must not be null");
@@ -64,8 +67,7 @@ class PropertyMapping {
 		// table column names or column names with spaces in them
 		this.columnName = InternalUtils.toLowerCase(columnName);
 		this.columnSqlType = columnSqlType;
-		isEnum = propertyType.isEnum();
-		determineBlobClob();
+		determineProcessingType();
 	}
 
 	public int getColumnSqlType() {
@@ -140,8 +142,12 @@ class PropertyMapping {
 		return characterLargeObject;
 	}
 
-	public boolean isEnum() {
-		return isEnum;
+	public boolean isEnumObject() {
+		return enumObject;
+	}
+
+	public boolean isRegularObject() {
+		return regularObject;
 	}
 
 	public Method getReadMethod() {
@@ -168,13 +174,17 @@ class PropertyMapping {
 		this.resultSetType = resultSetType;
 	}
 
-	private void determineBlobClob() {
-		if (columnSqlType != null && (columnSqlType == Types.BLOB || columnSqlType == Types.ARRAY
+	private void determineProcessingType() {
+		if (propertyType.isEnum()) {
+			enumObject = true;
+		} else if (columnSqlType != null && (columnSqlType == Types.BLOB || columnSqlType == Types.ARRAY
 				|| columnSqlType == Types.LONGVARBINARY || columnSqlType == Types.VARBINARY)) {
 			binaryLargeObject = true;
 		} else if (columnSqlType != null && (columnSqlType == Types.CLOB || columnSqlType == Types.NCLOB
 				|| columnSqlType == Types.LONGVARCHAR || columnSqlType == Types.LONGNVARCHAR)) {
 			characterLargeObject = true;
+		} else {
+			regularObject = true;
 		}
 	}
 }

@@ -468,7 +468,7 @@ An implementation of the relationship examples below and other features of the l
 
 Note: You can assemble as many relationships as your query supports. This example is for 2 relationships.
 
-Models: [Order](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/Order.java), [OrderLine](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/OrderLine.java), [Product](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/OrderLine.java)
+Models: [Order](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/Order.java), [OrderLine](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/OrderLine.java), [Product](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/Product.java)
 
 ```
   // Define your entities. The aliases should exactly match the aliases used in the query.
@@ -532,7 +532,7 @@ Models: [Order](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcm
 
 From the results of these 2 queries the relationships can be assembled.
 
-Models: [Order](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/Order.java), [OrderLine](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/OrderLine.java), [Product](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/OrderLine.java)
+Models: [Order](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/Order.java), [OrderLine](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/OrderLine.java), [Product](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/Product.java)
 
 ```
   // The paginated query. Note the PAGINATED SYNTAX is different for different databases. Use the one for your database.

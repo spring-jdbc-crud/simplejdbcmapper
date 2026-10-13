@@ -2,7 +2,7 @@
 
 A small library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations and relationship queries by making them less verbose. Use its API where beneficial and keep using JdbcTemplate/JdbcClient for other functionality.
 
-Just by annotating the models that you would use with JdbcTemplate/JdbcClient, you get single line CRUD and an API to assemble relationships from your SQL queries.
+Just by using three annotations (@Table, @Id, @Column) on the models that you would use with JdbcTemplate/JdbcClient, you get single line CRUD and an API to assemble relationships from your SQL queries.
 
 **New Feature Alert:** Relationships can be assembled from your  SQL queries. :sparkler:
 
@@ -426,6 +426,8 @@ An implementation of the relationship examples below and other features of the l
 ### 1.ToMany relationship:
 - Order has many OrderLine
 
+  Models: [Order](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/Order.java), [OrderLine](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/OrderLine.java)
+
 ```  
   /* 
      Define the multiple mapped entities you want to select. Make sure the table aliases match that in query.
@@ -466,6 +468,8 @@ An implementation of the relationship examples below and other features of the l
 
 Note: You can assemble as many relationships as your query supports. This example is for 2 relationships.
 
+Models: [Order](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/Order.java), [OrderLine](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/OrderLine.java), [Product](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/OrderLine.java)
+
 ```
   // Define your entities. The aliases should exactly match the aliases used in the query.
   MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol").add(Product.class,"p");
@@ -496,6 +500,8 @@ Note: You can assemble as many relationships as your query supports. This exampl
 ### 3.ToMany relationship through an intermediate table (one side of many to many)
 - Employee has many Skill through intermediate table 'employee_skill'.  
 
+  Models: [Employee](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/Employee.java), [EmployeeSkill](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/EmployeeSkill.java), [Skill](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/Skill.java)
+
 ```
   // Define the entities. The intermediate table employee_skill corresponds to mapped EmployeeSkill class and needs to be selected also.
   MultiEntity multiEntity = new MultiEntity().add(Employee.class, "emp").add(EmployeeSkill.class, "es").add(Skill.class, "s");
@@ -525,6 +531,8 @@ Note: You can assemble as many relationships as your query supports. This exampl
 - OrderLine has one Product  - 2nd query to get the corresponding OrderLine and Product for the orders
 
 From the results of these 2 queries the relationships can be assembled.
+
+Models: [Order](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/Order.java), [OrderLine](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/OrderLine.java), [Product](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/OrderLine.java)
 
 ```
   // The paginated query. Note the PAGINATED SYNTAX is different for different databases. Use the one for your database.

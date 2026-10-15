@@ -549,7 +549,7 @@ Models: [Order](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcm
   // Get the order id list
   List<Integer> orderIds = orders.stream().map(Order::getId).toList();
 
-  // Define your entities. The aliases should exactly match the aliases used in the query.
+  // Define entities for 2nd query. The aliases should exactly match the aliases used in the query.
   MultiEntity multiEntity = new MultiEntity().add(OrderLine.class, "ol").add(Product.class, "p");
   
   // 2nd query. Get the corresponding OrderLine/Product for the order ids. For the IN clause we have to use a named parameter.

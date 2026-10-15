@@ -1,8 +1,8 @@
 [![CI SimpleJdbcMapper](https://github.com/spring-jdbc-crud/simplejdbcmapper/actions/workflows/ci.yml/badge.svg)](https://github.com/spring-jdbc-crud/simplejdbcmapper/actions/workflows/ci.yml)  [![coverage](https://spring-jdbc-crud.github.io/simplejdbcmapper/jacoco/jacoco.svg)](https://spring-jdbc-crud.github.io/simplejdbcmapper/jacoco/index.html)  [![maven-central](https://img.shields.io/maven-central/v/io.github.spring-jdbc-crud/simplejdbcmapper)](https://central.sonatype.com/artifact/io.github.spring-jdbc-crud/simplejdbcmapper)  [![](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fspring-jdbc-crud.github.io%2Fsimplejdbcmapper%2Fcloc%2Foutput.json&query=%24.Java.code&label=lines%20of%20code)](https://spring-jdbc-crud.github.io/simplejdbcmapper/cloc/output.txt) [![](https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fspring-jdbc-crud.github.io%2Fsimplejdbcmapper%2Fcloc%2Foutput.json&query=%24.Java.nFiles&label=files)](https://spring-jdbc-crud.github.io/simplejdbcmapper/cloc/output.txt)  [![license](https://img.shields.io/:license-apache-brightgreen.svg)](https://github.com/spring-jdbc-crud/simplejdbcmapper?tab=Apache-2.0-1-ov-file#readme)
 
-A small library that simplifies Spring JdbcTemplate CRUD operations and relationship queries by making them less verbose. Since its a wrapper around JdbcTemplate, all the JdbcTemplate features are available to you.
+A small library that simplifies Spring JdbcTemplate CRUD operations and relationship queries by making them less verbose. Since its a wrapper around JdbcTemplate, all the JdbcTemplate features are also available to you.
 
-Just by using three annotations (@Table, @Id, @Column) on the models that you would use with JdbcTemplate, you get single line CRUD and an API to assemble relationships from your SQL queries.
+Just by using three annotations (@Table, @Id, @Column) on the models that would be used with JdbcTemplate, you get single line CRUD and an API to assemble relationships from your SQL queries.
 
 **New Feature Alert:** [Relationships can be assembled from your  SQL queries.](#assembling-relationships-from-sql-queries) :sparkler:
 
@@ -564,10 +564,10 @@ Models: [Order](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcm
   // Create the named parameter for NamedParameterJdbcTemplate
   MapSqlParameterSource param = new MapSqlParameterSource().addValue("orderIds", orderIds);
   
-  // Since its a named parameter query use NamedParameterJdbcTemplate.
+  // Since its a named parameter query we need to use NamedParameterJdbcTemplate.
   RelationshipMapper relationshipMapper = sjm.getNamedParameterJdbcTemplate().query(sql, param, sjm.resultSetExtractor(multiEntity));
 
-  // RelationshipMapper has results of OrderLine and Product from query above.
+  // relationshipMapper has results of OrderLine and Product from query above.
   // Add orders from the first query to the relationshipMapper so that we can assemble a relationship from it.
   relationshipMapper.addEntityResult(Order.class, orders, "id");
 

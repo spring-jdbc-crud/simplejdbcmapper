@@ -549,8 +549,10 @@ Models: [Order](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcm
   // Get the order id list
   List<Integer> orderIds = orders.stream().map(Order::getId).toList();
 
-  // 2nd query. Get the corresponding OrderLine/Product for the order ids. For the IN clause we have to use a named parameter.
+  // Define your entities. The aliases should exactly match the aliases used in the query.
   MultiEntity multiEntity = new MultiEntity().add(OrderLine.class, "ol").add(Product.class, "p");
+  
+  // 2nd query. Get the corresponding OrderLine/Product for the order ids. For the IN clause we have to use a named parameter.
   String sql = """
       SELECT %s
       FROM order_line ol
@@ -559,12 +561,13 @@ Models: [Order](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcm
       ORDER BY ol.id
       """.formatted(sjm.getSqlColumns(multiEntity));
       
-  // Create the named parameter
+  // Create the named parameter for NamedParameterJdbcTemplate
   MapSqlParameterSource param = new MapSqlParameterSource().addValue("orderIds", orderIds);
   
   // Since its a named parameter query use NamedParameterJdbcTemplate.
   RelationshipMapper relationshipMapper = sjm.getNamedParameterJdbcTemplate().query(sql, param, sjm.resultSetExtractor(multiEntity));
 
+  // RelationshipMapper has results of OrderLine and Product from query above.
   // Add orders from the first query to the relationshipMapper so that we can assemble a relationship from it.
   relationshipMapper.addEntityResult(Order.class, orders, "id");
 

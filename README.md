@@ -471,7 +471,7 @@ Note: You can assemble as many relationships as your query supports. This exampl
 Models: [Order](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/Order.java), [OrderLine](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/OrderLine.java), [Product](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/Product.java)
 
 ```
-  // Define your entities. The aliases should exactly match the aliases used in the query.
+  // Define the multiple mapped entities you want to select. Make sure the table aliases match that in query.
   MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol").add(Product.class,"p");
   
    // Get the columns for your 'SELECT' using sjm.getSqlColumns()
@@ -503,7 +503,8 @@ Models: [Order](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcm
   Models: [Employee](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/Employee.java), [EmployeeSkill](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/EmployeeSkill.java), [Skill](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/Skill.java)
 
 ```
-  // Define the entities. The intermediate table employee_skill corresponds to mapped EmployeeSkill class and needs to be selected also.
+  // Define the multiple mapped entities you want to select.The intermediate table employee_skill corresponds to mapped EmployeeSkill class 
+  // which needs to be selected also.
   MultiEntity multiEntity = new MultiEntity().add(Employee.class, "emp").add(EmployeeSkill.class, "es").add(Skill.class, "s");
   
    // Get the columns for your 'SELECT' using sjm.getSqlColumns()
@@ -549,7 +550,7 @@ Models: [Order](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcm
   // Get the order id list
   List<Integer> orderIds = orders.stream().map(Order::getId).toList();
 
-  // Define entities for 2nd query. The aliases should exactly match the aliases used in the query.
+  // Define the multiple mapped entities you want to select for the 2nd query. Make sure the table aliases match that in query.
   MultiEntity multiEntity = new MultiEntity().add(OrderLine.class, "ol").add(Product.class, "p");
   
   // 2nd query. Get the corresponding OrderLine/Product for the order ids. For the IN clause we have to use a named parameter.

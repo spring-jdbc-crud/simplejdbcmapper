@@ -2,7 +2,7 @@
 
 A small library that simplifies Spring JdbcTemplate CRUD operations and relationship queries by making them less verbose. Since its a wrapper around JdbcTemplate, all the JdbcTemplate features are also available to you.
 
-Just by using three annotations (@Table, @Id, @Column) on the models that would be used with JdbcTemplate, you get single line CRUD and an API to assemble relationships from your SQL queries.
+Just by using three annotations (@Table, @Id, @Column) on the models used with JdbcTemplate, you get single line CRUD and an API to assemble relationships from your SQL queries.
 
 **New Feature Alert:** [Relationships can be assembled from your  SQL queries.](#assembling-relationships-from-sql-queries) :sparkler:
 
@@ -504,7 +504,7 @@ Models: [Order](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcm
 
 ```
   // Define the multiple mapped entities you want to select.The intermediate table employee_skill corresponds to mapped EmployeeSkill class 
-  // which needs to be selected also.
+  // needs to be selected also.
   MultiEntity multiEntity = new MultiEntity().add(Employee.class, "emp").add(EmployeeSkill.class, "es").add(Skill.class, "s");
   
    // Get the columns for your 'SELECT' using sjm.getSqlColumns()

@@ -2,7 +2,7 @@
 
 A small library that simplifies Spring JdbcTemplate CRUD operations and relationship queries by making them less verbose. Since its a wrapper around JdbcTemplate, all the JdbcTemplate features are also available to you.
 
-Just by using three annotations (@Table, @Id, @Column) on the models used with JdbcTemplate, you get single line CRUD and an API to assemble relationships from your SQL queries.
+Just by using three annotations @Table, @Id, @Column on the models used with JdbcTemplate, you get single line CRUD and an API to assemble relationships from your SQL queries.
 
 **New Feature Alert:** [Relationships can be assembled from your  SQL queries.](#assembling-relationships-from-sql-queries) :sparkler:
 

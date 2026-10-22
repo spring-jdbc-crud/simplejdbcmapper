@@ -316,8 +316,8 @@ After a successful insert() operation the productId property will be populated w
 
 ```java 
 
-@Table(name="er")
-class er {
+@Table(name="orders")
+class Order {
  @Id
  private Integer id;
   ...

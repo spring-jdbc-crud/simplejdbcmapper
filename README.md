@@ -6,7 +6,7 @@ Just by using three annotations @Table, @Id and @Column on the models used with 
 
 **New Feature Alert:** [Relationships can be assembled from your  SQL queries.](#assembling-relationships-from-sql-queries) :sparkler:
 
-[![Javadoc](https://img.shields.io/badge/JavaDoc-Online-green)](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/index.html) [![Demo](https://img.shields.io/badge/Demo-Application-green)](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper)  
+[![Javadoc](https://img.shields.io/badge/JavaDoc-Online-green)](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/index.html) [![Demo](https://img.shields.io/badge/Demo-Application-blue)](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper)  
 
 ## Table of contents
 [Features](#features)  

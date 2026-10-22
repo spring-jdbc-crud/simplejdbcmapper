@@ -475,7 +475,7 @@ Models: [Order](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcm
   // Define the multiple mapped entities you want to select. Make sure the table aliases match that in query.
   MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol").add(Product.class,"p");
   
-   // Get the columns for your 'SELECT' using sjm.getSqlColumns()
+   // Get the columns for your 'SELECT' using getSqlColumns()
   String sql = """
       SELECT %s
       FROM orders o
@@ -508,7 +508,7 @@ Models: [Order](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcm
   // needs to be selected also.
   MultiEntity multiEntity = new MultiEntity().add(Employee.class, "emp").add(EmployeeSkill.class, "es").add(Skill.class, "s");
   
-   // Get the columns for your 'SELECT' using sjm.getSqlColumns()
+   // Get the columns for your 'SELECT' using getSqlColumns()
   String sql = """
       SELECT %s
       FROM employee emp

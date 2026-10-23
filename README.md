@@ -34,7 +34,7 @@ Just by using three annotations @Table, @Id and @Column on the models used with 
 5. Manage your transactions using Spring as the library uses JdbcTemplate for database interaction.
 6. To view the SQL use Spring logging (See [logging](#logging)).
 7. Tests are run against PostgreSQL, MySQL, Oracle, SQLServer. Should work with other databases.
-[![CI SimpleJdbcMapper](https://github.com/spring-jdbc-crud/simplejdbcmapper/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/spring-jdbc-crud/simplejdbcmapper/actions/workflows/ci.yml)
+[![CI simplejdbcmapper](https://github.com/spring-jdbc-crud/simplejdbcmapper/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/spring-jdbc-crud/simplejdbcmapper/actions/workflows/ci.yml)
 8. Only dependency is Spring JDBC libraries. No other external dependencies.
  
 ## Maven coordinates

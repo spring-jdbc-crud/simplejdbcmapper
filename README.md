@@ -651,7 +651,7 @@ private String clobData;
 ```
 
 ## Enum mapping
-Enums should be mapped to a database column which stores strings. It uses the enum.name() to get the string value.
+Enums should be mapped to a database column which stores strings. It uses the enum.name() to get the string value to store in the database and uses Spring's DefaultConverterService behind the scenes to convert the String back to the Enum when reading from database.
 
 ```
 public enum StatusEnum {
@@ -659,7 +659,7 @@ public enum StatusEnum {
 }
 ...
 @Column
-private StatusEnum status;  // Mapped to a String column in the database (e.g., value 'OPEN')
+private StatusEnum status;  // Mapped to a String column in the database (e.g., database column type VARCHAR and string value of enum stored as 'OPEN')
 ...
 ```
 

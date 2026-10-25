@@ -15,7 +15,7 @@ import io.github.simplejdbcmapper.model.StatusEnum;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-class ResultSetTypeTest {
+class ResultSetProcessingTypeTest {
 	@Test
 	void resultSetType_fromClass_Test() {
 

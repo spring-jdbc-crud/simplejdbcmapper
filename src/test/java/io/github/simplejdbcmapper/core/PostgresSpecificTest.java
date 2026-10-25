@@ -38,7 +38,7 @@ import tools.jackson.databind.json.JsonMapper;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-class TypeCheckPostgresTest {
+class PostgresSpecificTest {
 
 	private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd HHmmss");
 

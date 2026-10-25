@@ -30,7 +30,7 @@ import io.github.simplejdbcmapper.model.TypeCheckOracle;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-class TypeCheckOracleTest {
+class OracleSpecificTest {
 
 	@Value("${spring.datasource.driver-class-name}")
 	private String jdbcDriver;

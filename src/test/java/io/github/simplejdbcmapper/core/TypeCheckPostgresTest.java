@@ -29,9 +29,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import io.github.simplejdbcmapper.model.IdSqlTypeOverridden;
+import io.github.simplejdbcmapper.model.JsonbData;
+import io.github.simplejdbcmapper.model.Product;
 import io.github.simplejdbcmapper.model.StatusEnum;
 import io.github.simplejdbcmapper.model.TypeCheckPostgres;
 import io.github.simplejdbcmapper.model.UuidTable;
+import tools.jackson.databind.json.JsonMapper;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -44,6 +47,9 @@ class TypeCheckPostgresTest {
 
 	@Autowired
 	private SimpleJdbcMapper sjm;
+
+	@Autowired
+	JsonMapper jsonMapper;
 
 	@BeforeEach
 	void beforeMethod() {
@@ -73,6 +79,38 @@ class TypeCheckPostgresTest {
 
 		Integer cnt = sjm.deleteById(UuidTable.class, model.getId());
 		assertEquals(1, cnt);
+
+	}
+
+	@Test
+	void insert_jsonb_success() {
+		Product product = sjm.findById(Product.class, 1);
+
+		JsonbData model = new JsonbData();
+		model.setProduct(product);
+
+		sjm.insert(model);
+
+		assertNotNull(model.getId());
+
+		JsonbData d2 = sjm.findById(JsonbData.class, model.getId());
+
+		assertEquals(model.getProduct().getName(), d2.getProduct().getName());
+
+		/*
+		 * assertNotNull(model.getId());
+		 * 
+		 * UuidTable obj = sjm.findById(UuidTable.class, model.getId());
+		 * assertNotNull(obj);
+		 * 
+		 * obj.setData("updated"); sjm.update(obj);
+		 * 
+		 * UuidTable obj2 = sjm.findById(UuidTable.class, model.getId());
+		 * assertEquals("updated", obj2.getData());
+		 * 
+		 * Integer cnt = sjm.deleteById(UuidTable.class, model.getId()); assertEquals(1,
+		 * cnt);
+		 */
 
 	}
 

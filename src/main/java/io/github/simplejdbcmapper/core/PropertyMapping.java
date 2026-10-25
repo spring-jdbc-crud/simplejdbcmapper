@@ -16,6 +16,8 @@ package io.github.simplejdbcmapper.core;
 import java.lang.reflect.Method;
 import java.sql.Types;
 
+import io.github.simplejdbcmapper.exception.MapperException;
+
 /**
  * Object property to database column mapping.
  *
@@ -31,11 +33,14 @@ class PropertyMapping {
 
 	private Method readMethod;
 
-	private ResultSetType resultSetType;
+	private ResultSetProcessingType resultSetProcessingType;
 
 	private String columnName;
 
 	private Integer columnSqlType;
+
+	@SuppressWarnings("rawtypes")
+	private AttributeConverter converter;
 
 	private boolean idAnnotation = false;
 
@@ -49,15 +54,19 @@ class PropertyMapping {
 
 	private boolean updatedByAnnotation = false;
 
-	private boolean binaryLargeObject = false;
+	private boolean blobAttribute = false;
 
-	private boolean characterLargeObject = false;
+	private boolean clobAttribute = false;
 
-	private boolean enumObject = false;
+	private boolean enumAttribute = false;
 
-	private boolean regularObject = false;
+	private boolean standardAttribute = false;
 
-	public PropertyMapping(String propertyName, Class<?> propertyType, String columnName, Integer columnSqlType) {
+	private boolean withConverterAttribute = false;
+
+	@SuppressWarnings("rawtypes")
+	public PropertyMapping(String propertyName, Class<?> propertyType, String columnName, Integer columnSqlType,
+			Class<?> converterClass) {
 		if (propertyName == null || propertyType == null || columnName == null) {
 			throw new IllegalArgumentException("propertyName, propertyType, columnName must not be null");
 		}
@@ -67,7 +76,14 @@ class PropertyMapping {
 		// table column names or column names with spaces in them
 		this.columnName = InternalUtils.toLowerCase(columnName);
 		this.columnSqlType = columnSqlType;
-		determineProcessingType();
+		if (converterClass != null) {
+			try {
+				converter = (AttributeConverter) converterClass.getDeclaredConstructor().newInstance();
+			} catch (Exception e) {
+				throw new MapperException(e);
+			}
+		}
+		determineAttributeProcessingType();
 	}
 
 	public int getColumnSqlType() {
@@ -134,20 +150,29 @@ class PropertyMapping {
 		this.updatedByAnnotation = updatedByAnnotation;
 	}
 
-	public boolean isBinaryLargeObject() {
-		return binaryLargeObject;
+	public boolean isBlobAttribute() {
+		return blobAttribute;
 	}
 
-	public boolean isCharacterLargeObject() {
-		return characterLargeObject;
+	public boolean isClobAttribute() {
+		return clobAttribute;
 	}
 
-	public boolean isEnumObject() {
-		return enumObject;
+	public boolean isEnumAttribute() {
+		return enumAttribute;
 	}
 
-	public boolean isRegularObject() {
-		return regularObject;
+	public boolean isStandardAttribute() {
+		return standardAttribute;
+	}
+
+	public boolean isWithConverterAttribute() {
+		return withConverterAttribute;
+	}
+
+	@SuppressWarnings("rawtypes")
+	public AttributeConverter getConverter() {
+		return this.converter;
 	}
 
 	public Method getReadMethod() {
@@ -166,25 +191,27 @@ class PropertyMapping {
 		this.writeMethod = writeMethod;
 	}
 
-	public ResultSetType getResultSetType() {
-		return resultSetType;
+	public ResultSetProcessingType getResultSetProcessingType() {
+		return resultSetProcessingType;
 	}
 
-	public void setResultSetType(ResultSetType resultSetType) {
-		this.resultSetType = resultSetType;
+	public void setResultSetType(ResultSetProcessingType resultSetProcessingType) {
+		this.resultSetProcessingType = resultSetProcessingType;
 	}
 
-	private void determineProcessingType() {
-		if (propertyType.isEnum()) {
-			enumObject = true;
+	private void determineAttributeProcessingType() {
+		if (converter != null) {
+			withConverterAttribute = true;
+		} else if (propertyType.isEnum()) {
+			enumAttribute = true;
 		} else if (columnSqlType != null && (columnSqlType == Types.BLOB || columnSqlType == Types.ARRAY
 				|| columnSqlType == Types.LONGVARBINARY || columnSqlType == Types.VARBINARY)) {
-			binaryLargeObject = true;
+			blobAttribute = true;
 		} else if (columnSqlType != null && (columnSqlType == Types.CLOB || columnSqlType == Types.NCLOB
 				|| columnSqlType == Types.LONGVARCHAR || columnSqlType == Types.LONGNVARCHAR)) {
-			characterLargeObject = true;
+			clobAttribute = true;
 		} else {
-			regularObject = true;
+			standardAttribute = true;
 		}
 	}
 }

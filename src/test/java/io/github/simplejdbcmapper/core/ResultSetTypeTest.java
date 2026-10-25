@@ -19,39 +19,41 @@ class ResultSetTypeTest {
 	@Test
 	void resultSetType_fromClass_Test() {
 
-		assertEquals(ResultSetType.STRING, ResultSetType.getResultSetType(String.class));
+		assertEquals(ResultSetProcessingType.STRING, ResultSetProcessingType.getResultSetProcessingType(String.class, false));
 
-		assertEquals(ResultSetType.BOOLEAN, ResultSetType.getResultSetType(Boolean.class));
+		assertEquals(ResultSetProcessingType.BOOLEAN, ResultSetProcessingType.getResultSetProcessingType(Boolean.class, false));
 
-		assertEquals(ResultSetType.BYTE, ResultSetType.getResultSetType(Byte.class));
+		assertEquals(ResultSetProcessingType.BYTE, ResultSetProcessingType.getResultSetProcessingType(Byte.class, false));
 
-		assertEquals(ResultSetType.SHORT, ResultSetType.getResultSetType(Short.class));
+		assertEquals(ResultSetProcessingType.SHORT, ResultSetProcessingType.getResultSetProcessingType(Short.class, false));
 
-		assertEquals(ResultSetType.INTEGER, ResultSetType.getResultSetType(Integer.class));
+		assertEquals(ResultSetProcessingType.INTEGER, ResultSetProcessingType.getResultSetProcessingType(Integer.class, false));
 
-		assertEquals(ResultSetType.LONG, ResultSetType.getResultSetType(Long.class));
+		assertEquals(ResultSetProcessingType.LONG, ResultSetProcessingType.getResultSetProcessingType(Long.class, false));
 
-		assertEquals(ResultSetType.FLOAT, ResultSetType.getResultSetType(Float.class));
+		assertEquals(ResultSetProcessingType.FLOAT, ResultSetProcessingType.getResultSetProcessingType(Float.class, false));
 
-		assertEquals(ResultSetType.DOUBLE, ResultSetType.getResultSetType(Double.class));
+		assertEquals(ResultSetProcessingType.DOUBLE, ResultSetProcessingType.getResultSetProcessingType(Double.class, false));
 
-		assertEquals(ResultSetType.NUMBER, ResultSetType.getResultSetType(Number.class));
+		assertEquals(ResultSetProcessingType.NUMBER, ResultSetProcessingType.getResultSetProcessingType(Number.class, false));
 
-		assertEquals(ResultSetType.BIGDECIMAL, ResultSetType.getResultSetType(BigDecimal.class));
+		assertEquals(ResultSetProcessingType.BIGDECIMAL, ResultSetProcessingType.getResultSetProcessingType(BigDecimal.class, false));
 
-		assertEquals(ResultSetType.DATE, ResultSetType.getResultSetType(java.sql.Date.class));
+		assertEquals(ResultSetProcessingType.DATE, ResultSetProcessingType.getResultSetProcessingType(java.sql.Date.class, false));
 
-		assertEquals(ResultSetType.TIME, ResultSetType.getResultSetType(java.sql.Time.class));
-		assertEquals(ResultSetType.TIMESTAMP, ResultSetType.getResultSetType(java.sql.Timestamp.class));
-		assertEquals(ResultSetType.UTILDATE, ResultSetType.getResultSetType(java.util.Date.class));
+		assertEquals(ResultSetProcessingType.TIME, ResultSetProcessingType.getResultSetProcessingType(java.sql.Time.class, false));
+		assertEquals(ResultSetProcessingType.TIMESTAMP, ResultSetProcessingType.getResultSetProcessingType(java.sql.Timestamp.class, false));
+		assertEquals(ResultSetProcessingType.UTILDATE, ResultSetProcessingType.getResultSetProcessingType(java.util.Date.class, false));
 
-		assertEquals(ResultSetType.BYTEARRAY, ResultSetType.getResultSetType(byte[].class));
-		assertEquals(ResultSetType.BLOB, ResultSetType.getResultSetType(Blob.class));
-		assertEquals(ResultSetType.CLOB, ResultSetType.getResultSetType(Clob.class));
+		assertEquals(ResultSetProcessingType.BYTEARRAY, ResultSetProcessingType.getResultSetProcessingType(byte[].class, false));
+		assertEquals(ResultSetProcessingType.BLOB, ResultSetProcessingType.getResultSetProcessingType(Blob.class, false));
+		assertEquals(ResultSetProcessingType.CLOB, ResultSetProcessingType.getResultSetProcessingType(Clob.class, false));
 
-		assertEquals(ResultSetType.ENUM, ResultSetType.getResultSetType(StatusEnum.class));
+		assertEquals(ResultSetProcessingType.ENUM, ResultSetProcessingType.getResultSetProcessingType(StatusEnum.class, false));
 
-		assertEquals(ResultSetType.UNKNOWN, ResultSetType.getResultSetType(char[].class));
+		assertEquals(ResultSetProcessingType.UNKNOWN, ResultSetProcessingType.getResultSetProcessingType(char[].class, false));
+
+		assertEquals(ResultSetProcessingType.CUSTOMCONVERTER, ResultSetProcessingType.getResultSetProcessingType(Integer.class, true));
 
 	}
 }

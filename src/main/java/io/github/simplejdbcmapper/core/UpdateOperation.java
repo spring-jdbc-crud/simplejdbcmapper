@@ -133,6 +133,7 @@ class UpdateOperation {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private MapSqlParameterSource createMapSqlParameterSource(EntityWrapper ew, TableMapping tableMapping,
 			Set<String> parameters) {
 		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
@@ -144,20 +145,27 @@ class UpdateOperation {
 				PropertyMapping propMapping = tableMapping.getPropertyMappingByPropertyName(propertyName);
 				Object val = ew.getPropertyValue(propMapping);
 				Integer columnSqlType = propMapping.getColumnSqlType();
-				if (propMapping.isRegularObject()) {
+				if (propMapping.isStandardAttribute()) {
 					mapSqlParameterSource.addValue(propertyName, val, columnSqlType);
-				} else if (propMapping.isEnumObject()) {
+				} else if (propMapping.isEnumAttribute()) {
 					if (val == null) {
 						mapSqlParameterSource.addValue(propertyName, null, columnSqlType);
 					} else {
 						mapSqlParameterSource.addValue(propertyName, ((Enum<?>) val).name(), columnSqlType);
 					}
-				} else if (propMapping.isBinaryLargeObject()) {
+				} else if (propMapping.isBlobAttribute()) {
 					InternalUtils.assignBlobMapSqlParameterSource(mapSqlParameterSource, val, propertyName,
 							columnSqlType);
-				} else if (propMapping.isCharacterLargeObject()) {
+				} else if (propMapping.isClobAttribute()) {
 					InternalUtils.assignClobMapSqlParameterSource(mapSqlParameterSource, val, propertyName,
 							columnSqlType);
+				} else if (propMapping.isWithConverterAttribute()) {
+					if (val == null) {
+						mapSqlParameterSource.addValue(propertyName, null, columnSqlType);
+					} else {
+						mapSqlParameterSource.addValue(propertyName,
+								propMapping.getConverter().convertToDatabaseColumn(val), columnSqlType);
+					}
 				}
 			}
 		}

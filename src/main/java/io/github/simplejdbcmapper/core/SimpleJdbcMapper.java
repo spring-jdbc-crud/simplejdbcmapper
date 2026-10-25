@@ -782,8 +782,9 @@ public final class SimpleJdbcMapper {
 	}
 
 	/**
-	 * @deprecated @see io.github.simplejdbcmapper.core.AttributeConverter on how to
-	 *             use custom converters.<br>
+	 * @deprecated See {@link io.github.simplejdbcmapper.core.AttributeConverter} on
+	 *             how to use custom converters.
+	 *             <p>
 	 *             Exposing the conversion service used, so if necessary new
 	 *             converters can be added etc. The default conversion service used
 	 *             in SimpleJdbcMapper is Spring's DefaultConversionService.
@@ -796,8 +797,9 @@ public final class SimpleJdbcMapper {
 	}
 
 	/**
-	 * @deprecated @see io.github.simplejdbcmapper.core.AttributeConverter on how to
-	 *             use custom converters.<br>
+	 * @deprecated See {@link io.github.simplejdbcmapper.core.AttributeConverter} on
+	 *             how to use custom converters.
+	 *             <p>
 	 *             Set the conversion service
 	 * 
 	 * @param conversionService The conversion service to set

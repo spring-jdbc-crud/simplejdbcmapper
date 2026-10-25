@@ -83,35 +83,57 @@ class PostgresSpecificTest {
 	}
 
 	@Test
-	void insert_jsonb_success() {
+	void insert_jsonb_custom_converter() {
 		Product product = sjm.findById(Product.class, 1);
+		JsonbData jd1 = new JsonbData();
+		jd1.setProduct(product);
+		sjm.insert(jd1);
+		assertNotNull(jd1.getId());
+		JsonbData jd2 = sjm.findById(JsonbData.class, jd1.getId());
+		assertEquals(jd1.getProduct().getName(), jd2.getProduct().getName());
+	}
 
-		JsonbData model = new JsonbData();
-		model.setProduct(product);
+	@Test
+	void insert_jsonb_null_custom_converter() {
+		JsonbData jd1 = new JsonbData();
+		sjm.insert(jd1);
+		assertNotNull(jd1.getId());
+		JsonbData jd2 = sjm.findById(JsonbData.class, jd1.getId());
+		assertNull(jd2.getProduct());
+	}
 
-		sjm.insert(model);
+	@Test
+	void update_jsonb_custom_converter() {
+		Product product = sjm.findById(Product.class, 1);
+		JsonbData jd1 = new JsonbData();
+		jd1.setProduct(product);
+		sjm.insert(jd1);
+		JsonbData jd2 = sjm.findById(JsonbData.class, jd1.getId());
 
-		assertNotNull(model.getId());
+		product.setName("xyz");
+		jd2.setProduct(product);
 
-		JsonbData d2 = sjm.findById(JsonbData.class, model.getId());
+		sjm.update(jd2);
+		JsonbData jd3 = sjm.findById(JsonbData.class, jd2.getId());
 
-		assertEquals(model.getProduct().getName(), d2.getProduct().getName());
+		assertEquals(jd3.getProduct().getName(), "xyz");
+	}
 
-		/*
-		 * assertNotNull(model.getId());
-		 * 
-		 * UuidTable obj = sjm.findById(UuidTable.class, model.getId());
-		 * assertNotNull(obj);
-		 * 
-		 * obj.setData("updated"); sjm.update(obj);
-		 * 
-		 * UuidTable obj2 = sjm.findById(UuidTable.class, model.getId());
-		 * assertEquals("updated", obj2.getData());
-		 * 
-		 * Integer cnt = sjm.deleteById(UuidTable.class, model.getId()); assertEquals(1,
-		 * cnt);
-		 */
+	@Test
+	void update_jsonb_null_custom_converter() {
+		Product product = sjm.findById(Product.class, 1);
+		JsonbData jd1 = new JsonbData();
+		jd1.setProduct(product);
+		sjm.insert(jd1);
 
+		JsonbData jd2 = sjm.findById(JsonbData.class, jd1.getId());
+
+		jd2.setProduct(null);
+
+		sjm.update(jd2);
+
+		JsonbData jd3 = sjm.findById(JsonbData.class, jd2.getId());
+		assertNull(jd3.getProduct());
 	}
 
 	@Test

@@ -108,6 +108,10 @@ class SimpleJdbcMapperSupport {
 		return conversionService;
 	}
 
+	/**
+	 * @deprecated Not needed anymore. See AttributeConverter
+	 * @param conversionService
+	 */
 	@Deprecated(since = "2.5.0", forRemoval = true)
 	public void setConversionService(ConversionService conversionService) {
 		Assert.notNull(conversionService, "conversionService must not be null");

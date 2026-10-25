@@ -4,7 +4,7 @@ import io.github.simplejdbcmapper.annotation.Column;
 import io.github.simplejdbcmapper.annotation.Id;
 import io.github.simplejdbcmapper.annotation.IdType;
 import io.github.simplejdbcmapper.annotation.Table;
-import io.github.simplejdbcmapper.core.ProductToJsonConverter;
+import io.github.simplejdbcmapper.core.ProductToJsonPostgresConverter;
 
 @Table(name = "jsonb_data")
 public class JsonbData {
@@ -12,7 +12,7 @@ public class JsonbData {
 	@Id(type = IdType.AUTO_GENERATED)
 	private Integer id;
 
-	@Column(name = "json", converter = ProductToJsonConverter.class)
+	@Column(name = "product_json", converter = ProductToJsonPostgresConverter.class)
 	private Product product;
 
 	public Integer getId() {

@@ -67,8 +67,8 @@ class InsertOperation {
 		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
 		for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {
 			Object val = ew.getPropertyValue(propMapping);
-			String propertyName = propMapping.getColumnName();
-			InternalUtils.addMapSqlParameterSource(mapSqlParameterSource, val, propertyName, propMapping);
+			String columnName = propMapping.getColumnName();
+			InternalUtils.addMapSqlParameterSource(mapSqlParameterSource, val, columnName, propMapping);
 		}
 		return mapSqlParameterSource;
 	}

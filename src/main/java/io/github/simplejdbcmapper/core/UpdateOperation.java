@@ -143,22 +143,7 @@ class UpdateOperation {
 			} else {
 				PropertyMapping propMapping = tableMapping.getPropertyMappingByPropertyName(propertyName);
 				Object val = ew.getPropertyValue(propMapping);
-				Integer columnSqlType = propMapping.getColumnSqlType();
-				if (propMapping.isRegularObject()) {
-					mapSqlParameterSource.addValue(propertyName, val, columnSqlType);
-				} else if (propMapping.isEnumObject()) {
-					if (val == null) {
-						mapSqlParameterSource.addValue(propertyName, null, columnSqlType);
-					} else {
-						mapSqlParameterSource.addValue(propertyName, ((Enum<?>) val).name(), columnSqlType);
-					}
-				} else if (propMapping.isBinaryLargeObject()) {
-					InternalUtils.assignBlobMapSqlParameterSource(mapSqlParameterSource, val, propertyName,
-							columnSqlType);
-				} else if (propMapping.isCharacterLargeObject()) {
-					InternalUtils.assignClobMapSqlParameterSource(mapSqlParameterSource, val, propertyName,
-							columnSqlType);
-				}
+				InternalUtils.addMapSqlParameterSource(mapSqlParameterSource, val, propertyName, propMapping);
 			}
 		}
 		return mapSqlParameterSource;

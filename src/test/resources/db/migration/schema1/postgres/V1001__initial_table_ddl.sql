@@ -143,7 +143,11 @@ CREATE TABLE schema1.id_sqltype_overridden (
    CONSTRAINT id_sqltype_overridden_pk PRIMARY KEY (id)
 );
 
-
+CREATE TABLE schema1.jsonb_data (
+	id serial NOT NULL,
+	product_json jsonb,
+	CONSTRAINT jsonb_data_pk PRIMARY KEY (id)
+);
 
 
 

@@ -61,7 +61,15 @@ class AnnotationProcessor {
 				// sqlType has been configured in @Column
 				sqlType = colAnnotation.sqlType();
 			}
-			PropertyMapping propertyMapping = new PropertyMapping(propertyName, field.getType(), colName, sqlType);
+
+			Class<?> converterClass = null;
+			if (colAnnotation.converter() != Object.class) {
+				// converter has been configured in @Column
+				converterClass = colAnnotation.converter();
+			}
+
+			PropertyMapping propertyMapping = new PropertyMapping(propertyName, field.getType(), colName, sqlType,
+					converterClass);
 			propNameToPropertyMapping.put(propertyName, propertyMapping);
 		}
 	}
@@ -105,7 +113,7 @@ class AnnotationProcessor {
 			if (propMapping == null) { // it means there is no @Column annotation for the property
 				String colName = InternalUtils.toUnderscoreName(propertyName); // the default column name
 				Integer sqlType = InternalUtils.javaTypeToSqlParameterType(field.getType());
-				propMapping = new PropertyMapping(propertyName, field.getType(), colName, sqlType);
+				propMapping = new PropertyMapping(propertyName, field.getType(), colName, sqlType, null);
 				propNameToPropertyMapping.put(propertyName, propMapping);
 			}
 			BeanWrapper bw = new BeanWrapperImpl(propMapping);

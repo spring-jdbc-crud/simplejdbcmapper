@@ -20,6 +20,7 @@ Just by using three annotations @Table, @Id and @Column on the models used with 
 [Enum mapping](#enum-mapping)  
 [Configuration for auto assigning @CreatedBy, @UpdateBy, @CreatedOn, @UpdatedOn](#configuration-for-auto-assigning-createdby-updateby-createdon-updatedon)  
 [Accessing JdbcClient JdbcTemplate](#accessing-jdbcclient-jdbctemplate)  
+[Custom converters](#custom-converters)  
 [Logging](#logging)  
 [Limitations](#limitations)  
 [Upgrading to 2.x from 1.x](#upgrading-to-2x-from-1x)  
@@ -469,7 +470,7 @@ An implementation of the relationship examples below and other features of the l
 
 Note: You can assemble as many relationships as your query supports. This example is for 2 relationships.
 
-Models: [Order](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/Order.java), [OrderLine](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/OrderLine.java), [Product](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/Product.java)
+Entities: [Order](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/Order.java), [OrderLine](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/OrderLine.java), [Product](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/Product.java)
 
 ```
   // Define the multiple mapped entities you want to select. Make sure the table aliases match that in query.
@@ -501,7 +502,7 @@ Models: [Order](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcm
 ### 3.ToMany relationship through an intermediate table (one side of many to many)
 - Employee has many Skill through intermediate table 'employee_skill'.  
 
-  Models: [Employee](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/Employee.java), [EmployeeSkill](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/EmployeeSkill.java), [Skill](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/Skill.java)
+  Entities: [Employee](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/Employee.java), [EmployeeSkill](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/EmployeeSkill.java), [Skill](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/Skill.java)
 
 ```
   // Define the multiple mapped entities you want to select.The intermediate table employee_skill corresponds to mapped EmployeeSkill class 
@@ -534,7 +535,7 @@ Models: [Order](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcm
 
 From the results of these 2 queries the relationships can be assembled.
 
-Models: [Order](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/Order.java), [OrderLine](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/OrderLine.java), [Product](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/Product.java)
+Entities: [Order](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/Order.java), [OrderLine](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/OrderLine.java), [Product](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/Product.java)
 
 ```
   // The paginated query. Note the PAGINATED SYNTAX is different for different databases. Use the one for your database.
@@ -684,6 +685,29 @@ public SimpleJdbcMapper simpleJdbcMapper(DataSource dataSource) {
  NamedParameterJdbcTemplate namedParameterJdbcTemplate = sjm.getNamedParameterJdbcTemplate();
 ```
 There is no requirement that you have to use the underlying JdbcClient/JdbcTemplate for your SQL queries. You can create your own JdbcClient/JdbcTemplate and use it. 
+
+## Custom converters
+An [AttributeConverter](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/io/github/simplejdbcmapper/core/AttributeConverter.html) transforms a Java type (T) into a database-compatible column representation (U) and back again.
+
+Note that it is the responsibility of the converter writer to specify the correct dbData type for the corresponding column for use by the JDBC driver. The library is not expected to do such type conversion.
+
+Configuration of the converter is done using the @Column annotation. Example
+
+```java
+@Column(converter = YourImplementationOfAttributeConverter.class)
+```
+
+Examples for converting an object into json and storing it in a 'jsonb' database column for a postgres database:
+
+Converter: [ProductToJsonPostgresConverter](https://github.com/spring-jdbc-crud/simplejdbcmapper/blob/custom_converter_support/src/test/java/io/github/simplejdbcmapper/core/ProductToJsonPostgresConverter.java)  
+Entity: [JsonbData](https://github.com/spring-jdbc-crud/simplejdbcmapper/blob/custom_converter_support/src/test/java/io/github/simplejdbcmapper/model/JsonbData.java)  
+Table definition:  
+CREATE TABLE jsonb_data (  
+	id serial NOT NULL,  
+	product_json jsonb,  
+	CONSTRAINT jsonb_data_pk PRIMARY KEY (id)  
+);
+ 
 
 ## Logging
  

@@ -32,4 +32,7 @@ public @interface Column {
 
 	/** column sqlType */
 	int sqlType() default Integer.MIN_VALUE;
+
+	/** custom converter **/
+	Class<?> converter() default Object.class;
 }

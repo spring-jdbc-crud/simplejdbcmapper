@@ -107,20 +107,13 @@ public final class EntityRowMapper<T> implements RowMapper<T> {
 		T obj = null;
 		try {
 			obj = mappedObjConstructor.newInstance();
-			boolean[] typedValueExtracted = { true };
 			// since the sql columns were generated using the property mappings the
 			// resultset columns will be in same order.
 			for (int index = startIndex; index <= endIndex; index++) {
 				// propertyMappings index starts at 0
 				PropertyMapping propMapping = propertyMappings[index - startIndex];
-				Object value = getResultSetValue(rs, index, propMapping.getResultSetType(),
-						propMapping.getPropertyType(), typedValueExtracted);
-				if (typedValueExtracted[0] || value == null) {
-					propMapping.getWriteMethod().invoke(obj, value);
-				} else {
-					propMapping.getWriteMethod().invoke(obj,
-							conversionService.convert(value, propMapping.getPropertyType()));
-				}
+				Object value = getResultSetValue(rs, index, propMapping);
+				propMapping.getWriteMethod().invoke(obj, value);
 			}
 		} catch (Exception e) {
 			throw new MapperException(e.getMessage(), e);
@@ -136,98 +129,119 @@ public final class EntityRowMapper<T> implements RowMapper<T> {
 	 * java compiled the switch statement into a 'tableswitch' which means the
 	 * program will jump directly to the correct 'case' block in one step.
 	 */
-	private Object getResultSetValue(ResultSet rs, int index, ResultSetType resultSetType, Class<?> requiredType,
-			boolean[] typedValueExtracted) throws SQLException {
-		typedValueExtracted[0] = true;
+	private Object getResultSetValue(ResultSet rs, int index, PropertyMapping propMapping) throws SQLException {
 		Object value;
 		// Explicitly extract typed value, as far as possible.
-		switch (resultSetType) {
-		case ResultSetType.STRING:
+		switch (propMapping.getResultSetProcessingType()) {
+		case ResultSetProcessingType.STRING:
 			return rs.getString(index);
-		case ResultSetType.BOOLEAN:
+		case ResultSetProcessingType.BOOLEAN:
 			value = rs.getBoolean(index);
 			break;
-		case ResultSetType.BYTE:
+		case ResultSetProcessingType.BYTE:
 			value = rs.getByte(index);
 			break;
-		case ResultSetType.SHORT:
+		case ResultSetProcessingType.SHORT:
 			value = rs.getShort(index);
 			break;
-		case ResultSetType.INTEGER:
+		case ResultSetProcessingType.INTEGER:
 			value = rs.getInt(index);
 			break;
-		case ResultSetType.LONG:
+		case ResultSetProcessingType.LONG:
 			value = rs.getLong(index);
 			break;
-		case ResultSetType.FLOAT:
+		case ResultSetProcessingType.FLOAT:
 			value = rs.getFloat(index);
 			break;
-		case ResultSetType.DOUBLE:
+		case ResultSetProcessingType.DOUBLE:
 			value = rs.getDouble(index);
 			break;
-		case ResultSetType.NUMBER: // same as double
+		case ResultSetProcessingType.NUMBER: // same as double
 			value = rs.getDouble(index);
 			break;
-		case ResultSetType.BIGDECIMAL:
+		case ResultSetProcessingType.BIGDECIMAL:
 			return rs.getBigDecimal(index);
-		case ResultSetType.DATE:
+		case ResultSetProcessingType.DATE:
 			return rs.getDate(index);
-		case ResultSetType.TIME:
+		case ResultSetProcessingType.TIME:
 			return rs.getTime(index);
-		case ResultSetType.TIMESTAMP:
+		case ResultSetProcessingType.TIMESTAMP:
 			return rs.getTimestamp(index);
-		case ResultSetType.UTILDATE: // java.util.Date. same as timestamp
+		case ResultSetProcessingType.UTILDATE: // java.util.Date. same as timestamp
 			return rs.getTimestamp(index);
-		case ResultSetType.BYTEARRAY:
+		case ResultSetProcessingType.BYTEARRAY:
 			return rs.getBytes(index);
-		case ResultSetType.BLOB:
+		case ResultSetProcessingType.BLOB:
 			return rs.getBlob(index);
-		case ResultSetType.CLOB:
+		case ResultSetProcessingType.CLOB:
 			return rs.getClob(index);
-		case ResultSetType.ENUM:
-			typedValueExtracted[0] = false;
-			// Enums are represented as a String in simpleJdbcMapper.
-			// leave enum type conversion up to the caller (for example, a
-			// ConversionService) but make sure that we return nothing other than a String
-			Object obj = rs.getObject(index);
-			if (obj instanceof String) {
-				return obj;
-			} else {
-				// for example, on Postgres: getObject returns a PGObject, but we need a String
-				return rs.getString(index);
-			}
+		case ResultSetProcessingType.ENUM:
+			return getEnumValue(rs, index, propMapping);
+		case ResultSetProcessingType.CUSTOMCONVERTER:
+			return getCustomConvertedValue(rs, index, propMapping);
 		default:
-			// Some unknown type desired -> rely on getObject.
-			try {
-				return rs.getObject(index, requiredType);
-			} catch (SQLFeatureNotSupportedException | AbstractMethodError ex) {
-				if (logger.isDebugEnabled()) {
-					logger.debug("JDBC driver does not support JDBC 4.1 'getObject(int, Class)' method", ex);
-				}
-			} catch (SQLException ex) {
-				if (logger.isDebugEnabled()) {
-					logger.debug("JDBC driver has limited support for 'getObject(int, Class)' with column type: "
-							+ requiredType.getName(), ex);
-				}
-			}
-			typedValueExtracted[0] = false;
-
-			// Corresponding SQL types for JSR-310, left up to the caller to convert
-			// them (for example, through a ConversionService).
-			String typeName = requiredType.getSimpleName();
-			return switch (typeName) {
-			case "LocalDate" -> rs.getDate(index);
-			case "LocalTime" -> rs.getTime(index);
-			case "LocalDateTime" -> rs.getTimestamp(index);
-			// Fall back to getObject without type specification, again
-			// left up to the caller to convert the value if necessary.
-			default -> JdbcUtils.getResultSetValue(rs, index);
-			};
-
+			return getUnknownTypeValue(rs, index, propMapping);
 		}
 		// Perform was-null check if necessary (for results that the JDBC driver returns
 		// as primitives).
 		return (rs.wasNull() ? null : value);
+	}
+
+	private Object getEnumValue(ResultSet rs, int index, PropertyMapping propMapping) throws SQLException {
+		// Enums are represented as a String in simpleJdbcMapper.
+		Object val = rs.getObject(index);
+		if (val != null) {
+			if (val instanceof String) {
+				return conversionService.convert(val, propMapping.getPropertyType());
+			} else {
+				// for example, on Postgres: getObject returns a PGObject, but we need a String
+				val = rs.getString(index);
+				return conversionService.convert(val, propMapping.getPropertyType());
+			}
+		} else {
+			return null;
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	private Object getCustomConvertedValue(ResultSet rs, int index, PropertyMapping propMapping) throws SQLException {
+		Object val = rs.getObject(index);
+		return val == null ? null : propMapping.getConverter().convertToEntityAttribute(val);
+	}
+
+	private Object getUnknownTypeValue(ResultSet rs, int index, PropertyMapping propMapping) throws SQLException {
+		// Some unknown type desired -> rely on getObject.
+		try {
+			return rs.getObject(index, propMapping.getPropertyType());
+		} catch (SQLFeatureNotSupportedException | AbstractMethodError ex) {
+			if (logger.isDebugEnabled()) {
+				logger.debug("JDBC driver does not support JDBC 4.1 'getObject(int, Class)' method", ex);
+			}
+		} catch (SQLException ex) {
+			if (logger.isDebugEnabled()) {
+				logger.debug("JDBC driver has limited support for 'getObject(int, Class)' with column type: "
+						+ propMapping.getPropertyType().getName(), ex);
+			}
+		}
+		// Corresponding SQL types for JSR-310, Will use conversionService to convert
+		String typeName = propMapping.getPropertyType().getSimpleName();
+		Object val = null;
+		switch (typeName) {
+		case "LocalDate":
+			val = rs.getDate(index);
+			break;
+		case "LocalTime":
+			val = rs.getTime(index);
+			break;
+		case "LocalDateTime":
+			val = rs.getTimestamp(index);
+			break;
+		// Fall back to getObject without type specification.
+		default:
+			val = JdbcUtils.getResultSetValue(rs, index);
+		}
+		// Use conversionService to convert.
+		return val == null ? null : conversionService.convert(val, propMapping.getPropertyType());
 	}
 
 	@Override

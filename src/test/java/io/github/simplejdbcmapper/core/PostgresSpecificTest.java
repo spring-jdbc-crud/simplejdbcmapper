@@ -29,13 +29,16 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import io.github.simplejdbcmapper.model.IdSqlTypeOverridden;
+import io.github.simplejdbcmapper.model.JsonbData;
+import io.github.simplejdbcmapper.model.Product;
 import io.github.simplejdbcmapper.model.StatusEnum;
 import io.github.simplejdbcmapper.model.TypeCheckPostgres;
 import io.github.simplejdbcmapper.model.UuidTable;
+import tools.jackson.databind.json.JsonMapper;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-class TypeCheckPostgresTest {
+class PostgresSpecificTest {
 
 	private static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("yyyyMMdd HHmmss");
 
@@ -44,6 +47,9 @@ class TypeCheckPostgresTest {
 
 	@Autowired
 	private SimpleJdbcMapper sjm;
+
+	@Autowired
+	JsonMapper jsonMapper;
 
 	@BeforeEach
 	void beforeMethod() {
@@ -74,6 +80,60 @@ class TypeCheckPostgresTest {
 		Integer cnt = sjm.deleteById(UuidTable.class, model.getId());
 		assertEquals(1, cnt);
 
+	}
+
+	@Test
+	void insert_jsonb_custom_converter() {
+		Product product = sjm.findById(Product.class, 1);
+		JsonbData jd1 = new JsonbData();
+		jd1.setProduct(product);
+		sjm.insert(jd1);
+		assertNotNull(jd1.getId());
+		JsonbData jd2 = sjm.findById(JsonbData.class, jd1.getId());
+		assertEquals(jd1.getProduct().getName(), jd2.getProduct().getName());
+	}
+
+	@Test
+	void insert_jsonb_null_custom_converter() {
+		JsonbData jd1 = new JsonbData();
+		sjm.insert(jd1);
+		assertNotNull(jd1.getId());
+		JsonbData jd2 = sjm.findById(JsonbData.class, jd1.getId());
+		assertNull(jd2.getProduct());
+	}
+
+	@Test
+	void update_jsonb_custom_converter() {
+		Product product = sjm.findById(Product.class, 1);
+		JsonbData jd1 = new JsonbData();
+		jd1.setProduct(product);
+		sjm.insert(jd1);
+		JsonbData jd2 = sjm.findById(JsonbData.class, jd1.getId());
+
+		product.setName("xyz");
+		jd2.setProduct(product);
+
+		sjm.update(jd2);
+		JsonbData jd3 = sjm.findById(JsonbData.class, jd2.getId());
+
+		assertEquals(jd3.getProduct().getName(), "xyz");
+	}
+
+	@Test
+	void update_jsonb_null_custom_converter() {
+		Product product = sjm.findById(Product.class, 1);
+		JsonbData jd1 = new JsonbData();
+		jd1.setProduct(product);
+		sjm.insert(jd1);
+
+		JsonbData jd2 = sjm.findById(JsonbData.class, jd1.getId());
+
+		jd2.setProduct(null);
+
+		sjm.update(jd2);
+
+		JsonbData jd3 = sjm.findById(JsonbData.class, jd2.getId());
+		assertNull(jd3.getProduct());
 	}
 
 	@Test

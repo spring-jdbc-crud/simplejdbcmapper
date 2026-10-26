@@ -2,7 +2,7 @@ package io.github.simplejdbcmapper.core;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
+import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
 import java.math.BigDecimal;
@@ -23,12 +23,11 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import io.github.simplejdbcmapper.model.StatusEnum;
-import io.github.simplejdbcmapper.model.TypeCheckSqlServer;
-import microsoft.sql.DateTimeOffset;
+import io.github.simplejdbcmapper.model.TypeCheckMysql;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-class TypeCheckSqlServerTest {
+class MysqlSpecificTest {
 
 	@Value("${spring.datasource.driver-class-name}")
 	private String jdbcDriver;
@@ -38,15 +37,15 @@ class TypeCheckSqlServerTest {
 
 	@BeforeEach
 	void beforeMethod() {
-		// tests will only run if sqlserver
-		if (!jdbcDriver.contains("sqlserver")) {
+		// tests will run only if mysql
+		if (!jdbcDriver.contains("mysql")) {
 			Assumptions.assumeTrue(false);
 		}
 	}
 
 	@Test
-	void insert_TypeCheckSqlServerTest() {
-		TypeCheckSqlServer iObj = new TypeCheckSqlServer();
+	void insert_TypeCheckMysqlTest() {
+		TypeCheckMysql iObj = new TypeCheckMysql();
 
 		var localDateVal = LocalDate.now();
 		iObj.setLocalDateData(localDateVal);
@@ -64,16 +63,21 @@ class TypeCheckSqlServerTest {
 
 		iObj.setImage(new byte[] { 10, 20, 30 });
 
+		var timestampVal = new Date();
+		iObj.setJavaUtilDateTsData(timestampVal);
+
 		iObj.setStatus(StatusEnum.OPEN);
 
-		var offsetVal = DateTimeOffset.valueOf(OffsetDateTime.now());
+		var offsetVal = OffsetDateTime.now();
 		iObj.setOffsetDateTimeData(offsetVal);
 
-		iObj.setClobData("123456789");
+		iObj.setTextData("123456");
+
+		iObj.setByteData(Byte.valueOf("1"));
 
 		sjm.insert(iObj);
 
-		TypeCheckSqlServer tc = sjm.findById(TypeCheckSqlServer.class, iObj.getId());
+		TypeCheckMysql tc = sjm.findById(TypeCheckMysql.class, iObj.getId());
 		SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
 		assertEquals(localDateVal, tc.getLocalDateData());
 
@@ -88,21 +92,24 @@ class TypeCheckSqlServerTest {
 
 		assertTrue(tc.getBooleanVal());
 
+		SimpleDateFormat fmtTs = new SimpleDateFormat("yyyyMMdd HHmm");
+		assertEquals(fmtTs.format(timestampVal), fmtTs.format(tc.getJavaUtilDateTsData()));
+
 		assertEquals(StatusEnum.OPEN, tc.getStatus());
+		DateTimeFormatter oFmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+		assertEquals(oFmt.format(offsetVal), oFmt.format(tc.getOffsetDateTimeData()));
 
-		assertEquals(offsetVal, tc.getOffsetDateTimeData());
+		assertEquals(iObj.getTextData(), tc.getTextData());
 
-		assertNotNull(tc.getImage());
-		assertNotNull(tc.getClobData());
-
+		assertEquals(Byte.valueOf("1"), tc.getByteData());
 	}
 
 	@Test
-	void update_TypeCheckSqlServerTest() {
-		TypeCheckSqlServer iObj = new TypeCheckSqlServer();
+	void update_TypeCheckMysqlTest() {
+		TypeCheckMysql iObj = new TypeCheckMysql();
 		sjm.insert(iObj);
+		TypeCheckMysql uObj = sjm.findById(TypeCheckMysql.class, iObj.getId());
 
-		TypeCheckSqlServer uObj = sjm.findById(TypeCheckSqlServer.class, iObj.getId());
 		var localDateVal = LocalDate.now();
 		uObj.setLocalDateData(localDateVal);
 
@@ -119,16 +126,19 @@ class TypeCheckSqlServerTest {
 
 		uObj.setImage(new byte[] { 10, 20, 30 });
 
+		var timestampVal = new Date();
+		uObj.setJavaUtilDateTsData(timestampVal);
+
 		uObj.setStatus(StatusEnum.OPEN);
 
-		var offsetVal = DateTimeOffset.valueOf(OffsetDateTime.now());
+		var offsetVal = OffsetDateTime.now();
 		uObj.setOffsetDateTimeData(offsetVal);
 
-		uObj.setClobData("123456789");
+		uObj.setTextData("123456");
 
 		sjm.update(uObj);
 
-		TypeCheckSqlServer tc = sjm.findById(TypeCheckSqlServer.class, uObj.getId());
+		TypeCheckMysql tc = sjm.findById(TypeCheckMysql.class, uObj.getId());
 		SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
 		assertEquals(localDateVal, tc.getLocalDateData());
 
@@ -143,12 +153,17 @@ class TypeCheckSqlServerTest {
 
 		assertTrue(tc.getBooleanVal());
 
+		SimpleDateFormat fmtTs = new SimpleDateFormat("yyyyMMdd HHmm");
+		assertEquals(fmtTs.format(timestampVal), fmtTs.format(tc.getJavaUtilDateTsData()));
+
 		assertEquals(StatusEnum.OPEN, tc.getStatus());
+		DateTimeFormatter oFmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+		assertEquals(oFmt.format(offsetVal), oFmt.format(tc.getOffsetDateTimeData()));
 
-		assertEquals(offsetVal, tc.getOffsetDateTimeData());
+		assertEquals(uObj.getTextData(), tc.getTextData());
 
-		assertNotNull(tc.getImage());
-		assertNotNull(tc.getClobData());
+		assertNull(tc.getByteData()); // this is a primitive test
+
 	}
 
 }

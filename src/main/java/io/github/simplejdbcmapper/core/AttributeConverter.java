@@ -2,8 +2,7 @@ package io.github.simplejdbcmapper.core;
 
 /**
  * A class that implements this interface can be used to convert entity
- * attribute into database column representation for inserts/updates and vice
- * versa for queries.
+ * attribute into database column representation and back.
  * 
  * You would configure the converter with an Entity attribute using &#64;Column
  * annotation like below:

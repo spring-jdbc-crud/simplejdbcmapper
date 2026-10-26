@@ -22,6 +22,7 @@ import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
+import io.github.simplejdbcmapper.model.FullyQualifiedTableName;
 import io.github.simplejdbcmapper.model.NonDefaultNamingProduct;
 import io.github.simplejdbcmapper.model.Product;
 
@@ -229,6 +230,11 @@ class SimpleJdbcMapperTest {
 			SimpleJdbcMapper sjm1 = new SimpleJdbcMapper(dataSource, null, "schema1");
 			assertEquals("schema1", sjm1.getCatalogName());
 		}
+	}
+
+	@Test
+	void getFullyQualifiedTableName_test() {
+		assertEquals("CATALOG1.SCHEMA2.company", sjm.getFullyQualifiedTableName(FullyQualifiedTableName.class));
 	}
 
 	@Test

@@ -828,6 +828,16 @@ public final class SimpleJdbcMapper {
 	}
 
 	/**
+	 * Get fully qualified table name
+	 * 
+	 * @param entityType The entity type
+	 * @return fully qualified table name
+	 */
+	public String getFullyQualifiedTableName(Class<?> entityType) {
+		return simpleJdbcMapperSupport.getFullyQualifiedTableName(entityType);
+	}
+
+	/**
 	 * Closes down SimpleJdbcMapper.
 	 * <p>
 	 * This is handled entirely by Spring. Upon the closing of its application

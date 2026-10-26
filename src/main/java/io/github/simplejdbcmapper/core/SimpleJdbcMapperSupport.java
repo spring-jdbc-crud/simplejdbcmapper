@@ -132,6 +132,11 @@ class SimpleJdbcMapperSupport {
 		return catalogName;
 	}
 
+	public String getFullyQualifiedTableName(Class<?> entityType) {
+		TableMapping tableMapping = tableMappingProvider.getTableMapping(entityType);
+		return tableMapping.fullyQualifiedTableName();
+	}
+
 	TableMapping getTableMapping(Class<?> entityType) {
 		return tableMappingProvider.getTableMapping(entityType);
 	}

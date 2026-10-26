@@ -236,11 +236,11 @@ public final class EntityRowMapper<T> implements RowMapper<T> {
 		case "LocalDateTime":
 			val = rs.getTimestamp(index);
 			break;
-		// Fall back to getObject without type specification, again
-		// left up to the caller to convert the value if necessary.
+		// Fall back to getObject without type specification.
 		default:
 			val = JdbcUtils.getResultSetValue(rs, index);
 		}
+		// Use conversionService to convert.
 		return val == null ? null : conversionService.convert(val, propMapping.getPropertyType());
 	}
 

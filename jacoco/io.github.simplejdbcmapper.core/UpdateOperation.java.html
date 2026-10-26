@@ -45,7 +45,7 @@ class UpdateOperation {
 
 	// Map key - class name and properties concatenated by hyphens
 	// value - the update sql and params
-<span class="fc" id="L48">	private final SimpleCache&lt;String, SqlAndParams&gt; updateSpecificPropertiesSqlCache = new SimpleCache&lt;&gt;(3000);</span>
+<span class="fc" id="L48">	private final SimpleCache&lt;String, SqlAndParams&gt; updateSpecificPropertiesSqlCache = new SimpleCache&lt;&gt;(5000);</span>
 
 <span class="fc" id="L50">	public UpdateOperation(SimpleJdbcMapperSupport sjmSupport) {</span>
 <span class="fc" id="L51">		this.sjmSupport = sjmSupport;</span>
@@ -277,4 +277,4 @@ class UpdateOperation {
 	}
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main ee51fb5699968d62507ac0f4e996ebfd6414e055 2026-10-26T03:00:35</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 688c08386d84ec9949c88bcd7360090d08aeea41 2026-10-26T07:50:57</div></body></html>

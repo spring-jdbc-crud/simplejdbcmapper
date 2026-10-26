@@ -9,7 +9,7 @@ package io.github.simplejdbcmapper.core;
  * annotation like below:
  * 
  * <pre>
- * &#64;Column(converter = "yourImplementationOfThisInterace.class")
+ * &#64;Column(converter = yourImplementationOfThisInterace.class)
  * </pre>
  * 
  * @param <T> entity attribute

@@ -49,7 +49,7 @@ class FindOperation {
 
 	// Map key - classname-tableAlias
 	// value - the column sql string
-	private final SimpleCache<String, String> entitySqlColumnsAliasCache = new SimpleCache<>(3000);
+	private final SimpleCache<String, String> entitySqlColumnsAliasCache = new SimpleCache<>(5000);
 
 	public FindOperation(SimpleJdbcMapperSupport sjmSupport) {
 		this.sjmSupport = sjmSupport;
@@ -60,8 +60,8 @@ class FindOperation {
 		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
 		String sql = findByIdSqlCache.get(entityType);
 		if (sql == null) {
-			sql = "SELECT " + getSqlColumns(entityType) + " FROM " + tableMapping.fullyQualifiedTableName()
-					+ " WHERE " + tableMapping.getIdColumnName() + " = ?";
+			sql = "SELECT " + getSqlColumns(entityType) + " FROM " + tableMapping.fullyQualifiedTableName() + " WHERE "
+					+ tableMapping.getIdColumnName() + " = ?";
 			findByIdSqlCache.put(entityType, sql);
 		}
 		T obj = null;
@@ -143,8 +143,7 @@ class FindOperation {
 			Set<?> values = getValues(localPropertyValues);
 			MapSqlParameterSource param = new MapSqlParameterSource();
 			param.addValue("propertyValues", values, propMapping.getColumnSqlType());
-			return sjmSupport.getNamedParameterJdbcTemplate().query(sql.toString(), param,
-					entityRowMapper(entityType));
+			return sjmSupport.getNamedParameterJdbcTemplate().query(sql.toString(), param, entityRowMapper(entityType));
 		}
 	}
 

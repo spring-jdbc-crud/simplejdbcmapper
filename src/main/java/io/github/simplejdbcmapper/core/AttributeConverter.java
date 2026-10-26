@@ -12,6 +12,9 @@ package io.github.simplejdbcmapper.core;
  * &#64;Column(converter = yourImplementationOfThisInterace.class)
  * </pre>
  * 
+ * For more details see the <a href=
+ * "https://github.com/spring-jdbc-crud/simplejdbcmapper#custom-converters">documentation</a>
+ * 
  * @param <T> entity attribute
  * @param <U> database column data
  */

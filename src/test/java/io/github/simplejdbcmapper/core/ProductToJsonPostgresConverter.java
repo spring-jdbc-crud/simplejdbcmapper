@@ -23,7 +23,7 @@ import tools.jackson.databind.ObjectMapper;
  * </pre>
  */
 public class ProductToJsonPostgresConverter implements AttributeConverter<Product, PGobject> {
-	private final ObjectMapper objectMapper = new ObjectMapper();
+	private static final ObjectMapper objectMapper = new ObjectMapper();
 
 	// This is for postgres database table where the database column is of type
 	// 'jsonb'

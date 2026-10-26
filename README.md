@@ -337,6 +337,14 @@ This will map the property to a column using the default naming convention of ca
 **@Column(name="somecolumnname")** 
 This will map the property to the column specified by the 'name' attribute.  **Note that column names with spaces are not supported.**  
 
+**@Column(converter=YourImplementionOfAttributeConverter.class)**
+An [AttributeConverter](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/io/github/simplejdbcmapper/core/AttributeConverter.html) transforms a Java type (T) into a database-compatible column representation (U) and back again.
+
+Note that for the AttributeConverter implementation it is the responsibility of the converter writer to specify the correct dbData type for the corresponding column for use by the JDBC driver. The library is not expected to do such type conversion.  
+
+For more details see [Custom converters](#custom-converters)  
+
+
 **@Column(sqlType = somesqltype)**  
 SimpleJdbcMapper tries to infer the correct SQL type from the Java types but for some rare cases it cannot; mostly byte[] and database driver specific java types. In these cases explicitly declaring the SQL type is a best practice to ensure correctness, improve performance, and correctly handle NULL values. 
  

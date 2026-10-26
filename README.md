@@ -707,7 +707,7 @@ Configuration of the converter is done using the @Column annotation. Example
 
 Examples for converting an object into json and storing it in a 'jsonb' database column for a postgres database:
 
-Converter: [ProductToJsonPostgresConverter](https://github.com/spring-jdbc-crud/simplejdbcmapper/blob/custom_converter_support/src/test/java/io/github/simplejdbcmapper/core/ProductToJsonPostgresConverter.java)  
+Converter: [ProductToJsonPostgresConverter](https://github.com/spring-jdbc-crud/simplejdbcmapper/blob/main/src/test/java/io/github/simplejdbcmapper/core/ProductToJsonPostgresConverter.java)  
 Entity: [JsonbData](https://github.com/spring-jdbc-crud/simplejdbcmapper/blob/main/src/test/java/io/github/simplejdbcmapper/model/JsonbData.java)  
   
 Table definition:  

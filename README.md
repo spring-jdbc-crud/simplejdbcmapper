@@ -435,7 +435,7 @@ An implementation of the relationship examples below and other features of the l
 ### 1.ToMany relationship:
 - Order has many OrderLine
 
-  Models: [Order](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/Order.java), [OrderLine](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/OrderLine.java)
+  Entities: [Order](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/Order.java), [OrderLine](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/OrderLine.java)
 
 ```  
   /* 

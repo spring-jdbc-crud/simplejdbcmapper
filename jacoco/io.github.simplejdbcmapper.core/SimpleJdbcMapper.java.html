@@ -828,20 +828,30 @@ public final class SimpleJdbcMapper {
 	}
 
 	/**
+	 * Get fully qualified table name
+	 * 
+	 * @param entityType The entity type
+	 * @return fully qualified table name
+	 */
+	public String getFullyQualifiedTableName(Class&lt;?&gt; entityType) {
+<span class="fc" id="L837">		return simpleJdbcMapperSupport.getFullyQualifiedTableName(entityType);</span>
+	}
+
+	/**
 	 * Closes down SimpleJdbcMapper.
 	 * &lt;p&gt;
 	 * This is handled entirely by Spring. Upon the closing of its application
 	 * context this method is invoked automatically.
 	 */
 	public void close() {
-<span class="fc" id="L837">		simpleJdbcMapperSupport = null;</span>
-<span class="fc" id="L838">		insertOperation = null;</span>
-<span class="fc" id="L839">		findOperation = null;</span>
-<span class="fc" id="L840">		updateOperation = null;</span>
-<span class="fc" id="L841">		deleteOperation = null;</span>
-<span class="fc" id="L842">		multiEntityExtractor = null;</span>
-<span class="fc" id="L843">		logger.info(&quot;SimpleJdbcMapper shutdown completed. {}&quot;, this);</span>
-<span class="fc" id="L844">	}</span>
+<span class="fc" id="L847">		simpleJdbcMapperSupport = null;</span>
+<span class="fc" id="L848">		insertOperation = null;</span>
+<span class="fc" id="L849">		findOperation = null;</span>
+<span class="fc" id="L850">		updateOperation = null;</span>
+<span class="fc" id="L851">		deleteOperation = null;</span>
+<span class="fc" id="L852">		multiEntityExtractor = null;</span>
+<span class="fc" id="L853">		logger.info(&quot;SimpleJdbcMapper shutdown completed. {}&quot;, this);</span>
+<span class="fc" id="L854">	}</span>
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main c5dc8ca2218f9755059f4877d11ea3c4285da985 2026-10-26T02:15:47</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main ee51fb5699968d62507ac0f4e996ebfd6414e055 2026-10-26T03:00:35</div></body></html>

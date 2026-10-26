@@ -5,22 +5,23 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <!-- Begin SEO tag -->
-<meta property="og:title" content="Simplify Spring CRUD JdbcTemplate/JdbcClient operations by making them less verbose using SimpleJdbcMapper" >
+<meta property="og:title" content="A small library that simplifies Spring JdbcTemplate CRUD operations and relationship queries by making them less verbose." >
 <meta property="og:locale" content="en_US" />
-<meta name="description" content="Simplify Spring CRUD JdbcTemplate/JdbcClient operations by making them less verbose using SimpleJdbcMapper" >
-<meta property="og:description" content="Simplify Spring CRUD JdbcTemplate/JdbcClient operations by making them less verbose using SimpleJdbcMapper" >
+<meta name="description" content="A small library that simplifies Spring JdbcTemplate CRUD operations and relationship queries by making them less verbose." >
+<meta property="og:description" content="A small library that simplifies Spring JdbcTemplate CRUD operations and relationship queries by making them less verbose." >
 <meta property="og:url"
 	content="https://spring-jdbc-crud.github.io/simplejdbcmapper" >
-<meta property="og:site_name" content="Simplify Spring CRUD JdbcTemplate/JdbcClient operations by making them less verbose using SimpleJdbcMapper" >
+<meta property="og:site_name" content="A small library that simplifies Spring JdbcTemplate CRUD operations and relationship queries by making them less verbose." >
 <meta property="og:type" content="website" >
 <meta name="twitter:card" content="summary" >
-<meta property="twitter:title" content="Simplify Spring CRUD JdbcTemplate/JdbcClient operations by making them less verbose using SimpleJdbcMapper" >	
+<meta property="twitter:title" content="A small library that simplifies Spring JdbcTemplate CRUD operations and relationship queries by making them less verbose." >	
 <meta name="keywords" content="Spring boot, CRUD operations, database interaction, jdbcclient, jdbctemplate, java persistence">
 	
 <script type="application/ld+json">
 {"@context":"https://schema.org","@type":"WebSite","description":"Simplify Spring CRUD JdbcTemplate/JdbcClient operations by making them less verbose using SimpleJdbcMapper","headline":"Simplify Spring CRUD JdbcTemplate/JdbcClient operations by making them less verbose using SimpleJdbcMapper #","name":"Simplify Spring CRUD JdbcTemplate/JdbcClient operations by making them less verbose using SimpleJdbcMapper","url":"https://spring-jdbc-crud.github.io/simplejdbcmapper"}</script>
 
 <!-- End SEO tag -->
+    <title>A small library that simplifies Spring JdbcTemplate CRUD operations and relationship queries by making them less verbose.</title>
 
     <link type="text/css" rel="stylesheet" href="assets/css/bootstrap.css"/>
     <link type="text/css" rel="stylesheet" href="assets/css/bootstrap-responsive.css"/>
@@ -45,37 +46,38 @@
     <li class="sidebar-header-2"><a href="#jdk-and-spring-version-requirements">JDK and Spring version requirements</a></li>
     <li class="sidebar-header-2"><a href="#spring-bean-configuration-for-simplejdbcmapper">Spring bean configuration for SimpleJdbcMapper</a></li>
     <li class="sidebar-header-2"><a href="#annotations">Annotations</a></li>
-    <li class="sidebar-header-2"><a href="#assembling-relationships-from-custom-queries">Assembling relationships from custom queries</a></li>
+    <li class="sidebar-header-2"><a href="#assembling-relationships-from-sql-queries">Assembling relationships from SQL queries</a></li>
     <li class="sidebar-header-2"><a href="#blob-clob-mapping">BLOB CLOB mapping</a></li>
     <li class="sidebar-header-2"><a href="#enum-mapping">Enum mapping</a></li>
     <li class="sidebar-header-2"><a href="#configuration-for-auto-assigning-createdby-updateby-createdon-updatedon">Configuration for auto assigning @CreatedBy, @UpdateBy, @CreatedOn, @UpdatedOn</a></li>
     <li class="sidebar-header-2"><a href="#accessing-jdbcclient-jdbctemplate">Accessing JdbcClient JdbcTemplate</a></li>
+    <li class="sidebar-header-2"><a href="#custom-converters">Custom converters</a></li>
     <li class="sidebar-header-2"><a href="#logging">Logging</a></li>
     <li class="sidebar-header-2"><a href="#limitations">Limitations</a></li>
     <li class="sidebar-header-2"><a href="#upgrading-to-2x-from-1x">Upgrading to 2.x from 1.x</a></li>
     <li class="sidebar-header-2"><a href="#troubleshooting">TroubleShooting</a></li>
 </ul>
       </div>
-      <div class="span9 main"><h1>SimpleJdbcMapper</h1><p>
-      <a href="https://github.com/spring-jdbc-crud/simplejdbcmapper/actions/workflows/ci.yml"><img src="https://github.com/spring-jdbc-crud/simplejdbcmapper/actions/workflows/ci.yml/badge.svg" alt="CI SimpleJdbcMapper"></a>  <a href="https://spring-jdbc-crud.github.io/simplejdbcmapper/jacoco/index.html"><img src="https://spring-jdbc-crud.github.io/simplejdbcmapper/jacoco/jacoco.svg" alt="coverage"></a>  <a href="https://central.sonatype.com/artifact/io.github.spring-jdbc-crud/simplejdbcmapper"><img src="https://img.shields.io/maven-central/v/io.github.spring-jdbc-crud/simplejdbcmapper" alt="maven-central"></a>  <a href="https://spring-jdbc-crud.github.io/simplejdbcmapper/cloc/output.txt"><img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fspring-jdbc-crud.github.io%2Fsimplejdbcmapper%2Fcloc%2Foutput.json&query=%24.Java.code&label=lines%20of%20code" alt=""></a> <a href="https://spring-jdbc-crud.github.io/simplejdbcmapper/cloc/output.txt"><img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fspring-jdbc-crud.github.io%2Fsimplejdbcmapper%2Fcloc%2Foutput.json&query=%24.Java.nFiles&label=files" alt=""></a>  <a href="https://github.com/spring-jdbc-crud/simplejdbcmapper?tab=Apache-2.0-1-ov-file#readme"><img src="https://img.shields.io/:license-apache-brightgreen.svg" alt="license"></a></p>
-<p>A small library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations and relationship queries by making them less verbose. Use its API where beneficial and keep using JdbcTemplate/JdbcClient for other functionality.</p>
-<p>Just by annotating the models that you would use with JdbcTemplate/JdbcClient, you get single line CRUD and a fluent API to assemble relationships from your custom queries.</p>
-<p><strong>New Feature Alert:</strong> Relationships can be assembled from your custom queries.</p>
+      <div class="span9 main"><h1>SimpleJdbcMapper</h1><p><a href="https://github.com/spring-jdbc-crud/simplejdbcmapper/actions/workflows/ci.yml"><img src="https://github.com/spring-jdbc-crud/simplejdbcmapper/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI simplejdbcmapper"></a>  <a href="https://spring-jdbc-crud.github.io/simplejdbcmapper/jacoco/index.html"><img src="https://spring-jdbc-crud.github.io/simplejdbcmapper/jacoco/jacoco.svg" alt="coverage"></a>  <a href="https://central.sonatype.com/artifact/io.github.spring-jdbc-crud/simplejdbcmapper"><img src="https://img.shields.io/maven-central/v/io.github.spring-jdbc-crud/simplejdbcmapper" alt="maven-central"></a>  <a href="https://spring-jdbc-crud.github.io/simplejdbcmapper/cloc/output.txt"><img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fspring-jdbc-crud.github.io%2Fsimplejdbcmapper%2Fcloc%2Foutput.json&query=%24.Java.code&label=lines%20of%20code" alt=""></a> <a href="https://spring-jdbc-crud.github.io/simplejdbcmapper/cloc/output.txt"><img src="https://img.shields.io/badge/dynamic/json?url=https%3A%2F%2Fspring-jdbc-crud.github.io%2Fsimplejdbcmapper%2Fcloc%2Foutput.json&query=%24.Java.nFiles&label=files" alt=""></a>  <a href="https://github.com/spring-jdbc-crud/simplejdbcmapper?tab=Apache-2.0-1-ov-file#readme"><img src="https://img.shields.io/:license-apache-brightgreen.svg" alt="license"></a></p>
+<p>A small library that simplifies Spring JdbcTemplate CRUD operations and relationship queries by making them less verbose.  </p>
+<p>Just by using three annotations @Table, @Id and @Column on the models used with JdbcTemplate, you get single line CRUD and an API to assemble relationships from your SQL queries. Since its a wrapper around JdbcTemplate, all the JdbcTemplate features are also available to you.</p>
+<p><strong>New Feature Alert:</strong> <a href="#assembling-relationships-from-sql-queries">Relationships can be assembled from your  SQL queries.</a></p>
 <p>
-<a href="https://github.com/spring-jdbc-crud/simplejdbcmapper">github</a> |
+	<a href="https://github.com/spring-jdbc-crud/simplejdbcmapper">github</a> |
 	<a href="https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/index.html">Javadoc</a> |
 	<a href="https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper">Demo Application</a>
 </p>
+
 <h2 id="features"><a class="header-link" href="#features"></a>Features</h2>
 <ol class="list">
 <li>One liners for CRUD. All it takes is to use the 3 annotations @Table, @Id and @Column.</li>
-<li>A fluent API to assemble relationships from your custom queries.</li>
+<li>An API to assemble relationships from your SQL queries.</li>
 <li>Simple configuration similar to JdbcTemplate/JdbClient configuration.</li>
 <li>No need to write custom row mappers for your queries by using the library&#39;s EntityRowMapper.</li>
 <li>Manage your transactions using Spring as the library uses JdbcTemplate for database interaction.</li>
 <li>To view the SQL use Spring logging (See <a href="#logging">logging</a>).</li>
 <li>Tests are run against PostgreSQL, MySQL, Oracle, SQLServer. Should work with other databases.
-<a href="https://github.com/spring-jdbc-crud/simplejdbcmapper/actions/workflows/ci.yml"><img src="https://github.com/spring-jdbc-crud/simplejdbcmapper/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI SimpleJdbcMapper"></a></li>
+<a href="https://github.com/spring-jdbc-crud/simplejdbcmapper/actions/workflows/ci.yml"><img src="https://github.com/spring-jdbc-crud/simplejdbcmapper/actions/workflows/ci.yml/badge.svg?branch=main" alt="CI simplejdbcmapper"></a></li>
 <li>Only dependency is Spring JDBC libraries. No other external dependencies.</li>
 </ol>
 <h2 id="maven-coordinates"><a class="header-link" href="#maven-coordinates"></a>Maven coordinates</h2>
@@ -154,7 +156,7 @@ List&lt;Product&gt; products = sjm.findAll(Product.class, <span class="hljs-keyw
  sjm.deleteById(Product.class, <span class="hljs-number">5</span>);
  
  <span class="hljs-comment">/*
-For custom queries which retrieve mapped objects use getSqlColumns() to get the columns for the sql 
+To retrieve mapped objects use getSqlColumns() to get the columns for the sql 
 to work with EntityRowMapper (see its javadoc). Note in this case the &#x27;name&#x27; property is mapped to the &#x27;product_name&#x27; column.
  */</span>
  String sql = <span class="hljs-string1">&quot;&quot;</span><span class="hljs-string1">&quot;
@@ -178,7 +180,7 @@ to work with EntityRowMapper (see its javadoc). Note in this case the &#x27;name
  JdbcTemplate jdbcTemplate = sjm.getJdbcTemplate();
  NamedParameterJdbcTemplate namedParameterJdbcTemplate = sjm.getNamedParameterJdbcTemplate();
  
- // See relationships section on how to asssemble relationships from your custom queries.
+ // See relationships section on how to asssemble relationships from your  queries.
  
  // The demo application (link provided at top) is easy to install and run where you can see example code in action.
  
@@ -270,7 +272,7 @@ spring.datasource.driver-<span class="hljs-class"><span class="hljs-keyword">cla
     <span class="hljs-keyword">return</span> new SimpleJdbcMapper(dataSource, SCHEMA_NAME);
   }
   </code></pre><h2 id="annotations"><a class="header-link" href="#annotations"></a>Annotations</h2>
-<p>Using the 3 annotations @Table, @Id and @Column you get single line CRUD and also will be able to assemble relationships from custom queries. Other annotations are for audit fields and optimistic locking.</p>
+<p>Using the 3 annotations @Table, @Id and @Column you get single line CRUD and also will be able to assemble relationships from SQL queries. Other annotations are for audit fields and optimistic locking.</p>
 <p>1.<strong>@Table</strong></p>
 <p>Required class level annotation. The schema/catalog attributes set with @Table will override corresponding values on the SimpleJdbcMapper() constructor (if any). <strong>Table names with spaces are not supported.</strong></p>
 <p>Multiple classes can be mapped to the same table. For example if you have a table with large number of columns you could have 2 objects mapped to it. One with a few commonly used columns and another with all the columns.</p>
@@ -308,8 +310,8 @@ spring.datasource.driver-<span class="hljs-class"><span class="hljs-keyword">cla
 </code></pre><p>After a successful insert() operation the productId property will be populated with the generated id.</p>
 <p><strong>NON auto generated id</strong></p>
 <pre class="hljs"><code>
-<span class="hljs-meta">@Table(name=&quot;customer&quot;)</span>
-<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Customer</span> </span>{
+<span class="hljs-meta">@Table(name=&quot;orders&quot;)</span>
+<span class="hljs-class"><span class="hljs-keyword">class</span> <span class="hljs-title">Order</span> </span>{
  <span class="hljs-meta">@Id</span>
  <span class="hljs-keyword">private</span> Integer id;
   ...
@@ -318,9 +320,12 @@ spring.datasource.driver-<span class="hljs-class"><span class="hljs-keyword">cla
 <p>Properties that need be persisted to the database will need @Column annotation unless the property is already annotated with one of the other annotations (@Id, @Version, @CreatedOn @CreatedBy @UpdatedOn @UpdatedBy). @Column can be used along with the other annotations to map a property to a non-default column name. The default column name is camel case property name converted to underscore case name (e.g., property &#39;lastName&#39; maps to column &#39;last_name&#39; by default). <strong>Primitive java types are not supported</strong>. Use corresponding wrapper classes.</p>
 <p><strong>@Column</strong> 
 This will map the property to a column using the default naming convention of camel case to underscore case. For example property &#39;lastName&#39; will map to column &#39;last_name&#39; by default.  </p>
-<p><strong>@Column(name=&quot;somecolumnname&quot;)</strong> 
+<p><strong>@Column(name = &quot;somecolumnname&quot;)</strong> 
 This will map the property to the column specified by the &#39;name&#39; attribute.  <strong>Note that column names with spaces are not supported.</strong>  </p>
-<p><strong>@Column(sqlType = somesqltype)</strong><br>SimpleJdbcMapper tries to infer the correct SQL type from the Java types but some times it cannot (mostly byte[] and database driver specific java types). In these cases explicitly declaring the SQL type is a best practice to ensure correctness, improve performance, and correctly handle NULL values. </p>
+<p><strong>@Column(converter = YourImplementionOfAttributeConverter.class)</strong><br>An <a href="https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/io/github/simplejdbcmapper/core/AttributeConverter.html">AttributeConverter</a> transforms a Java type (T) into a database-compatible column representation (U) and back again.</p>
+<p>Note that for the AttributeConverter implementation it is the responsibility of the converter writer to specify the correct dbData type for the corresponding column for use by the JDBC driver. The library is not expected to do such type conversion.  </p>
+<p>For more details see <a href="#custom-converters">Custom converters</a>  </p>
+<p><strong>@Column(sqlType = somesqltype)</strong><br>SimpleJdbcMapper tries to infer the correct SQL type from the Java types but for some rare cases it cannot; mostly byte[] and database driver specific java types. In these cases explicitly declaring the SQL type is a best practice to ensure correctness, improve performance, and correctly handle NULL values. </p>
 <p>To identify which properties in the mappings the SQL type is unknown do the following:</p>
 <ul class="list">
 <li>Turn on sql logging. (See logging section)</li>
@@ -329,7 +334,8 @@ This will map the property to the column specified by the &#39;name&#39; attribu
 </ul>
 <pre class="hljs"><code>   Setting <span class="hljs-keyword">SQL</span> <span class="hljs-keyword">statement</span> parameter <span class="hljs-keyword">value</span>: <span class="hljs-keyword">column</span> <span class="hljs-keyword">index</span> <span class="hljs-number">6</span>, parameter <span class="hljs-keyword">value</span> [<span class="hljs-keyword">true</span>], <span class="hljs-keyword">value</span> <span class="hljs-keyword">class</span> [java.lang.Boolean], <span class="hljs-keyword">SQL</span> <span class="hljs-keyword">type</span> <span class="hljs-number">16</span>  
    Setting <span class="hljs-keyword">SQL</span> <span class="hljs-keyword">statement</span> parameter <span class="hljs-keyword">value</span>: <span class="hljs-keyword">column</span> <span class="hljs-keyword">index</span> <span class="hljs-number">7</span>, parameter <span class="hljs-keyword">value</span> [[B@<span class="hljs-number">56</span>d742ad], <span class="hljs-keyword">value</span> <span class="hljs-keyword">class</span> [[B], <span class="hljs-keyword">SQL</span> <span class="hljs-keyword">type</span> <span class="hljs-type">unknown</span></code></pre><ul class="list">
-<li>For your specific database and database column type find the corresponding SQL type and assign it using @Column(sqlType = somesqltype).</li>
+<li>For your specific database and database column type find the corresponding SQL type and assign it using @Column(sqlType = somesqltype).
+See <a href="#blob-clob-mapping">BLOB CLOB mapping</a> for some examples.</li>
 </ul>
 <p>4.<strong>@Version</strong></p>
 <p>This annotation is used for optimistic locking. It has to be of type Integer.
@@ -386,11 +392,13 @@ If a Supplier is configured using simpleJdbcMapper.setRecordAuditedBySupplier(),
                                    <span class="hljs-comment">// Property type should be Integer. Used for optimistic locking.</span>
                                    <span class="hljs-comment">// Gets incremented every successful update.</span>
   
-}</code></pre><h2 id="assembling-relationships-from-custom-queries"><a class="header-link" href="#assembling-relationships-from-custom-queries"></a>Assembling relationships from custom queries</h2>
+}</code></pre><h2 id="assembling-relationships-from-sql-queries"><a class="header-link" href="#assembling-relationships-from-sql-queries"></a>Assembling relationships from SQL queries</h2>
 <p>An implementation of the relationship examples below and other features of the library are available in the <a href="https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper">Demo Application</a>. It has an embedded h2 database with tables populated. There is no configuration required and is simple to install and run. </p>
 <h3 id="1tomany-relationship"><a class="header-link" href="#1tomany-relationship"></a>1.ToMany relationship:</h3>
 <ul class="list">
-<li>Order has many OrderLine</li>
+<li><p>Order has many OrderLine</p>
+<p>Models: <a href="https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/Order.java">Order</a>, <a href="https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/OrderLine.java">OrderLine</a></p>
+</li>
 </ul>
 <pre class="hljs"><code>  <span class="hljs-comment">/* 
      Define the multiple mapped entities you want to select. Make sure the table aliases match that in query.
@@ -399,40 +407,43 @@ If a Supplier is configured using simpleJdbcMapper.setRecordAuditedBySupplier(),
      Order.class     | orders     | &quot;o&quot;
      OrderLine.class | order_line | &quot;ol&quot;
   */</span>
-  <span class="hljs-type">MultiEntity</span> multiEntity = <span class="hljs-keyword">new</span> <span class="hljs-type">MultiEntity</span>().add(<span class="hljs-type">Order</span>.<span class="hljs-keyword">class</span>, <span class="hljs-string1">&quot;o&quot;</span>).add(<span class="hljs-type">OrderLine</span>.<span class="hljs-keyword">class</span>, <span class="hljs-string1">&quot;ol&quot;</span>);
+  MultiEntity multiEntity = new MultiEntity().add(<span class="hljs-keyword">Order</span>.<span class="hljs-keyword">class</span>, <span class="hljs-string1">&quot;o&quot;</span>).add(OrderLine.<span class="hljs-keyword">class</span>, <span class="hljs-string1">&quot;ol&quot;</span>);
   
   <span class="hljs-comment">// Get the columns for your &#x27;SELECT&#x27; using getSqlColumns().</span>
   <span class="hljs-comment">// Using java text blocks makes the queries more readable.</span>
-  <span class="hljs-type">String</span> sql = <span class="hljs-string1">&quot;&quot;&quot;
+  String sql = <span class="hljs-string1">&quot;&quot;</span>&quot;
       SELECT %s
       FROM orders o
-      LEFT JOIN order_line ol ON  o.id = ol.order_id
+      LEFT JOIN order_line ol <span class="hljs-keyword">ON</span>  o.id = ol.order_id
       WHERE o.total_amount &gt;= ?
-      ORDER BY o.order_date DESC, ol.id
-   &quot;&quot;&quot;</span>.formatted(sjm.getSqlColumns(multiEntity));
+      <span class="hljs-keyword">ORDER</span> <span class="hljs-keyword">BY</span> o.order_date <span class="hljs-keyword">DESC</span>, ol.id
+   <span class="hljs-string1">&quot;&quot;</span>&quot;.formatted(sjm.getSqlColumns(multiEntity));
    
    <span class="hljs-comment">// Use JdbcTemplate with the library&#x27;s ResultSetExtractor to execute the query. RelationshipMapper holds the query results.</span>
-   <span class="hljs-type">RelationshipMapper</span> relationshipMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity), someAmount); 
+   RelationshipMapper relationshipMapper = sjm.getJdbcTemplate().<span class="hljs-keyword">query</span>(sql, sjm.resultSetExtractor(multiEntity), someAmount); 
    
-   <span class="hljs-comment">// Define the toMany relationship between Order and OrderLine.</span>
-   <span class="hljs-type">Relationship</span> orderToManyOrderLine = <span class="hljs-type">Relationship</span>.<span class="hljs-keyword">type</span>(<span class="hljs-type">Order</span>.<span class="hljs-keyword">class</span>).toMany(<span class="hljs-type">OrderLine</span>.<span class="hljs-keyword">class</span>).joinOn(<span class="hljs-string1">&quot;id&quot;</span>, <span class="hljs-string1">&quot;orderId&quot;</span>).populate(<span class="hljs-string1">&quot;orderLines&quot;</span>);
+   <span class="hljs-comment">// Define the toMany relationship between Order and OrderLine. A relationship is thread safe so once defined it can</span>
+   <span class="hljs-comment">// be reused with different query results which have the same relationship.</span>
+   Relationship orderToManyOrderLine = Relationship.<span class="hljs-keyword">type</span>(<span class="hljs-keyword">Order</span>.<span class="hljs-keyword">class</span>).toMany(OrderLine.<span class="hljs-keyword">class</span>).joinOn(<span class="hljs-string1">&quot;id&quot;</span>, <span class="hljs-string1">&quot;orderId&quot;</span>).populate(<span class="hljs-string1">&quot;orderLines&quot;</span>);
 
    <span class="hljs-comment">// Assemble the relationship from the query results. getList() returns the orders</span>
-   <span class="hljs-type">List</span>&lt;<span class="hljs-type">Order</span>&gt; orders = relationshipMapper.assemble(orderToManyOrderLine).getList(<span class="hljs-type">Order</span>.<span class="hljs-keyword">class</span>);
+   <span class="hljs-keyword">List</span>&lt;<span class="hljs-keyword">Order</span>&gt; orders = relationshipMapper.assemble(orderToManyOrderLine).getList(<span class="hljs-keyword">Order</span>.<span class="hljs-keyword">class</span>);
   </code></pre><ol class="list">
-<li>The sql columns generated by <a href="https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#getSqlColumns(io.github.simplejdbcmapper.core.MultiEntity)">getSqlColumns()</a> and the <a href="https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#resultSetExtractor%28io.github.simplejdbcmapper.core.MultiEntity%29">ResultSetExtractor</a> work together. The extractor expects columns to be in a specific order, so <strong>do not modify the sql columns string</strong> from getSqlColumns().</li>
-<li><a href="https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/io/github/simplejdbcmapper/relationship/RelationshipMapper.html">RelationshipMapper</a> holds the query results and works with the information provided by the Relationship. It does not access the database or use SimpleJdbcMapper. It just assembles the relationship tree.</li>
-<li>A <a href="https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/io/github/simplejdbcmapper/relationship/Relationship.html">Relationship</a> is thread safe. This allows you to define a relationship once and use it with different query results which have the same relationship.</li>
+<li>The sql columns generated by <a href="https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#getSqlColumns(io.github.simplejdbcmapper.core.MultiEntity)">getSqlColumns()</a> and the <a href="https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#resultSetExtractor%28io.github.simplejdbcmapper.core.MultiEntity%29">ResultSetExtractor</a> work together. The extractor expects columns to be in a specific order since it uses position indexes to retrieve data from the ResultSet, so <strong>do not modify the sql columns string</strong> from getSqlColumns().</li>
+<li><a href="https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/io/github/simplejdbcmapper/relationship/RelationshipMapper.html">RelationshipMapper</a> holds the query results and works with the information provided by the Relationship. It does not access the database or use SimpleJdbcMapper class. It just assembles the relationship tree.</li>
+<li>A <a href="https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/io/github/simplejdbcmapper/relationship/Relationship.html">Relationship</a> is thread safe. This allows you to define a relationship once (For example initialize it as a static variable) and use it with different query results which have the same relationship.</li>
 </ol>
 <h3 id="2multiple-relationships-with-one-query-toone-and-tomany"><a class="header-link" href="#2multiple-relationships-with-one-query-toone-and-tomany"></a>2.Multiple relationships with one query (toOne and toMany)</h3>
 <ul class="list">
 <li>Order has many OrderLine   </li>
 <li>OrderLine has one Product</li>
 </ul>
-<pre class="hljs"><code>  <span class="hljs-comment">// Define your entities. The aliases should exactly match the aliases used in the query.</span>
+<p>Note: You can assemble as many relationships as your query supports. This example is for 2 relationships.</p>
+<p>Entities: <a href="https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/Order.java">Order</a>, <a href="https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/OrderLine.java">OrderLine</a>, <a href="https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/Product.java">Product</a></p>
+<pre class="hljs"><code>  <span class="hljs-comment">// Define the multiple mapped entities you want to select. Make sure the table aliases match that in query.</span>
   MultiEntity multiEntity = new MultiEntity().add(<span class="hljs-keyword">Order</span>.<span class="hljs-keyword">class</span>, <span class="hljs-string1">&quot;o&quot;</span>).add(OrderLine.<span class="hljs-keyword">class</span>, <span class="hljs-string1">&quot;ol&quot;</span>).add(Product.<span class="hljs-keyword">class</span>,<span class="hljs-string1">&quot;p&quot;</span>);
   
-   <span class="hljs-comment">// Build your custom sql using the sql columns from sjm.getSqlColumns(multiEntity)</span>
+   <span class="hljs-comment">// Get the columns for your &#x27;SELECT&#x27; using getSqlColumns()</span>
   String sql = <span class="hljs-string1">&quot;&quot;</span>&quot;
       SELECT %s
       FROM orders o
@@ -454,12 +465,15 @@ If a Supplier is configured using simpleJdbcMapper.setRecordAuditedBySupplier(),
   <span class="hljs-comment">// Assemble the relationships. getList() returns the orders.</span>
   <span class="hljs-keyword">List</span>&lt;<span class="hljs-keyword">Order</span>&gt; orders = relationshipMapper.assemble(orderLineToOneProduct, orderToManyOrderLine).getList(<span class="hljs-keyword">Order</span>.<span class="hljs-keyword">class</span>);</code></pre><h3 id="3tomany-relationship-through-an-intermediate-table-one-side-of-many-to-many"><a class="header-link" href="#3tomany-relationship-through-an-intermediate-table-one-side-of-many-to-many"></a>3.ToMany relationship through an intermediate table (one side of many to many)</h3>
 <ul class="list">
-<li>Employee has many Skill through intermediate table &#39;employee_skill&#39;.  </li>
+<li><p>Employee has many Skill through intermediate table &#39;employee_skill&#39;.  </p>
+<p>Entities: <a href="https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/Employee.java">Employee</a>, <a href="https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/EmployeeSkill.java">EmployeeSkill</a>, <a href="https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/Skill.java">Skill</a></p>
+</li>
 </ul>
-<pre class="hljs"><code>  <span class="hljs-comment">// Define the entities. The intermediate table employee_skill corresponds to mapped EmployeeSkill class and needs to be selected also.</span>
+<pre class="hljs"><code>  <span class="hljs-comment">// Define the multiple mapped entities you want to select.The intermediate table employee_skill corresponds to mapped EmployeeSkill class </span>
+  <span class="hljs-comment">// needs to be selected also.</span>
   <span class="hljs-type">MultiEntity</span> multiEntity = <span class="hljs-keyword">new</span> <span class="hljs-type">MultiEntity</span>().add(<span class="hljs-type">Employee</span>.<span class="hljs-keyword">class</span>, <span class="hljs-string1">&quot;emp&quot;</span>).add(<span class="hljs-type">EmployeeSkill</span>.<span class="hljs-keyword">class</span>, <span class="hljs-string1">&quot;es&quot;</span>).add(<span class="hljs-type">Skill</span>.<span class="hljs-keyword">class</span>, <span class="hljs-string1">&quot;s&quot;</span>);
   
-   <span class="hljs-comment">// Build your custom sql using the sql columns from getSqlColumns()</span>
+   <span class="hljs-comment">// Get the columns for your &#x27;SELECT&#x27; using getSqlColumns()</span>
   <span class="hljs-type">String</span> sql = <span class="hljs-string1">&quot;&quot;&quot;
       SELECT %s
       FROM employee emp
@@ -482,6 +496,7 @@ If a Supplier is configured using simpleJdbcMapper.setRecordAuditedBySupplier(),
 <li>OrderLine has one Product  - 2nd query to get the corresponding OrderLine and Product for the orders</li>
 </ul>
 <p>From the results of these 2 queries the relationships can be assembled.</p>
+<p>Entities: <a href="https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/Order.java">Order</a>, <a href="https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/OrderLine.java">OrderLine</a>, <a href="https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper/blob/main/src/main/java/io/github/springcrudsimplejdbcmapper/model/Product.java">Product</a></p>
 <pre class="hljs"><code>  <span class="hljs-comment">// The paginated query. Note the PAGINATED SYNTAX is different for different databases. Use the one for your database.</span>
  <span class="hljs-type">String</span> orderSql = <span class="hljs-string1">&quot;&quot;&quot;
         SELECT %s
@@ -496,8 +511,10 @@ If a Supplier is configured using simpleJdbcMapper.setRecordAuditedBySupplier(),
   <span class="hljs-comment">// Get the order id list</span>
   <span class="hljs-type">List</span>&lt;<span class="hljs-type">Integer</span>&gt; orderIds = orders.stream().map(<span class="hljs-type">Order</span>::getId).toList();
 
-  <span class="hljs-comment">// 2nd query. Get the corresponding OrderLine/Product for the order ids. For the IN clause we have to use a named parameter.</span>
+  <span class="hljs-comment">// Define the multiple mapped entities you want to select for the 2nd query. Make sure the table aliases match that in query.</span>
   <span class="hljs-type">MultiEntity</span> multiEntity = <span class="hljs-keyword">new</span> <span class="hljs-type">MultiEntity</span>().add(<span class="hljs-type">OrderLine</span>.<span class="hljs-keyword">class</span>, <span class="hljs-string1">&quot;ol&quot;</span>).add(<span class="hljs-type">Product</span>.<span class="hljs-keyword">class</span>, <span class="hljs-string1">&quot;p&quot;</span>);
+  
+  <span class="hljs-comment">// 2nd query. Get the corresponding OrderLine/Product for the order ids. For the IN clause we have to use a named parameter.</span>
   <span class="hljs-type">String</span> sql = <span class="hljs-string1">&quot;&quot;&quot;
       SELECT %s
       FROM order_line ol
@@ -506,12 +523,13 @@ If a Supplier is configured using simpleJdbcMapper.setRecordAuditedBySupplier(),
       ORDER BY ol.id
       &quot;&quot;&quot;</span>.formatted(sjm.getSqlColumns(multiEntity));
       
-  <span class="hljs-comment">// Create the named parameter</span>
+  <span class="hljs-comment">// Create the named parameter for NamedParameterJdbcTemplate</span>
   <span class="hljs-type">MapSqlParameterSource</span> param = <span class="hljs-keyword">new</span> <span class="hljs-type">MapSqlParameterSource</span>().addValue(<span class="hljs-string1">&quot;orderIds&quot;</span>, orderIds);
   
-  <span class="hljs-comment">// Since its a named parameter query use NamedParameterJdbcTemplate.</span>
+  <span class="hljs-comment">// Since its a named parameter query we need to use NamedParameterJdbcTemplate.</span>
   <span class="hljs-type">RelationshipMapper</span> relationshipMapper = sjm.getNamedParameterJdbcTemplate().query(sql, param, sjm.resultSetExtractor(multiEntity));
 
+  <span class="hljs-comment">// relationshipMapper has results of OrderLine and Product from query above.</span>
   <span class="hljs-comment">// Add orders from the first query to the relationshipMapper so that we can assemble a relationship from it.</span>
   relationshipMapper.addEntityResult(<span class="hljs-type">Order</span>.<span class="hljs-keyword">class</span>, orders, <span class="hljs-string1">&quot;id&quot;</span>);
 
@@ -559,18 +577,18 @@ private byte[] image;
 @<span class="hljs-keyword">Column</span>(sqlType = <span class="hljs-keyword">Types</span>.LONGVARCHAR) // mapped <span class="hljs-keyword">to</span> a <span class="hljs-string1">&#x27;VARCHAR(MAX)&#x27;</span> <span class="hljs-keyword">database</span> <span class="hljs-keyword">column</span> <span class="hljs-keyword">type</span>
 private String clobData;
 </code></pre><h2 id="enum-mapping"><a class="header-link" href="#enum-mapping"></a>Enum mapping</h2>
-<p>Enums should be mapped to a database column which stores strings. It uses the enum.name() to get the string value.</p>
+<p>Enums should be mapped to a database column which stores strings. It uses the enum.name() to get the string value to store in the database and uses Spring&#39;s DefaultConverterService behind the scenes to convert the String back to the Enum when reading from database.</p>
 <pre class="hljs"><code><span class="hljs-keyword">public</span> <span class="hljs-class"><span class="hljs-keyword">enum</span> <span class="hljs-title">StatusEnum</span> </span>{
     OPEN, CLOSED;
 }
 ...
 <span class="hljs-meta">@Column</span>
-<span class="hljs-keyword">private</span> StatusEnum status;  <span class="hljs-comment">// Mapped to a String column in the database (e.g., value &#x27;OPEN&#x27;)</span>
+<span class="hljs-keyword">private</span> StatusEnum status;  <span class="hljs-comment">// Mapped to a String column in the database (e.g., database column type VARCHAR and string value of enum stored as &#x27;OPEN&#x27;)</span>
 ...</code></pre><h2 id="configuration-for-auto-assigning-createdby-updateby-createdon-updatedon"><a class="header-link" href="#configuration-for-auto-assigning-createdby-updateby-createdon-updatedon"></a>Configuration for auto assigning @CreatedBy, @UpdateBy, @CreatedOn, @UpdatedOn</h2>
 <pre class="hljs"><code><span class="hljs-meta">@Bean</span>
 <span class="hljs-function"><span class="hljs-keyword">public</span> SimpleJdbcMapper <span class="hljs-title">simpleJdbcMapper</span><span class="hljs-params">(DataSource dataSource)</span> </span>{
     SimpleJdbcMapper simpleJdbcMapper = <span class="hljs-keyword">new</span> SimpleJdbcMapper(dataSource);
-    <span class="hljs-comment">// Provide your own custom Supplier. Make Sure the type returned by Supplier matches the type </span>
+    <span class="hljs-comment">// Provide your own  Supplier. Make Sure the type returned by Supplier matches the type </span>
     <span class="hljs-comment">// of the Property you are annotating. Generally &#x27;audited by&#x27; is got from a thread local variable </span>
     <span class="hljs-comment">// for example when using spring security.</span>
     simpleJdbcMapper.setRecordAuditedBySupplier(() -&gt; <span class="hljs-string1">&quot;tester&quot;</span>);
@@ -579,7 +597,14 @@ private String clobData;
 }</code></pre><h2 id="accessing-jdbcclient-jdbctemplate"><a class="header-link" href="#accessing-jdbcclient-jdbctemplate"></a>Accessing JdbcClient JdbcTemplate</h2>
 <pre class="hljs"><code> <span class="hljs-keyword">JdbcClient </span><span class="hljs-keyword">jdbcClient </span>= sjm.getJdbcClient();
  <span class="hljs-keyword">JdbcTemplate </span><span class="hljs-keyword">jdbcTemplate </span>= sjm.getJdbcTemplate();
- NamedParameterJdbcTemplate namedParameterJdbcTemplate = sjm.getNamedParameterJdbcTemplate();</code></pre><p>There is no requirement that you have to use the underlying JdbcClient/JdbcTemplate for your custom queries. You can create your own JdbcClient/JdbcTemplate and use it. </p>
+ NamedParameterJdbcTemplate namedParameterJdbcTemplate = sjm.getNamedParameterJdbcTemplate();</code></pre><p>There is no requirement that you have to use the underlying JdbcClient/JdbcTemplate for your SQL queries. You can create your own JdbcClient/JdbcTemplate and use it. </p>
+<h2 id="custom-converters"><a class="header-link" href="#custom-converters"></a>Custom converters</h2>
+<p>An <a href="https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/io/github/simplejdbcmapper/core/AttributeConverter.html">AttributeConverter</a> transforms a Java type (T) into a database-compatible column representation (U) and back again.</p>
+<p>Note that it is the responsibility of the converter writer to specify the correct dbData type for the corresponding column for use by the JDBC driver. The library is not expected to do such type conversion.</p>
+<p>Configuration of the converter is done using the @Column annotation. Example</p>
+<pre class="hljs"><code><span class="hljs-meta">@Column(converter = YourImplementationOfAttributeConverter.class)</span></code></pre><p>Examples for converting an object into json and storing it in a &#39;jsonb&#39; database column for a postgres database:</p>
+<p>Converter: <a href="https://github.com/spring-jdbc-crud/simplejdbcmapper/blob/main/src/test/java/io/github/simplejdbcmapper/core/ProductToJsonPostgresConverter.java">ProductToJsonPostgresConverter</a><br>Entity: <a href="https://github.com/spring-jdbc-crud/simplejdbcmapper/blob/main/src/test/java/io/github/simplejdbcmapper/model/JsonbData.java">JsonbData</a>  </p>
+<p>Table definition:<br>CREATE TABLE jsonb_data (<br>    id serial NOT NULL,<br>    product_json jsonb,<br>    CONSTRAINT jsonb_data_pk PRIMARY KEY (id)<br>);</p>
 <h2 id="logging"><a class="header-link" href="#logging"></a>Logging</h2>
 <p>Uses the same logging configurations as Spring. In application.properties:</p>
 <pre class="hljs"><code>
@@ -602,7 +627,7 @@ private String clobData;
 <p>The 2.x release has removed the dependency on database table column meta-data for mapping totally.</p>
 <p>Difference from 1.x:  </p>
 <ol class="list">
-<li>SimpleJdbcMapper 2.x tries to infer the correct SQL type from the Java types but some times it cannot (Mostly byte[] and database driver specific java types). In these cases explicitly declaring the SQL type is a best practice to ensure correctness, improve performance, and correctly handle NULL values. See documentation on @Column(sqlType=&quot;somesqltype&quot;) and BLOB/CLOB mapping further above on how to figure out and set the SQL type value.</li>
+<li>SimpleJdbcMapper tries to infer the correct SQL type from the Java types but for some rare cases it cannot; mostly byte[] and database driver specific java types. In these cases explicitly declaring the SQL type is a best practice to ensure correctness, improve performance, and correctly handle NULL values. See documentation on @Column(sqlType=&quot;somesqltype&quot;) and BLOB/CLOB mapping further above on how to figure out and set the SQL type value.</li>
 <li>Since 2.x does not use the database table column meta data, it cannot provide  detailed messages on what went wrong with a mapping. Mapping issues will surface through sql errors thrown, which is similar to what happens when using JdbcTemplate/JdbcClient directly.</li>
 <li>Primitives not supported. Use corresponding java wrapper classes in your mappings</li>
 </ol>

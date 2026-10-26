@@ -12,11 +12,19 @@ The simplejdbcmapper website is published from the 'gh-pages' branch.
    *) rename README.html to index.html
    
    *) follow instructions on sjm_head_snippet.txt. DO NOT FORMAT the index.html using eclipse. It creates problems where text shows unaligned
-   *) Fix the links on index.html
-      1) remove @ (and sometimes ',')  on links for @CreatedBy @UpdatedBy @CreatedOn @UpdatedOn
-      2) replace all hljs-string with hljs-string1 to turn of red highlighting of quoted strings
-      3) upgrading-to-2.x-from-1.x remove period
-      4) remove :sparkler:
-      5) Remove subsections for relationships
+   
+   1) ADD THIS after the Initial description of project for links
+
+	<a href="https://github.com/spring-jdbc-crud/simplejdbcmapper">github</a> |
+	<a href="https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/index.html">Javadoc</a> |
+	<a href="https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper">Demo Application</a>
+	
+2) Remove the "table of contents paragraph and heading.
+      3) remove @ (and sometimes ',')  on links for @CreatedBy @UpdatedBy @CreatedOn @UpdatedOn
+      4) replace all hljs-string with hljs-string1 to turn of red highlighting of quoted strings
+      5) upgrading-to-2.x-from-1.x remove period
+      6) remove :sparkler:
+      7) Remove subsections for relationships in the links at top
+      8) add <h1>SimpleJdbcMapper</h1> to first span9 tag
 
 

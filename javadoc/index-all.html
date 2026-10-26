@@ -72,6 +72,12 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Assembles the relationships from the query results.</div>
 </dd>
+<dt><a href="io/github/simplejdbcmapper/core/AttributeConverter.html" class="type-name-link" title="interface in io.github.simplejdbcmapper.core">AttributeConverter&lt;T,<wbr>U&gt;</a> - Interface in <a href="io/github/simplejdbcmapper/core/package-summary.html">io.github.simplejdbcmapper.core</a></dt>
+<dd>
+<div class="block">A class that implements this interface can be used to convert entity
+ attribute into database column representation for inserts/updates and vice
+ versa for queries.</div>
+</dd>
 <dt><a href="io/github/simplejdbcmapper/annotation/IdType.html#AUTO_GENERATED" class="member-name-link">AUTO_GENERATED</a> - Enum constant in enum class io.github.simplejdbcmapper.annotation.<a href="io/github/simplejdbcmapper/annotation/IdType.html" title="enum class in io.github.simplejdbcmapper.annotation">IdType</a></dt>
 <dd>&nbsp;</dd>
 </dl>
@@ -87,6 +93,20 @@ loadScripts(document, 'script');</script>
 <dd>
 <div class="block">Properties that need be persisted to the database will need this annotation
  unless the property is already annotated with one of the other annotations.</div>
+</dd>
+<dt><a href="io/github/simplejdbcmapper/annotation/Column.html#converter()" class="member-name-link">converter()</a> - Element in annotation interface io.github.simplejdbcmapper.annotation.<a href="io/github/simplejdbcmapper/annotation/Column.html" title="annotation interface in io.github.simplejdbcmapper.annotation">Column</a></dt>
+<dd>
+<div class="block">custom converter</div>
+</dd>
+<dt><a href="io/github/simplejdbcmapper/core/AttributeConverter.html#convertToDatabaseColumn(T)" class="member-name-link">convertToDatabaseColumn(T)</a> - Method in interface io.github.simplejdbcmapper.core.<a href="io/github/simplejdbcmapper/core/AttributeConverter.html" title="interface in io.github.simplejdbcmapper.core">AttributeConverter</a></dt>
+<dd>
+<div class="block">Converts the value stored in the entity attribute into the data
+ representation to be stored in the database.</div>
+</dd>
+<dt><a href="io/github/simplejdbcmapper/core/AttributeConverter.html#convertToEntityAttribute(U)" class="member-name-link">convertToEntityAttribute(U)</a> - Method in interface io.github.simplejdbcmapper.core.<a href="io/github/simplejdbcmapper/core/AttributeConverter.html" title="interface in io.github.simplejdbcmapper.core">AttributeConverter</a></dt>
+<dd>
+<div class="block">Converts the data stored in the database column into the value to be stored
+ in the entity attribute.</div>
 </dd>
 <dt><a href="io/github/simplejdbcmapper/annotation/CreatedBy.html" class="type-name-link" title="annotation interface in io.github.simplejdbcmapper.annotation">CreatedBy</a> - Annotation Interface in <a href="io/github/simplejdbcmapper/annotation/package-summary.html">io.github.simplejdbcmapper.annotation</a></dt>
 <dd>
@@ -156,8 +176,14 @@ loadScripts(document, 'script');</script>
 </dd>
 <dt><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#getConversionService()" class="member-name-link">getConversionService()</a> - Method in class io.github.simplejdbcmapper.core.<a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html" title="class in io.github.simplejdbcmapper.core">SimpleJdbcMapper</a></dt>
 <dd>
-<div class="block">Exposing the conversion service used, so if necessary new converters can be
- added etc.</div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">See <a href="io/github/simplejdbcmapper/core/AttributeConverter.html" title="interface in io.github.simplejdbcmapper.core"><code>AttributeConverter</code></a> on
+             how to use custom converters.
+             <p>
+             Exposing the conversion service used, so if necessary new
+             converters can be added etc. The default conversion service used
+             in SimpleJdbcMapper is Spring's DefaultConversionService.</div>
+</div>
 </dd>
 <dt><a href="io/github/simplejdbcmapper/core/SortBy.html#getDirection()" class="member-name-link">getDirection()</a> - Method in class io.github.simplejdbcmapper.core.<a href="io/github/simplejdbcmapper/core/SortBy.html" title="class in io.github.simplejdbcmapper.core">SortBy</a></dt>
 <dd>&nbsp;</dd>
@@ -481,7 +507,12 @@ loadScripts(document, 'script');</script>
 <dd>&nbsp;</dd>
 <dt><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#setConversionService(org.springframework.core.convert.ConversionService)" class="member-name-link">setConversionService(ConversionService)</a> - Method in class io.github.simplejdbcmapper.core.<a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html" title="class in io.github.simplejdbcmapper.core">SimpleJdbcMapper</a></dt>
 <dd>
-<div class="block">Set the conversion service</div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">See <a href="io/github/simplejdbcmapper/core/AttributeConverter.html" title="interface in io.github.simplejdbcmapper.core"><code>AttributeConverter</code></a> on
+             how to use custom converters.
+             <p>
+             Set the conversion service</div>
+</div>
 </dd>
 <dt><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#setRecordAuditedBySupplier(java.util.function.Supplier)" class="member-name-link">setRecordAuditedBySupplier(Supplier&lt;T&gt;)</a> - Method in class io.github.simplejdbcmapper.core.<a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html" title="class in io.github.simplejdbcmapper.core">SimpleJdbcMapper</a></dt>
 <dd>

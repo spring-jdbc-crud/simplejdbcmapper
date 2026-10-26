@@ -782,24 +782,32 @@ public final class SimpleJdbcMapper {
 <span class="fc" id="L782">	}</span>
 
 	/**
-	 * Exposing the conversion service used, so if necessary new converters can be
-	 * added etc. The default conversion service used in SimpleJdbcMapper is
-	 * Spring's DefaultConversionService.
+	 * @deprecated See {@link io.github.simplejdbcmapper.core.AttributeConverter} on
+	 *             how to use custom converters.
+	 *             &lt;p&gt;
+	 *             Exposing the conversion service used, so if necessary new
+	 *             converters can be added etc. The default conversion service used
+	 *             in SimpleJdbcMapper is Spring's DefaultConversionService.
 	 *
 	 * @return the conversion service.
 	 */
+	@Deprecated(since = &quot;2.5.0&quot;, forRemoval = true)
 	public ConversionService getConversionService() {
-<span class="fc" id="L792">		return simpleJdbcMapperSupport.getConversionService();</span>
+<span class="fc" id="L796">		return simpleJdbcMapperSupport.getConversionService();</span>
 	}
 
 	/**
-	 * Set the conversion service
+	 * @deprecated See {@link io.github.simplejdbcmapper.core.AttributeConverter} on
+	 *             how to use custom converters.
+	 *             &lt;p&gt;
+	 *             Set the conversion service
 	 * 
 	 * @param conversionService The conversion service to set
 	 */
+	@Deprecated(since = &quot;2.5.0&quot;, forRemoval = true)
 	public void setConversionService(ConversionService conversionService) {
-<span class="fc" id="L801">		simpleJdbcMapperSupport.setConversionService(conversionService);</span>
-<span class="fc" id="L802">	}</span>
+<span class="fc" id="L809">		simpleJdbcMapperSupport.setConversionService(conversionService);</span>
+<span class="fc" id="L810">	}</span>
 
 	/**
 	 * Get the schema name.
@@ -807,7 +815,7 @@ public final class SimpleJdbcMapper {
 	 * @return the schema name.
 	 */
 	public String getSchemaName() {
-<span class="fc" id="L810">		return simpleJdbcMapperSupport.getSchemaName();</span>
+<span class="fc" id="L818">		return simpleJdbcMapperSupport.getSchemaName();</span>
 	}
 
 	/**
@@ -816,7 +824,7 @@ public final class SimpleJdbcMapper {
 	 * @return the catalog name.
 	 */
 	public String getCatalogName() {
-<span class="fc" id="L819">		return simpleJdbcMapperSupport.getCatalogName();</span>
+<span class="fc" id="L827">		return simpleJdbcMapperSupport.getCatalogName();</span>
 	}
 
 	/**
@@ -826,14 +834,14 @@ public final class SimpleJdbcMapper {
 	 * context this method is invoked automatically.
 	 */
 	public void close() {
-<span class="fc" id="L829">		simpleJdbcMapperSupport = null;</span>
-<span class="fc" id="L830">		insertOperation = null;</span>
-<span class="fc" id="L831">		findOperation = null;</span>
-<span class="fc" id="L832">		updateOperation = null;</span>
-<span class="fc" id="L833">		deleteOperation = null;</span>
-<span class="fc" id="L834">		multiEntityExtractor = null;</span>
-<span class="fc" id="L835">		logger.info(&quot;SimpleJdbcMapper shutdown completed. {}&quot;, this);</span>
-<span class="fc" id="L836">	}</span>
+<span class="fc" id="L837">		simpleJdbcMapperSupport = null;</span>
+<span class="fc" id="L838">		insertOperation = null;</span>
+<span class="fc" id="L839">		findOperation = null;</span>
+<span class="fc" id="L840">		updateOperation = null;</span>
+<span class="fc" id="L841">		deleteOperation = null;</span>
+<span class="fc" id="L842">		multiEntityExtractor = null;</span>
+<span class="fc" id="L843">		logger.info(&quot;SimpleJdbcMapper shutdown completed. {}&quot;, this);</span>
+<span class="fc" id="L844">	}</span>
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 8466f8f41a9c66f997ae495e0e141cea2d93e840 2026-10-12T11:16:42</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main c5dc8ca2218f9755059f4877d11ea3c4285da985 2026-10-26T02:15:47</div></body></html>

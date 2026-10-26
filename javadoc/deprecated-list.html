@@ -63,8 +63,17 @@ loadScripts(document, 'script');</script>
 <div class="summary-table two-column-summary">
 <div class="table-header col-first">Element</div>
 <div class="table-header col-last">Description</div>
-<div class="col-summary-item-name even-row-color"><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#getEntitySqlColumns(java.lang.Class)">io.github.simplejdbcmapper.core.SimpleJdbcMapper.getEntitySqlColumns<wbr>(Class&lt;?&gt;)</a></div>
+<div class="col-summary-item-name even-row-color"><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#getConversionService()">io.github.simplejdbcmapper.core.SimpleJdbcMapper.getConversionService()</a></div>
 <div class="col-last even-row-color">
+<div class="block">See <a href="io/github/simplejdbcmapper/core/AttributeConverter.html" title="interface in io.github.simplejdbcmapper.core"><code>AttributeConverter</code></a> on
+             how to use custom converters.
+             <p>
+             Exposing the conversion service used, so if necessary new
+             converters can be added etc. The default conversion service used
+             in SimpleJdbcMapper is Spring's DefaultConversionService.</div>
+</div>
+<div class="col-summary-item-name odd-row-color"><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#getEntitySqlColumns(java.lang.Class)">io.github.simplejdbcmapper.core.SimpleJdbcMapper.getEntitySqlColumns<wbr>(Class&lt;?&gt;)</a></div>
+<div class="col-last odd-row-color">
 <div class="block">Use <a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#getSqlColumns(java.lang.Class)"><code>SimpleJdbcMapper.getSqlColumns(Class&lt;?&gt; entityType)</code></a> instead.
              <p>
  
@@ -85,8 +94,8 @@ loadScripts(document, 'script');</script>
 
              See <a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#newEntityRowMapper(java.lang.Class)"><code>SimpleJdbcMapper.newEntityRowMapper(java.lang.Class&lt;T&gt;)</code></a></div>
 </div>
-<div class="col-summary-item-name odd-row-color"><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#getEntitySqlColumns(java.lang.Class,java.lang.String)">io.github.simplejdbcmapper.core.SimpleJdbcMapper.getEntitySqlColumns<wbr>(Class&lt;?&gt;, String)</a></div>
-<div class="col-last odd-row-color">
+<div class="col-summary-item-name even-row-color"><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#getEntitySqlColumns(java.lang.Class,java.lang.String)">io.github.simplejdbcmapper.core.SimpleJdbcMapper.getEntitySqlColumns<wbr>(Class&lt;?&gt;, String)</a></div>
+<div class="col-last even-row-color">
 <div class="block">Use <a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#getSqlColumns(java.lang.Class,java.lang.String)"><code>SimpleJdbcMapper.getSqlColumns(Class&lt;?&gt; entityType, String tableAlias)</code></a> instead.
              <p>
  
@@ -116,8 +125,8 @@ loadScripts(document, 'script');</script>
  
              See <a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#newEntityRowMapper(java.lang.Class)"><code>SimpleJdbcMapper.newEntityRowMapper(java.lang.Class&lt;T&gt;)</code></a></div>
 </div>
-<div class="col-summary-item-name even-row-color"><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#getMultiEntitySqlColumns(io.github.simplejdbcmapper.core.MultiEntity)">io.github.simplejdbcmapper.core.SimpleJdbcMapper.getMultiEntitySqlColumns<wbr>(MultiEntity)</a></div>
-<div class="col-last even-row-color">
+<div class="col-summary-item-name odd-row-color"><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#getMultiEntitySqlColumns(io.github.simplejdbcmapper.core.MultiEntity)">io.github.simplejdbcmapper.core.SimpleJdbcMapper.getMultiEntitySqlColumns<wbr>(MultiEntity)</a></div>
+<div class="col-last odd-row-color">
 <div class="block">Use <a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#getSqlColumns(io.github.simplejdbcmapper.core.MultiEntity)"><code>SimpleJdbcMapper.getSqlColumns(MultiEntity multiEntity)</code></a> instead.<br>
  
              Gets the sql columns for multi-entity processing. These sql
@@ -141,8 +150,8 @@ loadScripts(document, 'script');</script>
  
              See <a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#resultSetExtractor(io.github.simplejdbcmapper.core.MultiEntity)"><code>SimpleJdbcMapper.resultSetExtractor(io.github.simplejdbcmapper.core.MultiEntity)</code></a></div>
 </div>
-<div class="col-summary-item-name odd-row-color"><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#newEntityRowMapper(java.lang.Class)">io.github.simplejdbcmapper.core.SimpleJdbcMapper.newEntityRowMapper<wbr>(Class&lt;T&gt;)</a></div>
-<div class="col-last odd-row-color">
+<div class="col-summary-item-name even-row-color"><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#newEntityRowMapper(java.lang.Class)">io.github.simplejdbcmapper.core.SimpleJdbcMapper.newEntityRowMapper<wbr>(Class&lt;T&gt;)</a></div>
+<div class="col-last even-row-color">
 <div class="block">Use <a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#entityRowMapper(java.lang.Class)"><code>SimpleJdbcMapper.entityRowMapper(Class)</code></a> instead.
              <p>
  
@@ -194,6 +203,13 @@ loadScripts(document, 'script');</script>
                                                      .query(sjm.newEntityRowMapper(Product.class))
                                                      .list();
  </pre></div>
+</div>
+<div class="col-summary-item-name odd-row-color"><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#setConversionService(org.springframework.core.convert.ConversionService)">io.github.simplejdbcmapper.core.SimpleJdbcMapper.setConversionService<wbr>(ConversionService)</a></div>
+<div class="col-last odd-row-color">
+<div class="block">See <a href="io/github/simplejdbcmapper/core/AttributeConverter.html" title="interface in io.github.simplejdbcmapper.core"><code>AttributeConverter</code></a> on
+             how to use custom converters.
+             <p>
+             Set the conversion service</div>
 </div>
 </div>
 </div>
@@ -206,8 +222,17 @@ loadScripts(document, 'script');</script>
 <div class="summary-table two-column-summary">
 <div class="table-header col-first">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-summary-item-name even-row-color"><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#getEntitySqlColumns(java.lang.Class)">io.github.simplejdbcmapper.core.SimpleJdbcMapper.getEntitySqlColumns<wbr>(Class&lt;?&gt;)</a></div>
+<div class="col-summary-item-name even-row-color"><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#getConversionService()">io.github.simplejdbcmapper.core.SimpleJdbcMapper.getConversionService()</a></div>
 <div class="col-last even-row-color">
+<div class="block">See <a href="io/github/simplejdbcmapper/core/AttributeConverter.html" title="interface in io.github.simplejdbcmapper.core"><code>AttributeConverter</code></a> on
+             how to use custom converters.
+             <p>
+             Exposing the conversion service used, so if necessary new
+             converters can be added etc. The default conversion service used
+             in SimpleJdbcMapper is Spring's DefaultConversionService.</div>
+</div>
+<div class="col-summary-item-name odd-row-color"><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#getEntitySqlColumns(java.lang.Class)">io.github.simplejdbcmapper.core.SimpleJdbcMapper.getEntitySqlColumns<wbr>(Class&lt;?&gt;)</a></div>
+<div class="col-last odd-row-color">
 <div class="block">Use <a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#getSqlColumns(java.lang.Class)"><code>SimpleJdbcMapper.getSqlColumns(Class&lt;?&gt; entityType)</code></a> instead.
              <p>
  
@@ -228,8 +253,8 @@ loadScripts(document, 'script');</script>
 
              See <a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#newEntityRowMapper(java.lang.Class)"><code>SimpleJdbcMapper.newEntityRowMapper(java.lang.Class&lt;T&gt;)</code></a></div>
 </div>
-<div class="col-summary-item-name odd-row-color"><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#getEntitySqlColumns(java.lang.Class,java.lang.String)">io.github.simplejdbcmapper.core.SimpleJdbcMapper.getEntitySqlColumns<wbr>(Class&lt;?&gt;, String)</a></div>
-<div class="col-last odd-row-color">
+<div class="col-summary-item-name even-row-color"><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#getEntitySqlColumns(java.lang.Class,java.lang.String)">io.github.simplejdbcmapper.core.SimpleJdbcMapper.getEntitySqlColumns<wbr>(Class&lt;?&gt;, String)</a></div>
+<div class="col-last even-row-color">
 <div class="block">Use <a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#getSqlColumns(java.lang.Class,java.lang.String)"><code>SimpleJdbcMapper.getSqlColumns(Class&lt;?&gt; entityType, String tableAlias)</code></a> instead.
              <p>
  
@@ -259,8 +284,8 @@ loadScripts(document, 'script');</script>
  
              See <a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#newEntityRowMapper(java.lang.Class)"><code>SimpleJdbcMapper.newEntityRowMapper(java.lang.Class&lt;T&gt;)</code></a></div>
 </div>
-<div class="col-summary-item-name even-row-color"><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#getMultiEntitySqlColumns(io.github.simplejdbcmapper.core.MultiEntity)">io.github.simplejdbcmapper.core.SimpleJdbcMapper.getMultiEntitySqlColumns<wbr>(MultiEntity)</a></div>
-<div class="col-last even-row-color">
+<div class="col-summary-item-name odd-row-color"><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#getMultiEntitySqlColumns(io.github.simplejdbcmapper.core.MultiEntity)">io.github.simplejdbcmapper.core.SimpleJdbcMapper.getMultiEntitySqlColumns<wbr>(MultiEntity)</a></div>
+<div class="col-last odd-row-color">
 <div class="block">Use <a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#getSqlColumns(io.github.simplejdbcmapper.core.MultiEntity)"><code>SimpleJdbcMapper.getSqlColumns(MultiEntity multiEntity)</code></a> instead.<br>
  
              Gets the sql columns for multi-entity processing. These sql
@@ -284,8 +309,8 @@ loadScripts(document, 'script');</script>
  
              See <a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#resultSetExtractor(io.github.simplejdbcmapper.core.MultiEntity)"><code>SimpleJdbcMapper.resultSetExtractor(io.github.simplejdbcmapper.core.MultiEntity)</code></a></div>
 </div>
-<div class="col-summary-item-name odd-row-color"><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#newEntityRowMapper(java.lang.Class)">io.github.simplejdbcmapper.core.SimpleJdbcMapper.newEntityRowMapper<wbr>(Class&lt;T&gt;)</a></div>
-<div class="col-last odd-row-color">
+<div class="col-summary-item-name even-row-color"><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#newEntityRowMapper(java.lang.Class)">io.github.simplejdbcmapper.core.SimpleJdbcMapper.newEntityRowMapper<wbr>(Class&lt;T&gt;)</a></div>
+<div class="col-last even-row-color">
 <div class="block">Use <a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#entityRowMapper(java.lang.Class)"><code>SimpleJdbcMapper.entityRowMapper(Class)</code></a> instead.
              <p>
  
@@ -337,6 +362,13 @@ loadScripts(document, 'script');</script>
                                                      .query(sjm.newEntityRowMapper(Product.class))
                                                      .list();
  </pre></div>
+</div>
+<div class="col-summary-item-name odd-row-color"><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#setConversionService(org.springframework.core.convert.ConversionService)">io.github.simplejdbcmapper.core.SimpleJdbcMapper.setConversionService<wbr>(ConversionService)</a></div>
+<div class="col-last odd-row-color">
+<div class="block">See <a href="io/github/simplejdbcmapper/core/AttributeConverter.html" title="interface in io.github.simplejdbcmapper.core"><code>AttributeConverter</code></a> on
+             how to use custom converters.
+             <p>
+             Set the conversion service</div>
 </div>
 </div>
 </div>

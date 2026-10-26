@@ -39,29 +39,65 @@ class InternalUtils {
 		}
 	}
 
+	public static void addMapSqlParameterSource(MapSqlParameterSource mapSqlParameterSource, Object val,
+			String paramName, PropertyMapping propMapping) {
+<span class="fc" id="L44">		Integer columnSqlType = propMapping.getColumnSqlType();</span>
+<span class="fc bfc" id="L45" title="All 2 branches covered.">		if (propMapping.isStandardAttribute()) {</span>
+<span class="fc" id="L46">			mapSqlParameterSource.addValue(paramName, val, columnSqlType);</span>
+<span class="fc bfc" id="L47" title="All 2 branches covered.">		} else if (propMapping.isEnumAttribute()) {</span>
+<span class="fc" id="L48">			assignEnumMapSqlParameterSource(mapSqlParameterSource, val, paramName, columnSqlType);</span>
+<span class="fc bfc" id="L49" title="All 2 branches covered.">		} else if (propMapping.isBlobAttribute()) {</span>
+<span class="fc" id="L50">			assignBlobMapSqlParameterSource(mapSqlParameterSource, val, paramName, columnSqlType);</span>
+<span class="fc bfc" id="L51" title="All 2 branches covered.">		} else if (propMapping.isClobAttribute()) {</span>
+<span class="fc" id="L52">			assignClobMapSqlParameterSource(mapSqlParameterSource, val, paramName, columnSqlType);</span>
+<span class="pc bpc" id="L53" title="1 of 2 branches missed.">		} else if (propMapping.isWithConverterAttribute()) {</span>
+<span class="fc" id="L54">			assignMapSqlParameterSourceWithConverter(mapSqlParameterSource, val, paramName, columnSqlType,</span>
+<span class="fc" id="L55">					propMapping.getConverter());</span>
+		}
+<span class="fc" id="L57">	}</span>
+
 	public static void assignBlobMapSqlParameterSource(MapSqlParameterSource mapSqlParameterSource, Object val,
 			String paramName, Integer columnSqlType) {
-<span class="fc bfc" id="L44" title="All 2 branches covered.">		if (val == null) {</span>
-<span class="fc" id="L45">			mapSqlParameterSource.addValue(paramName, null, columnSqlType);</span>
-<span class="pc bpc" id="L46" title="1 of 2 branches missed.">		} else if (val instanceof byte[] byteArray) {</span>
-<span class="fc" id="L47">			mapSqlParameterSource.addValue(paramName, new SqlBinaryValue(byteArray), columnSqlType);</span>
+<span class="fc bfc" id="L61" title="All 2 branches covered.">		if (val == null) {</span>
+<span class="fc" id="L62">			mapSqlParameterSource.addValue(paramName, null, columnSqlType);</span>
+<span class="pc bpc" id="L63" title="1 of 2 branches missed.">		} else if (val instanceof byte[] byteArray) {</span>
+<span class="fc" id="L64">			mapSqlParameterSource.addValue(paramName, new SqlBinaryValue(byteArray), columnSqlType);</span>
 		} else {
-<span class="nc" id="L49">			throw new MapperException(val.getClass().getSimpleName() + &quot; &quot; + paramName</span>
+<span class="nc" id="L66">			throw new MapperException(val.getClass().getSimpleName() + &quot; &quot; + paramName</span>
 					+ &quot; : java type has to be byte[] for a BLOB mapping. No other type is supported.&quot;);
 		}
-<span class="fc" id="L52">	}</span>
+<span class="fc" id="L69">	}</span>
 
 	public static void assignClobMapSqlParameterSource(MapSqlParameterSource mapSqlParameterSource, Object val,
 			String paramName, Integer columnSqlType) {
-<span class="fc bfc" id="L56" title="All 2 branches covered.">		if (val == null) {</span>
-<span class="fc" id="L57">			mapSqlParameterSource.addValue(paramName, null, columnSqlType);</span>
-<span class="fc bfc" id="L58" title="All 2 branches covered.">		} else if (val instanceof String str) {</span>
-<span class="fc" id="L59">			mapSqlParameterSource.addValue(paramName, new SqlCharacterValue(str), columnSqlType);</span>
+<span class="fc bfc" id="L73" title="All 2 branches covered.">		if (val == null) {</span>
+<span class="fc" id="L74">			mapSqlParameterSource.addValue(paramName, null, columnSqlType);</span>
+<span class="fc bfc" id="L75" title="All 2 branches covered.">		} else if (val instanceof String str) {</span>
+<span class="fc" id="L76">			mapSqlParameterSource.addValue(paramName, new SqlCharacterValue(str), columnSqlType);</span>
 		} else {
-<span class="fc" id="L61">			throw new MapperException(val.getClass().getSimpleName() + &quot;.&quot; + paramName</span>
+<span class="fc" id="L78">			throw new MapperException(val.getClass().getSimpleName() + &quot;.&quot; + paramName</span>
 					+ &quot; : java type has to be String for a CLOB mapping. No other type is supported&quot;);
 		}
-<span class="fc" id="L64">	}</span>
+<span class="fc" id="L81">	}</span>
+
+	public static void assignEnumMapSqlParameterSource(MapSqlParameterSource mapSqlParameterSource, Object val,
+			String paramName, Integer columnSqlType) {
+<span class="fc bfc" id="L85" title="All 2 branches covered.">		if (val == null) {</span>
+<span class="fc" id="L86">			mapSqlParameterSource.addValue(paramName, null, columnSqlType);</span>
+		} else {
+<span class="fc" id="L88">			mapSqlParameterSource.addValue(paramName, ((Enum&lt;?&gt;) val).name(), columnSqlType);</span>
+		}
+<span class="fc" id="L90">	}</span>
+
+	@SuppressWarnings({ &quot;unchecked&quot;, &quot;rawtypes&quot; })
+	public static void assignMapSqlParameterSourceWithConverter(MapSqlParameterSource mapSqlParameterSource, Object val,
+			String paramName, Integer columnSqlType, AttributeConverter converter) {
+<span class="fc bfc" id="L95" title="All 2 branches covered.">		if (val == null) {</span>
+<span class="fc" id="L96">			mapSqlParameterSource.addValue(paramName, null, columnSqlType);</span>
+		} else {
+<span class="fc" id="L98">			mapSqlParameterSource.addValue(paramName, converter.convertToDatabaseColumn(val), columnSqlType);</span>
+		}
+<span class="fc" id="L100">	}</span>
 
 	/**
 	 * Converts camel case to underscore case. Ex: userLastName gets converted to
@@ -71,47 +107,47 @@ class InternalUtils {
 	 * @return the underscore case string
 	 */
 	public static String toUnderscoreName(String str) {
-<span class="pc bpc" id="L74" title="1 of 2 branches missed.">		if (!StringUtils.hasText(str)) {</span>
-<span class="nc" id="L75">			return &quot;&quot;;</span>
+<span class="pc bpc" id="L110" title="1 of 2 branches missed.">		if (!StringUtils.hasText(str)) {</span>
+<span class="nc" id="L111">			return &quot;&quot;;</span>
 		}
-<span class="fc" id="L77">		StringBuilder result = new StringBuilder();</span>
-<span class="fc" id="L78">		result.append(Character.toLowerCase(str.charAt(0)));</span>
-<span class="fc bfc" id="L79" title="All 2 branches covered.">		for (int i = 1; i &lt; str.length(); i++) {</span>
-<span class="fc" id="L80">			char c = str.charAt(i);</span>
-<span class="fc bfc" id="L81" title="All 2 branches covered.">			if (Character.isUpperCase(c)) {</span>
-<span class="fc" id="L82">				result.append('_').append(Character.toLowerCase(c));</span>
+<span class="fc" id="L113">		StringBuilder result = new StringBuilder();</span>
+<span class="fc" id="L114">		result.append(Character.toLowerCase(str.charAt(0)));</span>
+<span class="fc bfc" id="L115" title="All 2 branches covered.">		for (int i = 1; i &lt; str.length(); i++) {</span>
+<span class="fc" id="L116">			char c = str.charAt(i);</span>
+<span class="fc bfc" id="L117" title="All 2 branches covered.">			if (Character.isUpperCase(c)) {</span>
+<span class="fc" id="L118">				result.append('_').append(Character.toLowerCase(c));</span>
 			} else {
-<span class="fc" id="L84">				result.append(c);</span>
+<span class="fc" id="L120">				result.append(c);</span>
 			}
 		}
-<span class="fc" id="L87">		return result.toString();</span>
+<span class="fc" id="L123">		return result.toString();</span>
 	}
 
 	public static String toLowerCase(String str) {
-<span class="pc bpc" id="L91" title="1 of 2 branches missed.">		if (!StringUtils.hasLength(str)) {</span>
-<span class="nc" id="L92">			return &quot;&quot;;</span>
+<span class="pc bpc" id="L127" title="1 of 2 branches missed.">		if (!StringUtils.hasLength(str)) {</span>
+<span class="nc" id="L128">			return &quot;&quot;;</span>
 		}
-<span class="fc" id="L94">		return str.toLowerCase(Locale.US);</span>
+<span class="fc" id="L130">		return str.toLowerCase(Locale.US);</span>
 	}
 
 	public static boolean isAlphanumericPlusUnderscore(String str) {
-<span class="pc bpc" id="L98" title="1 of 4 branches missed.">		return str != null &amp;&amp; str.matches(&quot;^[a-zA-Z0-9_]*$&quot;);</span>
+<span class="pc bpc" id="L134" title="1 of 4 branches missed.">		return str != null &amp;&amp; str.matches(&quot;^[a-zA-Z0-9_]*$&quot;);</span>
 	}
 
 	public static void validateTableAlias(String tableAlias) {
-<span class="fc bfc" id="L102" title="All 2 branches covered.">		if (!StringUtils.hasText(tableAlias)) {</span>
-<span class="fc" id="L103">			throw new IllegalArgumentException(&quot;tableAlias has no value&quot;);</span>
+<span class="fc bfc" id="L138" title="All 2 branches covered.">		if (!StringUtils.hasText(tableAlias)) {</span>
+<span class="fc" id="L139">			throw new IllegalArgumentException(&quot;tableAlias has no value&quot;);</span>
 		}
-<span class="fc bfc" id="L105" title="All 2 branches covered.">		if (isAlphanumericPlusUnderscore(tableAlias)) {</span>
-<span class="fc bfc" id="L106" title="All 4 branches covered.">			if (!Character.isLetter(tableAlias.charAt(0)) &amp;&amp; tableAlias.charAt(0) != '_') {</span>
-<span class="fc" id="L107">				throw new IllegalArgumentException(&quot;tableAlias should start with an alphabet or underscore.&quot;);</span>
+<span class="fc bfc" id="L141" title="All 2 branches covered.">		if (isAlphanumericPlusUnderscore(tableAlias)) {</span>
+<span class="fc bfc" id="L142" title="All 4 branches covered.">			if (!Character.isLetter(tableAlias.charAt(0)) &amp;&amp; tableAlias.charAt(0) != '_') {</span>
+<span class="fc" id="L143">				throw new IllegalArgumentException(&quot;tableAlias should start with an alphabet or underscore.&quot;);</span>
 			}
 		} else {
-<span class="fc" id="L110">			throw new IllegalArgumentException(&quot;tableAlias should be alphanumberic and can include underscore.&quot;);</span>
+<span class="fc" id="L146">			throw new IllegalArgumentException(&quot;tableAlias should be alphanumberic and can include underscore.&quot;);</span>
 		}
-<span class="fc" id="L112">	}</span>
+<span class="fc" id="L148">	}</span>
 
 	private InternalUtils() {
 	}
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 8466f8f41a9c66f997ae495e0e141cea2d93e840 2026-10-12T11:16:42</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main c5dc8ca2218f9755059f4877d11ea3c4285da985 2026-10-26T02:15:47</div></body></html>

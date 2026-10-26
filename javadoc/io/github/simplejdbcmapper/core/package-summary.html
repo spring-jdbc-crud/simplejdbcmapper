@@ -74,25 +74,33 @@ loadScripts(document, 'script');</script>
 <ul class="summary-list">
 <li>
 <div id="class-summary">
-<div class="caption"><span>Classes</span></div>
+<div class="table-tabs" role="tablist" aria-orientation="horizontal"><button id="class-summary-tab0" role="tab" aria-selected="true" aria-controls="class-summary.tabpanel" tabindex="0" onkeydown="switchTab(event)" onclick="show('class-summary', 'class-summary', 2)" class="active-table-tab">All Classes and Interfaces</button><button id="class-summary-tab1" role="tab" aria-selected="false" aria-controls="class-summary.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('class-summary', 'class-summary-tab1', 2)" class="table-tab">Interfaces</button><button id="class-summary-tab2" role="tab" aria-selected="false" aria-controls="class-summary.tabpanel" tabindex="-1" onkeydown="switchTab(event)" onclick="show('class-summary', 'class-summary-tab2', 2)" class="table-tab">Classes</button></div>
+<div id="class-summary.tabpanel" role="tabpanel" aria-labelledby="class-summary-tab0">
 <div class="summary-table two-column-summary">
 <div class="table-header col-first">Class</div>
 <div class="table-header col-last">Description</div>
-<div class="col-first even-row-color class-summary class-summary-tab2"><a href="EntityRowMapper.html" title="class in io.github.simplejdbcmapper.core">EntityRowMapper</a>&lt;T&gt;</div>
-<div class="col-last even-row-color class-summary class-summary-tab2">
+<div class="col-first even-row-color class-summary class-summary-tab1"><a href="AttributeConverter.html" title="interface in io.github.simplejdbcmapper.core">AttributeConverter</a>&lt;T,<wbr>U&gt;</div>
+<div class="col-last even-row-color class-summary class-summary-tab1">
+<div class="block">A class that implements this interface can be used to convert entity
+ attribute into database column representation for inserts/updates and vice
+ versa for queries.</div>
+</div>
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="EntityRowMapper.html" title="class in io.github.simplejdbcmapper.core">EntityRowMapper</a>&lt;T&gt;</div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
 <div class="block">A row mapper for mapped objects.</div>
 </div>
-<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="MultiEntity.html" title="class in io.github.simplejdbcmapper.core">MultiEntity</a></div>
-<div class="col-last odd-row-color class-summary class-summary-tab2">
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="MultiEntity.html" title="class in io.github.simplejdbcmapper.core">MultiEntity</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab2">
 <div class="block">Used in multi-entity processing.</div>
 </div>
-<div class="col-first even-row-color class-summary class-summary-tab2"><a href="SimpleJdbcMapper.html" title="class in io.github.simplejdbcmapper.core">SimpleJdbcMapper</a></div>
-<div class="col-last even-row-color class-summary class-summary-tab2">
+<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="SimpleJdbcMapper.html" title="class in io.github.simplejdbcmapper.core">SimpleJdbcMapper</a></div>
+<div class="col-last odd-row-color class-summary class-summary-tab2">
 <div class="block">CRUD methods and configuration for SimpleJdbcMapper.</div>
 </div>
-<div class="col-first odd-row-color class-summary class-summary-tab2"><a href="SortBy.html" title="class in io.github.simplejdbcmapper.core">SortBy</a></div>
-<div class="col-last odd-row-color class-summary class-summary-tab2">
+<div class="col-first even-row-color class-summary class-summary-tab2"><a href="SortBy.html" title="class in io.github.simplejdbcmapper.core">SortBy</a></div>
+<div class="col-last even-row-color class-summary class-summary-tab2">
 <div class="block">This is used to generate the "ORDER BY" clause for the queries.</div>
+</div>
 </div>
 </div>
 </div>

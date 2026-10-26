@@ -212,11 +212,13 @@ U&gt;&nbsp;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base
 <div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Get the catalog name.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>org.springframework.core.convert.ConversionService</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getConversionService()" class="member-name-link">getConversionService</a>()</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Exposing the conversion service used, so if necessary new converters can be
- added etc.</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>org.springframework.core.convert.ConversionService</code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#getConversionService()" class="member-name-link">getConversionService</a>()</code></div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">See <a href="AttributeConverter.html" title="interface in io.github.simplejdbcmapper.core"><code>AttributeConverter</code></a> on
+             how to use custom converters.</div>
+</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#getEntitySqlColumns(java.lang.Class)" class="member-name-link">getEntitySqlColumns</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;?&gt;&nbsp;entityType)</code></div>
@@ -301,10 +303,13 @@ U&gt;&nbsp;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">The ResultSetExtractor for multiple entities.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>void</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setConversionService(org.springframework.core.convert.ConversionService)" class="member-name-link">setConversionService</a><wbr>(org.springframework.core.convert.ConversionService&nbsp;conversionService)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Set the conversion service</div>
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>void</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#setConversionService(org.springframework.core.convert.ConversionService)" class="member-name-link">setConversionService</a><wbr>(org.springframework.core.convert.ConversionService&nbsp;conversionService)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">See <a href="AttributeConverter.html" title="interface in io.github.simplejdbcmapper.core"><code>AttributeConverter</code></a> on
+             how to use custom converters.</div>
+</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;T&gt;&nbsp;void</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#setRecordAuditedBySupplier(java.util.function.Supplier)" class="member-name-link">setRecordAuditedBySupplier</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/function/Supplier.html" title="class or interface in java.util.function" class="external-link">Supplier</a>&lt;T&gt;&nbsp;supplier)</code></div>
@@ -1172,10 +1177,17 @@ U&gt;</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/
 <li>
 <section class="detail" id="getConversionService()">
 <h3>getConversionService</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">org.springframework.core.convert.ConversionService</span>&nbsp;<span class="element-name">getConversionService</span>()</div>
-<div class="block">Exposing the conversion service used, so if necessary new converters can be
- added etc. The default conversion service used in SimpleJdbcMapper is
- Spring's DefaultConversionService.</div>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Deprecated.html#since()" title="class or interface in java.lang" class="external-link">since</a>="2.5.0",
+            <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Deprecated.html#forRemoval()" title="class or interface in java.lang" class="external-link">forRemoval</a>=true)
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">org.springframework.core.convert.ConversionService</span>&nbsp;<span class="element-name">getConversionService</span>()</div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">See <a href="AttributeConverter.html" title="interface in io.github.simplejdbcmapper.core"><code>AttributeConverter</code></a> on
+             how to use custom converters.
+             <p>
+             Exposing the conversion service used, so if necessary new
+             converters can be added etc. The default conversion service used
+             in SimpleJdbcMapper is Spring's DefaultConversionService.</div>
+</div>
 <dl class="notes">
 <dt>Returns:</dt>
 <dd>the conversion service.</dd>
@@ -1185,8 +1197,15 @@ U&gt;</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/
 <li>
 <section class="detail" id="setConversionService(org.springframework.core.convert.ConversionService)">
 <h3>setConversionService</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setConversionService</span><wbr><span class="parameters">(org.springframework.core.convert.ConversionService&nbsp;conversionService)</span></div>
-<div class="block">Set the conversion service</div>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Deprecated.html#since()" title="class or interface in java.lang" class="external-link">since</a>="2.5.0",
+            <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Deprecated.html#forRemoval()" title="class or interface in java.lang" class="external-link">forRemoval</a>=true)
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type">void</span>&nbsp;<span class="element-name">setConversionService</span><wbr><span class="parameters">(org.springframework.core.convert.ConversionService&nbsp;conversionService)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">See <a href="AttributeConverter.html" title="interface in io.github.simplejdbcmapper.core"><code>AttributeConverter</code></a> on
+             how to use custom converters.
+             <p>
+             Set the conversion service</div>
+</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>conversionService</code> - The conversion service to set</dd>

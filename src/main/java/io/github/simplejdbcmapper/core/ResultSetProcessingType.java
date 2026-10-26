@@ -23,13 +23,15 @@ import java.sql.Clob;
  *
  * @author Antony Joseph
  */
-enum ResultSetType {
+enum ResultSetProcessingType {
 
 	UNKNOWN, BIGDECIMAL, BLOB, BOOLEAN, BYTEARRAY, BYTE, CLOB, DATE, DOUBLE, ENUM, FLOAT, INTEGER, LONG, NUMBER, SHORT,
-	STRING, TIMESTAMP, TIME, UTILDATE;
+	STRING, TIMESTAMP, TIME, UTILDATE, CUSTOMCONVERTER;
 
-	public static ResultSetType getResultSetType(Class<?> type) {
-		if (BigDecimal.class == type) {
+	public static ResultSetProcessingType getResultSetProcessingType(Class<?> type, boolean isAttributeWithConverter) {
+		if (isAttributeWithConverter) {
+			return CUSTOMCONVERTER;
+		} else if (BigDecimal.class == type) {
 			return BIGDECIMAL;
 		} else if (Blob.class == type) {
 			return BLOB;

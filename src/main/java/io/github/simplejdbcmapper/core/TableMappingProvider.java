@@ -140,7 +140,8 @@ class TableMappingProvider {
 
 	private void assignResultSetTypes(List<PropertyMapping> propertyMappings) {
 		for (PropertyMapping propMapping : propertyMappings) {
-			ResultSetType rsType = ResultSetType.getResultSetType(propMapping.getPropertyType());
+			ResultSetProcessingType rsType = ResultSetProcessingType.getResultSetProcessingType(propMapping.getPropertyType(),
+					propMapping.isWithConverterAttribute());
 			propMapping.setResultSetType(rsType);
 		}
 	}

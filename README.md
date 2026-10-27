@@ -697,7 +697,7 @@ There is no requirement that you have to use the underlying JdbcClient/JdbcTempl
 ## Custom converters
 An [AttributeConverter](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/io/github/simplejdbcmapper/core/AttributeConverter.html) transforms a Java type (T) into a database-compatible column representation (U) and back again.
 
-Note that it is the responsibility of the converter writer to specify the correct dbData type for the corresponding column for use by the JDBC driver. The library is not expected to do such type conversion.
+Note that it is the responsibility of the converter writer to specify the correct type for the corresponding column for use by the JDBC driver. The library is not expected to do such type conversion.
 
 Configuration of the converter is done using the @Column annotation. Example
 
@@ -708,7 +708,7 @@ Configuration of the converter is done using the @Column annotation. Example
 Examples for converting an object into json and storing it in a 'jsonb' database column for a postgres database:
 
 Converter: [ProductToJsonPostgresConverter](https://github.com/spring-jdbc-crud/simplejdbcmapper/blob/main/src/test/java/io/github/simplejdbcmapper/core/ProductToJsonPostgresConverter.java)  
-Entity: [JsonbData](https://github.com/spring-jdbc-crud/simplejdbcmapper/blob/main/src/test/java/io/github/simplejdbcmapper/model/JsonbData.java)  
+Entity: [JsonbData](https://github.com/spring-jdbc-crud/simplejdbcmapper/blob/main/src/test/java/io/github/simplejdbcmapper/model/JsonbData.java), [Product](https://github.com/spring-jdbc-crud/simplejdbcmapper/blob/main/src/test/java/io/github/simplejdbcmapper/model/Product.java)
   
 Table definition:  
 CREATE TABLE jsonb_data (  

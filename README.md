@@ -103,12 +103,6 @@ Just by using three annotations @Table, @Id and @Column on the models used with 
  product.setPrice(12.50);
  sjm.updateSpecificProperties(product, "price");
  
- // find all
- List<Product> products = sjm.findAll(Product.class);
- 
- // find all with sort (ORDER BY clause)
-  List<Product> products = sjm.findAll(Product.class, new SortBy("availabeDate"), new SortBy("price", "DESC"));
- 
  // delete by object
  sjm.delete(product);
  
@@ -119,6 +113,7 @@ Just by using three annotations @Table, @Id and @Column on the models used with 
   To retrieve mapped objects use getSqlColumns() to get the columns for the sql 
   to work with EntityRowMapper (see its javadoc). Note in this case the 'name' property is mapped to the 'product_name' column.
  */
+ // Using java text blocks makes query more readable
  String sql = """
         SELECT %s
         FROM product 
@@ -127,13 +122,6 @@ Just by using three annotations @Table, @Id and @Column on the models used with 
       
  // Using Spring's JdbcTemplate and library's EntityRowMapper to get the results for the above sql
  List<Product> products = sjm.getJdbcTemplate().query(sql, sjm.entityRowMapper(Product.class), "someProductName");
- 
- // find by a property value
- List<Product> products = sjm.findByPropertyValue(Product.class, "sku", "some sku#");
- 
- // find by multiple property values
- String[] skus = { "sku1", "sku2"};
- List<Product> products = sjm.findByPropertyValues(Product.class, "sku", Array.asList(skus));
  
  // Accessing the underlying JdbcClient, JdbcTemplate and NamedParameterJdbcTemplate. 
  JdbcClient jdbcClient = sjm.getJdbcClient();

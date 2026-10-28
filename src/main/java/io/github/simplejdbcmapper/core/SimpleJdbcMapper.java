@@ -109,7 +109,11 @@ public final class SimpleJdbcMapper {
 	}
 
 	/**
-	 * Find all objects.
+	 * @deprecated Instead, issue an SQL query to retrieve the data using
+	 *             JdbcTemplate and EntityRowMapper
+	 *             <p>
+	 * 
+	 *             Find all objects.
 	 *
 	 * @param <T>         the type
 	 * @param entityType  type of object
@@ -117,13 +121,18 @@ public final class SimpleJdbcMapper {
 	 *                    used to generate the "ORDER BY" clause
 	 * @return List of objects of type T
 	 */
+	@Deprecated(since = "2.5.1", forRemoval = true)
 	public <T> List<T> findAll(Class<T> entityType, SortBy... sortByArray) {
 		return findOperation.findAll(entityType, sortByArray);
 	}
 
 	/**
-	 * Returns list of objects which match the property value. 'IS NULL' clause will
-	 * be used in the sql for a null value.
+	 * @deprecated Instead, issue an SQL query to retrieve the data using
+	 *             JdbcTemplate and EntityRowMapper
+	 *             <p>
+	 * 
+	 *             Returns list of objects which match the property value. 'IS NULL'
+	 *             clause will be used in the sql for a null value.
 	 *
 	 * @param <T>           the type
 	 * @param entityType    type of objects to be returned
@@ -133,21 +142,26 @@ public final class SimpleJdbcMapper {
 	 *                      used to generate the "ORDER BY" clause
 	 * @return a List of objects of type T
 	 */
+	@Deprecated(since = "2.5.1", forRemoval = true)
 	public <T> List<T> findByPropertyValue(Class<T> entityType, String propertyName, Object propertyValue,
 			SortBy... sortByArray) {
 		return findOperation.findByPropertyValue(entityType, propertyName, propertyValue, sortByArray);
 	}
 
 	/**
-	 * Returns list of objects which match the collection of property values. Uses
-	 * an sql 'IN' clause. Large number of values could cause query performance
-	 * degradation. Also different databases have different number/size limitations
-	 * for sql 'IN" clauses.
+	 * @deprecated Instead, issue an SQL query with JdbcTemplate and EntityRowMapper
+	 *             to retrieve the data
+	 *             <p>
+	 *
+	 *             Returns list of objects which match the collection of property
+	 *             values. Uses an sql 'IN' clause. Large number of values could
+	 *             cause query performance degradation. Also different databases
+	 *             have different number/size limitations for sql 'IN" clauses.
 	 * 
-	 * <pre>
+	 *             <pre>
 	 * Query is constructed in such a way that if there is a null value in the propertyValues
 	 * the returned records will include records which match 'IS NULL' in the database.
-	 * </pre>
+	 *             </pre>
 	 *
 	 * @param <T>            the type
 	 * @param <U>            the type of the property values
@@ -158,6 +172,7 @@ public final class SimpleJdbcMapper {
 	 *                       used to generate the "ORDER BY" clause
 	 * @return a List of objects of type T
 	 */
+	@Deprecated(since = "2.5.1", forRemoval = true)
 	public <T, U> List<T> findByPropertyValues(Class<T> entityType, String propertyName, Collection<U> propertyValues,
 			SortBy... sortByArray) {
 		return findOperation.findByPropertyValues(entityType, propertyName, propertyValues, sortByArray);
@@ -623,39 +638,41 @@ public final class SimpleJdbcMapper {
 	}
 
 	/**
-	 * Gets the sql columns. Works well with Spring row mappers like
-	 * BeanPropertyRowMapper(), SimplePropertyRowMapper() etc. Will create the
-	 * needed column aliases where the column name does not match the corresponding
-	 * underscore case property name.
-	 * <p>
-	 * It is a good practice to store this string, since every time this method is
-	 * invoked the columns have to be concatenated along with some string
-	 * manipulation
+	 * @deprecated Instead use getSqlColumns() with EntityRowMapper to retrieve data
+	 *             <p>
+	 *             Gets the sql columns. Works well with Spring row mappers like
+	 *             BeanPropertyRowMapper(), SimplePropertyRowMapper() etc. Will
+	 *             create the needed column aliases where the column name does not
+	 *             match the corresponding underscore case property name.
+	 *             <p>
+	 *             It is a good practice to store this string, since every time this
+	 *             method is invoked the columns have to be concatenated along with
+	 *             some string manipulation
 	 *
-	 * <p>
-	 * Will return something like below if 'name' property is mapped to 'last_name'
-	 * column in database:
+	 *             <p>
+	 *             Will return something like below if 'name' property is mapped to
+	 *             'last_name' column in database:
 	 *
-	 * <pre>
-	 * "somecolumn, someothercolumn, last_name AS name"
-	 * </pre>
+	 *             <pre>
+	 *             "somecolumn, someothercolumn, last_name AS name"
+	 *             </pre>
 	 * 
-	 * Example:
+	 *             Example:
 	 * 
-	 * <pre>
-	 * String sql = "SELECT " + sjm.getBeanFriendlySqlColumns(Product.class) + " FROM product WHERE product_name = ?";
-	 * </pre>
+	 *             <pre>
+	 *             String sql = "SELECT " + sjm.getBeanFriendlySqlColumns(Product.class) + " FROM product WHERE product_name = ?";
+	 *             </pre>
 	 * 
-	 * Using Spring's JdbcClient api for the above sql. JdbcClient is using
-	 * SimplePropertyRowMapper internally here.
+	 *             Using Spring's JdbcClient api for the above sql. JdbcClient is
+	 *             using SimplePropertyRowMapper internally here.
 	 * 
-	 * <pre>
+	 *             <pre>
 	 * {@code List<Product>} products = sjm.getJdbcClient().sql(sql).param("someProductName").query(Product.class).list();
 	 * </pre>
 	 * 
-	 * Using Spring's JdbcTemplate api for the above sql
+	 *             Using Spring's JdbcTemplate api for the above sql
 	 * 
-	 * <pre>
+	 *             <pre>
 	 * {@code List<Product>} products = sjm.getJdbcTemplate().query(sql, BeanPropertyRowMapper.newInstance(Product.class), "someProductName");
 	 * </pre>
 	 * 
@@ -664,50 +681,54 @@ public final class SimpleJdbcMapper {
 	 * @return comma separated select column string
 	 * 
 	 */
+	@Deprecated(since = "2.5.1", forRemoval = true)
 	public String getBeanFriendlySqlColumns(Class<?> entityType) {
 		return findOperation.getBeanFriendlySqlColumns(entityType);
 	}
 
 	/**
-	 * Gets the sql columns with columns prefixed with the table alias. Works well
-	 * with Spring row mappers like BeanPropertyRowMapper(),
-	 * SimplePropertyRowMapper() etc. Will prefix table column names with the
-	 * 'tableAlias.' and will create the needed column aliases where the column name
-	 * does not match the corresponding underscore case property name.
-	 * <p>
-	 * Use it in your custom queries when you are doing joins and need columns
-	 * corresponding to a table alias.
+	 * @deprecated Instead use getSqlColumns() with EntityRowMapper to retrieve data
+	 *             <p>
+	 *             Gets the sql columns with columns prefixed with the table alias.
+	 *             Works well with Spring row mappers like BeanPropertyRowMapper(),
+	 *             SimplePropertyRowMapper() etc. Will prefix table column names
+	 *             with the 'tableAlias.' and will create the needed column aliases
+	 *             where the column name does not match the corresponding underscore
+	 *             case property name.
+	 *             <p>
+	 *             Use it in your custom queries when you are doing joins and need
+	 *             columns corresponding to a table alias.
 	 *
-	 * <p>
-	 * It is a good practice to store this string, since every time this method is
-	 * invoked the columns have to be concatenated long with some string
-	 * manipulation.
+	 *             <p>
+	 *             It is a good practice to store this string, since every time this
+	 *             method is invoked the columns have to be concatenated long with
+	 *             some string manipulation.
 	 * 
-	 * <p>
-	 * For tableAlias argument 't1' will return something like below if 'name'
-	 * property is mapped to 'last_name' column in database:
+	 *             <p>
+	 *             For tableAlias argument 't1' will return something like below if
+	 *             'name' property is mapped to 'last_name' column in database:
 	 *
-	 * <pre>
-	 * "t1.somecolumn, t1.someothercolumn, t1.last_name AS name"
-	 * </pre>
+	 *             <pre>
+	 *             "t1.somecolumn, t1.someothercolumn, t1.last_name AS name"
+	 *             </pre>
 	 * 
-	 * Example:
+	 *             Example:
 	 * 
-	 * <pre>
-	 * String sql = "SELECT " + sjm.getBeanFriendlySqlColumns(Product.class, "t1")
-	 * 		+ " FROM product t1 WHERE t1.product_name = ?";
-	 * </pre>
+	 *             <pre>
+	 *             String sql = "SELECT " + sjm.getBeanFriendlySqlColumns(Product.class, "t1")
+	 *             		+ " FROM product t1 WHERE t1.product_name = ?";
+	 *             </pre>
 	 * 
-	 * Using Spring's JdbcClient api for the above sql. JdbcClient is using
-	 * SimplePropertyRowMapper internally here.
+	 *             Using Spring's JdbcClient api for the above sql. JdbcClient is
+	 *             using SimplePropertyRowMapper internally here.
 	 * 
-	 * <pre>
+	 *             <pre>
 	 * {@code List<Product>} products = sjm.getJdbcClient().sql(sql).param("someProductName").query(Product.class).list();
 	 * </pre>
 	 * 
-	 * Using Spring's JdbcTemplate api for the above sql
+	 *             Using Spring's JdbcTemplate api for the above sql
 	 * 
-	 * <pre>
+	 *             <pre>
 	 * {@code List<Product>} products = sjm.getJdbcTemplate().query(sql, BeanPropertyRowMapper.newInstance(Product.class), "someProductName");
 	 * </pre>
 	 * 
@@ -716,6 +737,7 @@ public final class SimpleJdbcMapper {
 	 * @return comma separated select column string
 	 * 
 	 */
+	@Deprecated(since = "2.5.1", forRemoval = true)
 	public String getBeanFriendlySqlColumns(Class<?> entityType, String tableAlias) {
 		return findOperation.getBeanFriendlySqlColumns(entityType, tableAlias);
 	}

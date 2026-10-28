@@ -74,6 +74,10 @@ class FindOperation {
 		return obj;
 	}
 
+	/**
+	 * @deprecated
+	 */
+	@Deprecated(since = "2.5.1", forRemoval = true)
 	public <T> List<T> findAll(Class<T> entityType, SortBy... sortByArray) {
 		Assert.notNull(entityType, ENTITY_TYPE_MUST_NOT_BE_NULL);
 		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
@@ -84,6 +88,10 @@ class FindOperation {
 		return sjmSupport.getJdbcTemplate().query(sql.toString(), entityRowMapper(entityType));
 	}
 
+	/**
+	 * @deprecated
+	 */
+	@Deprecated(since = "2.5.1", forRemoval = true)
 	public <T> List<T> findByPropertyValue(Class<T> entityType, String propertyName, Object propertyValue,
 			SortBy... sortByArray) {
 		Assert.notNull(entityType, ENTITY_TYPE_MUST_NOT_BE_NULL);
@@ -110,6 +118,10 @@ class FindOperation {
 		}
 	}
 
+	/**
+	 * @deprecated
+	 */
+	@Deprecated(since = "2.5.1", forRemoval = true)
 	public <T, U> List<T> findByPropertyValues(Class<T> entityType, String propertyName, Collection<U> propertyValues,
 			SortBy... sortByArray) {
 		Assert.notNull(entityType, ENTITY_TYPE_MUST_NOT_BE_NULL);
@@ -203,6 +215,10 @@ class FindOperation {
 		return rowMapper;
 	}
 
+	/**
+	 * @deprecated
+	 */
+	@Deprecated(since = "2.5.1", forRemoval = true)
 	public String getBeanFriendlySqlColumns(Class<?> entityType) {
 		Assert.notNull(entityType, ENTITY_TYPE_MUST_NOT_BE_NULL);
 		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
@@ -218,6 +234,10 @@ class FindOperation {
 		return sj.toString();
 	}
 
+	/**
+	 * @deprecated
+	 */
+	@Deprecated(since = "2.5.1", forRemoval = true)
 	public String getBeanFriendlySqlColumns(Class<?> entityType, String tableAlias) {
 		Assert.notNull(entityType, ENTITY_TYPE_MUST_NOT_BE_NULL);
 		InternalUtils.validateTableAlias(tableAlias);
@@ -257,6 +277,10 @@ class FindOperation {
 		return entitySqlColumnsAliasCache;
 	}
 
+	/**
+	 * @deprecated
+	 */
+	@Deprecated(since = "2.5.1", forRemoval = true)
 	private String orderByClause(Class<?> entityType, SortBy[] sortByArray, TableMapping tableMapping) {
 		if (sortByArray.length > 0) {
 			StringBuilder clause = new StringBuilder(64);
@@ -287,6 +311,10 @@ class FindOperation {
 		return obj;
 	}
 
+	/**
+	 * @deprecated
+	 */
+	@Deprecated(since = "2.5.1", forRemoval = true)
 	private Set<?> getValues(Set<?> set) {
 		// method gets called only if there are values in the set that are not null
 		Object obj = set.iterator().next();

@@ -16,10 +16,14 @@ package io.github.simplejdbcmapper.core;
 import org.springframework.util.Assert;
 
 /**
- * This is used to generate the "ORDER BY" clause for the queries.
+ * @deprecated Instead, issue an SQL query with ORDER BY clause to retrieve the
+ *             data using JdbcTemplate and EntityRowMapper
+ *             <p>
+ *             This is used to generate the "ORDER BY" clause for the queries.
  * 
  * @author Antony Joseph
  */
+@Deprecated(since = "2.5.1", forRemoval = true)
 public class SortBy {
 	private final String propertyName;
 	private final String direction;

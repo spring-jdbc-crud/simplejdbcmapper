@@ -54,6 +54,7 @@ loadScripts(document, 'script');</script>
 <h2 title="Contents">Contents</h2>
 <ul class="contents-list">
 <li id="contents-for-removal"><a href="#for-removal">Terminally Deprecated</a></li>
+<li id="contents-class"><a href="#class">Classes</a></li>
 <li id="contents-method"><a href="#method">Methods</a></li>
 </ul>
 <ul class="block-list">
@@ -63,8 +64,128 @@ loadScripts(document, 'script');</script>
 <div class="summary-table two-column-summary">
 <div class="table-header col-first">Element</div>
 <div class="table-header col-last">Description</div>
-<div class="col-summary-item-name even-row-color"><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#getConversionService()">io.github.simplejdbcmapper.core.SimpleJdbcMapper.getConversionService()</a></div>
+<div class="col-summary-item-name even-row-color"><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#findAll(java.lang.Class,io.github.simplejdbcmapper.core.SortBy...)">io.github.simplejdbcmapper.core.SimpleJdbcMapper.findAll<wbr>(Class&lt;T&gt;, SortBy...)</a></div>
 <div class="col-last even-row-color">
+<div class="block">Instead, issue an SQL query to retrieve the data using
+             JdbcTemplate and EntityRowMapper
+             <p>
+ 
+             Find all objects.</div>
+</div>
+<div class="col-summary-item-name odd-row-color"><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#findByPropertyValue(java.lang.Class,java.lang.String,java.lang.Object,io.github.simplejdbcmapper.core.SortBy...)">io.github.simplejdbcmapper.core.SimpleJdbcMapper.findByPropertyValue<wbr>(Class&lt;T&gt;, String, Object, SortBy...)</a></div>
+<div class="col-last odd-row-color">
+<div class="block">Instead, issue an SQL query to retrieve the data using
+             JdbcTemplate and EntityRowMapper
+             <p>
+ 
+             Returns list of objects which match the property value. 'IS NULL'
+             clause will be used in the sql for a null value.</div>
+</div>
+<div class="col-summary-item-name even-row-color"><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#findByPropertyValues(java.lang.Class,java.lang.String,java.util.Collection,io.github.simplejdbcmapper.core.SortBy...)">io.github.simplejdbcmapper.core.SimpleJdbcMapper.findByPropertyValues<wbr>(Class&lt;T&gt;, String, Collection&lt;U&gt;, SortBy...)</a></div>
+<div class="col-last even-row-color">
+<div class="block">Instead, issue an SQL query with JdbcTemplate and EntityRowMapper
+             to retrieve the data
+             <p>
+
+             Returns list of objects which match the collection of property
+             values. Uses an sql 'IN' clause. Large number of values could
+             cause query performance degradation. Also different databases
+             have different number/size limitations for sql 'IN" clauses.
+ 
+             <pre>
+ Query is constructed in such a way that if there is a null value in the propertyValues
+ the returned records will include records which match 'IS NULL' in the database.
+             </pre></div>
+</div>
+<div class="col-summary-item-name odd-row-color"><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#getBeanFriendlySqlColumns(java.lang.Class)">io.github.simplejdbcmapper.core.SimpleJdbcMapper.getBeanFriendlySqlColumns<wbr>(Class&lt;?&gt;)</a></div>
+<div class="col-last odd-row-color">
+<div class="block">Instead use getSqlColumns() with EntityRowMapper to retrieve data
+             <p>
+             Gets the sql columns. Works well with Spring row mappers like
+             BeanPropertyRowMapper(), SimplePropertyRowMapper() etc. Will
+             create the needed column aliases where the column name does not
+             match the corresponding underscore case property name.
+             <p>
+             It is a good practice to store this string, since every time this
+             method is invoked the columns have to be concatenated along with
+             some string manipulation
+
+             <p>
+             Will return something like below if 'name' property is mapped to
+             'last_name' column in database:
+
+             <pre>
+             "somecolumn, someothercolumn, last_name AS name"
+             </pre>
+ 
+             Example:
+ 
+             <pre>
+             String sql = "SELECT " + sjm.getBeanFriendlySqlColumns(Product.class) + " FROM product WHERE product_name = ?";
+             </pre>
+ 
+             Using Spring's JdbcClient api for the above sql. JdbcClient is
+             using SimplePropertyRowMapper internally here.
+ 
+             <pre>
+ <code>List&lt;Product&gt;</code> products = sjm.getJdbcClient().sql(sql).param("someProductName").query(Product.class).list();
+ </pre>
+ 
+             Using Spring's JdbcTemplate api for the above sql
+ 
+             <pre>
+ <code>List&lt;Product&gt;</code> products = sjm.getJdbcTemplate().query(sql, BeanPropertyRowMapper.newInstance(Product.class), "someProductName");
+ </pre></div>
+</div>
+<div class="col-summary-item-name even-row-color"><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#getBeanFriendlySqlColumns(java.lang.Class,java.lang.String)">io.github.simplejdbcmapper.core.SimpleJdbcMapper.getBeanFriendlySqlColumns<wbr>(Class&lt;?&gt;, String)</a></div>
+<div class="col-last even-row-color">
+<div class="block">Instead use getSqlColumns() with EntityRowMapper to retrieve data
+             <p>
+             Gets the sql columns with columns prefixed with the table alias.
+             Works well with Spring row mappers like BeanPropertyRowMapper(),
+             SimplePropertyRowMapper() etc. Will prefix table column names
+             with the 'tableAlias.' and will create the needed column aliases
+             where the column name does not match the corresponding underscore
+             case property name.
+             <p>
+             Use it in your custom queries when you are doing joins and need
+             columns corresponding to a table alias.
+
+             <p>
+             It is a good practice to store this string, since every time this
+             method is invoked the columns have to be concatenated long with
+             some string manipulation.
+ 
+             <p>
+             For tableAlias argument 't1' will return something like below if
+             'name' property is mapped to 'last_name' column in database:
+
+             <pre>
+             "t1.somecolumn, t1.someothercolumn, t1.last_name AS name"
+             </pre>
+ 
+             Example:
+ 
+             <pre>
+             String sql = "SELECT " + sjm.getBeanFriendlySqlColumns(Product.class, "t1")
+                        + " FROM product t1 WHERE t1.product_name = ?";
+             </pre>
+ 
+             Using Spring's JdbcClient api for the above sql. JdbcClient is
+             using SimplePropertyRowMapper internally here.
+ 
+             <pre>
+ <code>List&lt;Product&gt;</code> products = sjm.getJdbcClient().sql(sql).param("someProductName").query(Product.class).list();
+ </pre>
+ 
+             Using Spring's JdbcTemplate api for the above sql
+ 
+             <pre>
+ <code>List&lt;Product&gt;</code> products = sjm.getJdbcTemplate().query(sql, BeanPropertyRowMapper.newInstance(Product.class), "someProductName");
+ </pre></div>
+</div>
+<div class="col-summary-item-name odd-row-color"><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#getConversionService()">io.github.simplejdbcmapper.core.SimpleJdbcMapper.getConversionService()</a></div>
+<div class="col-last odd-row-color">
 <div class="block">See <a href="io/github/simplejdbcmapper/core/AttributeConverter.html" title="interface in io.github.simplejdbcmapper.core"><code>AttributeConverter</code></a> on
              how to use custom converters.
              <p>
@@ -72,8 +193,8 @@ loadScripts(document, 'script');</script>
              converters can be added etc. The default conversion service used
              in SimpleJdbcMapper is Spring's DefaultConversionService.</div>
 </div>
-<div class="col-summary-item-name odd-row-color"><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#getEntitySqlColumns(java.lang.Class)">io.github.simplejdbcmapper.core.SimpleJdbcMapper.getEntitySqlColumns<wbr>(Class&lt;?&gt;)</a></div>
-<div class="col-last odd-row-color">
+<div class="col-summary-item-name even-row-color"><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#getEntitySqlColumns(java.lang.Class)">io.github.simplejdbcmapper.core.SimpleJdbcMapper.getEntitySqlColumns<wbr>(Class&lt;?&gt;)</a></div>
+<div class="col-last even-row-color">
 <div class="block">Use <a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#getSqlColumns(java.lang.Class)"><code>SimpleJdbcMapper.getSqlColumns(Class&lt;?&gt; entityType)</code></a> instead.
              <p>
  
@@ -94,8 +215,8 @@ loadScripts(document, 'script');</script>
 
              See <a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#newEntityRowMapper(java.lang.Class)"><code>SimpleJdbcMapper.newEntityRowMapper(java.lang.Class&lt;T&gt;)</code></a></div>
 </div>
-<div class="col-summary-item-name even-row-color"><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#getEntitySqlColumns(java.lang.Class,java.lang.String)">io.github.simplejdbcmapper.core.SimpleJdbcMapper.getEntitySqlColumns<wbr>(Class&lt;?&gt;, String)</a></div>
-<div class="col-last even-row-color">
+<div class="col-summary-item-name odd-row-color"><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#getEntitySqlColumns(java.lang.Class,java.lang.String)">io.github.simplejdbcmapper.core.SimpleJdbcMapper.getEntitySqlColumns<wbr>(Class&lt;?&gt;, String)</a></div>
+<div class="col-last odd-row-color">
 <div class="block">Use <a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#getSqlColumns(java.lang.Class,java.lang.String)"><code>SimpleJdbcMapper.getSqlColumns(Class&lt;?&gt; entityType, String tableAlias)</code></a> instead.
              <p>
  
@@ -125,8 +246,8 @@ loadScripts(document, 'script');</script>
  
              See <a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#newEntityRowMapper(java.lang.Class)"><code>SimpleJdbcMapper.newEntityRowMapper(java.lang.Class&lt;T&gt;)</code></a></div>
 </div>
-<div class="col-summary-item-name odd-row-color"><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#getMultiEntitySqlColumns(io.github.simplejdbcmapper.core.MultiEntity)">io.github.simplejdbcmapper.core.SimpleJdbcMapper.getMultiEntitySqlColumns<wbr>(MultiEntity)</a></div>
-<div class="col-last odd-row-color">
+<div class="col-summary-item-name even-row-color"><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#getMultiEntitySqlColumns(io.github.simplejdbcmapper.core.MultiEntity)">io.github.simplejdbcmapper.core.SimpleJdbcMapper.getMultiEntitySqlColumns<wbr>(MultiEntity)</a></div>
+<div class="col-last even-row-color">
 <div class="block">Use <a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#getSqlColumns(io.github.simplejdbcmapper.core.MultiEntity)"><code>SimpleJdbcMapper.getSqlColumns(MultiEntity multiEntity)</code></a> instead.<br>
  
              Gets the sql columns for multi-entity processing. These sql
@@ -150,8 +271,8 @@ loadScripts(document, 'script');</script>
  
              See <a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#resultSetExtractor(io.github.simplejdbcmapper.core.MultiEntity)"><code>SimpleJdbcMapper.resultSetExtractor(io.github.simplejdbcmapper.core.MultiEntity)</code></a></div>
 </div>
-<div class="col-summary-item-name even-row-color"><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#newEntityRowMapper(java.lang.Class)">io.github.simplejdbcmapper.core.SimpleJdbcMapper.newEntityRowMapper<wbr>(Class&lt;T&gt;)</a></div>
-<div class="col-last even-row-color">
+<div class="col-summary-item-name odd-row-color"><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#newEntityRowMapper(java.lang.Class)">io.github.simplejdbcmapper.core.SimpleJdbcMapper.newEntityRowMapper<wbr>(Class&lt;T&gt;)</a></div>
+<div class="col-last odd-row-color">
 <div class="block">Use <a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#entityRowMapper(java.lang.Class)"><code>SimpleJdbcMapper.entityRowMapper(Class)</code></a> instead.
              <p>
  
@@ -204,12 +325,37 @@ loadScripts(document, 'script');</script>
                                                      .list();
  </pre></div>
 </div>
-<div class="col-summary-item-name odd-row-color"><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#setConversionService(org.springframework.core.convert.ConversionService)">io.github.simplejdbcmapper.core.SimpleJdbcMapper.setConversionService<wbr>(ConversionService)</a></div>
-<div class="col-last odd-row-color">
+<div class="col-summary-item-name even-row-color"><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#setConversionService(org.springframework.core.convert.ConversionService)">io.github.simplejdbcmapper.core.SimpleJdbcMapper.setConversionService<wbr>(ConversionService)</a></div>
+<div class="col-last even-row-color">
 <div class="block">See <a href="io/github/simplejdbcmapper/core/AttributeConverter.html" title="interface in io.github.simplejdbcmapper.core"><code>AttributeConverter</code></a> on
              how to use custom converters.
              <p>
              Set the conversion service</div>
+</div>
+<div class="col-summary-item-name odd-row-color"><a href="io/github/simplejdbcmapper/core/SortBy.html" title="class in io.github.simplejdbcmapper.core">io.github.simplejdbcmapper.core.SortBy</a></div>
+<div class="col-last odd-row-color">
+<div class="block">Instead, issue an SQL query with ORDER BY clause to retrieve the
+             data using JdbcTemplate and EntityRowMapper
+             <p>
+             This is used to generate the "ORDER BY" clause for the queries.</div>
+</div>
+</div>
+</div>
+</li>
+</ul>
+<ul class="block-list">
+<li>
+<div id="class">
+<div class="caption"><span>Deprecated Classes</span></div>
+<div class="summary-table two-column-summary">
+<div class="table-header col-first">Class</div>
+<div class="table-header col-last">Description</div>
+<div class="col-summary-item-name even-row-color"><a href="io/github/simplejdbcmapper/core/SortBy.html" title="class in io.github.simplejdbcmapper.core">io.github.simplejdbcmapper.core.SortBy</a></div>
+<div class="col-last even-row-color">
+<div class="block">Instead, issue an SQL query with ORDER BY clause to retrieve the
+             data using JdbcTemplate and EntityRowMapper
+             <p>
+             This is used to generate the "ORDER BY" clause for the queries.</div>
 </div>
 </div>
 </div>
@@ -222,8 +368,128 @@ loadScripts(document, 'script');</script>
 <div class="summary-table two-column-summary">
 <div class="table-header col-first">Method</div>
 <div class="table-header col-last">Description</div>
-<div class="col-summary-item-name even-row-color"><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#getConversionService()">io.github.simplejdbcmapper.core.SimpleJdbcMapper.getConversionService()</a></div>
+<div class="col-summary-item-name even-row-color"><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#findAll(java.lang.Class,io.github.simplejdbcmapper.core.SortBy...)">io.github.simplejdbcmapper.core.SimpleJdbcMapper.findAll<wbr>(Class&lt;T&gt;, SortBy...)</a></div>
 <div class="col-last even-row-color">
+<div class="block">Instead, issue an SQL query to retrieve the data using
+             JdbcTemplate and EntityRowMapper
+             <p>
+ 
+             Find all objects.</div>
+</div>
+<div class="col-summary-item-name odd-row-color"><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#findByPropertyValue(java.lang.Class,java.lang.String,java.lang.Object,io.github.simplejdbcmapper.core.SortBy...)">io.github.simplejdbcmapper.core.SimpleJdbcMapper.findByPropertyValue<wbr>(Class&lt;T&gt;, String, Object, SortBy...)</a></div>
+<div class="col-last odd-row-color">
+<div class="block">Instead, issue an SQL query to retrieve the data using
+             JdbcTemplate and EntityRowMapper
+             <p>
+ 
+             Returns list of objects which match the property value. 'IS NULL'
+             clause will be used in the sql for a null value.</div>
+</div>
+<div class="col-summary-item-name even-row-color"><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#findByPropertyValues(java.lang.Class,java.lang.String,java.util.Collection,io.github.simplejdbcmapper.core.SortBy...)">io.github.simplejdbcmapper.core.SimpleJdbcMapper.findByPropertyValues<wbr>(Class&lt;T&gt;, String, Collection&lt;U&gt;, SortBy...)</a></div>
+<div class="col-last even-row-color">
+<div class="block">Instead, issue an SQL query with JdbcTemplate and EntityRowMapper
+             to retrieve the data
+             <p>
+
+             Returns list of objects which match the collection of property
+             values. Uses an sql 'IN' clause. Large number of values could
+             cause query performance degradation. Also different databases
+             have different number/size limitations for sql 'IN" clauses.
+ 
+             <pre>
+ Query is constructed in such a way that if there is a null value in the propertyValues
+ the returned records will include records which match 'IS NULL' in the database.
+             </pre></div>
+</div>
+<div class="col-summary-item-name odd-row-color"><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#getBeanFriendlySqlColumns(java.lang.Class)">io.github.simplejdbcmapper.core.SimpleJdbcMapper.getBeanFriendlySqlColumns<wbr>(Class&lt;?&gt;)</a></div>
+<div class="col-last odd-row-color">
+<div class="block">Instead use getSqlColumns() with EntityRowMapper to retrieve data
+             <p>
+             Gets the sql columns. Works well with Spring row mappers like
+             BeanPropertyRowMapper(), SimplePropertyRowMapper() etc. Will
+             create the needed column aliases where the column name does not
+             match the corresponding underscore case property name.
+             <p>
+             It is a good practice to store this string, since every time this
+             method is invoked the columns have to be concatenated along with
+             some string manipulation
+
+             <p>
+             Will return something like below if 'name' property is mapped to
+             'last_name' column in database:
+
+             <pre>
+             "somecolumn, someothercolumn, last_name AS name"
+             </pre>
+ 
+             Example:
+ 
+             <pre>
+             String sql = "SELECT " + sjm.getBeanFriendlySqlColumns(Product.class) + " FROM product WHERE product_name = ?";
+             </pre>
+ 
+             Using Spring's JdbcClient api for the above sql. JdbcClient is
+             using SimplePropertyRowMapper internally here.
+ 
+             <pre>
+ <code>List&lt;Product&gt;</code> products = sjm.getJdbcClient().sql(sql).param("someProductName").query(Product.class).list();
+ </pre>
+ 
+             Using Spring's JdbcTemplate api for the above sql
+ 
+             <pre>
+ <code>List&lt;Product&gt;</code> products = sjm.getJdbcTemplate().query(sql, BeanPropertyRowMapper.newInstance(Product.class), "someProductName");
+ </pre></div>
+</div>
+<div class="col-summary-item-name even-row-color"><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#getBeanFriendlySqlColumns(java.lang.Class,java.lang.String)">io.github.simplejdbcmapper.core.SimpleJdbcMapper.getBeanFriendlySqlColumns<wbr>(Class&lt;?&gt;, String)</a></div>
+<div class="col-last even-row-color">
+<div class="block">Instead use getSqlColumns() with EntityRowMapper to retrieve data
+             <p>
+             Gets the sql columns with columns prefixed with the table alias.
+             Works well with Spring row mappers like BeanPropertyRowMapper(),
+             SimplePropertyRowMapper() etc. Will prefix table column names
+             with the 'tableAlias.' and will create the needed column aliases
+             where the column name does not match the corresponding underscore
+             case property name.
+             <p>
+             Use it in your custom queries when you are doing joins and need
+             columns corresponding to a table alias.
+
+             <p>
+             It is a good practice to store this string, since every time this
+             method is invoked the columns have to be concatenated long with
+             some string manipulation.
+ 
+             <p>
+             For tableAlias argument 't1' will return something like below if
+             'name' property is mapped to 'last_name' column in database:
+
+             <pre>
+             "t1.somecolumn, t1.someothercolumn, t1.last_name AS name"
+             </pre>
+ 
+             Example:
+ 
+             <pre>
+             String sql = "SELECT " + sjm.getBeanFriendlySqlColumns(Product.class, "t1")
+                        + " FROM product t1 WHERE t1.product_name = ?";
+             </pre>
+ 
+             Using Spring's JdbcClient api for the above sql. JdbcClient is
+             using SimplePropertyRowMapper internally here.
+ 
+             <pre>
+ <code>List&lt;Product&gt;</code> products = sjm.getJdbcClient().sql(sql).param("someProductName").query(Product.class).list();
+ </pre>
+ 
+             Using Spring's JdbcTemplate api for the above sql
+ 
+             <pre>
+ <code>List&lt;Product&gt;</code> products = sjm.getJdbcTemplate().query(sql, BeanPropertyRowMapper.newInstance(Product.class), "someProductName");
+ </pre></div>
+</div>
+<div class="col-summary-item-name odd-row-color"><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#getConversionService()">io.github.simplejdbcmapper.core.SimpleJdbcMapper.getConversionService()</a></div>
+<div class="col-last odd-row-color">
 <div class="block">See <a href="io/github/simplejdbcmapper/core/AttributeConverter.html" title="interface in io.github.simplejdbcmapper.core"><code>AttributeConverter</code></a> on
              how to use custom converters.
              <p>
@@ -231,8 +497,8 @@ loadScripts(document, 'script');</script>
              converters can be added etc. The default conversion service used
              in SimpleJdbcMapper is Spring's DefaultConversionService.</div>
 </div>
-<div class="col-summary-item-name odd-row-color"><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#getEntitySqlColumns(java.lang.Class)">io.github.simplejdbcmapper.core.SimpleJdbcMapper.getEntitySqlColumns<wbr>(Class&lt;?&gt;)</a></div>
-<div class="col-last odd-row-color">
+<div class="col-summary-item-name even-row-color"><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#getEntitySqlColumns(java.lang.Class)">io.github.simplejdbcmapper.core.SimpleJdbcMapper.getEntitySqlColumns<wbr>(Class&lt;?&gt;)</a></div>
+<div class="col-last even-row-color">
 <div class="block">Use <a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#getSqlColumns(java.lang.Class)"><code>SimpleJdbcMapper.getSqlColumns(Class&lt;?&gt; entityType)</code></a> instead.
              <p>
  
@@ -253,8 +519,8 @@ loadScripts(document, 'script');</script>
 
              See <a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#newEntityRowMapper(java.lang.Class)"><code>SimpleJdbcMapper.newEntityRowMapper(java.lang.Class&lt;T&gt;)</code></a></div>
 </div>
-<div class="col-summary-item-name even-row-color"><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#getEntitySqlColumns(java.lang.Class,java.lang.String)">io.github.simplejdbcmapper.core.SimpleJdbcMapper.getEntitySqlColumns<wbr>(Class&lt;?&gt;, String)</a></div>
-<div class="col-last even-row-color">
+<div class="col-summary-item-name odd-row-color"><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#getEntitySqlColumns(java.lang.Class,java.lang.String)">io.github.simplejdbcmapper.core.SimpleJdbcMapper.getEntitySqlColumns<wbr>(Class&lt;?&gt;, String)</a></div>
+<div class="col-last odd-row-color">
 <div class="block">Use <a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#getSqlColumns(java.lang.Class,java.lang.String)"><code>SimpleJdbcMapper.getSqlColumns(Class&lt;?&gt; entityType, String tableAlias)</code></a> instead.
              <p>
  
@@ -284,8 +550,8 @@ loadScripts(document, 'script');</script>
  
              See <a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#newEntityRowMapper(java.lang.Class)"><code>SimpleJdbcMapper.newEntityRowMapper(java.lang.Class&lt;T&gt;)</code></a></div>
 </div>
-<div class="col-summary-item-name odd-row-color"><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#getMultiEntitySqlColumns(io.github.simplejdbcmapper.core.MultiEntity)">io.github.simplejdbcmapper.core.SimpleJdbcMapper.getMultiEntitySqlColumns<wbr>(MultiEntity)</a></div>
-<div class="col-last odd-row-color">
+<div class="col-summary-item-name even-row-color"><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#getMultiEntitySqlColumns(io.github.simplejdbcmapper.core.MultiEntity)">io.github.simplejdbcmapper.core.SimpleJdbcMapper.getMultiEntitySqlColumns<wbr>(MultiEntity)</a></div>
+<div class="col-last even-row-color">
 <div class="block">Use <a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#getSqlColumns(io.github.simplejdbcmapper.core.MultiEntity)"><code>SimpleJdbcMapper.getSqlColumns(MultiEntity multiEntity)</code></a> instead.<br>
  
              Gets the sql columns for multi-entity processing. These sql
@@ -309,8 +575,8 @@ loadScripts(document, 'script');</script>
  
              See <a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#resultSetExtractor(io.github.simplejdbcmapper.core.MultiEntity)"><code>SimpleJdbcMapper.resultSetExtractor(io.github.simplejdbcmapper.core.MultiEntity)</code></a></div>
 </div>
-<div class="col-summary-item-name even-row-color"><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#newEntityRowMapper(java.lang.Class)">io.github.simplejdbcmapper.core.SimpleJdbcMapper.newEntityRowMapper<wbr>(Class&lt;T&gt;)</a></div>
-<div class="col-last even-row-color">
+<div class="col-summary-item-name odd-row-color"><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#newEntityRowMapper(java.lang.Class)">io.github.simplejdbcmapper.core.SimpleJdbcMapper.newEntityRowMapper<wbr>(Class&lt;T&gt;)</a></div>
+<div class="col-last odd-row-color">
 <div class="block">Use <a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#entityRowMapper(java.lang.Class)"><code>SimpleJdbcMapper.entityRowMapper(Class)</code></a> instead.
              <p>
  
@@ -363,8 +629,8 @@ loadScripts(document, 'script');</script>
                                                      .list();
  </pre></div>
 </div>
-<div class="col-summary-item-name odd-row-color"><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#setConversionService(org.springframework.core.convert.ConversionService)">io.github.simplejdbcmapper.core.SimpleJdbcMapper.setConversionService<wbr>(ConversionService)</a></div>
-<div class="col-last odd-row-color">
+<div class="col-summary-item-name even-row-color"><a href="io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#setConversionService(org.springframework.core.convert.ConversionService)">io.github.simplejdbcmapper.core.SimpleJdbcMapper.setConversionService<wbr>(ConversionService)</a></div>
+<div class="col-last even-row-color">
 <div class="block">See <a href="io/github/simplejdbcmapper/core/AttributeConverter.html" title="interface in io.github.simplejdbcmapper.core"><code>AttributeConverter</code></a> on
              how to use custom converters.
              <p>

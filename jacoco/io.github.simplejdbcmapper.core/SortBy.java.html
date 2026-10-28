@@ -16,10 +16,14 @@ package io.github.simplejdbcmapper.core;
 import org.springframework.util.Assert;
 
 /**
- * This is used to generate the &quot;ORDER BY&quot; clause for the queries.
+ * @deprecated Instead, issue an SQL query with ORDER BY clause to retrieve the
+ *             data using JdbcTemplate and EntityRowMapper
+ *             &lt;p&gt;
+ *             This is used to generate the &quot;ORDER BY&quot; clause for the queries.
  * 
  * @author Antony Joseph
  */
+@Deprecated(since = &quot;2.5.1&quot;, forRemoval = true)
 public class SortBy {
 	private final String propertyName;
 	private final String direction;
@@ -30,8 +34,8 @@ public class SortBy {
 	 * @param propertyName the property name to sort by. (NOT the column name)
 	 */
 	public SortBy(String propertyName) {
-<span class="fc" id="L33">		this(propertyName, null);</span>
-<span class="fc" id="L34">	}</span>
+<span class="fc" id="L37">		this(propertyName, null);</span>
+<span class="fc" id="L38">	}</span>
 
 	/**
 	 * The constructor
@@ -40,25 +44,25 @@ public class SortBy {
 	 * @param direction    the direction of the sort. Has to be either &quot;ASC&quot; or
 	 *                     &quot;DESC&quot;
 	 */
-<span class="fc" id="L43">	public SortBy(String propertyName, String direction) {</span>
-<span class="fc" id="L44">		Assert.notNull(propertyName, &quot;propertyName must not be null&quot;);</span>
-<span class="fc" id="L45">		this.propertyName = propertyName;</span>
-<span class="fc bfc" id="L46" title="All 2 branches covered.">		if (direction != null) {</span>
-<span class="fc bfc" id="L47" title="All 4 branches covered.">			if (!&quot;ASC&quot;.equalsIgnoreCase(direction) &amp;&amp; !&quot;DESC&quot;.equalsIgnoreCase(direction)) {</span>
-<span class="fc" id="L48">				throw new IllegalArgumentException(&quot;direction should be ASC or DESC&quot;);</span>
+<span class="fc" id="L47">	public SortBy(String propertyName, String direction) {</span>
+<span class="fc" id="L48">		Assert.notNull(propertyName, &quot;propertyName must not be null&quot;);</span>
+<span class="fc" id="L49">		this.propertyName = propertyName;</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">		if (direction != null) {</span>
+<span class="fc bfc" id="L51" title="All 4 branches covered.">			if (!&quot;ASC&quot;.equalsIgnoreCase(direction) &amp;&amp; !&quot;DESC&quot;.equalsIgnoreCase(direction)) {</span>
+<span class="fc" id="L52">				throw new IllegalArgumentException(&quot;direction should be ASC or DESC&quot;);</span>
 			}
-<span class="fc" id="L50">			this.direction = direction.toUpperCase();</span>
+<span class="fc" id="L54">			this.direction = direction.toUpperCase();</span>
 		} else {
-<span class="fc" id="L52">			this.direction = &quot;&quot;;</span>
+<span class="fc" id="L56">			this.direction = &quot;&quot;;</span>
 		}
-<span class="fc" id="L54">	}</span>
+<span class="fc" id="L58">	}</span>
 
 	public String getPropertyName() {
-<span class="fc" id="L57">		return propertyName;</span>
+<span class="fc" id="L61">		return propertyName;</span>
 	}
 
 	public String getDirection() {
-<span class="fc" id="L61">		return direction;</span>
+<span class="fc" id="L65">		return direction;</span>
 	}
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main ef2f88520da4296ff52a8d311d463fdd6c303a67 2026-10-27T08:00:15</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 0f69f0eeaf0809b26291af392b0aa72792fdbf2f 2026-10-28T06:24:19</div></body></html>

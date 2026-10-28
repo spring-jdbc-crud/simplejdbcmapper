@@ -167,11 +167,14 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">Returns a new EntityRowMapper.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;T&gt;&nbsp;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;T&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#findAll(java.lang.Class,io.github.simplejdbcmapper.core.SortBy...)" class="member-name-link">findAll</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;T&gt;&nbsp;entityType,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>&lt;T&gt;&nbsp;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;T&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#findAll(java.lang.Class,io.github.simplejdbcmapper.core.SortBy...)" class="member-name-link">findAll</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;T&gt;&nbsp;entityType,
  <a href="SortBy.html" title="class in io.github.simplejdbcmapper.core">SortBy</a>...&nbsp;sortByArray)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Find all objects.</div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">Instead, issue an SQL query to retrieve the data using
+             JdbcTemplate and EntityRowMapper</div>
+</div>
 </div>
 <div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;T&gt;&nbsp;T</code></div>
 <div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#findById(java.lang.Class,java.lang.Object)" class="member-name-link">findById</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;T&gt;&nbsp;entityType,
@@ -179,33 +182,43 @@ loadScripts(document, 'script');</script>
 <div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
 <div class="block">finds the object by Id.</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;T&gt;&nbsp;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;T&gt;</code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#findByPropertyValue(java.lang.Class,java.lang.String,java.lang.Object,io.github.simplejdbcmapper.core.SortBy...)" class="member-name-link">findByPropertyValue</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;T&gt;&nbsp;entityType,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>&lt;T&gt;&nbsp;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;T&gt;</code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#findByPropertyValue(java.lang.Class,java.lang.String,java.lang.Object,io.github.simplejdbcmapper.core.SortBy...)" class="member-name-link">findByPropertyValue</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;T&gt;&nbsp;entityType,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;propertyName,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;propertyValue,
  <a href="SortBy.html" title="class in io.github.simplejdbcmapper.core">SortBy</a>...&nbsp;sortByArray)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Returns list of objects which match the property value.</div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">Instead, issue an SQL query to retrieve the data using
+             JdbcTemplate and EntityRowMapper</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code>&lt;T,<wbr>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code>&lt;T,<wbr>
 U&gt;&nbsp;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a><wbr>&lt;T&gt;</code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#findByPropertyValues(java.lang.Class,java.lang.String,java.util.Collection,io.github.simplejdbcmapper.core.SortBy...)" class="member-name-link">findByPropertyValues</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;T&gt;&nbsp;entityType,
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#findByPropertyValues(java.lang.Class,java.lang.String,java.util.Collection,io.github.simplejdbcmapper.core.SortBy...)" class="member-name-link">findByPropertyValues</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;T&gt;&nbsp;entityType,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;propertyName,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Collection.html" title="class or interface in java.util" class="external-link">Collection</a>&lt;U&gt;&nbsp;propertyValues,
  <a href="SortBy.html" title="class in io.github.simplejdbcmapper.core">SortBy</a>...&nbsp;sortByArray)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Returns list of objects which match the collection of property values.</div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">Instead, issue an SQL query with JdbcTemplate and EntityRowMapper
+             to retrieve the data</div>
 </div>
-<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getBeanFriendlySqlColumns(java.lang.Class)" class="member-name-link">getBeanFriendlySqlColumns</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;?&gt;&nbsp;entityType)</code></div>
-<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Gets the sql columns.</div>
 </div>
-<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
-<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getBeanFriendlySqlColumns(java.lang.Class,java.lang.String)" class="member-name-link">getBeanFriendlySqlColumns</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;?&gt;&nbsp;entityType,
+<div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#getBeanFriendlySqlColumns(java.lang.Class)" class="member-name-link">getBeanFriendlySqlColumns</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;?&gt;&nbsp;entityType)</code></div>
+<div class="col-last even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">Instead use getSqlColumns() with EntityRowMapper to retrieve data</div>
+</div>
+</div>
+<div class="col-first odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
+<div class="col-second odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6"><code><a href="#getBeanFriendlySqlColumns(java.lang.Class,java.lang.String)" class="member-name-link">getBeanFriendlySqlColumns</a><wbr>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;?&gt;&nbsp;entityType,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;tableAlias)</code></div>
-<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4">
-<div class="block">Gets the sql columns with columns prefixed with the table alias.</div>
+<div class="col-last odd-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4 method-summary-table-tab6">
+<div class="block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">Instead use getSqlColumns() with EntityRowMapper to retrieve data</div>
+</div>
 </div>
 <div class="col-first even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></code></div>
 <div class="col-second even-row-color method-summary-table method-summary-table-tab2 method-summary-table-tab4"><code><a href="#getCatalogName()" class="member-name-link">getCatalogName</a>()</code></div>
@@ -423,9 +436,17 @@ U&gt;&nbsp;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base
 <li>
 <section class="detail" id="findAll(java.lang.Class,io.github.simplejdbcmapper.core.SortBy...)">
 <h3>findAll</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="type-parameters">&lt;T&gt;</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;T&gt;</span>&nbsp;<span class="element-name">findAll</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;T&gt;&nbsp;entityType,
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Deprecated.html#since()" title="class or interface in java.lang" class="external-link">since</a>="2.5.1",
+            <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Deprecated.html#forRemoval()" title="class or interface in java.lang" class="external-link">forRemoval</a>=true)
+</span><span class="modifiers">public</span>&nbsp;<span class="type-parameters">&lt;T&gt;</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;T&gt;</span>&nbsp;<span class="element-name">findAll</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;T&gt;&nbsp;entityType,
  <a href="SortBy.html" title="class in io.github.simplejdbcmapper.core">SortBy</a>...&nbsp;sortByArray)</span></div>
-<div class="block">Find all objects.</div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">Instead, issue an SQL query to retrieve the data using
+             JdbcTemplate and EntityRowMapper
+             <p>
+ 
+             Find all objects.</div>
+</div>
 <dl class="notes">
 <dt>Type Parameters:</dt>
 <dd><code>T</code> - the type</dd>
@@ -441,12 +462,20 @@ U&gt;&nbsp;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base
 <li>
 <section class="detail" id="findByPropertyValue(java.lang.Class,java.lang.String,java.lang.Object,io.github.simplejdbcmapper.core.SortBy...)">
 <h3>findByPropertyValue</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="type-parameters">&lt;T&gt;</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;T&gt;</span>&nbsp;<span class="element-name">findByPropertyValue</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;T&gt;&nbsp;entityType,
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Deprecated.html#since()" title="class or interface in java.lang" class="external-link">since</a>="2.5.1",
+            <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Deprecated.html#forRemoval()" title="class or interface in java.lang" class="external-link">forRemoval</a>=true)
+</span><span class="modifiers">public</span>&nbsp;<span class="type-parameters">&lt;T&gt;</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;T&gt;</span>&nbsp;<span class="element-name">findByPropertyValue</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;T&gt;&nbsp;entityType,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;propertyName,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Object.html" title="class or interface in java.lang" class="external-link">Object</a>&nbsp;propertyValue,
  <a href="SortBy.html" title="class in io.github.simplejdbcmapper.core">SortBy</a>...&nbsp;sortByArray)</span></div>
-<div class="block">Returns list of objects which match the property value. 'IS NULL' clause will
- be used in the sql for a null value.</div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">Instead, issue an SQL query to retrieve the data using
+             JdbcTemplate and EntityRowMapper
+             <p>
+ 
+             Returns list of objects which match the property value. 'IS NULL'
+             clause will be used in the sql for a null value.</div>
+</div>
 <dl class="notes">
 <dt>Type Parameters:</dt>
 <dd><code>T</code> - the type</dd>
@@ -464,20 +493,28 @@ U&gt;&nbsp;<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base
 <li>
 <section class="detail" id="findByPropertyValues(java.lang.Class,java.lang.String,java.util.Collection,io.github.simplejdbcmapper.core.SortBy...)">
 <h3>findByPropertyValues</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="type-parameters">&lt;T,<wbr>
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Deprecated.html#since()" title="class or interface in java.lang" class="external-link">since</a>="2.5.1",
+            <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Deprecated.html#forRemoval()" title="class or interface in java.lang" class="external-link">forRemoval</a>=true)
+</span><span class="modifiers">public</span>&nbsp;<span class="type-parameters">&lt;T,<wbr>
 U&gt;</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/List.html" title="class or interface in java.util" class="external-link">List</a>&lt;T&gt;</span>&nbsp;<span class="element-name">findByPropertyValues</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;T&gt;&nbsp;entityType,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;propertyName,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/util/Collection.html" title="class or interface in java.util" class="external-link">Collection</a>&lt;U&gt;&nbsp;propertyValues,
  <a href="SortBy.html" title="class in io.github.simplejdbcmapper.core">SortBy</a>...&nbsp;sortByArray)</span></div>
-<div class="block">Returns list of objects which match the collection of property values. Uses
- an sql 'IN' clause. Large number of values could cause query performance
- degradation. Also different databases have different number/size limitations
- for sql 'IN" clauses.
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">Instead, issue an SQL query with JdbcTemplate and EntityRowMapper
+             to retrieve the data
+             <p>
+
+             Returns list of objects which match the collection of property
+             values. Uses an sql 'IN' clause. Large number of values could
+             cause query performance degradation. Also different databases
+             have different number/size limitations for sql 'IN" clauses.
  
- <pre>
+             <pre>
  Query is constructed in such a way that if there is a null value in the propertyValues
  the returned records will include records which match 'IS NULL' in the database.
- </pre></div>
+             </pre></div>
+</div>
 <dl class="notes">
 <dt>Type Parameters:</dt>
 <dd><code>T</code> - the type</dd>
@@ -1005,42 +1042,48 @@ U&gt;</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/
 <li>
 <section class="detail" id="getBeanFriendlySqlColumns(java.lang.Class)">
 <h3>getBeanFriendlySqlColumns</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getBeanFriendlySqlColumns</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;?&gt;&nbsp;entityType)</span></div>
-<div class="block">Gets the sql columns. Works well with Spring row mappers like
- BeanPropertyRowMapper(), SimplePropertyRowMapper() etc. Will create the
- needed column aliases where the column name does not match the corresponding
- underscore case property name.
- <p>
- It is a good practice to store this string, since every time this method is
- invoked the columns have to be concatenated along with some string
- manipulation
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Deprecated.html#since()" title="class or interface in java.lang" class="external-link">since</a>="2.5.1",
+            <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Deprecated.html#forRemoval()" title="class or interface in java.lang" class="external-link">forRemoval</a>=true)
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getBeanFriendlySqlColumns</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;?&gt;&nbsp;entityType)</span></div>
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">Instead use getSqlColumns() with EntityRowMapper to retrieve data
+             <p>
+             Gets the sql columns. Works well with Spring row mappers like
+             BeanPropertyRowMapper(), SimplePropertyRowMapper() etc. Will
+             create the needed column aliases where the column name does not
+             match the corresponding underscore case property name.
+             <p>
+             It is a good practice to store this string, since every time this
+             method is invoked the columns have to be concatenated along with
+             some string manipulation
 
- <p>
- Will return something like below if 'name' property is mapped to 'last_name'
- column in database:
+             <p>
+             Will return something like below if 'name' property is mapped to
+             'last_name' column in database:
 
- <pre>
- "somecolumn, someothercolumn, last_name AS name"
- </pre>
+             <pre>
+             "somecolumn, someothercolumn, last_name AS name"
+             </pre>
  
- Example:
+             Example:
  
- <pre>
- String sql = "SELECT " + sjm.getBeanFriendlySqlColumns(Product.class) + " FROM product WHERE product_name = ?";
- </pre>
+             <pre>
+             String sql = "SELECT " + sjm.getBeanFriendlySqlColumns(Product.class) + " FROM product WHERE product_name = ?";
+             </pre>
  
- Using Spring's JdbcClient api for the above sql. JdbcClient is using
- SimplePropertyRowMapper internally here.
+             Using Spring's JdbcClient api for the above sql. JdbcClient is
+             using SimplePropertyRowMapper internally here.
  
- <pre>
+             <pre>
  <code>List&lt;Product&gt;</code> products = sjm.getJdbcClient().sql(sql).param("someProductName").query(Product.class).list();
  </pre>
  
- Using Spring's JdbcTemplate api for the above sql
+             Using Spring's JdbcTemplate api for the above sql
  
- <pre>
+             <pre>
  <code>List&lt;Product&gt;</code> products = sjm.getJdbcTemplate().query(sql, BeanPropertyRowMapper.newInstance(Product.class), "someProductName");
  </pre></div>
+</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>entityType</code> - the type</dd>
@@ -1052,49 +1095,56 @@ U&gt;</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/
 <li>
 <section class="detail" id="getBeanFriendlySqlColumns(java.lang.Class,java.lang.String)">
 <h3>getBeanFriendlySqlColumns</h3>
-<div class="member-signature"><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getBeanFriendlySqlColumns</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;?&gt;&nbsp;entityType,
+<div class="member-signature"><span class="annotations"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Deprecated.html" title="class or interface in java.lang" class="external-link">@Deprecated</a>(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Deprecated.html#since()" title="class or interface in java.lang" class="external-link">since</a>="2.5.1",
+            <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Deprecated.html#forRemoval()" title="class or interface in java.lang" class="external-link">forRemoval</a>=true)
+</span><span class="modifiers">public</span>&nbsp;<span class="return-type"><a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a></span>&nbsp;<span class="element-name">getBeanFriendlySqlColumns</span><wbr><span class="parameters">(<a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/Class.html" title="class or interface in java.lang" class="external-link">Class</a>&lt;?&gt;&nbsp;entityType,
  <a href="https://docs.oracle.com/en/java/javase/21/docs/api/java.base/java/lang/String.html" title="class or interface in java.lang" class="external-link">String</a>&nbsp;tableAlias)</span></div>
-<div class="block">Gets the sql columns with columns prefixed with the table alias. Works well
- with Spring row mappers like BeanPropertyRowMapper(),
- SimplePropertyRowMapper() etc. Will prefix table column names with the
- 'tableAlias.' and will create the needed column aliases where the column name
- does not match the corresponding underscore case property name.
- <p>
- Use it in your custom queries when you are doing joins and need columns
- corresponding to a table alias.
+<div class="deprecation-block"><span class="deprecated-label">Deprecated, for removal: This API element is subject to removal in a future version.</span>
+<div class="deprecation-comment">Instead use getSqlColumns() with EntityRowMapper to retrieve data
+             <p>
+             Gets the sql columns with columns prefixed with the table alias.
+             Works well with Spring row mappers like BeanPropertyRowMapper(),
+             SimplePropertyRowMapper() etc. Will prefix table column names
+             with the 'tableAlias.' and will create the needed column aliases
+             where the column name does not match the corresponding underscore
+             case property name.
+             <p>
+             Use it in your custom queries when you are doing joins and need
+             columns corresponding to a table alias.
 
- <p>
- It is a good practice to store this string, since every time this method is
- invoked the columns have to be concatenated long with some string
- manipulation.
+             <p>
+             It is a good practice to store this string, since every time this
+             method is invoked the columns have to be concatenated long with
+             some string manipulation.
  
- <p>
- For tableAlias argument 't1' will return something like below if 'name'
- property is mapped to 'last_name' column in database:
+             <p>
+             For tableAlias argument 't1' will return something like below if
+             'name' property is mapped to 'last_name' column in database:
 
- <pre>
- "t1.somecolumn, t1.someothercolumn, t1.last_name AS name"
- </pre>
+             <pre>
+             "t1.somecolumn, t1.someothercolumn, t1.last_name AS name"
+             </pre>
  
- Example:
+             Example:
  
- <pre>
- String sql = "SELECT " + sjm.getBeanFriendlySqlColumns(Product.class, "t1")
-                + " FROM product t1 WHERE t1.product_name = ?";
- </pre>
+             <pre>
+             String sql = "SELECT " + sjm.getBeanFriendlySqlColumns(Product.class, "t1")
+                        + " FROM product t1 WHERE t1.product_name = ?";
+             </pre>
  
- Using Spring's JdbcClient api for the above sql. JdbcClient is using
- SimplePropertyRowMapper internally here.
+             Using Spring's JdbcClient api for the above sql. JdbcClient is
+             using SimplePropertyRowMapper internally here.
  
- <pre>
+             <pre>
  <code>List&lt;Product&gt;</code> products = sjm.getJdbcClient().sql(sql).param("someProductName").query(Product.class).list();
  </pre>
  
- Using Spring's JdbcTemplate api for the above sql
+             Using Spring's JdbcTemplate api for the above sql
  
- <pre>
+             <pre>
  <code>List&lt;Product&gt;</code> products = sjm.getJdbcTemplate().query(sql, BeanPropertyRowMapper.newInstance(Product.class), "someProductName");
  </pre></div>
+</div>
 <dl class="notes">
 <dt>Parameters:</dt>
 <dd><code>entityType</code> - the type</dd>

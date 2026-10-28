@@ -109,7 +109,11 @@ public final class SimpleJdbcMapper {
 	}
 
 	/**
-	 * Find all objects.
+	 * @deprecated Instead, issue an SQL query to retrieve the data using
+	 *             JdbcTemplate and EntityRowMapper
+	 *             &lt;p&gt;
+	 * 
+	 *             Find all objects.
 	 *
 	 * @param &lt;T&gt;         the type
 	 * @param entityType  type of object
@@ -117,13 +121,18 @@ public final class SimpleJdbcMapper {
 	 *                    used to generate the &quot;ORDER BY&quot; clause
 	 * @return List of objects of type T
 	 */
+	@Deprecated(since = &quot;2.5.1&quot;, forRemoval = true)
 	public &lt;T&gt; List&lt;T&gt; findAll(Class&lt;T&gt; entityType, SortBy... sortByArray) {
-<span class="fc" id="L121">		return findOperation.findAll(entityType, sortByArray);</span>
+<span class="fc" id="L126">		return findOperation.findAll(entityType, sortByArray);</span>
 	}
 
 	/**
-	 * Returns list of objects which match the property value. 'IS NULL' clause will
-	 * be used in the sql for a null value.
+	 * @deprecated Instead, issue an SQL query to retrieve the data using
+	 *             JdbcTemplate and EntityRowMapper
+	 *             &lt;p&gt;
+	 * 
+	 *             Returns list of objects which match the property value. 'IS NULL'
+	 *             clause will be used in the sql for a null value.
 	 *
 	 * @param &lt;T&gt;           the type
 	 * @param entityType    type of objects to be returned
@@ -133,21 +142,26 @@ public final class SimpleJdbcMapper {
 	 *                      used to generate the &quot;ORDER BY&quot; clause
 	 * @return a List of objects of type T
 	 */
+	@Deprecated(since = &quot;2.5.1&quot;, forRemoval = true)
 	public &lt;T&gt; List&lt;T&gt; findByPropertyValue(Class&lt;T&gt; entityType, String propertyName, Object propertyValue,
 			SortBy... sortByArray) {
-<span class="fc" id="L138">		return findOperation.findByPropertyValue(entityType, propertyName, propertyValue, sortByArray);</span>
+<span class="fc" id="L148">		return findOperation.findByPropertyValue(entityType, propertyName, propertyValue, sortByArray);</span>
 	}
 
 	/**
-	 * Returns list of objects which match the collection of property values. Uses
-	 * an sql 'IN' clause. Large number of values could cause query performance
-	 * degradation. Also different databases have different number/size limitations
-	 * for sql 'IN&quot; clauses.
+	 * @deprecated Instead, issue an SQL query with JdbcTemplate and EntityRowMapper
+	 *             to retrieve the data
+	 *             &lt;p&gt;
+	 *
+	 *             Returns list of objects which match the collection of property
+	 *             values. Uses an sql 'IN' clause. Large number of values could
+	 *             cause query performance degradation. Also different databases
+	 *             have different number/size limitations for sql 'IN&quot; clauses.
 	 * 
-	 * &lt;pre&gt;
+	 *             &lt;pre&gt;
 	 * Query is constructed in such a way that if there is a null value in the propertyValues
 	 * the returned records will include records which match 'IS NULL' in the database.
-	 * &lt;/pre&gt;
+	 *             &lt;/pre&gt;
 	 *
 	 * @param &lt;T&gt;            the type
 	 * @param &lt;U&gt;            the type of the property values
@@ -158,9 +172,10 @@ public final class SimpleJdbcMapper {
 	 *                       used to generate the &quot;ORDER BY&quot; clause
 	 * @return a List of objects of type T
 	 */
+	@Deprecated(since = &quot;2.5.1&quot;, forRemoval = true)
 	public &lt;T, U&gt; List&lt;T&gt; findByPropertyValues(Class&lt;T&gt; entityType, String propertyName, Collection&lt;U&gt; propertyValues,
 			SortBy... sortByArray) {
-<span class="fc" id="L163">		return findOperation.findByPropertyValues(entityType, propertyName, propertyValues, sortByArray);</span>
+<span class="fc" id="L178">		return findOperation.findByPropertyValues(entityType, propertyName, propertyValues, sortByArray);</span>
 	}
 
 	/**
@@ -185,8 +200,8 @@ public final class SimpleJdbcMapper {
 	 */
 
 	public void insert(Object object) {
-<span class="fc" id="L188">		insertOperation.insert(object);</span>
-<span class="fc" id="L189">	}</span>
+<span class="fc" id="L203">		insertOperation.insert(object);</span>
+<span class="fc" id="L204">	}</span>
 
 	/**
 	 * Update the object.
@@ -205,7 +220,7 @@ public final class SimpleJdbcMapper {
 	 * @return number of records updated
 	 */
 	public Integer update(Object object) {
-<span class="fc" id="L208">		return updateOperation.update(object);</span>
+<span class="fc" id="L223">		return updateOperation.update(object);</span>
 	}
 
 	/**
@@ -229,7 +244,7 @@ public final class SimpleJdbcMapper {
 	 * @return number of records updated
 	 */
 	public Integer updateSpecificProperties(Object object, String... propertyNames) {
-<span class="fc" id="L232">		return updateOperation.updateSpecificProperties(object, propertyNames);</span>
+<span class="fc" id="L247">		return updateOperation.updateSpecificProperties(object, propertyNames);</span>
 	}
 
 	/**
@@ -239,7 +254,7 @@ public final class SimpleJdbcMapper {
 	 * @return number of records were deleted (1 or 0)
 	 */
 	public Integer delete(Object object) {
-<span class="fc" id="L242">		return deleteOperation.delete(object);</span>
+<span class="fc" id="L257">		return deleteOperation.delete(object);</span>
 	}
 
 	/**
@@ -250,7 +265,7 @@ public final class SimpleJdbcMapper {
 	 * @return number records were deleted (1 or 0)
 	 */
 	public Integer deleteById(Class&lt;?&gt; entityType, Object id) {
-<span class="fc" id="L253">		return deleteOperation.deleteById(entityType, id);</span>
+<span class="fc" id="L268">		return deleteOperation.deleteById(entityType, id);</span>
 	}
 
 	/**
@@ -306,7 +321,7 @@ public final class SimpleJdbcMapper {
 	 * @return EntityRowMapper for the type
 	 */
 	public &lt;T&gt; EntityRowMapper&lt;T&gt; entityRowMapper(Class&lt;T&gt; entityType) {
-<span class="fc" id="L309">		return findOperation.entityRowMapper(entityType);</span>
+<span class="fc" id="L324">		return findOperation.entityRowMapper(entityType);</span>
 	}
 
 	/**
@@ -368,7 +383,7 @@ public final class SimpleJdbcMapper {
 	 */
 	@Deprecated(since = &quot;2.4.4&quot;, forRemoval = true)
 	public &lt;T&gt; EntityRowMapper&lt;T&gt; newEntityRowMapper(Class&lt;T&gt; entityType) {
-<span class="nc" id="L371">		return findOperation.entityRowMapper(entityType);</span>
+<span class="nc" id="L386">		return findOperation.entityRowMapper(entityType);</span>
 	}
 
 	/**
@@ -394,7 +409,7 @@ public final class SimpleJdbcMapper {
 	 * 
 	 */
 	public String getSqlColumns(Class&lt;?&gt; entityType) {
-<span class="fc" id="L397">		return findOperation.getSqlColumns(entityType);</span>
+<span class="fc" id="L412">		return findOperation.getSqlColumns(entityType);</span>
 	}
 
 	/**
@@ -425,7 +440,7 @@ public final class SimpleJdbcMapper {
 	 */
 	@Deprecated(since = &quot;2.4.4&quot;, forRemoval = true)
 	public String getEntitySqlColumns(Class&lt;?&gt; entityType) {
-<span class="nc" id="L428">		return findOperation.getSqlColumns(entityType);</span>
+<span class="nc" id="L443">		return findOperation.getSqlColumns(entityType);</span>
 	}
 
 	/**
@@ -460,7 +475,7 @@ public final class SimpleJdbcMapper {
 	 * 
 	 */
 	public String getSqlColumns(Class&lt;?&gt; entityType, String tableAlias) {
-<span class="fc" id="L463">		return findOperation.getSqlColumns(entityType, tableAlias);</span>
+<span class="fc" id="L478">		return findOperation.getSqlColumns(entityType, tableAlias);</span>
 	}
 
 	/**
@@ -501,7 +516,7 @@ public final class SimpleJdbcMapper {
 	 */
 	@Deprecated(since = &quot;2.4.4&quot;, forRemoval = true)
 	public String getEntitySqlColumns(Class&lt;?&gt; entityType, String tableAlias) {
-<span class="nc" id="L504">		return findOperation.getSqlColumns(entityType, tableAlias);</span>
+<span class="nc" id="L519">		return findOperation.getSqlColumns(entityType, tableAlias);</span>
 	}
 
 	/**
@@ -530,7 +545,7 @@ public final class SimpleJdbcMapper {
 	 * @return sql columns string
 	 */
 	public String getSqlColumns(MultiEntity multiEntity) {
-<span class="fc" id="L533">		return findOperation.getSqlColumns(multiEntity);</span>
+<span class="fc" id="L548">		return findOperation.getSqlColumns(multiEntity);</span>
 	}
 
 	/**
@@ -562,7 +577,7 @@ public final class SimpleJdbcMapper {
 	 */
 	@Deprecated(since = &quot;2.4.4&quot;, forRemoval = true)
 	public String getMultiEntitySqlColumns(MultiEntity multiEntity) {
-<span class="nc" id="L565">		return findOperation.getSqlColumns(multiEntity);</span>
+<span class="nc" id="L580">		return findOperation.getSqlColumns(multiEntity);</span>
 	}
 
 	/**
@@ -619,43 +634,45 @@ public final class SimpleJdbcMapper {
 	 *         in RelationshipMapper
 	 */
 	public ResultSetExtractor&lt;RelationshipMapper&gt; resultSetExtractor(MultiEntity multiEntity) {
-<span class="fc" id="L622">		return multiEntityExtractor.resultSetExtractor(multiEntity);</span>
+<span class="fc" id="L637">		return multiEntityExtractor.resultSetExtractor(multiEntity);</span>
 	}
 
 	/**
-	 * Gets the sql columns. Works well with Spring row mappers like
-	 * BeanPropertyRowMapper(), SimplePropertyRowMapper() etc. Will create the
-	 * needed column aliases where the column name does not match the corresponding
-	 * underscore case property name.
-	 * &lt;p&gt;
-	 * It is a good practice to store this string, since every time this method is
-	 * invoked the columns have to be concatenated along with some string
-	 * manipulation
+	 * @deprecated Instead use getSqlColumns() with EntityRowMapper to retrieve data
+	 *             &lt;p&gt;
+	 *             Gets the sql columns. Works well with Spring row mappers like
+	 *             BeanPropertyRowMapper(), SimplePropertyRowMapper() etc. Will
+	 *             create the needed column aliases where the column name does not
+	 *             match the corresponding underscore case property name.
+	 *             &lt;p&gt;
+	 *             It is a good practice to store this string, since every time this
+	 *             method is invoked the columns have to be concatenated along with
+	 *             some string manipulation
 	 *
-	 * &lt;p&gt;
-	 * Will return something like below if 'name' property is mapped to 'last_name'
-	 * column in database:
+	 *             &lt;p&gt;
+	 *             Will return something like below if 'name' property is mapped to
+	 *             'last_name' column in database:
 	 *
-	 * &lt;pre&gt;
-	 * &quot;somecolumn, someothercolumn, last_name AS name&quot;
-	 * &lt;/pre&gt;
+	 *             &lt;pre&gt;
+	 *             &quot;somecolumn, someothercolumn, last_name AS name&quot;
+	 *             &lt;/pre&gt;
 	 * 
-	 * Example:
+	 *             Example:
 	 * 
-	 * &lt;pre&gt;
-	 * String sql = &quot;SELECT &quot; + sjm.getBeanFriendlySqlColumns(Product.class) + &quot; FROM product WHERE product_name = ?&quot;;
-	 * &lt;/pre&gt;
+	 *             &lt;pre&gt;
+	 *             String sql = &quot;SELECT &quot; + sjm.getBeanFriendlySqlColumns(Product.class) + &quot; FROM product WHERE product_name = ?&quot;;
+	 *             &lt;/pre&gt;
 	 * 
-	 * Using Spring's JdbcClient api for the above sql. JdbcClient is using
-	 * SimplePropertyRowMapper internally here.
+	 *             Using Spring's JdbcClient api for the above sql. JdbcClient is
+	 *             using SimplePropertyRowMapper internally here.
 	 * 
-	 * &lt;pre&gt;
+	 *             &lt;pre&gt;
 	 * {@code List&lt;Product&gt;} products = sjm.getJdbcClient().sql(sql).param(&quot;someProductName&quot;).query(Product.class).list();
 	 * &lt;/pre&gt;
 	 * 
-	 * Using Spring's JdbcTemplate api for the above sql
+	 *             Using Spring's JdbcTemplate api for the above sql
 	 * 
-	 * &lt;pre&gt;
+	 *             &lt;pre&gt;
 	 * {@code List&lt;Product&gt;} products = sjm.getJdbcTemplate().query(sql, BeanPropertyRowMapper.newInstance(Product.class), &quot;someProductName&quot;);
 	 * &lt;/pre&gt;
 	 * 
@@ -664,50 +681,54 @@ public final class SimpleJdbcMapper {
 	 * @return comma separated select column string
 	 * 
 	 */
+	@Deprecated(since = &quot;2.5.1&quot;, forRemoval = true)
 	public String getBeanFriendlySqlColumns(Class&lt;?&gt; entityType) {
-<span class="fc" id="L668">		return findOperation.getBeanFriendlySqlColumns(entityType);</span>
+<span class="fc" id="L686">		return findOperation.getBeanFriendlySqlColumns(entityType);</span>
 	}
 
 	/**
-	 * Gets the sql columns with columns prefixed with the table alias. Works well
-	 * with Spring row mappers like BeanPropertyRowMapper(),
-	 * SimplePropertyRowMapper() etc. Will prefix table column names with the
-	 * 'tableAlias.' and will create the needed column aliases where the column name
-	 * does not match the corresponding underscore case property name.
-	 * &lt;p&gt;
-	 * Use it in your custom queries when you are doing joins and need columns
-	 * corresponding to a table alias.
+	 * @deprecated Instead use getSqlColumns() with EntityRowMapper to retrieve data
+	 *             &lt;p&gt;
+	 *             Gets the sql columns with columns prefixed with the table alias.
+	 *             Works well with Spring row mappers like BeanPropertyRowMapper(),
+	 *             SimplePropertyRowMapper() etc. Will prefix table column names
+	 *             with the 'tableAlias.' and will create the needed column aliases
+	 *             where the column name does not match the corresponding underscore
+	 *             case property name.
+	 *             &lt;p&gt;
+	 *             Use it in your custom queries when you are doing joins and need
+	 *             columns corresponding to a table alias.
 	 *
-	 * &lt;p&gt;
-	 * It is a good practice to store this string, since every time this method is
-	 * invoked the columns have to be concatenated long with some string
-	 * manipulation.
+	 *             &lt;p&gt;
+	 *             It is a good practice to store this string, since every time this
+	 *             method is invoked the columns have to be concatenated long with
+	 *             some string manipulation.
 	 * 
-	 * &lt;p&gt;
-	 * For tableAlias argument 't1' will return something like below if 'name'
-	 * property is mapped to 'last_name' column in database:
+	 *             &lt;p&gt;
+	 *             For tableAlias argument 't1' will return something like below if
+	 *             'name' property is mapped to 'last_name' column in database:
 	 *
-	 * &lt;pre&gt;
-	 * &quot;t1.somecolumn, t1.someothercolumn, t1.last_name AS name&quot;
-	 * &lt;/pre&gt;
+	 *             &lt;pre&gt;
+	 *             &quot;t1.somecolumn, t1.someothercolumn, t1.last_name AS name&quot;
+	 *             &lt;/pre&gt;
 	 * 
-	 * Example:
+	 *             Example:
 	 * 
-	 * &lt;pre&gt;
-	 * String sql = &quot;SELECT &quot; + sjm.getBeanFriendlySqlColumns(Product.class, &quot;t1&quot;)
-	 * 		+ &quot; FROM product t1 WHERE t1.product_name = ?&quot;;
-	 * &lt;/pre&gt;
+	 *             &lt;pre&gt;
+	 *             String sql = &quot;SELECT &quot; + sjm.getBeanFriendlySqlColumns(Product.class, &quot;t1&quot;)
+	 *             		+ &quot; FROM product t1 WHERE t1.product_name = ?&quot;;
+	 *             &lt;/pre&gt;
 	 * 
-	 * Using Spring's JdbcClient api for the above sql. JdbcClient is using
-	 * SimplePropertyRowMapper internally here.
+	 *             Using Spring's JdbcClient api for the above sql. JdbcClient is
+	 *             using SimplePropertyRowMapper internally here.
 	 * 
-	 * &lt;pre&gt;
+	 *             &lt;pre&gt;
 	 * {@code List&lt;Product&gt;} products = sjm.getJdbcClient().sql(sql).param(&quot;someProductName&quot;).query(Product.class).list();
 	 * &lt;/pre&gt;
 	 * 
-	 * Using Spring's JdbcTemplate api for the above sql
+	 *             Using Spring's JdbcTemplate api for the above sql
 	 * 
-	 * &lt;pre&gt;
+	 *             &lt;pre&gt;
 	 * {@code List&lt;Product&gt;} products = sjm.getJdbcTemplate().query(sql, BeanPropertyRowMapper.newInstance(Product.class), &quot;someProductName&quot;);
 	 * &lt;/pre&gt;
 	 * 
@@ -716,8 +737,9 @@ public final class SimpleJdbcMapper {
 	 * @return comma separated select column string
 	 * 
 	 */
+	@Deprecated(since = &quot;2.5.1&quot;, forRemoval = true)
 	public String getBeanFriendlySqlColumns(Class&lt;?&gt; entityType, String tableAlias) {
-<span class="fc" id="L720">		return findOperation.getBeanFriendlySqlColumns(entityType, tableAlias);</span>
+<span class="fc" id="L742">		return findOperation.getBeanFriendlySqlColumns(entityType, tableAlias);</span>
 	}
 
 	/**
@@ -729,7 +751,7 @@ public final class SimpleJdbcMapper {
 	 * 
 	 */
 	public Map&lt;String, String&gt; getPropertyToColumnMappings(Class&lt;?&gt; entityType) {
-<span class="fc" id="L732">		return findOperation.getPropertyToColumnMappings(entityType);</span>
+<span class="fc" id="L754">		return findOperation.getPropertyToColumnMappings(entityType);</span>
 	}
 
 	/**
@@ -738,7 +760,7 @@ public final class SimpleJdbcMapper {
 	 * @return the JdbcClient
 	 */
 	public JdbcClient getJdbcClient() {
-<span class="fc" id="L741">		return simpleJdbcMapperSupport.getJdbcClient();</span>
+<span class="fc" id="L763">		return simpleJdbcMapperSupport.getJdbcClient();</span>
 	}
 
 	/**
@@ -747,7 +769,7 @@ public final class SimpleJdbcMapper {
 	 * @return the JdbcTemplate
 	 */
 	public JdbcTemplate getJdbcTemplate() {
-<span class="fc" id="L750">		return simpleJdbcMapperSupport.getJdbcTemplate();</span>
+<span class="fc" id="L772">		return simpleJdbcMapperSupport.getJdbcTemplate();</span>
 	}
 
 	/**
@@ -756,7 +778,7 @@ public final class SimpleJdbcMapper {
 	 * @return the NamedParameterJdbcTemplate
 	 */
 	public NamedParameterJdbcTemplate getNamedParameterJdbcTemplate() {
-<span class="fc" id="L759">		return simpleJdbcMapperSupport.getNamedParameterJdbcTemplate();</span>
+<span class="fc" id="L781">		return simpleJdbcMapperSupport.getNamedParameterJdbcTemplate();</span>
 	}
 
 	/**
@@ -767,8 +789,8 @@ public final class SimpleJdbcMapper {
 	 * @param supplier the Supplier for audited by.
 	 */
 	public &lt;T&gt; void setRecordAuditedBySupplier(Supplier&lt;T&gt; supplier) {
-<span class="fc" id="L770">		simpleJdbcMapperSupport.setRecordAuditedBySupplier(supplier);</span>
-<span class="fc" id="L771">	}</span>
+<span class="fc" id="L792">		simpleJdbcMapperSupport.setRecordAuditedBySupplier(supplier);</span>
+<span class="fc" id="L793">	}</span>
 
 	/**
 	 * Set the Supplier that is used to populate the &amp;#64;CreatedOn and
@@ -778,8 +800,8 @@ public final class SimpleJdbcMapper {
 	 * @param supplier the Supplier for audited on.
 	 */
 	public &lt;T&gt; void setRecordAuditedOnSupplier(Supplier&lt;T&gt; supplier) {
-<span class="fc" id="L781">		simpleJdbcMapperSupport.setRecordAuditedOnSupplier(supplier);</span>
-<span class="fc" id="L782">	}</span>
+<span class="fc" id="L803">		simpleJdbcMapperSupport.setRecordAuditedOnSupplier(supplier);</span>
+<span class="fc" id="L804">	}</span>
 
 	/**
 	 * @deprecated See {@link io.github.simplejdbcmapper.core.AttributeConverter} on
@@ -793,7 +815,7 @@ public final class SimpleJdbcMapper {
 	 */
 	@Deprecated(since = &quot;2.5.0&quot;, forRemoval = true)
 	public ConversionService getConversionService() {
-<span class="fc" id="L796">		return simpleJdbcMapperSupport.getConversionService();</span>
+<span class="fc" id="L818">		return simpleJdbcMapperSupport.getConversionService();</span>
 	}
 
 	/**
@@ -806,8 +828,8 @@ public final class SimpleJdbcMapper {
 	 */
 	@Deprecated(since = &quot;2.5.0&quot;, forRemoval = true)
 	public void setConversionService(ConversionService conversionService) {
-<span class="fc" id="L809">		simpleJdbcMapperSupport.setConversionService(conversionService);</span>
-<span class="fc" id="L810">	}</span>
+<span class="fc" id="L831">		simpleJdbcMapperSupport.setConversionService(conversionService);</span>
+<span class="fc" id="L832">	}</span>
 
 	/**
 	 * Get the schema name.
@@ -815,7 +837,7 @@ public final class SimpleJdbcMapper {
 	 * @return the schema name.
 	 */
 	public String getSchemaName() {
-<span class="fc" id="L818">		return simpleJdbcMapperSupport.getSchemaName();</span>
+<span class="fc" id="L840">		return simpleJdbcMapperSupport.getSchemaName();</span>
 	}
 
 	/**
@@ -824,7 +846,7 @@ public final class SimpleJdbcMapper {
 	 * @return the catalog name.
 	 */
 	public String getCatalogName() {
-<span class="fc" id="L827">		return simpleJdbcMapperSupport.getCatalogName();</span>
+<span class="fc" id="L849">		return simpleJdbcMapperSupport.getCatalogName();</span>
 	}
 
 	/**
@@ -834,7 +856,7 @@ public final class SimpleJdbcMapper {
 	 * @return fully qualified table name
 	 */
 	public String getFullyQualifiedTableName(Class&lt;?&gt; entityType) {
-<span class="fc" id="L837">		return simpleJdbcMapperSupport.getFullyQualifiedTableName(entityType);</span>
+<span class="fc" id="L859">		return simpleJdbcMapperSupport.getFullyQualifiedTableName(entityType);</span>
 	}
 
 	/**
@@ -844,14 +866,14 @@ public final class SimpleJdbcMapper {
 	 * context this method is invoked automatically.
 	 */
 	public void close() {
-<span class="fc" id="L847">		simpleJdbcMapperSupport = null;</span>
-<span class="fc" id="L848">		insertOperation = null;</span>
-<span class="fc" id="L849">		findOperation = null;</span>
-<span class="fc" id="L850">		updateOperation = null;</span>
-<span class="fc" id="L851">		deleteOperation = null;</span>
-<span class="fc" id="L852">		multiEntityExtractor = null;</span>
-<span class="fc" id="L853">		logger.info(&quot;SimpleJdbcMapper shutdown completed. {}&quot;, this);</span>
-<span class="fc" id="L854">	}</span>
+<span class="fc" id="L869">		simpleJdbcMapperSupport = null;</span>
+<span class="fc" id="L870">		insertOperation = null;</span>
+<span class="fc" id="L871">		findOperation = null;</span>
+<span class="fc" id="L872">		updateOperation = null;</span>
+<span class="fc" id="L873">		deleteOperation = null;</span>
+<span class="fc" id="L874">		multiEntityExtractor = null;</span>
+<span class="fc" id="L875">		logger.info(&quot;SimpleJdbcMapper shutdown completed. {}&quot;, this);</span>
+<span class="fc" id="L876">	}</span>
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main ef2f88520da4296ff52a8d311d463fdd6c303a67 2026-10-27T08:00:15</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 0f69f0eeaf0809b26291af392b0aa72792fdbf2f 2026-10-28T06:24:19</div></body></html>

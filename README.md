@@ -727,7 +727,7 @@ Uses the same logging configurations as Spring. In application.properties:
 
 1. @Id can only be mapped to a single database column.  Multi-column ids are not supported.
 2. No support for table/column names with spaces in them.
-3. Primitives not supported. Use the corresponding java wrapper classes in your mappings.
+3. Primitives not supported in mappings. Use the corresponding java wrapper classes in your mappings.
 
 Use JdbcTemplate/JdbcClient directly to handle these cases.
 

@@ -623,7 +623,7 @@ MySql:
 private byte[] image;
 
 @Column(sqlType = Types.LONGVARCHAR) // mapped to a 'text' database column type
-private String textData;
+private String clobData;
 	
 ```
 Oracle:

@@ -583,7 +583,7 @@ Entities: [Order](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdb
 
 ## BLOB CLOB mapping
 
--  Binary large object database columns should be mapped to java type **byte[]**.  
+-  Binary large object database columns should always be mapped to java type **byte[]**.  
 No other java type is supported. The 'sqlType' attribute of the @Column annotation with the following values are considered as Binary Large Objects by SimpleJdbcMapper:  
 Types.BLOB  
 Types.ARRAY  
@@ -592,7 +592,7 @@ Types.VARBINARY
 
 Use the pertinent SQL type for your database and database column type. 
 
--  Character large object database columns should be mapped to java type **String**. No other java types are supported.  
+-  Character large object database columns should always be mapped to java type **String**. No other java types are supported.  
 The 'sqlType' attribute of the @Column annotation with the following values are considered as Character Large Objects by SimpeJdbcMapper:  
 Types.CLOB  
 Types.NCLOB  
@@ -648,7 +648,7 @@ private String clobData;
 ```
 
 ## Enum mapping
-Enums should be mapped to a database column which stores strings. It uses the enum.name() to get the string value to store in the database and uses Spring's DefaultConverterService behind the scenes to convert the String back to the Enum when reading from database.
+Enums should always be mapped to a database column which stores strings. It uses the enum.name() to get the string value to store in the database and uses Spring's DefaultConverterService behind the scenes to convert the String back to the Enum when reading from database.
 
 ```
 public enum StatusEnum {

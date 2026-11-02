@@ -2,7 +2,7 @@
 
 A small library that simplifies Spring JdbcTemplate CRUD operations and relationship queries by making them less verbose.  
 
-Just by using three annotations @Table, @Id and @Column on the models used with JdbcTemplate, you get single line CRUD and an API to assemble relationships from your SQL queries. Since its a wrapper around JdbcTemplate, all the JdbcTemplate features are also available to you.
+Just by using three annotations @Table, @Id and @Column on the models used with JdbcTemplate, you get single line CRUD and an API to assemble relationships from your SQL queries. 
 
 **New Feature Alert:** [Relationships can be assembled from your  SQL queries.](#assembling-relationships-from-sql-queries) :sparkler:
 
@@ -32,7 +32,7 @@ Just by using three annotations @Table, @Id and @Column on the models used with 
 2. An API to assemble relationships from your SQL queries.
 3. Simple configuration similar to JdbcTemplate/JdbClient configuration.
 4. No need to write custom row mappers for your queries by using the library's EntityRowMapper.
-5. Manage your transactions using Spring as the library uses JdbcTemplate for database interaction.
+5. Manage your transactions using Spring as the library uses JdbcTemplate for all database interactions.
 6. To view the SQL use Spring logging (See [logging](#logging)).
 7. Tests are run against PostgreSQL, MySQL, Oracle, SQLServer. Should work with other databases.
 [![CI simplejdbcmapper](https://github.com/spring-jdbc-crud/simplejdbcmapper/actions/workflows/ci.yml/badge.svg?branch=main)](https://github.com/spring-jdbc-crud/simplejdbcmapper/actions/workflows/ci.yml)

@@ -648,7 +648,9 @@ private String clobData;
 ```
 
 ## Enum mapping
-Enums should always be mapped to a database column which stores strings. It uses the enum.name() to get the string value to store in the database and uses Spring's DefaultConverterService behind the scenes to convert the String back to the Enum when reading from database.
+Enums should always be mapped to a database column which stores strings. It uses the enum.name() to get the string value to store in the database and uses Spring's DefaultConverterService behind the scenes to convert the String back to the Enum when reading from database.  
+
+Note that it has a limitation; when binding an enum value to a "WHERE" clause in your custom queries you will need to provide the enum.name() value manually. 
 
 ```
 public enum StatusEnum {
@@ -685,7 +687,9 @@ There is no requirement that you have to use the underlying JdbcClient/JdbcTempl
 ## Custom converters
 An [AttributeConverter](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/io/github/simplejdbcmapper/core/AttributeConverter.html) transforms a Java type (T) into a database-compatible column representation (U) and back again.
 
-Note that it is the responsibility of the converter writer to specify the correct type for the corresponding column for use by the JDBC driver. The library is not expected to do such type conversion.
+It is the responsibility of the converter writer to specify the correct java type for the corresponding database column for use by the JDBC driver. 
+
+Note that it has a limitation; when binding a value to a "WHERE" clause in your queries, you will need to provide the converted value manually.  
 
 Configuration of the converter is done using the @Column annotation. Example
 

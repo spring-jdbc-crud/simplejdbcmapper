@@ -420,7 +420,7 @@ class Product {
 ## Assembling relationships from SQL queries
 An implementation of the relationship examples below and other features of the library are available in the [Demo Application](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdbcmapper). It has an embedded h2 database with tables populated. There is no configuration required and is simple to install and run.  
 
-No hidden queries are issued to assemble relationships. The only queries issued are the custom queries you have written.
+No hidden queries are issued to assemble relationships by the library.
 
 ### 1.ToMany relationship:
 - Order has many OrderLine

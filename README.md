@@ -563,11 +563,11 @@ Entities: [Order](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdb
   // Create the named parameter for NamedParameterJdbcTemplate
   MapSqlParameterSource param = new MapSqlParameterSource().addValue("orderIds", orderIds);
   
-  // Since its a named parameter query we need to use NamedParameterJdbcTemplate.
+  // Since its a named parameter query we need to use NamedParameterJdbcTemplate to execute the query. relationshipMapper holds query results
   RelationshipMapper relationshipMapper = sjm.getNamedParameterJdbcTemplate().query(sql, param, sjm.resultSetExtractor(multiEntity));
 
   // relationshipMapper has results of OrderLine and Product from query above.
-  // Add orders from the first query to the relationshipMapper so that we can assemble a relationship from it.
+  // Add orders list from the first query to the relationshipMapper so that we can assemble a relationship from it.
   relationshipMapper.addEntityResult(Order.class, orders, "id");
 
   // Define the toOne relationship between OrderLine and Product

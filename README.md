@@ -128,7 +128,7 @@ Just by using three annotations @Table, @Id and @Column on the models used with 
  JdbcTemplate jdbcTemplate = sjm.getJdbcTemplate();
  NamedParameterJdbcTemplate namedParameterJdbcTemplate = sjm.getNamedParameterJdbcTemplate();
  
- // See relationships section on how to asssemble relationships from your  queries.
+ // See relationships section on how to assemble relationships from your SQL queries.
  
  // Thats all folks. Happy coding!!!
  ```

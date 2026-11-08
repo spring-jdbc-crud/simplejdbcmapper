@@ -195,7 +195,7 @@ class PropertyMapping {
 		return resultSetProcessingType;
 	}
 
-	public void setResultSetType(ResultSetProcessingType resultSetProcessingType) {
+	public void setResultSetProcessingType(ResultSetProcessingType resultSetProcessingType) {
 		this.resultSetProcessingType = resultSetProcessingType;
 	}
 

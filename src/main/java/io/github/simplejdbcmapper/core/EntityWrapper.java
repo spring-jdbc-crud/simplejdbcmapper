@@ -13,8 +13,6 @@
  */
 package io.github.simplejdbcmapper.core;
 
-import org.springframework.core.convert.ConversionService;
-
 import io.github.simplejdbcmapper.exception.MapperException;
 
 /**
@@ -23,45 +21,34 @@ import io.github.simplejdbcmapper.exception.MapperException;
  * @author Antony Joseph
  */
 class EntityWrapper {
-	private Object object;
+	private Object entityObj;
 
-	public EntityWrapper(Object object) {
-		this.object = object;
+	public EntityWrapper(Object entityObj) {
+		this.entityObj = entityObj;
 	}
 
 	public Object getPropertyValue(PropertyMapping propMapping) {
 		try {
-			return propMapping.getReadMethod().invoke(object);
+			return propMapping.getReadMethod().invoke(entityObj);
 		} catch (Exception e) {
-			throw new MapperException(e.getMessage() + " error while trying to get value of "
-					+ object.getClass().getSimpleName() + "." + propMapping.getPropertyName(), e);
+			throw new MapperException(e);
 		}
 	}
 
 	public void setPropertyValue(PropertyMapping propMapping, Object val) {
-		setPropertyValue(propMapping, val, null);
-	}
-
-	public void setPropertyValue(PropertyMapping propMapping, Object val, ConversionService conversionService) {
 		try {
-			if (conversionService == null) {
-				propMapping.getWriteMethod().invoke(object, val);
-			} else {
-				propMapping.getWriteMethod().invoke(object,
-						conversionService.convert(val, propMapping.getPropertyType()));
-			}
+			propMapping.getWriteMethod().invoke(entityObj, val);
 		} catch (Exception e) {
-			throw new MapperException(
-					e.getMessage() + ". Invoking " + propMapping.getWriteMethod() + " with value " + val, e);
+			throw new MapperException(e);
 		}
 	}
 
 	public Class<?> getWrappedClass() {
-		return object.getClass();
+		return entityObj.getClass();
 	}
 
 	public Object getWrappedInstance() {
-		return object;
+		return entityObj;
 	}
 
 }

@@ -56,12 +56,6 @@
 			<artifactId>spring-boot-starter-jdbc</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		
-		<dependency>
-            <groupId>org.slf4j</groupId>
-            <artifactId>slf4j-api</artifactId>
-            <scope>provided</scope>
-        </dependency>
 
 		<!-- All dependencies below this line are for testing and deployment -->
 		<dependency>
@@ -188,29 +182,6 @@
                 </executions>
                 
             </plugin>
-            
-			<plugin>
-				<groupId>com.mycila</groupId>
-				<artifactId>license-maven-plugin</artifactId>
-				<version>4.3</version>
-				<configuration>
-					<properties>
-						<year>2025</year>
-					</properties>
-					<licenseSets>
-						<licenseSet>
-							<header>/opt/license/APACHE-2.txt</header>
-							<excludes>
-								<exclude>**/README</exclude>
-								<exclude>**/*.xml</exclude>
-								<exclude>**/*.yml</exclude>
-								<exclude>src/test/**</exclude>
-								<exclude>src/main/resources/**</exclude>
-							</excludes>
-						</licenseSet>
-					</licenseSets>
-				</configuration>
-			</plugin>
 
 			<plugin>
 				<groupId>org.springframework.boot</groupId>

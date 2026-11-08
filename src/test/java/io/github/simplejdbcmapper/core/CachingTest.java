@@ -17,7 +17,7 @@ import io.github.simplejdbcmapper.model.Employee;
 import io.github.simplejdbcmapper.model.Order;
 import io.github.simplejdbcmapper.model.Person;
 import io.github.simplejdbcmapper.model.Product;
-import io.github.simplejdbcmapper.model.ProductWithNoAuditFields;
+import io.github.simplejdbcmapper.model.ProductWithNoAuditAnnotationFields;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -120,7 +120,7 @@ class CachingTest {
 		SimpleCache<String, SqlAndParams> cache = uo.getUpdateSpecificPropertiesSqlCache();
 		cache.clear();
 
-		ProductWithNoAuditFields product = new ProductWithNoAuditFields();
+		ProductWithNoAuditAnnotationFields product = new ProductWithNoAuditAnnotationFields();
 		product.setId(811);
 		product.setName("p-811");
 		product.setCost(4.75);
@@ -141,14 +141,16 @@ class CachingTest {
 		sjm.updateSpecificProperties(product, "cost", "name");
 		assertEquals(3, cache.size());
 
+		// same properties but order is reversed should still successful from cache
+		sjm.updateSpecificProperties(product, "name", "cost");
+		assertEquals(3, cache.size());
+
 		product.setVersion(1);
 		sjm.updateSpecificProperties(product, "cost", "name", "version");
 		assertEquals(4, cache.size());
 
-		// larger than CACHEABLE_UPDATE_PROPERTIES_COUNT = 5, so no caching
-		product.setCreatedOn(LocalDateTime.now());
 		sjm.updateSpecificProperties(product, "cost", "name", "version", "createdOn", "createdBy", "updatedOn");
-		assertEquals(4, cache.size()); // no caching so count remains the same
+		assertEquals(5, cache.size());
 
 		sjm.delete(product);
 
@@ -264,10 +266,19 @@ class CachingTest {
 
 	@Test
 	void Cache_common_test() {
-		SimpleCache<String, String> cache = new SimpleCache<>();
-		cache.put("key", "value");
-		cache.remove("key");
-		assertEquals(0, cache.size());
+		// cache capacity 2
+		SimpleCache<String, String> cache = new SimpleCache<>(2);
+		cache.put("key1", "value1");
+		assertEquals(1, cache.size());
+
+		cache.put("key2", "value2");
+		assertEquals(2, cache.size());
+
+		cache.put("key3", "value3");
+		assertEquals(2, cache.size());
+
+		cache.remove("key1");
+		assertEquals(1, cache.size());
 
 	}
 

@@ -16,7 +16,7 @@ package io.github.simplejdbcmapper.core;
 import org.springframework.util.Assert;
 
 /**
- * @deprecated Instead, issue an SQL query with ORDER BY clause to retrieve the
+ * @deprecated Instead, issue an SQL query with ORDER BY clause and retrieve the
  *             data using JdbcTemplate and EntityRowMapper
  *             <p>
  *             This is used to generate the "ORDER BY" clause for the queries.

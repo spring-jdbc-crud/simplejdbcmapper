@@ -29,9 +29,10 @@ import org.springframework.util.StringUtils;
  * {@link io.github.simplejdbcmapper.core.SimpleJdbcMapper#resultSetExtractor}
  * 
  * <p>
- * You can build relationships from multiple individual related lists. For
- * example if you have a list of orders and another list of related orderLines
- * you can do something like:
+ * You can build relationships from multiple individual related lists. Note that
+ * the lists have to be unique by id (ie no duplicates). For example if you have
+ * a list of orders and another list of related orderLines you can do something
+ * like:
  * 
  * <pre>
  * RelationhipMapper relationshipMapper = new RelationshipMapper();
@@ -67,7 +68,7 @@ public class RelationshipMapper implements GetListSpec {
 	 * 
 	 * @param <T>            the type
 	 * @param entityType     the entity type
-	 * @param list           the list of results
+	 * @param list           the list of results with no duplicates (unique by id)
 	 * @param idPropertyName the id property name of the entity
 	 */
 	public <T> void addEntityResult(Class<T> entityType, List<T> list, String idPropertyName) {

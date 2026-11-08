@@ -15,7 +15,7 @@ import io.github.simplejdbcmapper.model.StatusEnum;
 @ExtendWith(SpringExtension.class)
 class ResultSetProcessingTypeTest {
 	@Test
-	void resultSetType_fromClass_Test() {
+	void resultSetProcessingType_fromClass_Test() {
 
 		assertEquals(ResultSetProcessingType.STRING,
 				ResultSetProcessingType.getResultSetProcessingType(String.class, false));

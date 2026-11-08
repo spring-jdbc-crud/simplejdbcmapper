@@ -14,8 +14,6 @@
 package io.github.simplejdbcmapper.core;
 
 import java.math.BigDecimal;
-import java.sql.Blob;
-import java.sql.Clob;
 
 /**
  * enum for switch statements in the EntityRowMapper so it can be compiled into
@@ -25,24 +23,20 @@ import java.sql.Clob;
  */
 enum ResultSetProcessingType {
 
-	UNKNOWN, BIGDECIMAL, BLOB, BOOLEAN, BYTEARRAY, BYTE, CLOB, DATE, DOUBLE, ENUM, FLOAT, INTEGER, LONG, NUMBER, SHORT,
-	STRING, TIMESTAMP, TIME, UTILDATE, CUSTOMCONVERTER;
+	UNKNOWN, BIGDECIMAL, BOOLEAN, BYTEARRAY, BYTE, DATE, DOUBLE, ENUM, FLOAT, INTEGER, LONG, NUMBER, SHORT, STRING,
+	TIMESTAMP, TIME, UTILDATE, CUSTOMCONVERTER;
 
 	public static ResultSetProcessingType getResultSetProcessingType(Class<?> type, boolean isAttributeWithConverter) {
 		if (isAttributeWithConverter) {
 			return CUSTOMCONVERTER;
 		} else if (BigDecimal.class == type) {
 			return BIGDECIMAL;
-		} else if (Blob.class == type) {
-			return BLOB;
 		} else if (Boolean.class == type) {
 			return BOOLEAN;
 		} else if (byte[].class == type) {
 			return BYTEARRAY;
 		} else if (Byte.class == type) {
 			return BYTE;
-		} else if (Clob.class == type) {
-			return CLOB;
 		} else if (java.sql.Date.class == type) {
 			return DATE;
 		} else if (Double.class == type) {

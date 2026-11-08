@@ -133,8 +133,7 @@ public final class EntityRowMapper<T> implements RowMapper<T> {
 		Object value;
 		// Explicitly extract typed value, as far as possible.
 		switch (propMapping.getResultSetProcessingType()) {
-		case ResultSetProcessingType.STRING:
-			return rs.getString(index);
+
 		case ResultSetProcessingType.BOOLEAN:
 			value = rs.getBoolean(index);
 			break;
@@ -159,6 +158,8 @@ public final class EntityRowMapper<T> implements RowMapper<T> {
 		case ResultSetProcessingType.NUMBER: // same as double
 			value = rs.getDouble(index);
 			break;
+		case ResultSetProcessingType.STRING:
+			return rs.getString(index);
 		case ResultSetProcessingType.BIGDECIMAL:
 			return rs.getBigDecimal(index);
 		case ResultSetProcessingType.DATE:
@@ -171,10 +172,6 @@ public final class EntityRowMapper<T> implements RowMapper<T> {
 			return rs.getTimestamp(index);
 		case ResultSetProcessingType.BYTEARRAY:
 			return rs.getBytes(index);
-		case ResultSetProcessingType.BLOB:
-			return rs.getBlob(index);
-		case ResultSetProcessingType.CLOB:
-			return rs.getClob(index);
 		case ResultSetProcessingType.ENUM:
 			return getEnumValue(rs, index, propMapping);
 		case ResultSetProcessingType.CUSTOMCONVERTER:

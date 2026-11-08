@@ -21,7 +21,6 @@ import io.github.simplejdbcmapper.model.Customer;
 import io.github.simplejdbcmapper.model.Order;
 import io.github.simplejdbcmapper.model.Person;
 import io.github.simplejdbcmapper.model.Product;
-import io.github.simplejdbcmapper.model.ProductWithNoAuditFields;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -193,10 +192,10 @@ class UpdateTest {
 		});
 		assertTrue(exception.getMessage().contains("No mapping found for property"));
 
-		exception = Assertions.assertThrows(MapperException.class, () -> {
+		exception = Assertions.assertThrows(Exception.class, () -> {
 			sjm.updateSpecificProperties(order, "status", null);
 		});
-		assertTrue(exception.getMessage().contains("No mapping found for property"));
+		assertTrue(exception.getMessage().contains("must not be null"));
 
 	}
 
@@ -240,25 +239,4 @@ class UpdateTest {
 
 	}
 
-	@Test
-	void updateSpecificProperties_propertiesCountLargerThanCacheableSize_success() {
-		ProductWithNoAuditFields product = new ProductWithNoAuditFields();
-		product.setId(801);
-		product.setName("p-801");
-		product.setCost(4.75);
-		sjm.insert(product);
-
-		// number of properties larger than CACHEABLE_UPDATE_PROPERTIES_COUNT. Just
-		// want to make sure it works.
-		product.setVersion(1);
-		product.setCreatedOn(LocalDateTime.now());
-		sjm.updateSpecificProperties(product, "cost", "name", "version", "createdOn");
-
-		ProductWithNoAuditFields productWithNoAuditFields = sjm.findById(ProductWithNoAuditFields.class,
-				product.getId());
-		assertEquals(1, productWithNoAuditFields.getVersion());
-		assertNotNull(productWithNoAuditFields.getCreatedOn());
-
-		sjm.delete(product);
-	}
 }

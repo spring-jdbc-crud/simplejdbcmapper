@@ -35,8 +35,6 @@ import io.github.simplejdbcmapper.exception.OptimisticLockingException;
 class UpdateOperation {
 	private static final String TABLE_MAPPING_MUST_NOT_BE_NULL = "tableMapping must not be null";
 
-	private static final int CACHEABLE_UPDATE_SPECIFIC_PROPERTIES_COUNT = 5;
-
 	private static final String INCREMENTED_VERSION = "[incrementedVersion]";
 
 	private final SimpleJdbcMapperSupport sjmSupport;
@@ -66,17 +64,18 @@ class UpdateOperation {
 	public Integer updateSpecificProperties(Object object, String... propertyNames) {
 		Assert.notNull(object, "object must not be null");
 		Assert.notNull(propertyNames, "propertyNames must not be null");
-		TableMapping tableMapping = sjmSupport.getTableMapping(object.getClass());
-		SqlAndParams sqlAndParams = null;
-		String cacheKey = getUpdateSpecificPropertiesCacheKey(object, propertyNames);
-		if (cacheKey != null) {
-			sqlAndParams = updateSpecificPropertiesSqlCache.get(cacheKey);
+		for (String propName : propertyNames) {
+			if (propName == null) {
+				throw new IllegalArgumentException("property name must not be null in argument array");
+			}
 		}
+		TableMapping tableMapping = sjmSupport.getTableMapping(object.getClass());
+
+		String cacheKey = getUpdateSpecificPropertiesCacheKey(object, propertyNames);
+		SqlAndParams sqlAndParams = updateSpecificPropertiesSqlCache.get(cacheKey);
 		if (sqlAndParams == null) {
 			sqlAndParams = buildSqlAndParamsForUpdateSpecificProperties(tableMapping, propertyNames);
-			if (cacheKey != null) {
-				updateSpecificPropertiesSqlCache.put(cacheKey, sqlAndParams);
-			}
+			updateSpecificPropertiesSqlCache.put(cacheKey, sqlAndParams);
 		}
 		EntityWrapper ew = new EntityWrapper(object);
 		return updateInternal(ew, sqlAndParams, tableMapping);
@@ -269,11 +268,8 @@ class UpdateOperation {
 	}
 
 	private String getUpdateSpecificPropertiesCacheKey(Object object, String[] propertyNames) {
-		if (propertyNames.length > CACHEABLE_UPDATE_SPECIFIC_PROPERTIES_COUNT) {
-			return null;
-		} else {
-			return object.getClass().getName() + "-" + String.join("-", propertyNames);
-		}
+		return object.getClass().getName() + "-"
+				+ String.join("-", Arrays.stream(propertyNames).sorted().toArray(String[]::new));
 	}
 
 }

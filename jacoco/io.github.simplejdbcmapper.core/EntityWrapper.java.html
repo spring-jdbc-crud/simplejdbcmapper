@@ -13,8 +13,6 @@
  */
 package io.github.simplejdbcmapper.core;
 
-import org.springframework.core.convert.ConversionService;
-
 import io.github.simplejdbcmapper.exception.MapperException;
 
 /**
@@ -23,46 +21,35 @@ import io.github.simplejdbcmapper.exception.MapperException;
  * @author Antony Joseph
  */
 class EntityWrapper {
-	private Object object;
+	private Object entityObj;
 
-<span class="fc" id="L28">	public EntityWrapper(Object object) {</span>
-<span class="fc" id="L29">		this.object = object;</span>
-<span class="fc" id="L30">	}</span>
+<span class="fc" id="L26">	public EntityWrapper(Object entityObj) {</span>
+<span class="fc" id="L27">		this.entityObj = entityObj;</span>
+<span class="fc" id="L28">	}</span>
 
 	public Object getPropertyValue(PropertyMapping propMapping) {
 		try {
-<span class="fc" id="L34">			return propMapping.getReadMethod().invoke(object);</span>
-<span class="nc" id="L35">		} catch (Exception e) {</span>
-<span class="nc" id="L36">			throw new MapperException(e.getMessage() + &quot; error while trying to get value of &quot;</span>
-<span class="nc" id="L37">					+ object.getClass().getSimpleName() + &quot;.&quot; + propMapping.getPropertyName(), e);</span>
+<span class="fc" id="L32">			return propMapping.getReadMethod().invoke(entityObj);</span>
+<span class="nc" id="L33">		} catch (Exception e) {</span>
+<span class="nc" id="L34">			throw new MapperException(e);</span>
 		}
 	}
 
 	public void setPropertyValue(PropertyMapping propMapping, Object val) {
-<span class="fc" id="L42">		setPropertyValue(propMapping, val, null);</span>
-<span class="fc" id="L43">	}</span>
-
-	public void setPropertyValue(PropertyMapping propMapping, Object val, ConversionService conversionService) {
 		try {
-<span class="fc bfc" id="L47" title="All 2 branches covered.">			if (conversionService == null) {</span>
-<span class="fc" id="L48">				propMapping.getWriteMethod().invoke(object, val);</span>
-			} else {
-<span class="fc" id="L50">				propMapping.getWriteMethod().invoke(object,</span>
-<span class="fc" id="L51">						conversionService.convert(val, propMapping.getPropertyType()));</span>
-			}
-<span class="fc" id="L53">		} catch (Exception e) {</span>
-<span class="fc" id="L54">			throw new MapperException(</span>
-<span class="fc" id="L55">					e.getMessage() + &quot;. Invoking &quot; + propMapping.getWriteMethod() + &quot; with value &quot; + val, e);</span>
-<span class="fc" id="L56">		}</span>
-<span class="fc" id="L57">	}</span>
+<span class="fc" id="L40">			propMapping.getWriteMethod().invoke(entityObj, val);</span>
+<span class="fc" id="L41">		} catch (Exception e) {</span>
+<span class="fc" id="L42">			throw new MapperException(e);</span>
+<span class="fc" id="L43">		}</span>
+<span class="fc" id="L44">	}</span>
 
 	public Class&lt;?&gt; getWrappedClass() {
-<span class="fc" id="L60">		return object.getClass();</span>
+<span class="fc" id="L47">		return entityObj.getClass();</span>
 	}
 
 	public Object getWrappedInstance() {
-<span class="nc" id="L64">		return object;</span>
+<span class="nc" id="L51">		return entityObj;</span>
 	}
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 8b97997da6d02f2892d97331b323ded323bb314d 2026-10-28T06:33:11</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 47bfd14344fe263ea4c3b590a25815326ad10712 2026-11-09T15:03:22</div></body></html>

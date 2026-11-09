@@ -40,7 +40,7 @@ class SimpleCache&lt;K, V&gt; {
 	}
 
 	public void put(K key, V value) {
-<span class="pc bpc" id="L43" title="1 of 4 branches missed.">		if (capacity == UNLIMITED || cache.size() &lt; capacity) {</span>
+<span class="fc bfc" id="L43" title="All 4 branches covered.">		if (capacity == UNLIMITED || cache.size() &lt; capacity) {</span>
 <span class="fc" id="L44">			cache.putIfAbsent(key, value);</span>
 		}
 <span class="fc" id="L46">	}</span>
@@ -58,4 +58,4 @@ class SimpleCache&lt;K, V&gt; {
 <span class="fc" id="L58">	}</span>
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 8b97997da6d02f2892d97331b323ded323bb314d 2026-10-28T06:33:11</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 47bfd14344fe263ea4c3b590a25815326ad10712 2026-11-09T15:03:22</div></body></html>

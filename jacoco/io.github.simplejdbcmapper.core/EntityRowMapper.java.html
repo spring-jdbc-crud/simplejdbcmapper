@@ -132,122 +132,119 @@ public final class EntityRowMapper&lt;T&gt; implements RowMapper&lt;T&gt; {
 	private Object getResultSetValue(ResultSet rs, int index, PropertyMapping propMapping) throws SQLException {
 		Object value;
 		// Explicitly extract typed value, as far as possible.
-<span class="pc bpc" id="L135" title="2 of 20 branches missed.">		switch (propMapping.getResultSetProcessingType()) {</span>
-		case ResultSetProcessingType.STRING:
-<span class="fc" id="L137">			return rs.getString(index);</span>
+<span class="fc bfc" id="L135" title="All 18 branches covered.">		switch (propMapping.getResultSetProcessingType()) {</span>
+
 		case ResultSetProcessingType.BOOLEAN:
-<span class="fc" id="L139">			value = rs.getBoolean(index);</span>
-<span class="fc" id="L140">			break;</span>
+<span class="fc" id="L138">			value = rs.getBoolean(index);</span>
+<span class="fc" id="L139">			break;</span>
 		case ResultSetProcessingType.BYTE:
-<span class="fc" id="L142">			value = rs.getByte(index);</span>
-<span class="fc" id="L143">			break;</span>
+<span class="fc" id="L141">			value = rs.getByte(index);</span>
+<span class="fc" id="L142">			break;</span>
 		case ResultSetProcessingType.SHORT:
-<span class="fc" id="L145">			value = rs.getShort(index);</span>
-<span class="fc" id="L146">			break;</span>
+<span class="fc" id="L144">			value = rs.getShort(index);</span>
+<span class="fc" id="L145">			break;</span>
 		case ResultSetProcessingType.INTEGER:
-<span class="fc" id="L148">			value = rs.getInt(index);</span>
-<span class="fc" id="L149">			break;</span>
+<span class="fc" id="L147">			value = rs.getInt(index);</span>
+<span class="fc" id="L148">			break;</span>
 		case ResultSetProcessingType.LONG:
-<span class="fc" id="L151">			value = rs.getLong(index);</span>
-<span class="fc" id="L152">			break;</span>
+<span class="fc" id="L150">			value = rs.getLong(index);</span>
+<span class="fc" id="L151">			break;</span>
 		case ResultSetProcessingType.FLOAT:
-<span class="fc" id="L154">			value = rs.getFloat(index);</span>
-<span class="fc" id="L155">			break;</span>
+<span class="fc" id="L153">			value = rs.getFloat(index);</span>
+<span class="fc" id="L154">			break;</span>
 		case ResultSetProcessingType.DOUBLE:
-<span class="fc" id="L157">			value = rs.getDouble(index);</span>
-<span class="fc" id="L158">			break;</span>
+<span class="fc" id="L156">			value = rs.getDouble(index);</span>
+<span class="fc" id="L157">			break;</span>
 		case ResultSetProcessingType.NUMBER: // same as double
-<span class="fc" id="L160">			value = rs.getDouble(index);</span>
-<span class="fc" id="L161">			break;</span>
+<span class="fc" id="L159">			value = rs.getDouble(index);</span>
+<span class="fc" id="L160">			break;</span>
+		case ResultSetProcessingType.STRING:
+<span class="fc" id="L162">			return rs.getString(index);</span>
 		case ResultSetProcessingType.BIGDECIMAL:
-<span class="fc" id="L163">			return rs.getBigDecimal(index);</span>
+<span class="fc" id="L164">			return rs.getBigDecimal(index);</span>
 		case ResultSetProcessingType.DATE:
-<span class="fc" id="L165">			return rs.getDate(index);</span>
+<span class="fc" id="L166">			return rs.getDate(index);</span>
 		case ResultSetProcessingType.TIME:
-<span class="fc" id="L167">			return rs.getTime(index);</span>
+<span class="fc" id="L168">			return rs.getTime(index);</span>
 		case ResultSetProcessingType.TIMESTAMP:
-<span class="fc" id="L169">			return rs.getTimestamp(index);</span>
+<span class="fc" id="L170">			return rs.getTimestamp(index);</span>
 		case ResultSetProcessingType.UTILDATE: // java.util.Date. same as timestamp
-<span class="fc" id="L171">			return rs.getTimestamp(index);</span>
+<span class="fc" id="L172">			return rs.getTimestamp(index);</span>
 		case ResultSetProcessingType.BYTEARRAY:
-<span class="fc" id="L173">			return rs.getBytes(index);</span>
-		case ResultSetProcessingType.BLOB:
-<span class="nc" id="L175">			return rs.getBlob(index);</span>
-		case ResultSetProcessingType.CLOB:
-<span class="nc" id="L177">			return rs.getClob(index);</span>
+<span class="fc" id="L174">			return rs.getBytes(index);</span>
 		case ResultSetProcessingType.ENUM:
-<span class="fc" id="L179">			return getEnumValue(rs, index, propMapping);</span>
+<span class="fc" id="L176">			return getEnumValue(rs, index, propMapping);</span>
 		case ResultSetProcessingType.CUSTOMCONVERTER:
-<span class="fc" id="L181">			return getCustomConvertedValue(rs, index, propMapping);</span>
+<span class="fc" id="L178">			return getCustomConvertedValue(rs, index, propMapping);</span>
 		default:
-<span class="fc" id="L183">			return getUnknownTypeValue(rs, index, propMapping);</span>
+<span class="fc" id="L180">			return getUnknownTypeValue(rs, index, propMapping);</span>
 		}
 		// Perform was-null check if necessary (for results that the JDBC driver returns
 		// as primitives).
-<span class="fc bfc" id="L187" title="All 2 branches covered.">		return (rs.wasNull() ? null : value);</span>
+<span class="fc bfc" id="L184" title="All 2 branches covered.">		return (rs.wasNull() ? null : value);</span>
 	}
 
 	private Object getEnumValue(ResultSet rs, int index, PropertyMapping propMapping) throws SQLException {
 		// Enums are represented as a String in simpleJdbcMapper.
-<span class="fc" id="L192">		Object val = rs.getObject(index);</span>
-<span class="fc bfc" id="L193" title="All 2 branches covered.">		if (val != null) {</span>
-<span class="pc bpc" id="L194" title="1 of 2 branches missed.">			if (val instanceof String) {</span>
-<span class="fc" id="L195">				return conversionService.convert(val, propMapping.getPropertyType());</span>
+<span class="fc" id="L189">		Object val = rs.getObject(index);</span>
+<span class="fc bfc" id="L190" title="All 2 branches covered.">		if (val != null) {</span>
+<span class="pc bpc" id="L191" title="1 of 2 branches missed.">			if (val instanceof String) {</span>
+<span class="fc" id="L192">				return conversionService.convert(val, propMapping.getPropertyType());</span>
 			} else {
 				// for example, on Postgres: getObject returns a PGObject, but we need a String
-<span class="nc" id="L198">				val = rs.getString(index);</span>
-<span class="nc" id="L199">				return conversionService.convert(val, propMapping.getPropertyType());</span>
+<span class="nc" id="L195">				val = rs.getString(index);</span>
+<span class="nc" id="L196">				return conversionService.convert(val, propMapping.getPropertyType());</span>
 			}
 		} else {
-<span class="fc" id="L202">			return null;</span>
+<span class="fc" id="L199">			return null;</span>
 		}
 	}
 
 	@SuppressWarnings(&quot;unchecked&quot;)
 	private Object getCustomConvertedValue(ResultSet rs, int index, PropertyMapping propMapping) throws SQLException {
-<span class="fc" id="L208">		Object val = rs.getObject(index);</span>
-<span class="fc bfc" id="L209" title="All 2 branches covered.">		return val == null ? null : propMapping.getConverter().convertToEntityAttribute(val);</span>
+<span class="fc" id="L205">		Object val = rs.getObject(index);</span>
+<span class="fc bfc" id="L206" title="All 2 branches covered.">		return val == null ? null : propMapping.getConverter().convertToEntityAttribute(val);</span>
 	}
 
 	private Object getUnknownTypeValue(ResultSet rs, int index, PropertyMapping propMapping) throws SQLException {
 		// Some unknown type desired -&gt; rely on getObject.
 		try {
-<span class="fc" id="L215">			return rs.getObject(index, propMapping.getPropertyType());</span>
-<span class="nc" id="L216">		} catch (SQLFeatureNotSupportedException | AbstractMethodError ex) {</span>
-<span class="nc bnc" id="L217" title="All 2 branches missed.">			if (logger.isDebugEnabled()) {</span>
-<span class="nc" id="L218">				logger.debug(&quot;JDBC driver does not support JDBC 4.1 'getObject(int, Class)' method&quot;, ex);</span>
+<span class="fc" id="L212">			return rs.getObject(index, propMapping.getPropertyType());</span>
+<span class="nc" id="L213">		} catch (SQLFeatureNotSupportedException | AbstractMethodError ex) {</span>
+<span class="nc bnc" id="L214" title="All 2 branches missed.">			if (logger.isDebugEnabled()) {</span>
+<span class="nc" id="L215">				logger.debug(&quot;JDBC driver does not support JDBC 4.1 'getObject(int, Class)' method&quot;, ex);</span>
 			}
-<span class="fc" id="L220">		} catch (SQLException ex) {</span>
-<span class="pc bpc" id="L221" title="1 of 2 branches missed.">			if (logger.isDebugEnabled()) {</span>
-<span class="fc" id="L222">				logger.debug(&quot;JDBC driver has limited support for 'getObject(int, Class)' with column type: &quot;</span>
-<span class="fc" id="L223">						+ propMapping.getPropertyType().getName(), ex);</span>
+<span class="fc" id="L217">		} catch (SQLException ex) {</span>
+<span class="pc bpc" id="L218" title="1 of 2 branches missed.">			if (logger.isDebugEnabled()) {</span>
+<span class="fc" id="L219">				logger.debug(&quot;JDBC driver has limited support for 'getObject(int, Class)' with column type: &quot;</span>
+<span class="fc" id="L220">						+ propMapping.getPropertyType().getName(), ex);</span>
 			}
-<span class="nc" id="L225">		}</span>
+<span class="nc" id="L222">		}</span>
 		// Corresponding SQL types for JSR-310, Will use conversionService to convert
-<span class="fc" id="L227">		String typeName = propMapping.getPropertyType().getSimpleName();</span>
-<span class="fc" id="L228">		Object val = null;</span>
-<span class="pc bpc" id="L229" title="3 of 4 branches missed.">		switch (typeName) {</span>
+<span class="fc" id="L224">		String typeName = propMapping.getPropertyType().getSimpleName();</span>
+<span class="fc" id="L225">		Object val = null;</span>
+<span class="pc bpc" id="L226" title="3 of 4 branches missed.">		switch (typeName) {</span>
 		case &quot;LocalDate&quot;:
-<span class="nc" id="L231">			val = rs.getDate(index);</span>
-<span class="nc" id="L232">			break;</span>
+<span class="nc" id="L228">			val = rs.getDate(index);</span>
+<span class="nc" id="L229">			break;</span>
 		case &quot;LocalTime&quot;:
-<span class="nc" id="L234">			val = rs.getTime(index);</span>
-<span class="nc" id="L235">			break;</span>
+<span class="nc" id="L231">			val = rs.getTime(index);</span>
+<span class="nc" id="L232">			break;</span>
 		case &quot;LocalDateTime&quot;:
-<span class="nc" id="L237">			val = rs.getTimestamp(index);</span>
-<span class="nc" id="L238">			break;</span>
+<span class="nc" id="L234">			val = rs.getTimestamp(index);</span>
+<span class="nc" id="L235">			break;</span>
 		// Fall back to getObject without type specification.
 		default:
-<span class="fc" id="L241">			val = JdbcUtils.getResultSetValue(rs, index);</span>
+<span class="fc" id="L238">			val = JdbcUtils.getResultSetValue(rs, index);</span>
 		}
 		// Use conversionService to convert.
-<span class="nc bnc" id="L244" title="All 2 branches missed.">		return val == null ? null : conversionService.convert(val, propMapping.getPropertyType());</span>
+<span class="nc bnc" id="L241" title="All 2 branches missed.">		return val == null ? null : conversionService.convert(val, propMapping.getPropertyType());</span>
 	}
 
 	@Override
 	public String toString() {
-<span class="fc" id="L249">		return mappedObjConstructor.getName() + &quot; startIndex: &quot; + startIndex + &quot; endIndex: &quot; + endIndex;</span>
+<span class="fc" id="L246">		return mappedObjConstructor.getName() + &quot; startIndex: &quot; + startIndex + &quot; endIndex: &quot; + endIndex;</span>
 	}
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 8b97997da6d02f2892d97331b323ded323bb314d 2026-10-28T06:33:11</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 47bfd14344fe263ea4c3b590a25815326ad10712 2026-11-09T15:03:22</div></body></html>

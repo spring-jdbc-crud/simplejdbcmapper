@@ -93,7 +93,7 @@ class TableMappingProvider {
 <span class="fc" id="L93">		List&lt;PropertyMapping&gt; propertyMappings = new ArrayList&lt;&gt;(propNameToPropertyMapping.values());</span>
 <span class="fc" id="L94">		ap.validateAnnotations(propertyMappings, entityType);</span>
 <span class="fc" id="L95">		assignReflectionReadWriteMethods(entityType, propertyMappings);</span>
-<span class="fc" id="L96">		assignResultSetTypes(propertyMappings);</span>
+<span class="fc" id="L96">		assignResultSetProcessingType(propertyMappings);</span>
 <span class="fc" id="L97">		return propertyMappings;</span>
 	}
 
@@ -138,11 +138,11 @@ class TableMappingProvider {
 <span class="fc" id="L138">		}</span>
 <span class="fc" id="L139">	}</span>
 
-	private void assignResultSetTypes(List&lt;PropertyMapping&gt; propertyMappings) {
+	private void assignResultSetProcessingType(List&lt;PropertyMapping&gt; propertyMappings) {
 <span class="fc bfc" id="L142" title="All 2 branches covered.">		for (PropertyMapping propMapping : propertyMappings) {</span>
 <span class="fc" id="L143">			ResultSetProcessingType rsType = ResultSetProcessingType.getResultSetProcessingType(propMapping.getPropertyType(),</span>
 <span class="fc" id="L144">					propMapping.isWithConverterAttribute());</span>
-<span class="fc" id="L145">			propMapping.setResultSetType(rsType);</span>
+<span class="fc" id="L145">			propMapping.setResultSetProcessingType(rsType);</span>
 <span class="fc" id="L146">		}</span>
 <span class="fc" id="L147">	}</span>
 
@@ -175,4 +175,4 @@ class TableMappingProvider {
 <span class="fc bfc" id="L175" title="All 2 branches covered.">		return StringUtils.hasText(tableAnnotation.schema()) ? tableAnnotation.schema() : schemaName;</span>
 	}
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 8b97997da6d02f2892d97331b323ded323bb314d 2026-10-28T06:33:11</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 47bfd14344fe263ea4c3b590a25815326ad10712 2026-11-09T15:03:22</div></body></html>

@@ -15,8 +15,9 @@
 	<version>2.5.1</version>
 	<name>simplejdbcmapper</name>
 	<description>
-      A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations by making them less verbose.
-    </description>
+		A library that simplifies Spring JdbcTemplate/JdbcClient CRUD operations
+		by making them less verbose.
+	</description>
 	<packaging>jar</packaging>
 
 	<properties>
@@ -40,16 +41,18 @@
 	</developers>
 
 	<scm>
-		<connection>scm:git:git://github.com/spring-jdbc-crud/simplejdbcmapper.git</connection>
-		<developerConnection>scm:git:git@github.com:spring-jdbc-crud/simplejdbcmapper.git</developerConnection>
+		<connection>
+			scm:git:git://github.com/spring-jdbc-crud/simplejdbcmapper.git</connection>
+		<developerConnection>
+			scm:git:git@github.com:spring-jdbc-crud/simplejdbcmapper.git</developerConnection>
 		<url>https://github.com/spring-jdbc-crud/simplejdbcmapper</url>
 	</scm>
-	
+
 	<issueManagement>
-        <system>github</system>
-        <url>https://github.com/spring-jdbc-crud/simplejdbcmapper/issues</url>
-    </issueManagement>
-	
+		<system>github</system>
+		<url>https://github.com/spring-jdbc-crud/simplejdbcmapper/issues</url>
+	</issueManagement>
+
 	<dependencies>
 		<dependency>
 			<groupId>org.springframework.boot</groupId>
@@ -101,7 +104,7 @@
 		</dependency>
 
 		<dependency>
-            <groupId>org.springframework.boot</groupId>
+			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-flyway</artifactId>
 			<scope>test</scope>
 		</dependency>
@@ -129,65 +132,65 @@
 			<artifactId>flyway-sqlserver</artifactId>
 			<scope>test</scope>
 		</dependency>
-		
+
 		<dependency>
-		    <groupId>org.jacoco</groupId>
-		    <artifactId>org.jacoco.cli</artifactId>
-		    <version>0.8.14</version>
-	  </dependency>
-   </dependencies>
+			<groupId>org.jacoco</groupId>
+			<artifactId>org.jacoco.cli</artifactId>
+			<version>0.8.14</version>
+		</dependency>
+	</dependencies>
 
 	<build>
 		<plugins>
-		    <plugin>
-                <groupId>org.jacoco</groupId>
-                <artifactId>jacoco-maven-plugin</artifactId>
-                <version>0.8.14</version>
-                       
-                <configuration>
-			        <fileSets>
-			          <fileSet>
-			            <directory>${project.basedir}</directory>
-			            <includes>
-			              <include>*.exec</include>
-			            </includes>
-			          </fileSet>
-			        </fileSets>
-			        
-                <footer>${jacoco.footer}</footer>
-                </configuration>
-                
-                <executions>
-                    <execution>
-                        <goals>
-                            <goal>prepare-agent</goal>
-                        </goals>
-                    </execution>
-                    
-                    <execution>
-                        <id>report</id>
-                        <phase>test</phase>
-                        <goals>
-                            <goal>report</goal>
-                        </goals>
-                    </execution>
-                    
-                    <execution>
-				        <id>merge-results</id>
-				        <phase>verify</phase>
-				        <goals>
-				            <goal>merge</goal>
-				        </goals>    
-                    </execution>
-                </executions>
-                
-            </plugin>
+			<plugin>
+				<groupId>org.jacoco</groupId>
+				<artifactId>jacoco-maven-plugin</artifactId>
+				<version>0.8.14</version>
+
+				<configuration>
+					<fileSets>
+						<fileSet>
+							<directory>${project.basedir}</directory>
+							<includes>
+								<include>*.exec</include>
+							</includes>
+						</fileSet>
+					</fileSets>
+
+					<footer>${jacoco.footer}</footer>
+				</configuration>
+
+				<executions>
+					<execution>
+						<goals>
+							<goal>prepare-agent</goal>
+						</goals>
+					</execution>
+
+					<execution>
+						<id>report</id>
+						<phase>test</phase>
+						<goals>
+							<goal>report</goal>
+						</goals>
+					</execution>
+
+					<execution>
+						<id>merge-results</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>merge</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
 
 			<plugin>
 				<groupId>org.springframework.boot</groupId>
 				<artifactId>spring-boot-maven-plugin</artifactId>
 				<configuration>
-					<!-- Need this to prevent plugin from erroring out on 'No main class 
+					<!-- Need this to prevent plugin from erroring out on 'No
+					main class 
 						found' on repackaging -->
 					<skip>true</skip>
 					<classifier>test</classifier>
@@ -198,7 +201,8 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-jar-plugin</artifactId>
 				<configuration>
-					<!-- need this to prevent the plugin from creating the unwanted '/maven' 
+					<!-- need this to prevent the plugin from creating the
+					unwanted '/maven' 
 						dir in META-INF -->
 					<archive>
 						<addMavenDescriptor>false</addMavenDescriptor>
@@ -218,7 +222,8 @@
 					</execution>
 				</executions>
 				<configuration>
-					<!-- need this to prevent the plugin from creating the unwanted '/maven' 
+					<!-- need this to prevent the plugin from creating the
+					unwanted '/maven' 
 						dir in META-INF -->
 					<archive>
 						<addMavenDescriptor>false</addMavenDescriptor>
@@ -238,7 +243,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			
+
 			<!-- Maven central publishing entries -->
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
@@ -273,7 +278,6 @@
 					<autoPublish>true</autoPublish>
 				</configuration>
 			</plugin>
-
 		</plugins>
 	</build>
 

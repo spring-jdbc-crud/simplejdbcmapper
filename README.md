@@ -109,11 +109,8 @@ Just by using three annotations @Table, @Id and @Column on the models used with 
  // delete by id
  sjm.deleteById(Product.class, 5);
  
- /*
-  To retrieve mapped objects ALWAYS use getSqlColumns() to get the columns for the sql 
-  to work with EntityRowMapper (see its javadoc). Note in this case the 'name' property is mapped to the 'product_name' column.
- */
- // Using java text blocks makes query more readable
+ // ALWAYS use getSqlColumns() to get the columns for SELECT to work with EntityRowMapper (see its javadoc). 
+ // Using java text blocks makes query more readable.
  String sql = """
         SELECT %s
         FROM product 

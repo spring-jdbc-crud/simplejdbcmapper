@@ -109,6 +109,7 @@ Just by using three annotations @Table, @Id and @Column on the models used with 
  // delete by id
  sjm.deleteById(Product.class, 5);
  
+ // Custom query:
  // ALWAYS use getSqlColumns() to get the columns for SELECT to work with EntityRowMapper (see its javadoc). 
  // Using java text blocks makes query more readable.
  String sql = """

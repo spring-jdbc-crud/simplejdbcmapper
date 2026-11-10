@@ -110,7 +110,7 @@ Just by using three annotations @Table, @Id and @Column on the models used with 
  sjm.deleteById(Product.class, 5);
  
  /*
-  To retrieve mapped objects use getSqlColumns() to get the columns for the sql 
+  To retrieve mapped objects ALWAYS use getSqlColumns() to get the columns for the sql 
   to work with EntityRowMapper (see its javadoc). Note in this case the 'name' property is mapped to the 'product_name' column.
  */
  // Using java text blocks makes query more readable
@@ -430,7 +430,7 @@ No hidden queries are issued to assemble relationships by the library.
   */
   MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol");
   
-  // Get the columns for your 'SELECT' using getSqlColumns().
+  // ALWAYS use getSqlColumns() to get the columns for your 'SELECT'.
   // Using java text blocks makes the queries more readable.
   String sql = """
       SELECT %s
@@ -467,7 +467,7 @@ Entities: [Order](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdb
   // Define the multiple mapped entities you want to select. Make sure the table aliases match that in query.
   MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol").add(Product.class,"p");
   
-   // Get the columns for your 'SELECT' using getSqlColumns()
+   // ALWAYS use getSqlColumns() to get the columns for your 'SELECT'.
   String sql = """
       SELECT %s
       FROM orders o
@@ -500,7 +500,7 @@ Entities: [Order](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdb
   // needs to be selected also.
   MultiEntity multiEntity = new MultiEntity().add(Employee.class, "emp").add(EmployeeSkill.class, "es").add(Skill.class, "s");
   
-   // Get the columns for your 'SELECT' using getSqlColumns()
+  // ALWAYS use getSqlColumns() to get the columns for your 'SELECT'.
   String sql = """
       SELECT %s
       FROM employee emp

@@ -126,14 +126,15 @@ public final class EntityRowMapper<T> implements RowMapper<T> {
 	 * JdbcUtil.getResultSetValue() logic has been proven over the years, retaining
 	 * its logic but changed the structure to use 'switch' statement with enums
 	 * instead of the bunch of if/else's for performance reasons. As was the goal,
-	 * java compiled the switch statement into a 'tableswitch' which means the
+	 * java compiled the switch statement into a 'tableswitch', which means the
 	 * program will jump directly to the correct 'case' block in one step.
+	 * 
+	 * Also this method is eligible for jit 'inline (hot)' by making its size less
+	 * than 325 bytes
 	 */
 	private Object getResultSetValue(ResultSet rs, int index, PropertyMapping propMapping) throws SQLException {
 		Object value;
-		// Explicitly extract typed value, as far as possible.
 		switch (propMapping.getResultSetProcessingType()) {
-
 		case ResultSetProcessingType.BOOLEAN:
 			value = rs.getBoolean(index);
 			break;

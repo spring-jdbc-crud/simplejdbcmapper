@@ -141,14 +141,13 @@ public class RelationshipMapper implements GetListSpec {
 	}
 
 	private void validateAssemble(Relationship... relationships) {
-		Assert.notNull(relationships, "relationships must not be null");
 		if (relationships.length == 0) {
 			throw new IllegalArgumentException("relationships array must not be empty.");
 		}
 		Set<String> set = new HashSet<>();
 		for (Relationship rel : relationships) {
 			if (rel == null) {
-				throw new IllegalArgumentException("relationship must not be null");
+				throw new IllegalArgumentException("relationship must not be null in argument array. " + relationships);
 			}
 			if (!set.add(rel.getMainType().getName() + "-" + rel.getRelatedType().getName())) {
 				throw new IllegalArgumentException("Duplicate relationship. " + rel);

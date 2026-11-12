@@ -63,10 +63,13 @@ class UpdateOperation {
 
 	public Integer updateSpecificProperties(Object object, String... propertyNames) {
 		Assert.notNull(object, "object must not be null");
-		Assert.notNull(propertyNames, "propertyNames must not be null");
+		if (propertyNames.length == 0) {
+			throw new IllegalArgumentException("propertyNames array must not be empty.");
+		}
 		for (String propName : propertyNames) {
 			if (propName == null) {
-				throw new IllegalArgumentException("property name must not be null in argument array");
+				throw new IllegalArgumentException(
+						"property name must not be null in argument array. " + propertyNames);
 			}
 		}
 		TableMapping tableMapping = sjmSupport.getTableMapping(object.getClass());

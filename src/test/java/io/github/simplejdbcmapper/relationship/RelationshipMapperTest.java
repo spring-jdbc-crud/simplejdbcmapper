@@ -129,9 +129,9 @@ class RelationshipMapperTest {
 		assertTrue(exception.getMessage().contains("relationships array must not be empty"));
 
 		exception = Assertions.assertThrows(Exception.class, () -> {
-			relMapper.assemble((Relationship[]) null);
+			relMapper.assemble(orderLineToOneProduct, null);
 		});
-		assertTrue(exception.getMessage().contains("relationships must not be null"));
+		assertTrue(exception.getMessage().contains("relationship must not be null in argument array"));
 
 		exception = Assertions.assertThrows(Exception.class, () -> {
 			relMapper.assemble(orderLineToOneProduct, orderLineToOneProduct);

@@ -200,6 +200,21 @@ class UpdateTest {
 	}
 
 	@Test
+	void updateSpecificProperties_emptyAndNull_failure() {
+		Order order = sjm.findById(Order.class, 1);
+		Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			sjm.updateSpecificProperties(order);
+		});
+		assertTrue(exception.getMessage().contains("propertyNames array must not be empty"));
+
+		exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			sjm.updateSpecificProperties(order, "status", null);
+		});
+		assertTrue(exception.getMessage().contains("property name must not be null in argument array"));
+
+	}
+
+	@Test
 	void updateSpecificProperties_success() throws Exception {
 		Customer customer = sjm.findById(Customer.class, 4);
 

@@ -70,7 +70,7 @@ class AnnotationTest {
 		Exception exception = Assertions.assertThrows(AnnotationException.class, () -> {
 			sjm.findById(BlankTableObject.class, 1);
 		});
-		assertTrue(exception.getMessage().contains("@Table annotation has a blank name"));
+		assertTrue(exception.getMessage().contains("@Table annotation: table name should not be blank."));
 	}
 
 	@Test
@@ -78,12 +78,12 @@ class AnnotationTest {
 		Exception exception = Assertions.assertThrows(AnnotationException.class, () -> {
 			sjm.findById(WhitespaceTableObject.class, 1);
 		});
-		assertTrue(exception.getMessage().contains("@Table annotation whitespace in table names not supported"));
+		assertTrue(exception.getMessage().contains("@Table annotation: no support for table names with spaces"));
 	}
 
 	@Test
 	void blankColumnName_Test() {
-		Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
+		Exception exception = Assertions.assertThrows(AnnotationException.class, () -> {
 			sjm.findById(BlankColumnObject.class, 1);
 		});
 		assertTrue(exception.getMessage().contains("@Column annotation: column name should not be blank"));
@@ -91,7 +91,7 @@ class AnnotationTest {
 
 	@Test
 	void whitespaceColumnName_Test() {
-		Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
+		Exception exception = Assertions.assertThrows(AnnotationException.class, () -> {
 			sjm.findById(WhitespaceColumnObject.class, 1);
 		});
 		assertTrue(exception.getMessage().contains("@Column annotation: no support for column names with spaces"));

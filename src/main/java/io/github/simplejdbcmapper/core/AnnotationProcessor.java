@@ -131,22 +131,21 @@ class AnnotationProcessor {
 		}
 		if (!StringUtils.hasText(tableAnnotation.name())) {
 			throw new AnnotationException(
-					"For " + entityType.getSimpleName() + " the @Table annotation has a blank name");
+					entityType.getSimpleName() + " - @Table annotation: table name should not be blank.");
 		}
 		if (StringUtils.containsWhitespace(tableAnnotation.name())) {
-			throw new AnnotationException("For " + entityType.getSimpleName()
-					+ " the @Table annotation whitespace in table names not supported. Entity: "
-					+ entityType.getName());
+			throw new AnnotationException(
+					entityType.getSimpleName() + " - @Table annotation: no support for table names with spaces.");
 		}
 	}
 
 	private void validateColumnName(String colName, String propertyName) {
 		if (!StringUtils.hasText(colName)) {
-			throw new IllegalArgumentException(
+			throw new AnnotationException(
 					"@Column annotation: column name should not be blank. property: " + propertyName);
 		}
 		if (StringUtils.containsWhitespace(colName)) {
-			throw new IllegalArgumentException(
+			throw new AnnotationException(
 					"@Column annotation: no support for column names with spaces. property: " + propertyName);
 		}
 	}

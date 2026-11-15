@@ -56,6 +56,7 @@ class AnnotationProcessor {
 			if ("[DEFAULT]".equals(colName)) {
 				colName = InternalUtils.toUnderscoreName(propertyName);
 			}
+			validateColumnName(colName, propertyName);
 			Integer sqlType = InternalUtils.javaTypeToSqlParameterType(field.getType());
 			if (colAnnotation.sqlType() != Integer.MIN_VALUE) {
 				// sqlType has been configured in @Column
@@ -134,7 +135,19 @@ class AnnotationProcessor {
 		}
 		if (StringUtils.containsWhitespace(tableAnnotation.name())) {
 			throw new AnnotationException("For " + entityType.getSimpleName()
-					+ " the @Table annotation whitespace in table names not supported.");
+					+ " the @Table annotation whitespace in table names not supported. Entity: "
+					+ entityType.getName());
+		}
+	}
+
+	private void validateColumnName(String colName, String propertyName) {
+		if (!StringUtils.hasText(colName)) {
+			throw new IllegalArgumentException(
+					"@Column annotation: column name should not be blank. property: " + propertyName);
+		}
+		if (StringUtils.containsWhitespace(colName)) {
+			throw new IllegalArgumentException(
+					"@Column annotation: no support for column names with spaces. property: " + propertyName);
 		}
 	}
 

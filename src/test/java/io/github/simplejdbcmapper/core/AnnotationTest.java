@@ -14,6 +14,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 import io.github.simplejdbcmapper.exception.AnnotationException;
+import io.github.simplejdbcmapper.model.BlankColumnObject;
 import io.github.simplejdbcmapper.model.BlankTableObject;
 import io.github.simplejdbcmapper.model.BlobType;
 import io.github.simplejdbcmapper.model.ClobType;
@@ -36,6 +37,7 @@ import io.github.simplejdbcmapper.model.PersonWithColumnPrimitive;
 import io.github.simplejdbcmapper.model.PersonWithOtherPrimitive;
 import io.github.simplejdbcmapper.model.PersonWithPrimitiveId;
 import io.github.simplejdbcmapper.model.TypeCheckPostgres;
+import io.github.simplejdbcmapper.model.WhitespaceColumnObject;
 import io.github.simplejdbcmapper.model.WhitespaceTableObject;
 
 @SpringBootTest
@@ -77,6 +79,22 @@ class AnnotationTest {
 			sjm.findById(WhitespaceTableObject.class, 1);
 		});
 		assertTrue(exception.getMessage().contains("@Table annotation whitespace in table names not supported"));
+	}
+
+	@Test
+	void blankColumnName_Test() {
+		Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			sjm.findById(BlankColumnObject.class, 1);
+		});
+		assertTrue(exception.getMessage().contains("@Column annotation: column name should not be blank"));
+	}
+
+	@Test
+	void whitespaceColumnName_Test() {
+		Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			sjm.findById(WhitespaceColumnObject.class, 1);
+		});
+		assertTrue(exception.getMessage().contains("@Column annotation: no support for column names with spaces"));
 	}
 
 	@Test

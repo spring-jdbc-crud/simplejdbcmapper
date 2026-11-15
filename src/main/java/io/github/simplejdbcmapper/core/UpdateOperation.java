@@ -269,7 +269,7 @@ class UpdateOperation {
 						+ "." + propertyName + " cannot be updated using updateSpecificProperties() method.");
 			}
 			if (!set.add(propertyName)) {
-				throw new IllegalArgumentException("duplicate property name in argument array: " + propertyName);
+				throw new IllegalArgumentException("duplicate property name in argument array: " + propertyNames);
 			}
 		}
 	}

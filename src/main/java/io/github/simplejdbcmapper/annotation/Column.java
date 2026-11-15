@@ -18,6 +18,8 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
+import org.springframework.jdbc.support.JdbcUtils;
+
 /**
  * Properties that need be persisted to the database will need this annotation
  * unless the property is already annotated with one of the other annotations.
@@ -31,7 +33,7 @@ public @interface Column {
 	String name() default "[DEFAULT]";
 
 	/** column sqlType */
-	int sqlType() default Integer.MIN_VALUE;
+	int sqlType() default JdbcUtils.TYPE_UNKNOWN;
 
 	/** custom converter **/
 	Class<?> converter() default Object.class;

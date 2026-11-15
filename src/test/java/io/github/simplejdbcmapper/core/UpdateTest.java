@@ -152,32 +152,32 @@ class UpdateTest {
 	void updateSpecificProperties_IdAndAutoAssign_failure() {
 		Order order = sjm.findById(Order.class, 1);
 
-		Exception exception = Assertions.assertThrows(MapperException.class, () -> {
+		Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
 			sjm.updateSpecificProperties(order, "id");
 		});
 		assertTrue(exception.getMessage().contains("cannot be updated"));
 
-		exception = Assertions.assertThrows(MapperException.class, () -> {
+		exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
 			sjm.updateSpecificProperties(order, "createdOn"); // @CreatedOn auto assign
 		});
 		assertTrue(exception.getMessage().contains("cannot be updated using updateSpecificProperties"));
 
-		exception = Assertions.assertThrows(MapperException.class, () -> {
+		exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
 			sjm.updateSpecificProperties(order, "createdBy"); // @CreatedBy auto assign
 		});
 		assertTrue(exception.getMessage().contains("cannot be updated using updateSpecificProperties"));
 
-		exception = Assertions.assertThrows(MapperException.class, () -> {
+		exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
 			sjm.updateSpecificProperties(order, "updatedOn"); // @UpdatedOn auto assign
 		});
 		assertTrue(exception.getMessage().contains("cannot be updated using updateSpecificProperties"));
 
-		exception = Assertions.assertThrows(MapperException.class, () -> {
+		exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
 			sjm.updateSpecificProperties(order, "updatedBy"); // @UpdatedBy auto assign
 		});
 		assertTrue(exception.getMessage().contains("cannot be updated using updateSpecificProperties"));
 
-		exception = Assertions.assertThrows(MapperException.class, () -> {
+		exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
 			sjm.updateSpecificProperties(order, "version"); // @Version auto assign
 		});
 		assertTrue(exception.getMessage().contains("cannot be updated using updateSpecificProperties"));
@@ -187,7 +187,7 @@ class UpdateTest {
 	@Test
 	void updateSpecificProperties_invalidProperty_failure() {
 		Order order = sjm.findById(Order.class, 1);
-		Exception exception = Assertions.assertThrows(MapperException.class, () -> {
+		Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
 			sjm.updateSpecificProperties(order, "xyz");
 		});
 		assertTrue(exception.getMessage().contains("No mapping found for property"));
@@ -211,6 +211,17 @@ class UpdateTest {
 			sjm.updateSpecificProperties(order, "status", null);
 		});
 		assertTrue(exception.getMessage().contains("property name must not be null in argument array"));
+
+	}
+
+	@Test
+	void updateSpecificProperties_duplicateProperty_failure() {
+		Order order = sjm.findById(Order.class, 1);
+
+		Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
+			sjm.updateSpecificProperties(order, "status", "status");
+		});
+		assertTrue(exception.getMessage().contains("duplicate property name in argument array"));
 
 	}
 

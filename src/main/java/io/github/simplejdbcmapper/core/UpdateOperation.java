@@ -251,21 +251,25 @@ class UpdateOperation {
 	}
 
 	private void validateUpdateSpecificProperties(TableMapping tableMapping, String... propertyNames) {
+		Set<String> set = new HashSet<>();
 		for (String propertyName : propertyNames) {
 			PropertyMapping propertyMapping = tableMapping.getPropertyMappingByPropertyName(propertyName);
 			if (propertyMapping == null) {
-				throw new MapperException("No mapping found for property '" + propertyName + "' in class "
+				throw new IllegalArgumentException("No mapping found for property '" + propertyName + "' in class "
 						+ tableMapping.getMappedObjType().getName());
 			}
 			if (propertyMapping.isIdAnnotation()) {
-				throw new MapperException("Id property " + tableMapping.getMappedObjType().getName() + "."
+				throw new IllegalArgumentException("Id property " + tableMapping.getMappedObjType().getName() + "."
 						+ propertyName + " cannot be updated using updateSpecificProperties() method.");
 			}
 			if (propertyMapping.isCreatedByAnnotation() || propertyMapping.isCreatedOnAnnotation()
 					|| propertyMapping.isUpdatedByAnnotation() || propertyMapping.isUpdatedOnAnnotation()
 					|| propertyMapping.isVersionAnnotation()) {
-				throw new MapperException("Auto assign property " + tableMapping.getMappedObjType().getName() + "."
-						+ propertyName + " cannot be updated using updateSpecificProperties() method.");
+				throw new IllegalArgumentException("Auto assign property " + tableMapping.getMappedObjType().getName()
+						+ "." + propertyName + " cannot be updated using updateSpecificProperties() method.");
+			}
+			if (!set.add(propertyName)) {
+				throw new IllegalArgumentException("duplicate property name in argument array: " + propertyName);
 			}
 		}
 	}

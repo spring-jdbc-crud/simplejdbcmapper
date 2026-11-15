@@ -132,6 +132,10 @@ class AnnotationProcessor {
 			throw new AnnotationException(
 					"For " + entityType.getSimpleName() + " the @Table annotation has a blank name");
 		}
+		if (StringUtils.containsWhitespace(tableAnnotation.name())) {
+			throw new AnnotationException("For " + entityType.getSimpleName()
+					+ " the @Table annotation whitespace in table names not supported.");
+		}
 	}
 
 	private void annotationTypeCheck(List<PropertyMapping> propertyMappings, Class<?> entityType) {

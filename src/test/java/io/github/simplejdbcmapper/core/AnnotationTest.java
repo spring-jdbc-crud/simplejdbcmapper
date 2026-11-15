@@ -36,6 +36,7 @@ import io.github.simplejdbcmapper.model.PersonWithColumnPrimitive;
 import io.github.simplejdbcmapper.model.PersonWithOtherPrimitive;
 import io.github.simplejdbcmapper.model.PersonWithPrimitiveId;
 import io.github.simplejdbcmapper.model.TypeCheckPostgres;
+import io.github.simplejdbcmapper.model.WhitespaceTableObject;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
@@ -68,6 +69,14 @@ class AnnotationTest {
 			sjm.findById(BlankTableObject.class, 1);
 		});
 		assertTrue(exception.getMessage().contains("@Table annotation has a blank name"));
+	}
+
+	@Test
+	void whitespaceTable_Test() {
+		Exception exception = Assertions.assertThrows(AnnotationException.class, () -> {
+			sjm.findById(WhitespaceTableObject.class, 1);
+		});
+		assertTrue(exception.getMessage().contains("@Table annotation whitespace in table names not supported"));
 	}
 
 	@Test

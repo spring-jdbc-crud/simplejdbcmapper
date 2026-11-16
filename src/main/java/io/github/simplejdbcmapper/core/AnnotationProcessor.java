@@ -23,7 +23,6 @@ import java.util.Map;
 import org.springframework.beans.BeanWrapper;
 import org.springframework.beans.BeanWrapperImpl;
 import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.util.StringUtils;
 
 import io.github.simplejdbcmapper.annotation.Column;
@@ -55,12 +54,12 @@ class AnnotationProcessor {
 			String propertyName = field.getName();
 			String colName = colAnnotation.name();
 			if (SimpleJdbcMapper.COLUMN_NAME_UNKNOWN.equals(colName)) {
-				// default to underscore name
+				// default name
 				colName = InternalUtils.toUnderscoreName(propertyName);
 			}
 			validateColumnName(colName, propertyName);
 			Integer sqlType = InternalUtils.javaTypeToSqlParameterType(field.getType());
-			if (colAnnotation.sqlType() != JdbcUtils.TYPE_UNKNOWN) {
+			if (colAnnotation.sqlType() != SimpleJdbcMapper.TYPE_UNKNOWN) {
 				// sqlType has been configured in @Column
 				sqlType = colAnnotation.sqlType();
 			}

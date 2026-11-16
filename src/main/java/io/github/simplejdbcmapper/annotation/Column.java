@@ -18,8 +18,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import org.springframework.jdbc.support.JdbcUtils;
-
 import io.github.simplejdbcmapper.core.SimpleJdbcMapper;
 
 /**
@@ -35,7 +33,7 @@ public @interface Column {
 	String name() default SimpleJdbcMapper.COLUMN_NAME_UNKNOWN;
 
 	/** column sqlType */
-	int sqlType() default JdbcUtils.TYPE_UNKNOWN;
+	int sqlType() default SimpleJdbcMapper.TYPE_UNKNOWN;
 
 	/** custom converter **/
 	Class<?> converter() default Object.class;

@@ -441,8 +441,9 @@ An implementation of the relationship examples below and other features of the l
    // Use JdbcTemplate with the library's ResultSetExtractor to execute the query. RelationshipMapper holds the query results.
    RelationshipMapper relationshipMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity), someAmount); 
    
-   // Define the toMany relationship between Order and OrderLine. A Relationship is thread safe.
-   // Generally you would want to define it once (for example as a 'static final' constant variable) and use it where appropriate. 
+   // Define the toMany relationship between Order and OrderLine.
+   // A Relationship is thread safe. Generally you would want to define it once for example as a 'static final' variable 
+   // and use it where ever appropriate (the demo application has an example of this).
    // In these examples relationships are defined as local variables for clarity.
    Relationship orderToManyOrderLine = Relationship.type(Order.class).toMany(OrderLine.class).joinOn("id", "orderId").populate("orderLines");
 

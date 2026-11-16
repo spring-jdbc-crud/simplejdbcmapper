@@ -30,7 +30,7 @@ import io.github.simplejdbcmapper.core.SimpleJdbcMapper;
 @Target(ElementType.FIELD)
 public @interface Column {
 	/** column name */
-	String name() default SimpleJdbcMapper.COLUMN_NAME_UNKNOWN;
+	String name() default SimpleJdbcMapper.NAME_UNKNOWN;
 
 	/** column sqlType */
 	int sqlType() default SimpleJdbcMapper.TYPE_UNKNOWN;

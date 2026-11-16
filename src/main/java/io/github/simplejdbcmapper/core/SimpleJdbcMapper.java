@@ -47,7 +47,7 @@ import io.github.simplejdbcmapper.relationship.RelationshipMapper;
  */
 public final class SimpleJdbcMapper {
 
-	public static final String COLUMN_NAME_UNKNOWN = "!-[$]-!";
+	public static final String NAME_UNKNOWN = "!-[$]-!";
 	public static final int TYPE_UNKNOWN = JdbcUtils.TYPE_UNKNOWN;
 
 	private static final Logger logger = LoggerFactory.getLogger(SimpleJdbcMapper.class);

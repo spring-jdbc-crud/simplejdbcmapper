@@ -53,7 +53,7 @@ class AnnotationProcessor {
 		if (colAnnotation != null) {
 			String propertyName = field.getName();
 			String colName = colAnnotation.name();
-			if (SimpleJdbcMapper.COLUMN_NAME_UNKNOWN.equals(colName)) {
+			if (SimpleJdbcMapper.NAME_UNKNOWN.equals(colName)) {
 				// default name
 				colName = InternalUtils.toUnderscoreName(propertyName);
 			}

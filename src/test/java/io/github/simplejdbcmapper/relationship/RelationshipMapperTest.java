@@ -136,12 +136,12 @@ class RelationshipMapperTest {
 		exception = Assertions.assertThrows(Exception.class, () -> {
 			relMapper.assemble(orderLineToOneProduct, orderLineToOneProduct);
 		});
-		assertTrue(exception.getMessage().contains("Duplicate relationship"));
+		assertTrue(exception.getMessage().contains("You cannot have multiple relationships between"));
 
 		exception = Assertions.assertThrows(Exception.class, () -> {
 			relMapper.assemble(orderToManyOrderLine, orderToManyOrderLine);
 		});
-		assertTrue(exception.getMessage().contains("Duplicate relationship"));
+		assertTrue(exception.getMessage().contains("You cannot have multiple relationships between"));
 
 		exception = Assertions.assertThrows(Exception.class, () -> {
 			relMapper.assemble(orderLineToOneProduct, null, orderToManyOrderLine);

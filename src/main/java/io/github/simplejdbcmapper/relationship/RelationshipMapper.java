@@ -150,7 +150,8 @@ public class RelationshipMapper implements GetListSpec {
 				throw new IllegalArgumentException("relationship must not be null in argument array. " + relationships);
 			}
 			if (!set.add(rel.getMainType().getName() + "-" + rel.getRelatedType().getName())) {
-				throw new IllegalArgumentException("Duplicate relationship. " + rel);
+				throw new IllegalArgumentException("You cannot have multiple relationships between "
+						+ rel.getMainType().getSimpleName() + " and  " + rel.getRelatedType().getSimpleName());
 			}
 		}
 	}

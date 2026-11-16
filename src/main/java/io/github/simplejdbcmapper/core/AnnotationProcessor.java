@@ -54,7 +54,7 @@ class AnnotationProcessor {
 		if (colAnnotation != null) {
 			String propertyName = field.getName();
 			String colName = colAnnotation.name();
-			if ("!-[COLUMN_NAME_UNKNOWN]-!".equals(colName)) {
+			if (SimpleJdbcMapper.COLUMN_NAME_UNKNOWN.equals(colName)) {
 				// default to underscore name
 				colName = InternalUtils.toUnderscoreName(propertyName);
 			}

@@ -20,6 +20,8 @@ import java.lang.annotation.Target;
 
 import org.springframework.jdbc.support.JdbcUtils;
 
+import io.github.simplejdbcmapper.core.SimpleJdbcMapper;
+
 /**
  * Properties that need be persisted to the database will need this annotation
  * unless the property is already annotated with one of the other annotations.
@@ -30,7 +32,7 @@ import org.springframework.jdbc.support.JdbcUtils;
 @Target(ElementType.FIELD)
 public @interface Column {
 	/** column name */
-	String name() default "!-[COLUMN_NAME_UNKNOWN]-!";
+	String name() default SimpleJdbcMapper.COLUMN_NAME_UNKNOWN;
 
 	/** column sqlType */
 	int sqlType() default JdbcUtils.TYPE_UNKNOWN;

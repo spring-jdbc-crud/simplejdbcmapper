@@ -54,7 +54,8 @@ class AnnotationProcessor {
 		if (colAnnotation != null) {
 			String propertyName = field.getName();
 			String colName = colAnnotation.name();
-			if ("[DEFAULT]".equals(colName)) {
+			if ("!-[COLUMN_NAME_UNKNOWN]-!".equals(colName)) {
+				// default to underscore name
 				colName = InternalUtils.toUnderscoreName(propertyName);
 			}
 			validateColumnName(colName, propertyName);

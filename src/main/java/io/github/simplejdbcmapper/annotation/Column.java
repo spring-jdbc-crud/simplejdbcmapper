@@ -30,7 +30,7 @@ import org.springframework.jdbc.support.JdbcUtils;
 @Target(ElementType.FIELD)
 public @interface Column {
 	/** column name */
-	String name() default "[DEFAULT]";
+	String name() default "!-[COLUMN_NAME_UNKNOWN]-!";
 
 	/** column sqlType */
 	int sqlType() default JdbcUtils.TYPE_UNKNOWN;

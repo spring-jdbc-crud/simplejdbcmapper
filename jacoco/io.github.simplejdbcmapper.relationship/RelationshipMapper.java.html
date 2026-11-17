@@ -141,17 +141,17 @@ import org.springframework.util.StringUtils;
 <span class="fc" id="L141">	}</span>
 
 	private void validateAssemble(Relationship... relationships) {
-<span class="fc" id="L144">		Assert.notNull(relationships, &quot;relationships must not be null&quot;);</span>
-<span class="fc bfc" id="L145" title="All 2 branches covered.">		if (relationships.length == 0) {</span>
-<span class="fc" id="L146">			throw new IllegalArgumentException(&quot;relationships array must not be empty.&quot;);</span>
+<span class="fc bfc" id="L144" title="All 2 branches covered.">		if (relationships.length == 0) {</span>
+<span class="fc" id="L145">			throw new IllegalArgumentException(&quot;relationships array must not be empty.&quot;);</span>
 		}
-<span class="fc" id="L148">		Set&lt;String&gt; set = new HashSet&lt;&gt;();</span>
-<span class="fc bfc" id="L149" title="All 2 branches covered.">		for (Relationship rel : relationships) {</span>
-<span class="fc bfc" id="L150" title="All 2 branches covered.">			if (rel == null) {</span>
-<span class="fc" id="L151">				throw new IllegalArgumentException(&quot;relationship must not be null&quot;);</span>
+<span class="fc" id="L147">		Set&lt;String&gt; set = new HashSet&lt;&gt;();</span>
+<span class="fc bfc" id="L148" title="All 2 branches covered.">		for (Relationship rel : relationships) {</span>
+<span class="fc bfc" id="L149" title="All 2 branches covered.">			if (rel == null) {</span>
+<span class="fc" id="L150">				throw new IllegalArgumentException(&quot;relationship must not be null in argument array. &quot; + relationships);</span>
 			}
-<span class="fc bfc" id="L153" title="All 2 branches covered.">			if (!set.add(rel.getMainType().getName() + &quot;-&quot; + rel.getRelatedType().getName())) {</span>
-<span class="fc" id="L154">				throw new IllegalArgumentException(&quot;Duplicate relationship. &quot; + rel);</span>
+<span class="fc bfc" id="L152" title="All 2 branches covered.">			if (!set.add(rel.getMainType().getName() + &quot;-&quot; + rel.getRelatedType().getName())) {</span>
+<span class="fc" id="L153">				throw new IllegalArgumentException(&quot;You cannot have multiple relationships between &quot;</span>
+<span class="fc" id="L154">						+ rel.getMainType().getSimpleName() + &quot; and  &quot; + rel.getRelatedType().getSimpleName());</span>
 			}
 		}
 <span class="fc" id="L157">	}</span>
@@ -205,4 +205,4 @@ import org.springframework.util.StringUtils;
 	}
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main ca5bd33910b5ec3cf735ea4e15dca5a14e1da62f 2026-11-10T21:42:19</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 105f2d053ed7611a8346a6dc4cd7ff5703157136 2026-11-17T02:44:44</div></body></html>

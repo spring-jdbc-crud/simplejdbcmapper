@@ -27,7 +27,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.JdbcClient;
-import org.springframework.jdbc.support.JdbcUtils;
 import org.springframework.util.Assert;
 
 import io.github.simplejdbcmapper.relationship.RelationshipMapper;
@@ -46,9 +45,6 @@ import io.github.simplejdbcmapper.relationship.RelationshipMapper;
  * @author Antony Joseph
  */
 public final class SimpleJdbcMapper {
-
-	public static final String NAME_UNKNOWN = "!-[$]-!";
-	public static final int TYPE_UNKNOWN = JdbcUtils.TYPE_UNKNOWN;
 
 	private static final Logger logger = LoggerFactory.getLogger(SimpleJdbcMapper.class);
 

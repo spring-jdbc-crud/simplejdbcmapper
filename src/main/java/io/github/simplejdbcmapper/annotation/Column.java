@@ -18,8 +18,6 @@ import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
 
-import io.github.simplejdbcmapper.core.SimpleJdbcMapper;
-
 /**
  * Properties that need be persisted to the database will need this annotation
  * unless the property is already annotated with one of the other annotations.
@@ -30,10 +28,10 @@ import io.github.simplejdbcmapper.core.SimpleJdbcMapper;
 @Target(ElementType.FIELD)
 public @interface Column {
 	/** column name */
-	String name() default SimpleJdbcMapper.NAME_UNKNOWN;
+	String name() default ColumnConstants.NAME_UNKNOWN;
 
 	/** column sqlType */
-	int sqlType() default SimpleJdbcMapper.TYPE_UNKNOWN;
+	int sqlType() default ColumnConstants.TYPE_UNKNOWN;
 
 	/** custom converter **/
 	Class<?> converter() default Object.class;

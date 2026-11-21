@@ -26,6 +26,7 @@ import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.util.StringUtils;
 
 import io.github.simplejdbcmapper.annotation.Column;
+import io.github.simplejdbcmapper.annotation.ColumnConstants;
 import io.github.simplejdbcmapper.annotation.CreatedBy;
 import io.github.simplejdbcmapper.annotation.CreatedOn;
 import io.github.simplejdbcmapper.annotation.Id;
@@ -53,13 +54,13 @@ class AnnotationProcessor {
 		if (colAnnotation != null) {
 			String propertyName = field.getName();
 			String colName = colAnnotation.name();
-			if (SimpleJdbcMapper.NAME_UNKNOWN.equals(colName)) {
+			if (ColumnConstants.NAME_UNKNOWN.equals(colName)) {
 				// default name
 				colName = InternalUtils.toUnderscoreName(propertyName);
 			}
 			validateColumnName(colName, propertyName);
 			Integer sqlType = InternalUtils.javaTypeToSqlParameterType(field.getType());
-			if (colAnnotation.sqlType() != SimpleJdbcMapper.TYPE_UNKNOWN) {
+			if (colAnnotation.sqlType() != ColumnConstants.TYPE_UNKNOWN) {
 				// sqlType has been configured in @Column
 				sqlType = colAnnotation.sqlType();
 			}

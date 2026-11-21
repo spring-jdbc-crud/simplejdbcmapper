@@ -20,9 +20,12 @@ import javax.sql.DataSource;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.ResultSetExtractor;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.util.Assert;
+
+import io.github.simplejdbcmapper.relationship.RelationshipMapper;
 
 /**
  * Support class for SimpleJdbcMapper
@@ -139,6 +142,19 @@ class SimpleJdbcMapperSupport {
 
 	TableMapping getTableMapping(Class<?> entityType) {
 		return tableMappingProvider.getTableMapping(entityType);
+	}
+
+	<T> EntityRowMapper<T> entityRowMapper(Class<T> entityType) {
+		return entityRowMapper(entityType, 1);
+	}
+
+	<T> EntityRowMapper<T> entityRowMapper(Class<T> entityType, int offset) {
+		TableMapping tableMapping = getTableMapping(entityType);
+		return new EntityRowMapper<>(tableMapping, conversionService, offset);
+	}
+
+	ResultSetExtractor<RelationshipMapper> resultSetExtractor(MultiEntity multiEntity) {
+		return new RelationshipMapperExtractor(multiEntity, this);
 	}
 
 	@SuppressWarnings("rawtypes")

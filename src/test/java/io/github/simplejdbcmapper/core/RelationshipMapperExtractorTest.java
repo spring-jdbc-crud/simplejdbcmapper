@@ -20,7 +20,7 @@ import io.github.simplejdbcmapper.relationship.RelationshipMapper;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
-class MultiEntityExtractorTest {
+class RelationshipMapperExtractorTest {
 	@Autowired
 	private SimpleJdbcMapper sjm;
 

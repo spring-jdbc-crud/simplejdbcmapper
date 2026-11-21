@@ -62,8 +62,6 @@ public final class SimpleJdbcMapper {
 
 	private DeleteOperation deleteOperation;
 
-	private MultiEntityExtractor multiEntityExtractor;
-
 	/**
 	 * Constructor.
 	 *
@@ -97,7 +95,6 @@ public final class SimpleJdbcMapper {
 		this.findOperation = new FindOperation(simpleJdbcMapperSupport);
 		this.updateOperation = new UpdateOperation(simpleJdbcMapperSupport);
 		this.deleteOperation = new DeleteOperation(simpleJdbcMapperSupport);
-		this.multiEntityExtractor = new MultiEntityExtractor(simpleJdbcMapperSupport);
 	}
 
 	/**
@@ -325,7 +322,7 @@ public final class SimpleJdbcMapper {
 	 * @return EntityRowMapper for the type
 	 */
 	public <T> EntityRowMapper<T> entityRowMapper(Class<T> entityType) {
-		return findOperation.entityRowMapper(entityType);
+		return simpleJdbcMapperSupport.entityRowMapper(entityType);
 	}
 
 	/**
@@ -387,7 +384,7 @@ public final class SimpleJdbcMapper {
 	 */
 	@Deprecated(since = "2.4.4", forRemoval = true)
 	public <T> EntityRowMapper<T> newEntityRowMapper(Class<T> entityType) {
-		return findOperation.entityRowMapper(entityType);
+		return simpleJdbcMapperSupport.entityRowMapper(entityType);
 	}
 
 	/**
@@ -638,7 +635,7 @@ public final class SimpleJdbcMapper {
 	 *         in RelationshipMapper
 	 */
 	public ResultSetExtractor<RelationshipMapper> resultSetExtractor(MultiEntity multiEntity) {
-		return multiEntityExtractor.resultSetExtractor(multiEntity);
+		return simpleJdbcMapperSupport.resultSetExtractor(multiEntity);
 	}
 
 	/**
@@ -875,7 +872,6 @@ public final class SimpleJdbcMapper {
 		findOperation = null;
 		updateOperation = null;
 		deleteOperation = null;
-		multiEntityExtractor = null;
 		logger.info("SimpleJdbcMapper shutdown completed. {}", this);
 	}
 

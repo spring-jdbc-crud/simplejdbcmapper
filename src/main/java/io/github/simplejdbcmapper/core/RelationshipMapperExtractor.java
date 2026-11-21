@@ -1,0 +1,93 @@
+package io.github.simplejdbcmapper.core;
+
+import java.lang.reflect.Method;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.ResultSetExtractor;
+
+import io.github.simplejdbcmapper.exception.MapperException;
+import io.github.simplejdbcmapper.relationship.RelationshipMapper;
+
+class RelationshipMapperExtractor implements ResultSetExtractor<RelationshipMapper> {
+	private static final Logger logger = LoggerFactory.getLogger(RelationshipMapperExtractor.class);
+	private MultiEntity multiEntity;
+	private SimpleJdbcMapperSupport sjmSupport;
+
+	public RelationshipMapperExtractor(MultiEntity multiEntity, SimpleJdbcMapperSupport sjmSupport) {
+		this.multiEntity = multiEntity;
+		this.sjmSupport = sjmSupport;
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public RelationshipMapper extractData(ResultSet rs) throws SQLException, DataAccessException {
+		List<EntityExtractor> entityExtractors = createEntityExtractors(multiEntity);
+		int rowCnt = 1;
+		while (rs.next()) {
+			for (EntityExtractor entityExtractor : entityExtractors) {
+				processEntityRow(rs, rowCnt, entityExtractor);
+			}
+			rowCnt++;
+		}
+		RelationshipMapper relationshipMapper = new RelationshipMapper();
+		for (EntityExtractor entityExtractor : entityExtractors) {
+			relationshipMapper.addEntityResult(entityExtractor.entityType(), entityExtractor.result(),
+					entityExtractor.idPropertyName());
+		}
+		return relationshipMapper;
+	}
+
+	@SuppressWarnings("unchecked")
+	private void processEntityRow(ResultSet rs, int rowCnt, EntityExtractor entityExtractor) throws SQLException {
+		EntityRowMapper<?> rowMapper = entityExtractor.rowMapper();
+		// rowMapper will always return an object
+		Object obj = rowMapper.mapRow(rs, rowCnt);
+		try {
+			Object id = entityExtractor.idReadMethod().invoke(obj);
+			if (id != null && entityExtractor.idSet().add(id)) {
+				// unique by id
+				entityExtractor.result().add(obj);
+			}
+		} catch (Exception e) {
+			throw new MapperException(e.getMessage(), e);
+		}
+	}
+
+	@SuppressWarnings("rawtypes")
+	private List<EntityExtractor> createEntityExtractors(MultiEntity multiEntity) {
+		int offset = 1;
+		List<EntityExtractor> entityExtractors = new ArrayList<>();
+		for (Map.Entry<Class<?>, String> entry : multiEntity.getEntries()) {
+			Class<?> entityType = entry.getKey();
+			EntityRowMapper<?> rowMapper = getEntityRowMapperInstance(entityType, offset);
+			TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
+			Method idReadMethod = tableMapping.getIdPropertyMapping().getReadMethod();
+			entityExtractors.add(new EntityExtractor(entityType, rowMapper, new ArrayList(), idReadMethod,
+					tableMapping.getIdPropertyName(), new HashSet()));
+			offset += tableMapping.getPropertyMappings().length;
+		}
+		return entityExtractors;
+	}
+
+	private <T> EntityRowMapper<T> getEntityRowMapperInstance(Class<T> entityType, int offset) {
+		EntityRowMapper<T> rowMapper = sjmSupport.entityRowMapper(entityType, offset);
+		if (logger.isDebugEnabled()) {
+			logger.debug("EntityRowMapper: {}", rowMapper);
+		}
+		return rowMapper;
+	}
+
+	@SuppressWarnings("rawtypes")
+	record EntityExtractor(Class<?> entityType, EntityRowMapper<?> rowMapper, List result, Method idReadMethod,
+			String idPropertyName, Set idSet) {
+	}
+}

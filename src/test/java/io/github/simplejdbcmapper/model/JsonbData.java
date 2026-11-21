@@ -4,7 +4,6 @@ import io.github.simplejdbcmapper.annotation.Column;
 import io.github.simplejdbcmapper.annotation.Id;
 import io.github.simplejdbcmapper.annotation.IdType;
 import io.github.simplejdbcmapper.annotation.Table;
-import io.github.simplejdbcmapper.core.ProductToJsonPostgresConverter;
 
 @Table(name = "jsonb_data")
 public class JsonbData {

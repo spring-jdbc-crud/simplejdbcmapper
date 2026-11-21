@@ -1,8 +1,8 @@
-package io.github.simplejdbcmapper.core;
+package io.github.simplejdbcmapper.model;
 
 import org.postgresql.util.PGobject;
 
-import io.github.simplejdbcmapper.model.Product;
+import io.github.simplejdbcmapper.core.AttributeConverter;
 import tools.jackson.databind.ObjectMapper;
 
 /**

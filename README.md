@@ -717,7 +717,7 @@ Uses the same logging configurations as Spring. In application.properties:
  # need this to log the INSERT statements
  logging.level.org.springframework.jdbc.core.simple.SimpleJdbcInsert=TRACE
  
- # log the parameters of SQL statement
+ # log the parameters of SQL statement. Generates a lot of logs so use judiciously
  logging.level.org.springframework.jdbc.core.StatementCreatorUtils=TRACE
 
  ```

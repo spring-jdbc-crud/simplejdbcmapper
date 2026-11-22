@@ -100,7 +100,7 @@ public class RelationshipMapper implements GetListSpec {
 	 * @return String the id property name
 	 */
 	public String getIdPropertyName(Class<?> type) {
-		ExtractorEntityResult result = getExtractorEntityResult(type, results);
+		ExtractorEntityResult result = getExtractorEntityResult(type);
 		return result.idPropertyName();
 	}
 
@@ -113,7 +113,7 @@ public class RelationshipMapper implements GetListSpec {
 	 */
 	@SuppressWarnings("unchecked")
 	public <T> List<T> getList(Class<T> type) {
-		ExtractorEntityResult result = getExtractorEntityResult(type, results);
+		ExtractorEntityResult result = getExtractorEntityResult(type);
 		return (List<T>) result.list();
 	}
 
@@ -156,10 +156,10 @@ public class RelationshipMapper implements GetListSpec {
 		}
 	}
 
-	static ExtractorEntityResult getExtractorEntityResult(Class<?> type, List<ExtractorEntityResult> results) {
-		for (ExtractorEntityResult result : results) {
-			if (result.entityType() == type) {
-				return result;
+	private ExtractorEntityResult getExtractorEntityResult(Class<?> type) {
+		for (ExtractorEntityResult entityResult : results) {
+			if (entityResult.entityType() == type) {
+				return entityResult;
 			}
 		}
 		throw new IllegalArgumentException(type + " was not part of the query results");

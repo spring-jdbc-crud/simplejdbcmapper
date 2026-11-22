@@ -66,7 +66,7 @@ class AnnotationProcessor {
 			}
 
 			Class<?> converterClass = null;
-			if (colAnnotation.converter() != Object.class) {
+			if (colAnnotation.converter() != ColumnConstants.CONVERTER_UNKNOWN) {
 				// converter has been configured in @Column
 				converterClass = colAnnotation.converter();
 			}

@@ -25,13 +25,13 @@ import org.springframework.util.StringUtils;
  * @author antonyjoseph
  */
 class RelationshipUtils {
-	static final String IS_PREFIX = "is";
-	static final String GET_PREFIX = "get";
-	static final String SET_PREFIX = "set";
-
 	static final String TO_MANY = "toMany";
 	static final String TO_ONE = "toOne";
 	static final String TO_MANY_THROUGH = "toManyThrough";
+
+	private static final String IS_PREFIX = "is";
+	private static final String GET_PREFIX = "get";
+	private static final String SET_PREFIX = "set";
 
 	static Method getReadMethod(Class<?> type, String propertyName) {
 		Method m = ReflectionUtils.findMethod(type, GET_PREFIX + StringUtils.capitalize(propertyName));

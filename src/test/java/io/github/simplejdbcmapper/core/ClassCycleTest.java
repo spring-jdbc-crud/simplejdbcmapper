@@ -12,7 +12,7 @@ import com.tngtech.archunit.core.importer.Location;
 import com.tngtech.archunit.library.dependencies.SliceAssignment;
 import com.tngtech.archunit.library.dependencies.SliceIdentifier;
 
-public class ClassCycleTest {
+class ClassCycleTest {
 
 	@Test
 	void classCycleTest() {
@@ -23,7 +23,6 @@ public class ClassCycleTest {
 						boolean val = true;
 						if (location.contains("Relationship$RelationshipBuilder")
 								|| location.contains("RelationshipFluent$")) {
-							// if (location.contains("Relationship$RelationshipBuilder")) {
 							val = false;
 						}
 						return val;

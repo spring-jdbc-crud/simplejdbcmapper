@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>RelationshipMapperExtractor.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">simplejdbcmapper</a> &gt; <a href="index.source.html" class="el_package">io.github.simplejdbcmapper.core</a> &gt; <span class="el_source">RelationshipMapperExtractor.java</span></div><h1>RelationshipMapperExtractor.java</h1><pre class="source lang-java linenums">/*
+ * Copyright 2025-present the original author or authors.
+ *
+ * Licensed under the Apache License, Version 2.0 (the &quot;License&quot;); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ *
+ * https://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an &quot;AS IS&quot; BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
+ */
+package io.github.simplejdbcmapper.core;
+
+import java.lang.reflect.Method;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.core.convert.ConversionService;
+import org.springframework.dao.DataAccessException;
+import org.springframework.jdbc.core.ResultSetExtractor;
+
+import io.github.simplejdbcmapper.exception.MapperException;
+import io.github.simplejdbcmapper.relationship.RelationshipMapper;
+
+/**
+ * The extractor of query results for multiple entities
+ * 
+ * @author Antony Joseph
+ */
+class RelationshipMapperExtractor implements ResultSetExtractor&lt;RelationshipMapper&gt; {
+<span class="fc" id="L40">	private static final Logger logger = LoggerFactory.getLogger(RelationshipMapperExtractor.class);</span>
+	private MultiEntity multiEntity;
+	private TableMappingProvider tableMappingProvider;
+	private ConversionService conversionService;
+
+	public RelationshipMapperExtractor(MultiEntity multiEntity, TableMappingProvider tableMappingProvider,
+<span class="fc" id="L46">			ConversionService conversionService) {</span>
+<span class="fc" id="L47">		this.multiEntity = multiEntity;</span>
+<span class="fc" id="L48">		this.tableMappingProvider = tableMappingProvider;</span>
+<span class="fc" id="L49">		this.conversionService = conversionService;</span>
+<span class="fc" id="L50">	}</span>
+
+	@SuppressWarnings(&quot;unchecked&quot;)
+	@Override
+	public RelationshipMapper extractData(ResultSet rs) throws SQLException, DataAccessException {
+<span class="fc" id="L55">		List&lt;EntityExtractor&gt; entityExtractors = createEntityExtractors(multiEntity);</span>
+<span class="fc" id="L56">		int rowCnt = 1;</span>
+<span class="fc bfc" id="L57" title="All 2 branches covered.">		while (rs.next()) {</span>
+<span class="fc bfc" id="L58" title="All 2 branches covered.">			for (EntityExtractor entityExtractor : entityExtractors) {</span>
+<span class="fc" id="L59">				processEntityRow(rs, rowCnt, entityExtractor);</span>
+<span class="fc" id="L60">			}</span>
+<span class="fc" id="L61">			rowCnt++;</span>
+		}
+<span class="fc" id="L63">		RelationshipMapper relationshipMapper = new RelationshipMapper();</span>
+<span class="fc bfc" id="L64" title="All 2 branches covered.">		for (EntityExtractor entityExtractor : entityExtractors) {</span>
+<span class="fc" id="L65">			relationshipMapper.addEntityResult(entityExtractor.entityType(), entityExtractor.result(),</span>
+<span class="fc" id="L66">					entityExtractor.idPropertyName());</span>
+<span class="fc" id="L67">		}</span>
+<span class="fc" id="L68">		return relationshipMapper;</span>
+	}
+
+	@SuppressWarnings(&quot;unchecked&quot;)
+	private void processEntityRow(ResultSet rs, int rowCnt, EntityExtractor entityExtractor) throws SQLException {
+<span class="fc" id="L73">		EntityRowMapper&lt;?&gt; rowMapper = entityExtractor.rowMapper();</span>
+		// rowMapper will always return an object
+<span class="fc" id="L75">		Object obj = rowMapper.mapRow(rs, rowCnt);</span>
+		try {
+<span class="fc" id="L77">			Object id = entityExtractor.idReadMethod().invoke(obj);</span>
+<span class="fc bfc" id="L78" title="All 4 branches covered.">			if (id != null &amp;&amp; entityExtractor.idSet().add(id)) {</span>
+				// unique by id
+<span class="fc" id="L80">				entityExtractor.result().add(obj);</span>
+			}
+<span class="nc" id="L82">		} catch (Exception e) {</span>
+<span class="nc" id="L83">			throw new MapperException(e.getMessage(), e);</span>
+<span class="fc" id="L84">		}</span>
+<span class="fc" id="L85">	}</span>
+
+	@SuppressWarnings(&quot;rawtypes&quot;)
+	private List&lt;EntityExtractor&gt; createEntityExtractors(MultiEntity multiEntity) {
+<span class="fc" id="L89">		int offset = 1;</span>
+<span class="fc" id="L90">		List&lt;EntityExtractor&gt; entityExtractors = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L91" title="All 2 branches covered.">		for (Map.Entry&lt;Class&lt;?&gt;, String&gt; entry : multiEntity.getEntries()) {</span>
+<span class="fc" id="L92">			Class&lt;?&gt; entityType = entry.getKey();</span>
+<span class="fc" id="L93">			EntityRowMapper&lt;?&gt; rowMapper = getEntityRowMapperInstance(entityType, offset);</span>
+<span class="fc" id="L94">			TableMapping tableMapping = tableMappingProvider.getTableMapping(entityType);</span>
+<span class="fc" id="L95">			Method idReadMethod = tableMapping.getIdPropertyMapping().getReadMethod();</span>
+<span class="fc" id="L96">			entityExtractors.add(new EntityExtractor(entityType, rowMapper, new ArrayList(), idReadMethod,</span>
+<span class="fc" id="L97">					tableMapping.getIdPropertyName(), new HashSet()));</span>
+<span class="fc" id="L98">			offset += tableMapping.getPropertyMappings().length;</span>
+<span class="fc" id="L99">		}</span>
+<span class="fc" id="L100">		return entityExtractors;</span>
+	}
+
+	private &lt;T&gt; EntityRowMapper&lt;T&gt; getEntityRowMapperInstance(Class&lt;T&gt; entityType, int offset) {
+<span class="fc" id="L104">		TableMapping tableMapping = tableMappingProvider.getTableMapping(entityType);</span>
+<span class="fc" id="L105">		EntityRowMapper&lt;T&gt; rowMapper = new EntityRowMapper&lt;&gt;(tableMapping, conversionService, offset);</span>
+<span class="pc bpc" id="L106" title="1 of 2 branches missed.">		if (logger.isDebugEnabled()) {</span>
+<span class="fc" id="L107">			logger.debug(&quot;EntityRowMapper: {}&quot;, rowMapper);</span>
+		}
+<span class="fc" id="L109">		return rowMapper;</span>
+	}
+
+	@SuppressWarnings(&quot;rawtypes&quot;)
+<span class="fc" id="L113">	record EntityExtractor(Class&lt;?&gt; entityType, EntityRowMapper&lt;?&gt; rowMapper, List result, Method idReadMethod,</span>
+			String idPropertyName, Set idSet) {
+	}
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 63905ad4756ea74bbab6d070e9c401dcb6f12a3b 2026-11-22T21:30:39</div></body></html>

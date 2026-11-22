@@ -68,9 +68,9 @@ class ToManyThrough {
 <span class="fc" id="L68">			return;</span>
 		}
 <span class="fc" id="L70">		validateThrough(mainObjIdProperty, relatedObjIdProperty);</span>
-<span class="fc" id="L71">		Method mainObjIdPropertyReadMethod = RelationshipMapper.getReadMethod(mainType, mainObjIdProperty);</span>
-<span class="fc" id="L72">		Method relatedObjIdPropertyReadMethod = RelationshipMapper.getReadMethod(relatedType, relatedObjIdProperty);</span>
-<span class="fc" id="L73">		Method mainObjPropertyToPopulateWriteMethod = RelationshipMapper.getWriteMethod(mainType,</span>
+<span class="fc" id="L71">		Method mainObjIdPropertyReadMethod = RelationshipUtils.getReadMethod(mainType, mainObjIdProperty);</span>
+<span class="fc" id="L72">		Method relatedObjIdPropertyReadMethod = RelationshipUtils.getReadMethod(relatedType, relatedObjIdProperty);</span>
+<span class="fc" id="L73">		Method mainObjPropertyToPopulateWriteMethod = RelationshipUtils.getWriteMethod(mainType,</span>
 				mainObjPropertyToPopulate);
 <span class="fc" id="L75">		ThroughJoiner throughJoiner = new ThroughJoiner(throughList, fkPropertyToMainObjId, fkPropertyToRelatedObjId,</span>
 				throughType);
@@ -86,112 +86,110 @@ class ToManyThrough {
 <span class="fc" id="L86">	}</span>
 
 	private void validateThrough(String mainObjIdProperty, String relatedObjIdProperty) {
-<span class="fc" id="L89">		Class&lt;?&gt; mainObjIdPropertyType = RelationshipMapper.getPropertyType(mainType, mainObjIdProperty);</span>
-<span class="fc" id="L90">		Class&lt;?&gt; fkPropertyToMainObjIdType = RelationshipMapper.getPropertyType(throughType, fkPropertyToMainObjId);</span>
+<span class="fc" id="L89">		Class&lt;?&gt; mainObjIdPropertyType = RelationshipUtils.getPropertyType(mainType, mainObjIdProperty);</span>
+<span class="fc" id="L90">		Class&lt;?&gt; fkPropertyToMainObjIdType = RelationshipUtils.getPropertyType(throughType, fkPropertyToMainObjId);</span>
 <span class="fc bfc" id="L91" title="All 2 branches covered.">		if (mainObjIdPropertyType != fkPropertyToMainObjIdType) {</span>
 <span class="fc" id="L92">			throw new IllegalArgumentException(&quot;Conflicting property types. Property type of &quot;</span>
 <span class="fc" id="L93">					+ mainType.getSimpleName() + &quot;.&quot; + mainObjIdProperty + &quot; and &quot; + throughType.getSimpleName() + &quot;.&quot;</span>
 					+ fkPropertyToMainObjId + &quot; are not the same.&quot;);
 		}
 
-<span class="fc" id="L97">		Class&lt;?&gt; relatedObjIdPropertyType = RelationshipMapper.getPropertyType(relatedType, relatedObjIdProperty);</span>
-<span class="fc" id="L98">		Class&lt;?&gt; fkPropertyToRelatedObjIdType = RelationshipMapper.getPropertyType(throughType,</span>
-				fkPropertyToRelatedObjId);
-<span class="fc bfc" id="L100" title="All 2 branches covered.">		if (relatedObjIdPropertyType != fkPropertyToRelatedObjIdType) {</span>
-<span class="fc" id="L101">			throw new IllegalArgumentException(&quot;Conflicting property types. Property type of &quot;</span>
-<span class="fc" id="L102">					+ relatedType.getSimpleName() + &quot;.&quot; + relatedObjIdProperty + &quot; and &quot; + throughType.getSimpleName()</span>
+<span class="fc" id="L97">		Class&lt;?&gt; relatedObjIdPropertyType = RelationshipUtils.getPropertyType(relatedType, relatedObjIdProperty);</span>
+<span class="fc" id="L98">		Class&lt;?&gt; fkPropertyToRelatedObjIdType = RelationshipUtils.getPropertyType(throughType, fkPropertyToRelatedObjId);</span>
+<span class="fc bfc" id="L99" title="All 2 branches covered.">		if (relatedObjIdPropertyType != fkPropertyToRelatedObjIdType) {</span>
+<span class="fc" id="L100">			throw new IllegalArgumentException(&quot;Conflicting property types. Property type of &quot;</span>
+<span class="fc" id="L101">					+ relatedType.getSimpleName() + &quot;.&quot; + relatedObjIdProperty + &quot; and &quot; + throughType.getSimpleName()</span>
 					+ &quot;.&quot; + fkPropertyToRelatedObjId + &quot; are not the same.&quot;);
 		}
-<span class="fc" id="L105">	}</span>
+<span class="fc" id="L104">	}</span>
 
 	@SuppressWarnings({ &quot;rawtypes&quot;, &quot;unchecked&quot; })
 	private &lt;U, T&gt; void processMainObj(T mainObj, Map&lt;Object, U&gt; idToRelatedObjMap, ThroughJoiner throughJoiner,
 			Method mainObjIdPropertyReadMethod, Method mainObjPropertyToPopulateWriteMethod)
 			throws IllegalAccessException, InvocationTargetException {
-<span class="fc bfc" id="L111" title="All 2 branches covered.">		if (mainObj != null) {</span>
-<span class="fc" id="L112">			Object mainObjIdValue = mainObjIdPropertyReadMethod.invoke(mainObj);</span>
-<span class="fc" id="L113">			List relatedObjIdListFromJoiner = throughJoiner.getRelatedObjIds(mainObjIdValue);</span>
-<span class="fc" id="L114">			List&lt;U&gt; populaterList = new ArrayList&lt;&gt;();</span>
-<span class="fc bfc" id="L115" title="All 2 branches covered.">			if (!CollectionUtils.isEmpty(relatedObjIdListFromJoiner)) {</span>
-<span class="fc bfc" id="L116" title="All 2 branches covered.">				for (Object relatedObjId : relatedObjIdListFromJoiner) {</span>
-<span class="fc" id="L117">					U relatedObj = idToRelatedObjMap.get(relatedObjId);</span>
-<span class="pc bpc" id="L118" title="1 of 2 branches missed.">					if (relatedObj != null) {</span>
-<span class="fc" id="L119">						populaterList.add(relatedObj);</span>
+<span class="fc bfc" id="L110" title="All 2 branches covered.">		if (mainObj != null) {</span>
+<span class="fc" id="L111">			Object mainObjIdValue = mainObjIdPropertyReadMethod.invoke(mainObj);</span>
+<span class="fc" id="L112">			List relatedObjIdListFromJoiner = throughJoiner.getRelatedObjIds(mainObjIdValue);</span>
+<span class="fc" id="L113">			List&lt;U&gt; populaterList = new ArrayList&lt;&gt;();</span>
+<span class="fc bfc" id="L114" title="All 2 branches covered.">			if (!CollectionUtils.isEmpty(relatedObjIdListFromJoiner)) {</span>
+<span class="fc bfc" id="L115" title="All 2 branches covered.">				for (Object relatedObjId : relatedObjIdListFromJoiner) {</span>
+<span class="fc" id="L116">					U relatedObj = idToRelatedObjMap.get(relatedObjId);</span>
+<span class="pc bpc" id="L117" title="1 of 2 branches missed.">					if (relatedObj != null) {</span>
+<span class="fc" id="L118">						populaterList.add(relatedObj);</span>
 					}
-<span class="fc" id="L121">				}</span>
+<span class="fc" id="L120">				}</span>
 			}
-<span class="fc" id="L123">			setMainObjValue(mainObj, populaterList, mainObjPropertyToPopulateWriteMethod);</span>
+<span class="fc" id="L122">			setMainObjValue(mainObj, populaterList, mainObjPropertyToPopulateWriteMethod);</span>
 		}
-<span class="fc" id="L125">	}</span>
+<span class="fc" id="L124">	}</span>
 
 	private &lt;T, U&gt; void setMainObjValue(T mainObj, List&lt;U&gt; populaterList, Method mainObjPropertyToPopulateWriteMethod) {
 		try {
-<span class="fc" id="L129">			mainObjPropertyToPopulateWriteMethod.invoke(mainObj, populaterList);</span>
-<span class="fc" id="L130">		} catch (Exception e) {</span>
-<span class="fc" id="L131">			throw new MapperException(e.getMessage() + &quot;. Invoking &quot; + mainObjPropertyToPopulateWriteMethod</span>
+<span class="fc" id="L128">			mainObjPropertyToPopulateWriteMethod.invoke(mainObj, populaterList);</span>
+<span class="fc" id="L129">		} catch (Exception e) {</span>
+<span class="fc" id="L130">			throw new MapperException(e.getMessage() + &quot;. Invoking &quot; + mainObjPropertyToPopulateWriteMethod</span>
 					+ &quot; with value &quot; + populaterList, e);
-<span class="fc" id="L133">		}</span>
-<span class="fc" id="L134">	}</span>
+<span class="fc" id="L132">		}</span>
+<span class="fc" id="L133">	}</span>
 
 	private &lt;U&gt; Map&lt;Object, U&gt; getIdToRelatedObjMap(List&lt;U&gt; relatedObjList, Method relatedObjIdPropertyReadMethod)
 			throws IllegalAccessException, InvocationTargetException {
 		// relatedObjId - relatedObj
-<span class="fc" id="L139">		Map&lt;Object, U&gt; idToRelatedObjMap = new HashMap&lt;&gt;();</span>
-<span class="fc bfc" id="L140" title="All 2 branches covered.">		for (U relatedObj : relatedObjList) {</span>
-<span class="fc bfc" id="L141" title="All 2 branches covered.">			if (relatedObj != null) {</span>
-<span class="fc" id="L142">				Object relatedObjIdValue = relatedObjIdPropertyReadMethod.invoke(relatedObj);</span>
-<span class="fc bfc" id="L143" title="All 2 branches covered.">				if (relatedObjIdValue != null) {</span>
-<span class="fc" id="L144">					idToRelatedObjMap.put(relatedObjIdValue, relatedObj);</span>
+<span class="fc" id="L138">		Map&lt;Object, U&gt; idToRelatedObjMap = new HashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L139" title="All 2 branches covered.">		for (U relatedObj : relatedObjList) {</span>
+<span class="fc bfc" id="L140" title="All 2 branches covered.">			if (relatedObj != null) {</span>
+<span class="fc" id="L141">				Object relatedObjIdValue = relatedObjIdPropertyReadMethod.invoke(relatedObj);</span>
+<span class="fc bfc" id="L142" title="All 2 branches covered.">				if (relatedObjIdValue != null) {</span>
+<span class="fc" id="L143">					idToRelatedObjMap.put(relatedObjIdValue, relatedObj);</span>
 				}
 			}
-<span class="fc" id="L147">		}</span>
-<span class="fc" id="L148">		return idToRelatedObjMap;</span>
+<span class="fc" id="L146">		}</span>
+<span class="fc" id="L147">		return idToRelatedObjMap;</span>
 	}
 
 	private static class ThroughJoiner {
-<span class="fc" id="L152">		@SuppressWarnings(&quot;rawtypes&quot;)</span>
+<span class="fc" id="L151">		@SuppressWarnings(&quot;rawtypes&quot;)</span>
 		// key: fkToMainObjIdValue,
 		// value: list of fkToRelatedObjIdValue
 		private Map&lt;Object, List&gt; mainObjIdMap = new HashMap&lt;&gt;();
 
 		@SuppressWarnings({ &quot;unchecked&quot;, &quot;rawtypes&quot; })
 		public ThroughJoiner(List&lt;?&gt; throughList, String fkPropertyToMainObjId, String fkPropertyToRelatedObjId,
-<span class="fc" id="L159">				Class&lt;?&gt; throughType) {</span>
-<span class="pc bpc" id="L160" title="1 of 2 branches missed.">			if (CollectionUtils.isEmpty(throughList)) {</span>
-<span class="nc" id="L161">				return;</span>
+<span class="fc" id="L158">				Class&lt;?&gt; throughType) {</span>
+<span class="pc bpc" id="L159" title="1 of 2 branches missed.">			if (CollectionUtils.isEmpty(throughList)) {</span>
+<span class="nc" id="L160">				return;</span>
 			}
-<span class="fc" id="L163">			Method fkPropertyToMainObjIdReadMethod = RelationshipMapper.getReadMethod(throughType,</span>
-					fkPropertyToMainObjId);
-<span class="fc" id="L165">			Method fkPropertyToRelatedObjIdReadMethod = RelationshipMapper.getReadMethod(throughType,</span>
+<span class="fc" id="L162">			Method fkPropertyToMainObjIdReadMethod = RelationshipUtils.getReadMethod(throughType, fkPropertyToMainObjId);</span>
+<span class="fc" id="L163">			Method fkPropertyToRelatedObjIdReadMethod = RelationshipUtils.getReadMethod(throughType,</span>
 					fkPropertyToRelatedObjId);
 			try {
-<span class="fc bfc" id="L168" title="All 2 branches covered.">				for (Object throughObj : throughList) {</span>
-<span class="fc bfc" id="L169" title="All 2 branches covered.">					if (throughObj != null) {</span>
-<span class="fc" id="L170">						Object fkToMainObjIdValue = fkPropertyToMainObjIdReadMethod.invoke(throughObj);</span>
-<span class="fc" id="L171">						Object fkToRelatedObjIdValue = fkPropertyToRelatedObjIdReadMethod.invoke(throughObj);</span>
-<span class="pc bpc" id="L172" title="1 of 4 branches missed.">						if (fkToMainObjIdValue != null &amp;&amp; fkToRelatedObjIdValue != null) {</span>
-<span class="fc" id="L173">							List list = mainObjIdMap.get(fkToMainObjIdValue);</span>
-<span class="fc bfc" id="L174" title="All 2 branches covered.">							if (list == null) {</span>
-<span class="fc" id="L175">								list = new ArrayList();</span>
-<span class="fc" id="L176">								list.add(fkToRelatedObjIdValue);</span>
-<span class="fc" id="L177">								mainObjIdMap.put(fkToMainObjIdValue, list);</span>
+<span class="fc bfc" id="L166" title="All 2 branches covered.">				for (Object throughObj : throughList) {</span>
+<span class="fc bfc" id="L167" title="All 2 branches covered.">					if (throughObj != null) {</span>
+<span class="fc" id="L168">						Object fkToMainObjIdValue = fkPropertyToMainObjIdReadMethod.invoke(throughObj);</span>
+<span class="fc" id="L169">						Object fkToRelatedObjIdValue = fkPropertyToRelatedObjIdReadMethod.invoke(throughObj);</span>
+<span class="pc bpc" id="L170" title="1 of 4 branches missed.">						if (fkToMainObjIdValue != null &amp;&amp; fkToRelatedObjIdValue != null) {</span>
+<span class="fc" id="L171">							List list = mainObjIdMap.get(fkToMainObjIdValue);</span>
+<span class="fc bfc" id="L172" title="All 2 branches covered.">							if (list == null) {</span>
+<span class="fc" id="L173">								list = new ArrayList();</span>
+<span class="fc" id="L174">								list.add(fkToRelatedObjIdValue);</span>
+<span class="fc" id="L175">								mainObjIdMap.put(fkToMainObjIdValue, list);</span>
 							} else {
 								// add to list
-<span class="fc" id="L180">								list.add(fkToRelatedObjIdValue);</span>
+<span class="fc" id="L178">								list.add(fkToRelatedObjIdValue);</span>
 							}
 						}
 					}
-<span class="fc" id="L184">				}</span>
-<span class="nc" id="L185">			} catch (Exception e) {</span>
-<span class="nc" id="L186">				throw new MapperException(e.getMessage(), e);</span>
-<span class="fc" id="L187">			}</span>
-<span class="fc" id="L188">		}</span>
+<span class="fc" id="L182">				}</span>
+<span class="nc" id="L183">			} catch (Exception e) {</span>
+<span class="nc" id="L184">				throw new MapperException(e.getMessage(), e);</span>
+<span class="fc" id="L185">			}</span>
+<span class="fc" id="L186">		}</span>
 
 		@SuppressWarnings(&quot;rawtypes&quot;)
 		List getRelatedObjIds(Object mainObjId) {
-<span class="fc" id="L192">			return mainObjIdMap.get(mainObjId);</span>
+<span class="fc" id="L190">			return mainObjIdMap.get(mainObjId);</span>
 		}
 	}
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 105f2d053ed7611a8346a6dc4cd7ff5703157136 2026-11-17T02:44:44</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 63905ad4756ea74bbab6d070e9c401dcb6f12a3b 2026-11-22T21:30:39</div></body></html>

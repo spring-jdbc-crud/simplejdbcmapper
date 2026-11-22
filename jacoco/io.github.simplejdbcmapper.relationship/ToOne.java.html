@@ -47,21 +47,21 @@ class ToOne {
 <span class="fc" id="L47">		Assert.notNull(mainObjJoinProperty, &quot;mainObjJoinProperty must not be null&quot;);</span>
 <span class="fc" id="L48">		Assert.notNull(relatedObjJoinProperty, &quot;relatedObjJoinProperty must not be null&quot;);</span>
 
-<span class="fc" id="L50">		Class&lt;?&gt; mainObjJoinPropertyType = RelationshipMapper.getPropertyType(mainType, mainObjJoinProperty);</span>
-<span class="fc" id="L51">		Class&lt;?&gt; relatedObjJoinPropertyType = RelationshipMapper.getPropertyType(relatedType, relatedObjJoinProperty);</span>
+<span class="fc" id="L50">		Class&lt;?&gt; mainObjJoinPropertyType = RelationshipUtils.getPropertyType(mainType, mainObjJoinProperty);</span>
+<span class="fc" id="L51">		Class&lt;?&gt; relatedObjJoinPropertyType = RelationshipUtils.getPropertyType(relatedType, relatedObjJoinProperty);</span>
 <span class="fc bfc" id="L52" title="All 2 branches covered.">		if (mainObjJoinPropertyType != relatedObjJoinPropertyType) {</span>
 <span class="fc" id="L53">			throw new IllegalArgumentException(&quot;Conflicting property types. Property type of &quot;</span>
 <span class="fc" id="L54">					+ mainType.getSimpleName() + &quot;.&quot; + mainObjJoinProperty + &quot; and &quot; + relatedType.getSimpleName() + &quot;.&quot;</span>
 					+ relatedObjJoinProperty + &quot; are not the same.&quot;);
 		}
 
-<span class="fc" id="L58">		this.mainObjJoinPropertyReadMethod = RelationshipMapper.getReadMethod(mainType, mainObjJoinProperty);</span>
-<span class="fc" id="L59">		this.relatedObjJoinPropertyReadMethod = RelationshipMapper.getReadMethod(relatedType, relatedObjJoinProperty);</span>
+<span class="fc" id="L58">		this.mainObjJoinPropertyReadMethod = RelationshipUtils.getReadMethod(mainType, mainObjJoinProperty);</span>
+<span class="fc" id="L59">		this.relatedObjJoinPropertyReadMethod = RelationshipUtils.getReadMethod(relatedType, relatedObjJoinProperty);</span>
 <span class="fc" id="L60">	}</span>
 
 	void populate(String mainObjPropertyToPopulate) {
 <span class="fc" id="L63">		Assert.notNull(mainObjPropertyToPopulate, &quot;mainObjPropertyToPopulate must not be null&quot;);</span>
-<span class="fc" id="L64">		this.mainObjPropertyToPopulateWriteMethod = RelationshipMapper.getWriteMethod(mainType,</span>
+<span class="fc" id="L64">		this.mainObjPropertyToPopulateWriteMethod = RelationshipUtils.getWriteMethod(mainType,</span>
 				mainObjPropertyToPopulate);
 <span class="fc" id="L66">	}</span>
 
@@ -105,4 +105,4 @@ class ToOne {
 	}
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 105f2d053ed7611a8346a6dc4cd7ff5703157136 2026-11-17T02:44:44</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 63905ad4756ea74bbab6d070e9c401dcb6f12a3b 2026-11-22T21:30:39</div></body></html>

@@ -145,7 +145,7 @@ class UpdateOperation {
 <span class="fc" id="L145">			} else {</span>
 <span class="fc" id="L146">				PropertyMapping propMapping = tableMapping.getPropertyMappingByPropertyName(propertyName);</span>
 <span class="fc" id="L147">				Object val = ew.getPropertyValue(propMapping);</span>
-<span class="fc" id="L148">				InternalUtils.addMapSqlParameterSource(mapSqlParameterSource, val, propertyName, propMapping);</span>
+<span class="fc" id="L148">				sjmSupport.addMapSqlParameterSource(mapSqlParameterSource, val, propertyName, propMapping);</span>
 			}
 <span class="fc" id="L150">		}</span>
 <span class="fc" id="L151">		return mapSqlParameterSource;</span>
@@ -280,4 +280,4 @@ class UpdateOperation {
 	}
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 105f2d053ed7611a8346a6dc4cd7ff5703157136 2026-11-17T02:44:44</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 63905ad4756ea74bbab6d070e9c401dcb6f12a3b 2026-11-22T21:30:39</div></body></html>

@@ -54,7 +54,13 @@ class SimpleJdbcMapperSupport {
 
 	private final TableMappingProvider tableMappingProvider;
 
+	// Map key - classname
+	// value - the column sql string
 	private final SimpleCache<Class<?>, String> entitySqlColumnsCache = new SimpleCache<>();
+
+	// Map key - classname-tableAlias
+	// value - the column sql string
+	private final SimpleCache<String, String> entitySqlColumnsAliasCache = new SimpleCache<>(5000);
 
 	// Using Spring's DefaultConversionService as conversionService for
 	// SimpleJdbcMapper
@@ -65,10 +71,6 @@ class SimpleJdbcMapperSupport {
 	private Supplier<?> recordAuditedBySupplier;
 
 	private boolean conversionServiceManuallySet = false;
-
-	// Map key - classname-tableAlias
-	// value - the column sql string
-	private final SimpleCache<String, String> entitySqlColumnsAliasCache = new SimpleCache<>(5000);
 
 	/**
 	 * Constructor.

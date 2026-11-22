@@ -32,5 +32,4 @@ simplejdbcmapper,io.github.simplejdbcmapper.core,FindOperation,0,644,1,45,0,121,
 simplejdbcmapper,io.github.simplejdbcmapper.exception,OptimisticLockingException,0,4,0,0,0,2,0,1,0,1
 simplejdbcmapper,io.github.simplejdbcmapper.exception,MapperException,0,13,0,0,0,6,0,3,0,3
 simplejdbcmapper,io.github.simplejdbcmapper.exception,AnnotationException,0,4,0,0,0,2,0,1,0,1
-simplejdbcmapper,io.github.simplejdbcmapper.annotation,ColumnConstants,0,3,0,0,0,1,0,1,0,1
 simplejdbcmapper,io.github.simplejdbcmapper.annotation,IdType,0,15,0,0,0,2,0,1,0,1

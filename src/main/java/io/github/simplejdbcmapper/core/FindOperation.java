@@ -22,8 +22,6 @@ import java.util.Map;
 import java.util.Set;
 import java.util.StringJoiner;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.SqlParameterValue;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
@@ -38,8 +36,6 @@ import io.github.simplejdbcmapper.exception.MapperException;
  * @author Antony Joseph
  */
 class FindOperation {
-	private static final Logger logger = LoggerFactory.getLogger(FindOperation.class);
-
 	private static final String ENTITY_TYPE_MUST_NOT_BE_NULL = "entityType must not be null";
 	private final SimpleJdbcMapperSupport sjmSupport;
 

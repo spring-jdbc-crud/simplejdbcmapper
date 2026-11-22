@@ -2,6 +2,7 @@ package io.github.simplejdbcmapper.core;
 
 import static org.junit.jupiter.api.Assertions.assertArrayEquals;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
@@ -122,7 +123,7 @@ class MysqlSpecificTest {
 		var bigDecimalVal = new BigDecimal("10.23");
 		uObj.setBigDecimalData(bigDecimalVal);
 
-		uObj.setBooleanVal(true);
+		uObj.setBooleanVal(false);
 
 		uObj.setImage(new byte[] { 10, 20, 30 });
 
@@ -151,7 +152,7 @@ class MysqlSpecificTest {
 
 		assertArrayEquals(uObj.getImage(), tc.getImage());
 
-		assertTrue(tc.getBooleanVal());
+		assertFalse(tc.getBooleanVal());
 
 		SimpleDateFormat fmtTs = new SimpleDateFormat("yyyyMMdd HHmm");
 		assertEquals(fmtTs.format(timestampVal), fmtTs.format(tc.getJavaUtilDateTsData()));

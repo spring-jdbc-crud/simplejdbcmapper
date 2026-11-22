@@ -145,7 +145,7 @@ class UpdateOperation {
 			} else {
 				PropertyMapping propMapping = tableMapping.getPropertyMappingByPropertyName(propertyName);
 				Object val = ew.getPropertyValue(propMapping);
-				InternalUtils.addMapSqlParameterSource(mapSqlParameterSource, val, propertyName, propMapping);
+				sjmSupport.addMapSqlParameterSource(mapSqlParameterSource, val, propertyName, propMapping);
 			}
 		}
 		return mapSqlParameterSource;

@@ -21,10 +21,14 @@ import org.springframework.core.convert.ConversionService;
 import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.ResultSetExtractor;
+import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.JdbcClient;
+import org.springframework.jdbc.core.support.SqlBinaryValue;
+import org.springframework.jdbc.core.support.SqlCharacterValue;
 import org.springframework.util.Assert;
 
+import io.github.simplejdbcmapper.exception.MapperException;
 import io.github.simplejdbcmapper.relationship.RelationshipMapper;
 
 /**
@@ -145,16 +149,12 @@ class SimpleJdbcMapperSupport {
 	}
 
 	<T> EntityRowMapper<T> entityRowMapper(Class<T> entityType) {
-		return entityRowMapper(entityType, 1);
-	}
-
-	<T> EntityRowMapper<T> entityRowMapper(Class<T> entityType, int offset) {
 		TableMapping tableMapping = getTableMapping(entityType);
-		return new EntityRowMapper<>(tableMapping, conversionService, offset);
+		return new EntityRowMapper<>(tableMapping, conversionService, 1);
 	}
 
 	ResultSetExtractor<RelationshipMapper> resultSetExtractor(MultiEntity multiEntity) {
-		return new RelationshipMapperExtractor(multiEntity, this);
+		return new RelationshipMapperExtractor(multiEntity, tableMappingProvider, conversionService);
 	}
 
 	@SuppressWarnings("rawtypes")
@@ -171,4 +171,63 @@ class SimpleJdbcMapperSupport {
 		return tableMappingProvider.getTableMappingCache();
 	}
 
+	void addMapSqlParameterSource(MapSqlParameterSource mapSqlParameterSource, Object val, String paramName,
+			PropertyMapping propMapping) {
+		Integer columnSqlType = propMapping.getColumnSqlType();
+		if (propMapping.isStandardAttribute()) {
+			mapSqlParameterSource.addValue(paramName, val, columnSqlType);
+		} else if (propMapping.isEnumAttribute()) {
+			assignEnumMapSqlParameterSource(mapSqlParameterSource, val, paramName, columnSqlType);
+		} else if (propMapping.isBlobAttribute()) {
+			assignBlobMapSqlParameterSource(mapSqlParameterSource, val, paramName, columnSqlType);
+		} else if (propMapping.isClobAttribute()) {
+			assignClobMapSqlParameterSource(mapSqlParameterSource, val, paramName, columnSqlType);
+		} else if (propMapping.isWithConverterAttribute()) {
+			assignMapSqlParameterSourceWithConverter(mapSqlParameterSource, val, paramName, columnSqlType,
+					propMapping.getConverter());
+		}
+	}
+
+	void assignBlobMapSqlParameterSource(MapSqlParameterSource mapSqlParameterSource, Object val, String paramName,
+			Integer columnSqlType) {
+		if (val == null) {
+			mapSqlParameterSource.addValue(paramName, null, columnSqlType);
+		} else if (val instanceof byte[] byteArray) {
+			mapSqlParameterSource.addValue(paramName, new SqlBinaryValue(byteArray), columnSqlType);
+		} else {
+			throw new MapperException(val.getClass().getSimpleName() + " " + paramName
+					+ " : java type has to be byte[] for a BLOB mapping. No other type is supported.");
+		}
+	}
+
+	void assignClobMapSqlParameterSource(MapSqlParameterSource mapSqlParameterSource, Object val, String paramName,
+			Integer columnSqlType) {
+		if (val == null) {
+			mapSqlParameterSource.addValue(paramName, null, columnSqlType);
+		} else if (val instanceof String str) {
+			mapSqlParameterSource.addValue(paramName, new SqlCharacterValue(str), columnSqlType);
+		} else {
+			throw new MapperException(val.getClass().getSimpleName() + "." + paramName
+					+ " : java type has to be String for a CLOB mapping. No other type is supported");
+		}
+	}
+
+	void assignEnumMapSqlParameterSource(MapSqlParameterSource mapSqlParameterSource, Object val, String paramName,
+			Integer columnSqlType) {
+		if (val == null) {
+			mapSqlParameterSource.addValue(paramName, null, columnSqlType);
+		} else {
+			mapSqlParameterSource.addValue(paramName, ((Enum<?>) val).name(), columnSqlType);
+		}
+	}
+
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	void assignMapSqlParameterSourceWithConverter(MapSqlParameterSource mapSqlParameterSource, Object val,
+			String paramName, Integer columnSqlType, AttributeConverter converter) {
+		if (val == null) {
+			mapSqlParameterSource.addValue(paramName, null, columnSqlType);
+		} else {
+			mapSqlParameterSource.addValue(paramName, converter.convertToDatabaseColumn(val), columnSqlType);
+		}
+	}
 }

@@ -24,6 +24,7 @@ import java.util.Set;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.core.convert.ConversionService;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
@@ -38,11 +39,14 @@ import io.github.simplejdbcmapper.relationship.RelationshipMapper;
 class RelationshipMapperExtractor implements ResultSetExtractor<RelationshipMapper> {
 	private static final Logger logger = LoggerFactory.getLogger(RelationshipMapperExtractor.class);
 	private MultiEntity multiEntity;
-	private SimpleJdbcMapperSupport sjmSupport;
+	private TableMappingProvider tableMappingProvider;
+	private ConversionService conversionService;
 
-	public RelationshipMapperExtractor(MultiEntity multiEntity, SimpleJdbcMapperSupport sjmSupport) {
+	public RelationshipMapperExtractor(MultiEntity multiEntity, TableMappingProvider tableMappingProvider,
+			ConversionService conversionService) {
 		this.multiEntity = multiEntity;
-		this.sjmSupport = sjmSupport;
+		this.tableMappingProvider = tableMappingProvider;
+		this.conversionService = conversionService;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -87,7 +91,7 @@ class RelationshipMapperExtractor implements ResultSetExtractor<RelationshipMapp
 		for (Map.Entry<Class<?>, String> entry : multiEntity.getEntries()) {
 			Class<?> entityType = entry.getKey();
 			EntityRowMapper<?> rowMapper = getEntityRowMapperInstance(entityType, offset);
-			TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
+			TableMapping tableMapping = tableMappingProvider.getTableMapping(entityType);
 			Method idReadMethod = tableMapping.getIdPropertyMapping().getReadMethod();
 			entityExtractors.add(new EntityExtractor(entityType, rowMapper, new ArrayList(), idReadMethod,
 					tableMapping.getIdPropertyName(), new HashSet()));
@@ -97,7 +101,8 @@ class RelationshipMapperExtractor implements ResultSetExtractor<RelationshipMapp
 	}
 
 	private <T> EntityRowMapper<T> getEntityRowMapperInstance(Class<T> entityType, int offset) {
-		EntityRowMapper<T> rowMapper = sjmSupport.entityRowMapper(entityType, offset);
+		TableMapping tableMapping = tableMappingProvider.getTableMapping(entityType);
+		EntityRowMapper<T> rowMapper = new EntityRowMapper<>(tableMapping, conversionService, offset);
 		if (logger.isDebugEnabled()) {
 			logger.debug("EntityRowMapper: {}", rowMapper);
 		}

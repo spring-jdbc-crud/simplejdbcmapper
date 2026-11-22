@@ -116,7 +116,7 @@ public class Relationship {
 				throw new IllegalArgumentException("mainType and relatedType cannot be same.");
 			}
 			this.relatedType = relatedType;
-			this.relationshipType = RelationshipMapper.TO_ONE;
+			this.relationshipType = RelationshipUtil.TO_ONE;
 			this.toOne = new ToOne(mainType, relatedType);
 			return this;
 		}
@@ -127,15 +127,15 @@ public class Relationship {
 				throw new IllegalArgumentException("mainType and relatedType cannot be same.");
 			}
 			this.relatedType = relatedType;
-			this.relationshipType = RelationshipMapper.TO_MANY;
+			this.relationshipType = RelationshipUtil.TO_MANY;
 			this.toMany = new ToMany(mainType, relatedType);
 			return this;
 		}
 
 		public RelationshipFluent.Populate joinOn(String mainObjJoinProperty, String relatedObjJoinProperty) {
-			if (relationshipType.equals(RelationshipMapper.TO_ONE)) {
+			if (relationshipType.equals(RelationshipUtil.TO_ONE)) {
 				toOne.joinOn(mainObjJoinProperty, relatedObjJoinProperty);
-			} else if (relationshipType.equals(RelationshipMapper.TO_MANY)) {
+			} else if (relationshipType.equals(RelationshipUtil.TO_MANY)) {
 				toMany.joinOn(mainObjJoinProperty, relatedObjJoinProperty);
 			}
 			return this;
@@ -145,16 +145,16 @@ public class Relationship {
 				String fkPropertyToRelatedObjId) {
 			this.toMany = null;
 			this.throughType = throughType;
-			this.relationshipType = RelationshipMapper.TO_MANY_THROUGH;
+			this.relationshipType = RelationshipUtil.TO_MANY_THROUGH;
 			this.toManyThrough = new ToManyThrough(mainType, relatedType);
 			toManyThrough.through(throughType, fkPropertyToMainObjId, fkPropertyToRelatedObjId);
 			return this;
 		}
 
 		public Relationship populate(String mainObjPropertyToPopulate) {
-			if (relationshipType.equals(RelationshipMapper.TO_ONE)) {
+			if (relationshipType.equals(RelationshipUtil.TO_ONE)) {
 				toOne.populate(mainObjPropertyToPopulate);
-			} else if (relationshipType.equals(RelationshipMapper.TO_MANY)) {
+			} else if (relationshipType.equals(RelationshipUtil.TO_MANY)) {
 				toMany.populate(mainObjPropertyToPopulate);
 			} else {
 				// toManyThrough

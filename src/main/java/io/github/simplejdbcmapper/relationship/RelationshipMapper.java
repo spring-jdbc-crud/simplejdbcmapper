@@ -13,16 +13,12 @@
  */
 package io.github.simplejdbcmapper.relationship;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
 import org.springframework.util.Assert;
-import org.springframework.util.ReflectionUtils;
-import org.springframework.util.StringUtils;
 
 /**
  * This holds the results from a multi-entity query. See
@@ -53,13 +49,6 @@ import org.springframework.util.StringUtils;
  * @author Antony Joseph
  */
 public class RelationshipMapper implements GetListSpec {
-	static final String IS_PREFIX = "is";
-	static final String GET_PREFIX = "get";
-	static final String SET_PREFIX = "set";
-
-	static final String TO_MANY = "toMany";
-	static final String TO_ONE = "toOne";
-	static final String TO_MANY_THROUGH = "toManyThrough";
 
 	private List<ExtractorEntityResult> results = new ArrayList<>();
 
@@ -120,9 +109,9 @@ public class RelationshipMapper implements GetListSpec {
 	void process(Relationship rel) {
 		List<?> mainList = getList(rel.getMainType());
 		List<?> relatedList = getList(rel.getRelatedType());
-		if (rel.getRelationshipType().equals(TO_ONE)) {
+		if (rel.getRelationshipType().equals(RelationshipUtil.TO_ONE)) {
 			rel.getToOne().process(mainList, relatedList);
-		} else if (rel.getRelationshipType().equals(TO_MANY)) {
+		} else if (rel.getRelationshipType().equals(RelationshipUtil.TO_MANY)) {
 			rel.getToMany().process(mainList, relatedList);
 		} else {
 			// toManyThrough
@@ -163,42 +152,6 @@ public class RelationshipMapper implements GetListSpec {
 			}
 		}
 		throw new IllegalArgumentException(type + " was not part of the query results");
-	}
-
-	static Method getReadMethod(Class<?> type, String propertyName) {
-		Method m = ReflectionUtils.findMethod(type, GET_PREFIX + StringUtils.capitalize(propertyName));
-		if (m == null) {
-			m = ReflectionUtils.findMethod(type, IS_PREFIX + StringUtils.capitalize(propertyName));
-		}
-		if (m == null) {
-			throw new IllegalArgumentException(
-					"Invalid argument. Could not find getter for " + type.getName() + "." + propertyName);
-		}
-		// turn off jvm access verification for invoke()
-		m.trySetAccessible();
-		return m;
-	}
-
-	static Method getWriteMethod(Class<?> type, String propertyName) {
-		Class<?> propertyType = getPropertyType(type, propertyName);
-		Method m = ReflectionUtils.findMethod(type, SET_PREFIX + StringUtils.capitalize(propertyName), propertyType);
-		if (m == null) {
-			throw new IllegalArgumentException(
-					"Invalid argument. Could not find setter for " + type.getName() + "." + propertyName);
-		}
-		// turn off jvm access verification for invoke()
-		m.trySetAccessible();
-		return m;
-	}
-
-	static Class<?> getPropertyType(Class<?> type, String propertyName) {
-		Field field = ReflectionUtils.findField(type, propertyName);
-		if (field != null) {
-			return field.getType();
-		} else {
-			throw new IllegalArgumentException(
-					"Invalid argument. Property name " + propertyName + " does not exist for " + type.getName());
-		}
 	}
 
 	record ExtractorEntityResult(Class<?> entityType, List<?> list, String idPropertyName) {

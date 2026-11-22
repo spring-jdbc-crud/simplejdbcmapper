@@ -48,20 +48,20 @@ class ToMany {
 		Assert.notNull(mainObjIdProperty, "mainObjIdProperty must not be null");
 		Assert.notNull(relatedObjFkProperty, "relatedObjFkProperty must not be null");
 
-		Class<?> mainObjIdPropertyType = RelationshipMapper.getPropertyType(mainType, mainObjIdProperty);
-		Class<?> relatedObjFkPropertyType = RelationshipMapper.getPropertyType(relatedType, relatedObjFkProperty);
+		Class<?> mainObjIdPropertyType = RelationshipUtil.getPropertyType(mainType, mainObjIdProperty);
+		Class<?> relatedObjFkPropertyType = RelationshipUtil.getPropertyType(relatedType, relatedObjFkProperty);
 		if (mainObjIdPropertyType != relatedObjFkPropertyType) {
 			throw new IllegalArgumentException("Conflicting property types. Property type of "
 					+ mainType.getSimpleName() + "." + mainObjIdProperty + " and " + relatedType.getSimpleName() + "."
 					+ relatedObjFkProperty + " are not the same.");
 		}
-		this.mainObjIdPropertyReadMethod = RelationshipMapper.getReadMethod(mainType, mainObjIdProperty);
-		this.relatedObjFkPropertyReadMethod = RelationshipMapper.getReadMethod(relatedType, relatedObjFkProperty);
+		this.mainObjIdPropertyReadMethod = RelationshipUtil.getReadMethod(mainType, mainObjIdProperty);
+		this.relatedObjFkPropertyReadMethod = RelationshipUtil.getReadMethod(relatedType, relatedObjFkProperty);
 	}
 
 	void populate(String mainObjPropertyToPopulate) {
 		Assert.notNull(mainObjPropertyToPopulate, "mainObjPropertyToPopulate must not be null");
-		this.mainObjPropertyToPopulateWriteMethod = RelationshipMapper.getWriteMethod(mainType,
+		this.mainObjPropertyToPopulateWriteMethod = RelationshipUtil.getWriteMethod(mainType,
 				mainObjPropertyToPopulate);
 	}
 

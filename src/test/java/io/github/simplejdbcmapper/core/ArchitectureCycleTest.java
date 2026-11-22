@@ -12,7 +12,15 @@ import com.tngtech.archunit.core.importer.Location;
 import com.tngtech.archunit.library.dependencies.SliceAssignment;
 import com.tngtech.archunit.library.dependencies.SliceIdentifier;
 
-class ClassCycleTest {
+class ArchitectureCycleTest {
+	@Test
+	void packagesShouldBeFreeOfCycles() {
+		JavaClasses importedClasses = new ClassFileImporter()
+				.withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
+				.importPackages("io.github.simplejdbcmapper");
+
+		slices().matching("io.github.simplejdbcmapper.(*)..").should().beFreeOfCycles().check(importedClasses);
+	}
 
 	@Test
 	void classCycleTest() {
@@ -21,6 +29,7 @@ class ClassCycleTest {
 					@Override
 					public boolean includes(Location location) {
 						boolean val = true;
+						// ignore relationship inner classes
 						if (location.contains("Relationship$RelationshipBuilder")
 								|| location.contains("RelationshipFluent$")) {
 							val = false;
@@ -42,5 +51,4 @@ class ClassCycleTest {
 			}
 		}).should().beFreeOfCycles().check(classes);
 	}
-
 }

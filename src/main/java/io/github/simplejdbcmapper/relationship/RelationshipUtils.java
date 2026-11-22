@@ -24,7 +24,7 @@ import org.springframework.util.StringUtils;
  * 
  * @author antonyjoseph
  */
-class RelationshipUtil {
+class RelationshipUtils {
 	static final String IS_PREFIX = "is";
 	static final String GET_PREFIX = "get";
 	static final String SET_PREFIX = "set";
@@ -67,6 +67,9 @@ class RelationshipUtil {
 			throw new IllegalArgumentException(
 					"Invalid argument. Property name " + propertyName + " does not exist for " + type.getName());
 		}
+	}
+
+	private RelationshipUtils() {
 	}
 
 }

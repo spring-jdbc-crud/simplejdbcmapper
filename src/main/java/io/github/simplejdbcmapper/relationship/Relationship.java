@@ -116,7 +116,7 @@ public class Relationship {
 				throw new IllegalArgumentException("mainType and relatedType cannot be same.");
 			}
 			this.relatedType = relatedType;
-			this.relationshipType = RelationshipUtil.TO_ONE;
+			this.relationshipType = RelationshipUtils.TO_ONE;
 			this.toOne = new ToOne(mainType, relatedType);
 			return this;
 		}
@@ -127,15 +127,15 @@ public class Relationship {
 				throw new IllegalArgumentException("mainType and relatedType cannot be same.");
 			}
 			this.relatedType = relatedType;
-			this.relationshipType = RelationshipUtil.TO_MANY;
+			this.relationshipType = RelationshipUtils.TO_MANY;
 			this.toMany = new ToMany(mainType, relatedType);
 			return this;
 		}
 
 		public RelationshipFluent.Populate joinOn(String mainObjJoinProperty, String relatedObjJoinProperty) {
-			if (relationshipType.equals(RelationshipUtil.TO_ONE)) {
+			if (relationshipType.equals(RelationshipUtils.TO_ONE)) {
 				toOne.joinOn(mainObjJoinProperty, relatedObjJoinProperty);
-			} else if (relationshipType.equals(RelationshipUtil.TO_MANY)) {
+			} else if (relationshipType.equals(RelationshipUtils.TO_MANY)) {
 				toMany.joinOn(mainObjJoinProperty, relatedObjJoinProperty);
 			}
 			return this;
@@ -145,16 +145,16 @@ public class Relationship {
 				String fkPropertyToRelatedObjId) {
 			this.toMany = null;
 			this.throughType = throughType;
-			this.relationshipType = RelationshipUtil.TO_MANY_THROUGH;
+			this.relationshipType = RelationshipUtils.TO_MANY_THROUGH;
 			this.toManyThrough = new ToManyThrough(mainType, relatedType);
 			toManyThrough.through(throughType, fkPropertyToMainObjId, fkPropertyToRelatedObjId);
 			return this;
 		}
 
 		public Relationship populate(String mainObjPropertyToPopulate) {
-			if (relationshipType.equals(RelationshipUtil.TO_ONE)) {
+			if (relationshipType.equals(RelationshipUtils.TO_ONE)) {
 				toOne.populate(mainObjPropertyToPopulate);
-			} else if (relationshipType.equals(RelationshipUtil.TO_MANY)) {
+			} else if (relationshipType.equals(RelationshipUtils.TO_MANY)) {
 				toMany.populate(mainObjPropertyToPopulate);
 			} else {
 				// toManyThrough

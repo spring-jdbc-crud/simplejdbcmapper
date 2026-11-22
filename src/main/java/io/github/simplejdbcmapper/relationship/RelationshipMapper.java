@@ -109,9 +109,9 @@ public class RelationshipMapper implements GetListSpec {
 	void process(Relationship rel) {
 		List<?> mainList = getList(rel.getMainType());
 		List<?> relatedList = getList(rel.getRelatedType());
-		if (rel.getRelationshipType().equals(RelationshipUtil.TO_ONE)) {
+		if (rel.getRelationshipType().equals(RelationshipUtils.TO_ONE)) {
 			rel.getToOne().process(mainList, relatedList);
-		} else if (rel.getRelationshipType().equals(RelationshipUtil.TO_MANY)) {
+		} else if (rel.getRelationshipType().equals(RelationshipUtils.TO_MANY)) {
 			rel.getToMany().process(mainList, relatedList);
 		} else {
 			// toManyThrough

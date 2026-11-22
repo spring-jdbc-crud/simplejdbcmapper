@@ -68,9 +68,9 @@ class ToManyThrough {
 			return;
 		}
 		validateThrough(mainObjIdProperty, relatedObjIdProperty);
-		Method mainObjIdPropertyReadMethod = RelationshipUtil.getReadMethod(mainType, mainObjIdProperty);
-		Method relatedObjIdPropertyReadMethod = RelationshipUtil.getReadMethod(relatedType, relatedObjIdProperty);
-		Method mainObjPropertyToPopulateWriteMethod = RelationshipUtil.getWriteMethod(mainType,
+		Method mainObjIdPropertyReadMethod = RelationshipUtils.getReadMethod(mainType, mainObjIdProperty);
+		Method relatedObjIdPropertyReadMethod = RelationshipUtils.getReadMethod(relatedType, relatedObjIdProperty);
+		Method mainObjPropertyToPopulateWriteMethod = RelationshipUtils.getWriteMethod(mainType,
 				mainObjPropertyToPopulate);
 		ThroughJoiner throughJoiner = new ThroughJoiner(throughList, fkPropertyToMainObjId, fkPropertyToRelatedObjId,
 				throughType);
@@ -86,16 +86,16 @@ class ToManyThrough {
 	}
 
 	private void validateThrough(String mainObjIdProperty, String relatedObjIdProperty) {
-		Class<?> mainObjIdPropertyType = RelationshipUtil.getPropertyType(mainType, mainObjIdProperty);
-		Class<?> fkPropertyToMainObjIdType = RelationshipUtil.getPropertyType(throughType, fkPropertyToMainObjId);
+		Class<?> mainObjIdPropertyType = RelationshipUtils.getPropertyType(mainType, mainObjIdProperty);
+		Class<?> fkPropertyToMainObjIdType = RelationshipUtils.getPropertyType(throughType, fkPropertyToMainObjId);
 		if (mainObjIdPropertyType != fkPropertyToMainObjIdType) {
 			throw new IllegalArgumentException("Conflicting property types. Property type of "
 					+ mainType.getSimpleName() + "." + mainObjIdProperty + " and " + throughType.getSimpleName() + "."
 					+ fkPropertyToMainObjId + " are not the same.");
 		}
 
-		Class<?> relatedObjIdPropertyType = RelationshipUtil.getPropertyType(relatedType, relatedObjIdProperty);
-		Class<?> fkPropertyToRelatedObjIdType = RelationshipUtil.getPropertyType(throughType, fkPropertyToRelatedObjId);
+		Class<?> relatedObjIdPropertyType = RelationshipUtils.getPropertyType(relatedType, relatedObjIdProperty);
+		Class<?> fkPropertyToRelatedObjIdType = RelationshipUtils.getPropertyType(throughType, fkPropertyToRelatedObjId);
 		if (relatedObjIdPropertyType != fkPropertyToRelatedObjIdType) {
 			throw new IllegalArgumentException("Conflicting property types. Property type of "
 					+ relatedType.getSimpleName() + "." + relatedObjIdProperty + " and " + throughType.getSimpleName()
@@ -159,8 +159,8 @@ class ToManyThrough {
 			if (CollectionUtils.isEmpty(throughList)) {
 				return;
 			}
-			Method fkPropertyToMainObjIdReadMethod = RelationshipUtil.getReadMethod(throughType, fkPropertyToMainObjId);
-			Method fkPropertyToRelatedObjIdReadMethod = RelationshipUtil.getReadMethod(throughType,
+			Method fkPropertyToMainObjIdReadMethod = RelationshipUtils.getReadMethod(throughType, fkPropertyToMainObjId);
+			Method fkPropertyToRelatedObjIdReadMethod = RelationshipUtils.getReadMethod(throughType,
 					fkPropertyToRelatedObjId);
 			try {
 				for (Object throughObj : throughList) {

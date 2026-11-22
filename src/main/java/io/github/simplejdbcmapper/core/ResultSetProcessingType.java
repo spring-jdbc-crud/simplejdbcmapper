@@ -23,8 +23,8 @@ import java.math.BigDecimal;
  */
 enum ResultSetProcessingType {
 
-	UNKNOWN, BIGDECIMAL, BOOLEAN, BYTEARRAY, BYTE, DATE, DOUBLE, ENUM, FLOAT, INTEGER, LONG, NUMBER, SHORT, STRING,
-	TIMESTAMP, TIME, UTILDATE, CUSTOMCONVERTER;
+	BIGDECIMAL, BOOLEAN, BYTEARRAY, BYTE, DATE, DOUBLE, ENUM, FLOAT, INTEGER, LONG, NUMBER, SHORT, STRING, TIMESTAMP,
+	TIME, UTILDATE, CUSTOMCONVERTER, UNKNOWN;
 
 	public static ResultSetProcessingType getResultSetProcessingType(Class<?> type, boolean isAttributeWithConverter) {
 		if (isAttributeWithConverter) {

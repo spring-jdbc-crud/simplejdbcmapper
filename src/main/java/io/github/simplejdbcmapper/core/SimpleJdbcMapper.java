@@ -406,7 +406,7 @@ public final class SimpleJdbcMapper {
 	 * 
 	 */
 	public String getSqlColumns(Class<?> entityType) {
-		return findOperation.getSqlColumns(entityType);
+		return simpleJdbcMapperSupport.getSqlColumns(entityType);
 	}
 
 	/**
@@ -437,7 +437,7 @@ public final class SimpleJdbcMapper {
 	 */
 	@Deprecated(since = "2.4.4", forRemoval = true)
 	public String getEntitySqlColumns(Class<?> entityType) {
-		return findOperation.getSqlColumns(entityType);
+		return simpleJdbcMapperSupport.getSqlColumns(entityType);
 	}
 
 	/**
@@ -472,7 +472,7 @@ public final class SimpleJdbcMapper {
 	 * 
 	 */
 	public String getSqlColumns(Class<?> entityType, String tableAlias) {
-		return findOperation.getSqlColumns(entityType, tableAlias);
+		return simpleJdbcMapperSupport.getSqlColumns(entityType, tableAlias);
 	}
 
 	/**
@@ -513,7 +513,7 @@ public final class SimpleJdbcMapper {
 	 */
 	@Deprecated(since = "2.4.4", forRemoval = true)
 	public String getEntitySqlColumns(Class<?> entityType, String tableAlias) {
-		return findOperation.getSqlColumns(entityType, tableAlias);
+		return simpleJdbcMapperSupport.getSqlColumns(entityType, tableAlias);
 	}
 
 	/**
@@ -542,7 +542,7 @@ public final class SimpleJdbcMapper {
 	 * @return sql columns string
 	 */
 	public String getSqlColumns(MultiEntity multiEntity) {
-		return findOperation.getSqlColumns(multiEntity);
+		return simpleJdbcMapperSupport.getSqlColumns(multiEntity);
 	}
 
 	/**
@@ -574,7 +574,7 @@ public final class SimpleJdbcMapper {
 	 */
 	@Deprecated(since = "2.4.4", forRemoval = true)
 	public String getMultiEntitySqlColumns(MultiEntity multiEntity) {
-		return findOperation.getSqlColumns(multiEntity);
+		return simpleJdbcMapperSupport.getSqlColumns(multiEntity);
 	}
 
 	/**

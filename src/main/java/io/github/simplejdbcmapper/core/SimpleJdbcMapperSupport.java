@@ -13,6 +13,8 @@
  */
 package io.github.simplejdbcmapper.core;
 
+import java.util.Map;
+import java.util.StringJoiner;
 import java.util.function.Supplier;
 
 import javax.sql.DataSource;
@@ -37,6 +39,7 @@ import io.github.simplejdbcmapper.relationship.RelationshipMapper;
  * @author Antony Joseph
  */
 class SimpleJdbcMapperSupport {
+
 	private final DataSource dataSource;
 
 	private final String schemaName;
@@ -51,6 +54,8 @@ class SimpleJdbcMapperSupport {
 
 	private final TableMappingProvider tableMappingProvider;
 
+	private final SimpleCache<Class<?>, String> entitySqlColumnsCache = new SimpleCache<>();
+
 	// Using Spring's DefaultConversionService as conversionService for
 	// SimpleJdbcMapper
 	private ConversionService conversionService = new DefaultConversionService();
@@ -60,6 +65,10 @@ class SimpleJdbcMapperSupport {
 	private Supplier<?> recordAuditedBySupplier;
 
 	private boolean conversionServiceManuallySet = false;
+
+	// Map key - classname-tableAlias
+	// value - the column sql string
+	private final SimpleCache<String, String> entitySqlColumnsAliasCache = new SimpleCache<>(5000);
 
 	/**
 	 * Constructor.
@@ -113,6 +122,53 @@ class SimpleJdbcMapperSupport {
 
 	public ConversionService getConversionService() {
 		return conversionService;
+	}
+
+	public String getSqlColumns(Class<?> entityType) {
+		Assert.notNull(entityType, "entityType must not be null");
+		String columnsSql = entitySqlColumnsCache.get(entityType);
+		if (columnsSql == null) {
+			TableMapping tableMapping = getTableMapping(entityType);
+			StringJoiner sj = new StringJoiner(", ", " ", " ");
+			for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {
+				sj.add(propMapping.getColumnName());
+			}
+			columnsSql = sj.toString();
+			entitySqlColumnsCache.put(entityType, columnsSql);
+		}
+		return columnsSql;
+	}
+
+	public String getSqlColumns(Class<?> entityType, String tableAlias) {
+		Assert.notNull(entityType, "entityType must not be null");
+		InternalUtils.validateTableAlias(tableAlias);
+		String cacheKey = entityType.getName() + "-" + tableAlias;
+		String columnsSql = entitySqlColumnsAliasCache.get(cacheKey);
+		if (columnsSql == null) {
+			String tablePrefix = tableAlias + ".";
+			TableMapping tableMapping = getTableMapping(entityType);
+			StringJoiner sj = new StringJoiner(", ");
+			for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {
+				sj.add(tablePrefix + propMapping.getColumnName());
+			}
+			columnsSql = sj.toString();
+			entitySqlColumnsAliasCache.put(cacheKey, columnsSql);
+		}
+		return columnsSql;
+	}
+
+	public String getSqlColumns(MultiEntity multiEntity) {
+		Assert.notNull(multiEntity, "multiEntity must not be null");
+		StringBuilder sb = new StringBuilder(256);
+		int cnt = 0;
+		for (Map.Entry<Class<?>, String> entry : multiEntity.getEntries()) {
+			if (cnt > 0) {
+				sb.append(", ");
+			}
+			sb.append(getSqlColumns(entry.getKey(), entry.getValue()));
+			cnt++;
+		}
+		return sb.toString();
 	}
 
 	/**
@@ -169,6 +225,14 @@ class SimpleJdbcMapperSupport {
 
 	SimpleCache<Class<?>, TableMapping> getTableMappingCache() {
 		return tableMappingProvider.getTableMappingCache();
+	}
+
+	SimpleCache<Class<?>, String> getEntitySqlColumnsCache() {
+		return entitySqlColumnsCache;
+	}
+
+	SimpleCache<String, String> getEntitySqlColumnsAliasCache() {
+		return entitySqlColumnsAliasCache;
 	}
 
 	void addMapSqlParameterSource(MapSqlParameterSource mapSqlParameterSource, Object val, String paramName,

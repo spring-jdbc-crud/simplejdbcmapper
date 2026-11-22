@@ -8,7 +8,7 @@ import com.tngtech.archunit.core.domain.JavaClasses;
 import com.tngtech.archunit.core.importer.ClassFileImporter;
 import com.tngtech.archunit.core.importer.ImportOption;
 
-class ArchitectureTest {
+class PackageCycleTest {
 	@Test
 	void packagesShouldBeFreeOfCycles() {
 		JavaClasses importedClasses = new ClassFileImporter()

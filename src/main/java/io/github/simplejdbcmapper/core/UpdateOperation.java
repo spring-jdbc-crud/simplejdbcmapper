@@ -84,14 +84,6 @@ class UpdateOperation {
 		return updateInternal(ew, sqlAndParams, tableMapping);
 	}
 
-	SimpleCache<Class<?>, SqlAndParams> getUpdateSqlCache() {
-		return updateSqlCache;
-	}
-
-	SimpleCache<String, SqlAndParams> getUpdateSpecificPropertiesSqlCache() {
-		return updateSpecificPropertiesSqlCache;
-	}
-
 	private Integer updateInternal(EntityWrapper ew, SqlAndParams sqlAndParams, TableMapping tableMapping) {
 		Assert.notNull(sqlAndParams, "sqlAndParams must not be null");
 		if (ew.getPropertyValue(tableMapping.getIdPropertyMapping()) == null) {

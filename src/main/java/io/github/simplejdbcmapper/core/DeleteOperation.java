@@ -50,8 +50,4 @@ class DeleteOperation {
 				new SqlParameterValue(tableMapping.getIdPropertyMapping().getColumnSqlType(), id));
 	}
 
-	SimpleCache<Class<?>, String> getDeleteSqlCache() {
-		return deleteSqlCache;
-	}
-
 }

@@ -63,10 +63,6 @@ class InsertOperation {
 		}
 	}
 
-	SimpleCache<Class<?>, SimpleJdbcInsert> getInsertSqlCache() {
-		return insertSqlCache;
-	}
-
 	private MapSqlParameterSource createMapSqlParameterSource(EntityWrapper ew, TableMapping tableMapping) {
 		MapSqlParameterSource mapSqlParameterSource = new MapSqlParameterSource();
 		for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {

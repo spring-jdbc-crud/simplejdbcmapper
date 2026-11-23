@@ -32,7 +32,7 @@ class CachingTest {
 	@Test
 	void findByIdCache_test() {
 		FindOperation fo = TestUtils.getFindOperation(sjm);
-		SimpleCache<Class<?>, String> cache = fo.getFindByIdSqlCache();
+		SimpleCache<Class<?>, String> cache = TestUtils.getFindByIdSqlCache(fo);
 		cache.clear();
 
 		sjm.findById(Order.class, 1);
@@ -48,7 +48,7 @@ class CachingTest {
 	@Test
 	void insertCache_test() {
 		InsertOperation io = TestUtils.getInsertOperation(sjm);
-		SimpleCache<Class<?>, SimpleJdbcInsert> cache = io.getInsertSqlCache();
+		SimpleCache<Class<?>, SimpleJdbcInsert> cache = TestUtils.getInsertSqlCache(io);
 		cache.clear();
 
 		Order order = new Order();
@@ -79,7 +79,7 @@ class CachingTest {
 	@Test
 	void updateCache_test() {
 		UpdateOperation uo = TestUtils.getUpdateOperation(sjm);
-		SimpleCache<Class<?>, SqlAndParams> cache = uo.getUpdateSqlCache();
+		SimpleCache<Class<?>, SqlAndParams> cache = TestUtils.getUpdateSqlCache(uo);
 		cache.clear();
 
 		Customer customer = new Customer();
@@ -117,7 +117,7 @@ class CachingTest {
 	@Test
 	void updateSpecificPropertiesCache_test() {
 		UpdateOperation uo = TestUtils.getUpdateOperation(sjm);
-		SimpleCache<String, SqlAndParams> cache = uo.getUpdateSpecificPropertiesSqlCache();
+		SimpleCache<String, SqlAndParams> cache = TestUtils.getUpdateSpecificPropertiesSqlCache(uo);
 		cache.clear();
 
 		ProductWithNoAuditAnnotationFields product = new ProductWithNoAuditAnnotationFields();
@@ -157,10 +157,11 @@ class CachingTest {
 	}
 
 	@Test
-	void entitySqlColumnsCache_test() {
+	void sqlColumnsCache_test() {
 		SimpleJdbcMapperSupport sjms = TestUtils.getSimpleJdbcMapperSupport(sjm);
 		SqlColumnsProvider scp = TestUtils.getSqlColumnsProvider(sjms);
-		SimpleCache<Class<?>, String> cache = scp.getSqlColumnsCache();
+
+		SimpleCache<Class<?>, String> cache = TestUtils.getSqlColumnsCache(scp);
 		cache.clear();
 
 		sjms.getSqlColumns(Customer.class);
@@ -178,10 +179,10 @@ class CachingTest {
 	}
 
 	@Test
-	void entitySqlColumnsAliasCache_test() {
+	void sqlColumnsAliasCache_test() {
 		SimpleJdbcMapperSupport sjms = TestUtils.getSimpleJdbcMapperSupport(sjm);
 		SqlColumnsProvider scp = TestUtils.getSqlColumnsProvider(sjms);
-		SimpleCache<String, String> cache = scp.getSqlColumnsAliasCache();
+		SimpleCache<String, String> cache = TestUtils.getSqlColumnsAliasCache(scp);
 		cache.clear();
 
 		sjms.getSqlColumns(Customer.class, "t1");
@@ -203,8 +204,8 @@ class CachingTest {
 
 	@Test
 	void deleteSqlCache_test() {
-		DeleteOperation op = TestUtils.getDeleteOperation(sjm);
-		SimpleCache<Class<?>, String> cache = op.getDeleteSqlCache();
+		DeleteOperation dop = TestUtils.getDeleteOperation(sjm);
+		SimpleCache<Class<?>, String> cache = TestUtils.getDeleteSqlCache(dop);
 		cache.clear();
 
 		Order ord = new Order();
@@ -229,7 +230,7 @@ class CachingTest {
 	void tableMappingCache_test() {
 		SimpleJdbcMapperSupport sjms = TestUtils.getSimpleJdbcMapperSupport(sjm);
 		TableMappingProvider tmpr = TestUtils.getTableMappingProvider(sjms);
-		SimpleCache<Class<?>, TableMapping> cache = tmpr.getTableMappingCache();
+		SimpleCache<Class<?>, TableMapping> cache = TestUtils.getTableMappingCache(tmpr);
 		cache.clear();
 
 		sjm.findById(Customer.class, 1);

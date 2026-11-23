@@ -7,6 +7,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -24,15 +25,21 @@ class TransactionTest {
 	void beforeMethod() {
 		SimpleJdbcMapperSupport sjmSupport = TestUtils.getSimpleJdbcMapperSupport(sjm);
 		TableMappingProvider tmpr = TestUtils.getTableMappingProvider(sjmSupport);
+		SimpleCache<Class<?>, TableMapping> tableMappingCache = TestUtils.getTableMappingCache(tmpr);
 
 		FindOperation fo = TestUtils.getFindOperation(sjm);
-		InsertOperation io = TestUtils.getInsertOperation(sjm);
-		UpdateOperation uo = TestUtils.getUpdateOperation(sjm);
+		SimpleCache<Class<?>, String> findByIdSqlCache = TestUtils.getFindByIdSqlCache(fo);
 
-		tmpr.getTableMappingCache().clear();
-		io.getInsertSqlCache().clear();
-		fo.getFindByIdSqlCache().clear();
-		uo.getUpdateSqlCache().clear();
+		InsertOperation io = TestUtils.getInsertOperation(sjm);
+		SimpleCache<Class<?>, SimpleJdbcInsert> insertSqlCache = TestUtils.getInsertSqlCache(io);
+
+		UpdateOperation uo = TestUtils.getUpdateOperation(sjm);
+		SimpleCache<Class<?>, SqlAndParams> updateSqlCache = TestUtils.getUpdateSqlCache(uo);
+
+		tableMappingCache.clear();
+		findByIdSqlCache.clear();
+		insertSqlCache.clear();
+		updateSqlCache.clear();
 	}
 
 	@Test

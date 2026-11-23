@@ -72,10 +72,6 @@ class TableMappingProvider {
 		return tableMapping;
 	}
 
-	SimpleCache<Class<?>, TableMapping> getTableMappingCache() {
-		return tableMappingCache;
-	}
-
 	private List<PropertyMapping> getPropertyMappings(Class<?> entityType, List<Field> fields) {
 		// key:propertyName, value:PropertyMapping. LinkedHashMap to maintain order of
 		// properties
@@ -140,8 +136,8 @@ class TableMappingProvider {
 
 	private void assignResultSetProcessingType(List<PropertyMapping> propertyMappings) {
 		for (PropertyMapping propMapping : propertyMappings) {
-			ResultSetProcessingType rsType = ResultSetProcessingType.getResultSetProcessingType(propMapping.getPropertyType(),
-					propMapping.isWithConverterAttribute());
+			ResultSetProcessingType rsType = ResultSetProcessingType
+					.getResultSetProcessingType(propMapping.getPropertyType(), propMapping.isWithConverterAttribute());
 			propMapping.setResultSetProcessingType(rsType);
 		}
 	}

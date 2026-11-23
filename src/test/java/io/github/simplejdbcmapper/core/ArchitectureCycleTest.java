@@ -23,8 +23,8 @@ class ArchitectureCycleTest {
 	}
 
 	@Test
-	void classCycleTest() {
-		JavaClasses classes = new ClassFileImporter().withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
+	void classesShouldBeFreeOfCycles() {
+		JavaClasses importedClasses = new ClassFileImporter().withImportOption(ImportOption.Predefined.DO_NOT_INCLUDE_TESTS)
 				.withImportOption(new ImportOption() {
 					@Override
 					public boolean includes(Location location) {
@@ -49,6 +49,6 @@ class ArchitectureCycleTest {
 			public String getDescription() {
 				return "each individual class";
 			}
-		}).should().beFreeOfCycles().check(classes);
+		}).should().beFreeOfCycles().check(importedClasses);
 	}
 }

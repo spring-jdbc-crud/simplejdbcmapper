@@ -201,10 +201,6 @@ class FindOperation {
 		return map;
 	}
 
-	SimpleCache<Class<?>, String> getFindByIdSqlCache() {
-		return findByIdSqlCache;
-	}
-
 	/**
 	 * @deprecated
 	 */

@@ -80,11 +80,4 @@ class SqlColumnsProvider {
 		return sb.toString();
 	}
 
-	SimpleCache<Class<?>, String> getSqlColumnsCache() {
-		return sqlColumnsCache;
-	}
-
-	SimpleCache<String, String> getSqlColumnsAliasCache() {
-		return sqlColumnsAliasCache;
-	}
 }

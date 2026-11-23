@@ -201,42 +201,38 @@ class FindOperation {
 <span class="fc" id="L201">		return map;</span>
 	}
 
-	SimpleCache&lt;Class&lt;?&gt;, String&gt; getFindByIdSqlCache() {
-<span class="fc" id="L205">		return findByIdSqlCache;</span>
-	}
-
 	/**
 	 * @deprecated
 	 */
 	@Deprecated(since = &quot;2.5.1&quot;, forRemoval = true)
 	private String orderByClause(Class&lt;?&gt; entityType, SortBy[] sortByArray, TableMapping tableMapping) {
-<span class="fc bfc" id="L213" title="All 2 branches covered.">		if (sortByArray.length &gt; 0) {</span>
-<span class="fc" id="L214">			StringBuilder clause = new StringBuilder(64);</span>
-<span class="fc" id="L215">			clause.append(&quot; ORDER BY &quot;);</span>
-<span class="fc" id="L216">			int cnt = 0;</span>
-<span class="fc bfc" id="L217" title="All 2 branches covered.">			for (SortBy sortBy : sortByArray) {</span>
-<span class="fc" id="L218">				PropertyMapping propMapping = tableMapping.getPropertyMappingByPropertyName(sortBy.getPropertyName());</span>
-<span class="fc bfc" id="L219" title="All 2 branches covered.">				if (propMapping == null) {</span>
-<span class="fc" id="L220">					throw new IllegalArgumentException(</span>
-<span class="fc" id="L221">							sortBy.getPropertyName() + &quot; is not a mapped property for class &quot; + entityType.getName());</span>
+<span class="fc bfc" id="L209" title="All 2 branches covered.">		if (sortByArray.length &gt; 0) {</span>
+<span class="fc" id="L210">			StringBuilder clause = new StringBuilder(64);</span>
+<span class="fc" id="L211">			clause.append(&quot; ORDER BY &quot;);</span>
+<span class="fc" id="L212">			int cnt = 0;</span>
+<span class="fc bfc" id="L213" title="All 2 branches covered.">			for (SortBy sortBy : sortByArray) {</span>
+<span class="fc" id="L214">				PropertyMapping propMapping = tableMapping.getPropertyMappingByPropertyName(sortBy.getPropertyName());</span>
+<span class="fc bfc" id="L215" title="All 2 branches covered.">				if (propMapping == null) {</span>
+<span class="fc" id="L216">					throw new IllegalArgumentException(</span>
+<span class="fc" id="L217">							sortBy.getPropertyName() + &quot; is not a mapped property for class &quot; + entityType.getName());</span>
 				}
-<span class="fc bfc" id="L223" title="All 2 branches covered.">				if (cnt &gt; 0) {</span>
-<span class="fc" id="L224">					clause.append(&quot;, &quot;);</span>
+<span class="fc bfc" id="L219" title="All 2 branches covered.">				if (cnt &gt; 0) {</span>
+<span class="fc" id="L220">					clause.append(&quot;, &quot;);</span>
 				}
-<span class="fc" id="L226">				clause.append(propMapping.getColumnName()).append(&quot; &quot;).append(sortBy.getDirection());</span>
-<span class="fc" id="L227">				cnt++;</span>
+<span class="fc" id="L222">				clause.append(propMapping.getColumnName()).append(&quot; &quot;).append(sortBy.getDirection());</span>
+<span class="fc" id="L223">				cnt++;</span>
 			}
-<span class="fc" id="L229">			return clause.toString();</span>
+<span class="fc" id="L225">			return clause.toString();</span>
 		} else {
-<span class="fc" id="L231">			return &quot;&quot;;</span>
+<span class="fc" id="L227">			return &quot;&quot;;</span>
 		}
 	}
 
 	private Object getValue(Object obj) {
-<span class="fc bfc" id="L236" title="All 4 branches covered.">		if (obj != null &amp;&amp; obj.getClass().isEnum()) {</span>
-<span class="fc" id="L237">			return ((Enum&lt;?&gt;) obj).name();</span>
+<span class="fc bfc" id="L232" title="All 4 branches covered.">		if (obj != null &amp;&amp; obj.getClass().isEnum()) {</span>
+<span class="fc" id="L233">			return ((Enum&lt;?&gt;) obj).name();</span>
 		}
-<span class="fc" id="L239">		return obj;</span>
+<span class="fc" id="L235">		return obj;</span>
 	}
 
 	/**
@@ -245,16 +241,16 @@ class FindOperation {
 	@Deprecated(since = &quot;2.5.1&quot;, forRemoval = true)
 	private Set&lt;?&gt; getValues(Set&lt;?&gt; set) {
 		// method gets called only if there are values in the set that are not null
-<span class="fc" id="L248">		Object obj = set.iterator().next();</span>
-<span class="pc bpc" id="L249" title="1 of 4 branches missed.">		if (obj != null &amp;&amp; obj.getClass().isEnum()) {</span>
-<span class="fc" id="L250">			Set&lt;String&gt; values = new LinkedHashSet&lt;&gt;();</span>
-<span class="fc bfc" id="L251" title="All 2 branches covered.">			for (Object val : set) {</span>
-<span class="fc" id="L252">				values.add(((Enum&lt;?&gt;) val).name());</span>
-<span class="fc" id="L253">			}</span>
-<span class="fc" id="L254">			return values;</span>
+<span class="fc" id="L244">		Object obj = set.iterator().next();</span>
+<span class="pc bpc" id="L245" title="1 of 4 branches missed.">		if (obj != null &amp;&amp; obj.getClass().isEnum()) {</span>
+<span class="fc" id="L246">			Set&lt;String&gt; values = new LinkedHashSet&lt;&gt;();</span>
+<span class="fc bfc" id="L247" title="All 2 branches covered.">			for (Object val : set) {</span>
+<span class="fc" id="L248">				values.add(((Enum&lt;?&gt;) val).name());</span>
+<span class="fc" id="L249">			}</span>
+<span class="fc" id="L250">			return values;</span>
 		}
-<span class="fc" id="L256">		return set;</span>
+<span class="fc" id="L252">		return set;</span>
 	}
 
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 6c44f6499096d90f214b5837f7fcf0134e13f98d 2026-11-23T08:20:45</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 19b5965af58025dbcb7777b27f4d505cd9b6b2dc 2026-11-23T11:47:16</div></body></html>

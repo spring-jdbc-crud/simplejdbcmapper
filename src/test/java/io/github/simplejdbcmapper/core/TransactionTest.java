@@ -23,10 +23,13 @@ class TransactionTest {
 	@BeforeEach
 	void beforeMethod() {
 		SimpleJdbcMapperSupport sjmSupport = TestUtils.getSimpleJdbcMapperSupport(sjm);
+		TableMappingProvider tmpr = TestUtils.getTableMappingProvider(sjmSupport);
+
 		FindOperation fo = TestUtils.getFindOperation(sjm);
 		InsertOperation io = TestUtils.getInsertOperation(sjm);
 		UpdateOperation uo = TestUtils.getUpdateOperation(sjm);
-		sjmSupport.getTableMappingCache().clear();
+
+		tmpr.getTableMappingCache().clear();
 		io.getInsertSqlCache().clear();
 		fo.getFindByIdSqlCache().clear();
 		uo.getUpdateSqlCache().clear();

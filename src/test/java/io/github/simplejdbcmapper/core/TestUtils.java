@@ -57,4 +57,24 @@ public class TestUtils {
 		}
 	}
 
+	public static TableMappingProvider getTableMappingProvider(SimpleJdbcMapperSupport sjms) {
+		try {
+			Field field = sjms.getClass().getDeclaredField("tableMappingProvider");
+			field.setAccessible(true);
+			return (TableMappingProvider) field.get(sjms);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
+	public static SqlColumnsProvider getSqlColumnsProvider(SimpleJdbcMapperSupport sjms) {
+		try {
+			Field field = sjms.getClass().getDeclaredField("sqlColumnsProvider");
+			field.setAccessible(true);
+			return (SqlColumnsProvider) field.get(sjms);
+		} catch (Exception e) {
+			throw new RuntimeException(e);
+		}
+	}
+
 }

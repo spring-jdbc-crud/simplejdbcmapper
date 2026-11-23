@@ -159,7 +159,8 @@ class CachingTest {
 	@Test
 	void entitySqlColumnsCache_test() {
 		SimpleJdbcMapperSupport sjms = TestUtils.getSimpleJdbcMapperSupport(sjm);
-		SimpleCache<Class<?>, String> cache = sjms.getEntitySqlColumnsCache();
+		SqlColumnsProvider scp = TestUtils.getSqlColumnsProvider(sjms);
+		SimpleCache<Class<?>, String> cache = scp.getSqlColumnsCache();
 		cache.clear();
 
 		sjms.getSqlColumns(Customer.class);
@@ -179,7 +180,8 @@ class CachingTest {
 	@Test
 	void entitySqlColumnsAliasCache_test() {
 		SimpleJdbcMapperSupport sjms = TestUtils.getSimpleJdbcMapperSupport(sjm);
-		SimpleCache<String, String> cache = sjms.getEntitySqlColumnsAliasCache();
+		SqlColumnsProvider scp = TestUtils.getSqlColumnsProvider(sjms);
+		SimpleCache<String, String> cache = scp.getSqlColumnsAliasCache();
 		cache.clear();
 
 		sjms.getSqlColumns(Customer.class, "t1");
@@ -226,7 +228,8 @@ class CachingTest {
 	@Test
 	void tableMappingCache_test() {
 		SimpleJdbcMapperSupport sjms = TestUtils.getSimpleJdbcMapperSupport(sjm);
-		SimpleCache<Class<?>, TableMapping> cache = sjms.getTableMappingCache();
+		TableMappingProvider tmpr = TestUtils.getTableMappingProvider(sjms);
+		SimpleCache<Class<?>, TableMapping> cache = tmpr.getTableMappingCache();
 		cache.clear();
 
 		sjm.findById(Customer.class, 1);

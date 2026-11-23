@@ -159,7 +159,6 @@
 							</includes>
 						</fileSet>
 					</fileSets>
-
 					<footer>${jacoco.footer}</footer>
 				</configuration>
 

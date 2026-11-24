@@ -36,7 +36,7 @@ class PropertyMapping {
 
   private Method readMethod;
 
-  private final ResultSetProcessingType resultSetProcessingType;
+  private ResultSetProcessingType resultSetProcessingType;
 
   @SuppressWarnings("rawtypes")
   private AttributeConverter converter;

@@ -65,7 +65,7 @@ class InternalUtils {
   }
 
   public static boolean isAlphanumericPlusUnderscore(String str) {
-    return str != null && str.matches("^[a-zA-Z0-9_]*$");
+    return str != null && str.matches("^\\w*$");
   }
 
   public static void validateTableAlias(String tableAlias) {

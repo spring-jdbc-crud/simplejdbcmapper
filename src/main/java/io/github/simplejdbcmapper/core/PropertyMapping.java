@@ -24,19 +24,19 @@ import java.sql.Types;
  */
 class PropertyMapping {
 
-  private String propertyName;
+  private final String propertyName;
 
-  private Class<?> propertyType;
+  private final Class<?> propertyType;
+  
+  private final String columnName;
+
+  private final Integer columnSqlType;
 
   private Method writeMethod;
 
   private Method readMethod;
 
-  private ResultSetProcessingType resultSetProcessingType;
-
-  private String columnName;
-
-  private Integer columnSqlType;
+  private final ResultSetProcessingType resultSetProcessingType;
 
   @SuppressWarnings("rawtypes")
   private AttributeConverter converter;

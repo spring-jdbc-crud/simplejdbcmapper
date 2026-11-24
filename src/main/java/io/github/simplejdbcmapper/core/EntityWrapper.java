@@ -21,7 +21,7 @@ import io.github.simplejdbcmapper.exception.MapperException;
  * @author Antony Joseph
  */
 class EntityWrapper {
-  private Object entityObj;
+  private final Object entityObj;
 
   public EntityWrapper(Object entityObj) {
     this.entityObj = entityObj;

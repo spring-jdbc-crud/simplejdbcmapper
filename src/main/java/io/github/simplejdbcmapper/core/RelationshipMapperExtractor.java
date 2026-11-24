@@ -36,9 +36,10 @@ import org.springframework.jdbc.core.ResultSetExtractor;
  */
 class RelationshipMapperExtractor implements ResultSetExtractor<RelationshipMapper> {
   private static final Logger logger = LoggerFactory.getLogger(RelationshipMapperExtractor.class);
-  private MultiEntity multiEntity;
-  private TableMappingProvider tableMappingProvider;
-  private ConversionService conversionService;
+  
+  private final MultiEntity multiEntity;
+  private final TableMappingProvider tableMappingProvider;
+  private final ConversionService conversionService;
 
   public RelationshipMapperExtractor(
       MultiEntity multiEntity,

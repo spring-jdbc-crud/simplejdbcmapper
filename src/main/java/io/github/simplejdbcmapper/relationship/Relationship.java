@@ -100,7 +100,7 @@ public class Relationship {
           RelationshipFluent.ToOne,
           RelationshipFluent.ToMany,
           RelationshipFluent.Populate {
-    private Class<?> mainType;
+    private final Class<?> mainType;
     private Class<?> relatedType;
     private Class<?> throughType;
     private ToOne toOne;

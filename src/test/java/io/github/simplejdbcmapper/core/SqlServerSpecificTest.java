@@ -5,8 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import io.github.simplejdbcmapper.model.StatusEnum;
-import io.github.simplejdbcmapper.model.TypeCheckSqlServer;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -14,18 +12,19 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
-import microsoft.sql.DateTimeOffset;
+
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import io.github.simplejdbcmapper.model.StatusEnum;
+import io.github.simplejdbcmapper.model.TypeCheckSqlServer;
+import microsoft.sql.DateTimeOffset;
 
 @SpringBootTest
-@ExtendWith(SpringExtension.class)
 class SqlServerSpecificTest {
 
   @Value("${spring.datasource.driver-class-name}")

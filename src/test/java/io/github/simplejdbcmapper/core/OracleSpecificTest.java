@@ -5,9 +5,6 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import io.github.simplejdbcmapper.model.ClobErr;
-import io.github.simplejdbcmapper.model.StatusEnum;
-import io.github.simplejdbcmapper.model.TypeCheckOracle;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -16,15 +13,18 @@ import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
 import java.util.Date;
+
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import io.github.simplejdbcmapper.model.ClobErr;
+import io.github.simplejdbcmapper.model.StatusEnum;
+import io.github.simplejdbcmapper.model.TypeCheckOracle;
 
 @SpringBootTest
 class OracleSpecificTest {

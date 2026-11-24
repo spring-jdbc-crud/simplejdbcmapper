@@ -4,15 +4,6 @@ import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.List;
-
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-
 import io.github.simplejdbcmapper.core.MultiEntity;
 import io.github.simplejdbcmapper.core.SimpleJdbcMapper;
 import io.github.simplejdbcmapper.model.Customer;
@@ -22,165 +13,231 @@ import io.github.simplejdbcmapper.model.Order;
 import io.github.simplejdbcmapper.model.OrderLine;
 import io.github.simplejdbcmapper.model.Product;
 import io.github.simplejdbcmapper.model.Skill;
+import java.util.List;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 class RelationshipMapperTest {
-	@Autowired
-	private SimpleJdbcMapper sjm;
+  @Autowired private SimpleJdbcMapper sjm;
 
-	@Test
-	void type_test() {
-		List<OrderLine> orderLines = sjm.findAll(OrderLine.class);
-		List<Product> products = sjm.findAll(Product.class);
+  @Test
+  void type_test() {
+    List<OrderLine> orderLines = sjm.findAll(OrderLine.class);
+    List<Product> products = sjm.findAll(Product.class);
 
-		RelationshipMapper relMapper = new RelationshipMapper();
-		assertDoesNotThrow(() -> {
-			relMapper.addEntityResult(OrderLine.class, orderLines, "orderLineId");
-		});
+    RelationshipMapper relMapper = new RelationshipMapper();
+    assertDoesNotThrow(() -> {
+      relMapper.addEntityResult(OrderLine.class, orderLines, "orderLineId");
+    });
 
-		assertDoesNotThrow(() -> {
-			relMapper.addEntityResult(Product.class, products, "id");
-		});
+    assertDoesNotThrow(() -> {
+      relMapper.addEntityResult(Product.class, products, "id");
+    });
 
-		Exception exception = Assertions.assertThrows(Exception.class, () -> {
-			relMapper.addEntityResult(Product.class, products, "id");
-		});
-		assertTrue(exception.getMessage().contains("duplicate entityType"));
+    Exception exception =
+        Assertions.assertThrows(
+            Exception.class,
+            () -> {
+              relMapper.addEntityResult(Product.class, products, "id");
+            });
+    assertTrue(exception.getMessage().contains("duplicate entityType"));
+  }
 
-	}
+  @Test
+  void addEntityResult_test() {
+    RelationshipMapper relMapper = new RelationshipMapper();
+    List<OrderLine> orderLines = sjm.findAll(OrderLine.class);
 
-	@Test
-	void addEntityResult_test() {
-		RelationshipMapper relMapper = new RelationshipMapper();
-		List<OrderLine> orderLines = sjm.findAll(OrderLine.class);
+    Exception exception =
+        Assertions.assertThrows(
+            Exception.class,
+            () -> {
+              relMapper.addEntityResult(null, orderLines, "id");
+            });
+    assertTrue(exception.getMessage().contains("entityType must not be null"));
 
-		Exception exception = Assertions.assertThrows(Exception.class, () -> {
-			relMapper.addEntityResult(null, orderLines, "id");
-		});
-		assertTrue(exception.getMessage().contains("entityType must not be null"));
+    exception =
+        Assertions.assertThrows(
+            Exception.class,
+            () -> {
+              relMapper.addEntityResult(OrderLine.class, null, "id");
+            });
+    assertTrue(exception.getMessage().contains("list must not be null"));
 
-		exception = Assertions.assertThrows(Exception.class, () -> {
-			relMapper.addEntityResult(OrderLine.class, null, "id");
-		});
-		assertTrue(exception.getMessage().contains("list must not be null"));
+    exception =
+        Assertions.assertThrows(
+            Exception.class,
+            () -> {
+              relMapper.addEntityResult(OrderLine.class, orderLines, null);
+            });
+    assertTrue(exception.getMessage().contains("idPropertyName must not be null"));
+  }
 
-		exception = Assertions.assertThrows(Exception.class, () -> {
-			relMapper.addEntityResult(OrderLine.class, orderLines, null);
-		});
-		assertTrue(exception.getMessage().contains("idPropertyName must not be null"));
+  @Test
+  void assemble_success_test() {
+    MultiEntity multiEntity =
+        new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol").add(Product.class, "p");
 
-	}
+    String sql =
+        """
+        		SELECT %s
+        		FROM orders o
+        		LEFT JOIN order_line ol ON o.id = ol.order_id
+        		LEFT JOIN product p ON ol.product_id = p.id
+        		WHERE o.id <= 4 ORDER BY o.id, ol.order_line_id
+        """
+            .formatted(sjm.getSqlColumns(multiEntity));
 
-	@Test
-	void assemble_success_test() {
-		MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol").add(Product.class,
-				"p");
+    RelationshipMapper relMapper =
+        sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 
-		String sql = """
-						SELECT %s
-						FROM orders o
-						LEFT JOIN order_line ol ON o.id = ol.order_id
-						LEFT JOIN product p ON ol.product_id = p.id
-						WHERE o.id <= 4 ORDER BY o.id, ol.order_line_id
-				""".formatted(sjm.getSqlColumns(multiEntity));
+    Relationship orderLineToOneProduct =
+        Relationship.type(OrderLine.class)
+            .toOne(Product.class)
+            .joinOn("productId", "id")
+            .populate("product");
 
-		RelationshipMapper relMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
+    Relationship orderToManyOrderLine =
+        Relationship.type(Order.class)
+            .toMany(OrderLine.class)
+            .joinOn("id", "orderId")
+            .populate("orderLines");
 
-		Relationship orderLineToOneProduct = Relationship.type(OrderLine.class).toOne(Product.class)
-				.joinOn("productId", "id").populate("product");
+    assertDoesNotThrow(() -> {
+      relMapper.assemble(orderToManyOrderLine, orderLineToOneProduct);
+    });
+  }
 
-		Relationship orderToManyOrderLine = Relationship.type(Order.class).toMany(OrderLine.class)
-				.joinOn("id", "orderId").populate("orderLines");
+  @Test
+  void assemble_validation_test() {
+    MultiEntity multiEntity =
+        new MultiEntity()
+            .add(Order.class, "o")
+            .add(OrderLine.class, "ol")
+            .add(Product.class, "p")
+            .add(Customer.class, "c");
 
-		assertDoesNotThrow(() -> {
-			relMapper.assemble(orderToManyOrderLine, orderLineToOneProduct);
-		});
-	}
+    String sql =
+        """
+        		SELECT %s
+        		FROM orders o
+        		LEFT JOIN customer c ON o.customer_id = c.id
+        		LEFT JOIN order_line ol ON o.id = ol.order_id
+        		LEFT JOIN product p ON ol.product_id = p.id
+        		WHERE o.id <= 4 ORDER BY o.id, ol.order_line_id
+        """
+            .formatted(sjm.getSqlColumns(multiEntity));
 
-	@Test
-	void assemble_validation_test() {
-		MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol")
-				.add(Product.class, "p").add(Customer.class, "c");
+    RelationshipMapper relMapper =
+        sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 
-		String sql = """
-						SELECT %s
-						FROM orders o
-						LEFT JOIN customer c ON o.customer_id = c.id
-						LEFT JOIN order_line ol ON o.id = ol.order_id
-						LEFT JOIN product p ON ol.product_id = p.id
-						WHERE o.id <= 4 ORDER BY o.id, ol.order_line_id
-				""".formatted(sjm.getSqlColumns(multiEntity));
+    Relationship orderLineToOneProduct =
+        Relationship.type(OrderLine.class)
+            .toOne(Product.class)
+            .joinOn("productId", "id")
+            .populate("product");
 
-		RelationshipMapper relMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
+    Relationship orderToManyOrderLine =
+        Relationship.type(Order.class)
+            .toMany(OrderLine.class)
+            .joinOn("id", "orderId")
+            .populate("orderLines");
 
-		Relationship orderLineToOneProduct = Relationship.type(OrderLine.class).toOne(Product.class)
-				.joinOn("productId", "id").populate("product");
+    Relationship orderToOneCustomer =
+        Relationship.type(Order.class)
+            .toOne(Customer.class)
+            .joinOn("customerId", "id")
+            .populate("customer");
 
-		Relationship orderToManyOrderLine = Relationship.type(Order.class).toMany(OrderLine.class)
-				.joinOn("id", "orderId").populate("orderLines");
+    Exception exception =
+        Assertions.assertThrows(
+            Exception.class,
+            () -> {
+              relMapper.assemble();
+            });
+    assertTrue(exception.getMessage().contains("relationships array must not be empty"));
 
-		Relationship orderToOneCustomer = Relationship.type(Order.class).toOne(Customer.class)
-				.joinOn("customerId", "id").populate("customer");
+    exception =
+        Assertions.assertThrows(
+            Exception.class,
+            () -> {
+              relMapper.assemble(orderLineToOneProduct, null);
+            });
+    assertTrue(exception.getMessage().contains("relationship must not be null in argument array"));
 
-		Exception exception = Assertions.assertThrows(Exception.class, () -> {
-			relMapper.assemble();
-		});
-		assertTrue(exception.getMessage().contains("relationships array must not be empty"));
+    exception =
+        Assertions.assertThrows(
+            Exception.class,
+            () -> {
+              relMapper.assemble(orderLineToOneProduct, orderLineToOneProduct);
+            });
+    assertTrue(exception.getMessage().contains("You cannot have multiple relationships between"));
 
-		exception = Assertions.assertThrows(Exception.class, () -> {
-			relMapper.assemble(orderLineToOneProduct, null);
-		});
-		assertTrue(exception.getMessage().contains("relationship must not be null in argument array"));
+    exception =
+        Assertions.assertThrows(
+            Exception.class,
+            () -> {
+              relMapper.assemble(orderToManyOrderLine, orderToManyOrderLine);
+            });
+    assertTrue(exception.getMessage().contains("You cannot have multiple relationships between"));
 
-		exception = Assertions.assertThrows(Exception.class, () -> {
-			relMapper.assemble(orderLineToOneProduct, orderLineToOneProduct);
-		});
-		assertTrue(exception.getMessage().contains("You cannot have multiple relationships between"));
+    exception =
+        Assertions.assertThrows(
+            Exception.class,
+            () -> {
+              relMapper.assemble(orderLineToOneProduct, null, orderToManyOrderLine);
+            });
+    assertTrue(exception.getMessage().contains("relationship must not be null"));
 
-		exception = Assertions.assertThrows(Exception.class, () -> {
-			relMapper.assemble(orderToManyOrderLine, orderToManyOrderLine);
-		});
-		assertTrue(exception.getMessage().contains("You cannot have multiple relationships between"));
+    Relationship empToManySkills =
+        Relationship.type(Employee.class)
+            .toMany(Skill.class)
+            .through(EmployeeSkill.class, "employeeId", "skillId")
+            .populate("skills");
 
-		exception = Assertions.assertThrows(Exception.class, () -> {
-			relMapper.assemble(orderLineToOneProduct, null, orderToManyOrderLine);
-		});
-		assertTrue(exception.getMessage().contains("relationship must not be null"));
+    exception =
+        Assertions.assertThrows(
+            Exception.class,
+            () -> {
+              relMapper.assemble(orderLineToOneProduct, empToManySkills);
+            });
+    assertTrue(exception.getMessage().contains("was not part of the query result"));
 
-		Relationship empToManySkills = Relationship.type(Employee.class).toMany(Skill.class)
-				.through(EmployeeSkill.class, "employeeId", "skillId").populate("skills");
+    Assertions.assertDoesNotThrow(
+        () -> relMapper.assemble(orderToManyOrderLine, orderToOneCustomer));
+  }
 
-		exception = Assertions.assertThrows(Exception.class, () -> {
-			relMapper.assemble(orderLineToOneProduct, empToManySkills);
-		});
-		assertTrue(exception.getMessage().contains("was not part of the query result"));
+  @Test
+  void idPropertyName_test() {
+    MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol");
 
-		Assertions.assertDoesNotThrow(() -> relMapper.assemble(orderToManyOrderLine, orderToOneCustomer));
+    String sql =
+        """
+        		SELECT %s
+        		FROM orders o
+        		LEFT JOIN order_line ol ON o.id = ol.order_id
+        """
+            .formatted(sjm.getSqlColumns(multiEntity));
 
-	}
+    RelationshipMapper relMapper =
+        sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
 
-	@Test
-	void idPropertyName_test() {
-		MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol");
+    assertEquals("id", relMapper.getIdPropertyName(Order.class));
 
-		String sql = """
-						SELECT %s
-						FROM orders o
-						LEFT JOIN order_line ol ON o.id = ol.order_id
-				""".formatted(sjm.getSqlColumns(multiEntity));
+    assertEquals("orderLineId", relMapper.getIdPropertyName(OrderLine.class));
 
-		RelationshipMapper relMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
-
-		assertEquals("id", relMapper.getIdPropertyName(Order.class));
-
-		assertEquals("orderLineId", relMapper.getIdPropertyName(OrderLine.class));
-
-		Exception exception = Assertions.assertThrows(Exception.class, () -> {
-			relMapper.getIdPropertyName(Employee.class);
-		});
-		assertTrue(exception.getMessage().contains("was not part of the query result"));
-
-	}
-
+    Exception exception =
+        Assertions.assertThrows(
+            Exception.class,
+            () -> {
+              relMapper.getIdPropertyName(Employee.class);
+            });
+    assertTrue(exception.getMessage().contains("was not part of the query result"));
+  }
 }

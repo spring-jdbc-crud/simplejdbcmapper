@@ -15,7 +15,6 @@ package io.github.simplejdbcmapper.core;
 
 import java.sql.Types;
 import java.util.Locale;
-
 import org.springframework.jdbc.core.StatementCreatorUtils;
 import org.springframework.util.StringUtils;
 
@@ -25,63 +24,64 @@ import org.springframework.util.StringUtils;
  * @author Antony Joseph
  */
 class InternalUtils {
-	public static Integer javaTypeToSqlParameterType(Class<?> type) {
-		if (type.isEnum()) {
-			return Types.VARCHAR;
-		} else {
-			// use springs default mappings.
-			return StatementCreatorUtils.javaTypeToSqlParameterType(type);
-		}
-	}
+  public static Integer javaTypeToSqlParameterType(Class<?> type) {
+    if (type.isEnum()) {
+      return Types.VARCHAR;
+    } else {
+      // use springs default mappings.
+      return StatementCreatorUtils.javaTypeToSqlParameterType(type);
+    }
+  }
 
-	/**
-	 * Converts camel case to underscore case. Ex: userLastName gets converted to
-	 * user_last_name. Copy of code from Spring BeanPropertyRowMapper
-	 *
-	 * @param str camel case string
-	 * @return the underscore case string
-	 */
-	public static String toUnderscoreName(String str) {
-		if (!StringUtils.hasText(str)) {
-			return "";
-		}
-		StringBuilder result = new StringBuilder();
-		result.append(Character.toLowerCase(str.charAt(0)));
-		for (int i = 1; i < str.length(); i++) {
-			char c = str.charAt(i);
-			if (Character.isUpperCase(c)) {
-				result.append('_').append(Character.toLowerCase(c));
-			} else {
-				result.append(c);
-			}
-		}
-		return result.toString();
-	}
+  /**
+   * Converts camel case to underscore case. Ex: userLastName gets converted to user_last_name. Copy
+   * of code from Spring BeanPropertyRowMapper
+   *
+   * @param str camel case string
+   * @return the underscore case string
+   */
+  public static String toUnderscoreName(String str) {
+    if (!StringUtils.hasText(str)) {
+      return "";
+    }
+    StringBuilder result = new StringBuilder();
+    result.append(Character.toLowerCase(str.charAt(0)));
+    for (int i = 1; i < str.length(); i++) {
+      char c = str.charAt(i);
+      if (Character.isUpperCase(c)) {
+        result.append('_').append(Character.toLowerCase(c));
+      } else {
+        result.append(c);
+      }
+    }
+    return result.toString();
+  }
 
-	public static String toLowerCase(String str) {
-		if (!StringUtils.hasLength(str)) {
-			return "";
-		}
-		return str.toLowerCase(Locale.US);
-	}
+  public static String toLowerCase(String str) {
+    if (!StringUtils.hasLength(str)) {
+      return "";
+    }
+    return str.toLowerCase(Locale.US);
+  }
 
-	public static boolean isAlphanumericPlusUnderscore(String str) {
-		return str != null && str.matches("^[a-zA-Z0-9_]*$");
-	}
+  public static boolean isAlphanumericPlusUnderscore(String str) {
+    return str != null && str.matches("^[a-zA-Z0-9_]*$");
+  }
 
-	public static void validateTableAlias(String tableAlias) {
-		if (!StringUtils.hasText(tableAlias)) {
-			throw new IllegalArgumentException("tableAlias has no value");
-		}
-		if (isAlphanumericPlusUnderscore(tableAlias)) {
-			if (!Character.isLetter(tableAlias.charAt(0)) && tableAlias.charAt(0) != '_') {
-				throw new IllegalArgumentException("tableAlias should start with an alphabet or underscore.");
-			}
-		} else {
-			throw new IllegalArgumentException("tableAlias should be alphanumberic and can include underscore.");
-		}
-	}
+  public static void validateTableAlias(String tableAlias) {
+    if (!StringUtils.hasText(tableAlias)) {
+      throw new IllegalArgumentException("tableAlias has no value");
+    }
+    if (isAlphanumericPlusUnderscore(tableAlias)) {
+      if (!Character.isLetter(tableAlias.charAt(0)) && tableAlias.charAt(0) != '_') {
+        throw new IllegalArgumentException(
+            "tableAlias should start with an alphabet or underscore.");
+      }
+    } else {
+      throw new IllegalArgumentException(
+          "tableAlias should be alphanumberic and can include underscore.");
+    }
+  }
 
-	private InternalUtils() {
-	}
+  private InternalUtils() {}
 }

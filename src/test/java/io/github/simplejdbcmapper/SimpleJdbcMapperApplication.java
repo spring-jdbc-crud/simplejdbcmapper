@@ -7,7 +7,7 @@ import org.springframework.boot.web.servlet.support.SpringBootServletInitializer
 @SpringBootApplication
 public class SimpleJdbcMapperApplication extends SpringBootServletInitializer {
 
-	public static void main(String[] args) {
-		SpringApplication.run(SimpleJdbcMapperApplication.class, args);
-	}
+  public static void main(String[] args) {
+    SpringApplication.run(SimpleJdbcMapperApplication.class, args);
+  }
 }

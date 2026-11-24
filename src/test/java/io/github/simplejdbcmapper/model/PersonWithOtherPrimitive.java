@@ -8,46 +8,43 @@ import io.github.simplejdbcmapper.annotation.Table;
 
 @Table(name = "person")
 public class PersonWithOtherPrimitive {
-	@Id(type = IdType.AUTO_GENERATED)
-	private Integer personId;
-	@Column
-	private String lastName;
-	@Column
-	private String firstName;
+  @Id(type = IdType.AUTO_GENERATED)
+  private Integer personId;
 
-	@CreatedBy
-	private int createdBy;
+  @Column private String lastName;
+  @Column private String firstName;
 
-	public Integer getPersonId() {
-		return personId;
-	}
+  @CreatedBy private int createdBy;
 
-	public void setPersonId(Integer id) {
-		this.personId = id;
-	}
+  public Integer getPersonId() {
+    return personId;
+  }
 
-	public String getLastName() {
-		return lastName;
-	}
+  public void setPersonId(Integer id) {
+    this.personId = id;
+  }
 
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
+  public String getLastName() {
+    return lastName;
+  }
 
-	public String getFirstName() {
-		return firstName;
-	}
+  public void setLastName(String lastName) {
+    this.lastName = lastName;
+  }
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
+  public String getFirstName() {
+    return firstName;
+  }
 
-	public int getCreatedBy() {
-		return createdBy;
-	}
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
 
-	public void setCreatedBy(int createdBy) {
-		this.createdBy = createdBy;
-	}
+  public int getCreatedBy() {
+    return createdBy;
+  }
 
+  public void setCreatedBy(int createdBy) {
+    this.createdBy = createdBy;
+  }
 }

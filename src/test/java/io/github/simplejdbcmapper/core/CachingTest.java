@@ -2,8 +2,13 @@ package io.github.simplejdbcmapper.core;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import io.github.simplejdbcmapper.model.Customer;
+import io.github.simplejdbcmapper.model.Employee;
+import io.github.simplejdbcmapper.model.Order;
+import io.github.simplejdbcmapper.model.Person;
+import io.github.simplejdbcmapper.model.Product;
+import io.github.simplejdbcmapper.model.ProductWithNoAuditAnnotationFields;
 import java.time.LocalDateTime;
-
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -12,278 +17,263 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import io.github.simplejdbcmapper.model.Customer;
-import io.github.simplejdbcmapper.model.Employee;
-import io.github.simplejdbcmapper.model.Order;
-import io.github.simplejdbcmapper.model.Person;
-import io.github.simplejdbcmapper.model.Product;
-import io.github.simplejdbcmapper.model.ProductWithNoAuditAnnotationFields;
-
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 class CachingTest {
 
-	@Value("${spring.datasource.driver-class-name}")
-	private String jdbcDriver;
-
-	@Autowired
-	private SimpleJdbcMapper sjm;
-
-	@Test
-	void findByIdCache_test() {
-		FindOperation fo = TestUtils.getFindOperation(sjm);
-		SimpleCache<Class<?>, String> cache = TestUtils.getFindByIdSqlCache(fo);
-		cache.clear();
-
-		sjm.findById(Order.class, 1);
-		assertEquals(1, cache.size());
-
-		sjm.findById(Order.class, 2);
-		assertEquals(1, cache.size());
-
-		sjm.findById(Customer.class, 1);
-		assertEquals(2, cache.size());
-	}
-
-	@Test
-	void insertCache_test() {
-		InsertOperation io = TestUtils.getInsertOperation(sjm);
-		SimpleCache<Class<?>, SimpleJdbcInsert> cache = TestUtils.getInsertSqlCache(io);
-		cache.clear();
+  @Value("${spring.datasource.driver-class-name}")
+  private String jdbcDriver;
+
+  @Autowired private SimpleJdbcMapper sjm;
+
+  @Test
+  void findByIdCache_test() {
+    FindOperation fo = TestUtils.getFindOperation(sjm);
+    SimpleCache<Class<?>, String> cache = TestUtils.getFindByIdSqlCache(fo);
+    cache.clear();
+
+    sjm.findById(Order.class, 1);
+    assertEquals(1, cache.size());
+
+    sjm.findById(Order.class, 2);
+    assertEquals(1, cache.size());
 
-		Order order = new Order();
-		order.setOrderDate(LocalDateTime.now());
-		order.setCustomerId(2);
+    sjm.findById(Customer.class, 1);
+    assertEquals(2, cache.size());
+  }
 
-		sjm.insert(order);
-		assertEquals(1, cache.size());
+  @Test
+  void insertCache_test() {
+    InsertOperation io = TestUtils.getInsertOperation(sjm);
+    SimpleCache<Class<?>, SimpleJdbcInsert> cache = TestUtils.getInsertSqlCache(io);
+    cache.clear();
+
+    Order order = new Order();
+    order.setOrderDate(LocalDateTime.now());
+    order.setCustomerId(2);
+
+    sjm.insert(order);
+    assertEquals(1, cache.size());
+
+    sjm.delete(order);
+
+    order = new Order();
+    order.setOrderDate(LocalDateTime.now());
+    order.setCustomerId(2);
+    sjm.insert(order);
+    assertEquals(1, cache.size());
+
+    sjm.delete(order);
 
-		sjm.delete(order);
+    Customer customer = new Customer();
+    customer.setLastName("xyz");
+    customer.setFirstName("abc");
+    sjm.insert(customer);
+    assertEquals(2, cache.size());
+    sjm.delete(customer);
+  }
 
-		order = new Order();
-		order.setOrderDate(LocalDateTime.now());
-		order.setCustomerId(2);
-		sjm.insert(order);
-		assertEquals(1, cache.size());
+  @Test
+  void updateCache_test() {
+    UpdateOperation uo = TestUtils.getUpdateOperation(sjm);
+    SimpleCache<Class<?>, SqlAndParams> cache = TestUtils.getUpdateSqlCache(uo);
+    cache.clear();
+
+    Customer customer = new Customer();
+    customer.setLastName("xyz");
+    customer.setFirstName("abc");
+    sjm.insert(customer);
 
-		sjm.delete(order);
+    customer.setLastName("a");
+    sjm.update(customer);
+    assertEquals(1, cache.size());
 
-		Customer customer = new Customer();
-		customer.setLastName("xyz");
-		customer.setFirstName("abc");
-		sjm.insert(customer);
-		assertEquals(2, cache.size());
-		sjm.delete(customer);
-	}
+    customer.setLastName("b");
+    sjm.update(customer);
+    assertEquals(1, cache.size());
 
-	@Test
-	void updateCache_test() {
-		UpdateOperation uo = TestUtils.getUpdateOperation(sjm);
-		SimpleCache<Class<?>, SqlAndParams> cache = TestUtils.getUpdateSqlCache(uo);
-		cache.clear();
+    Product product = new Product();
+    product.setId(10022);
+    product.setName("xyz");
+    sjm.insert(product);
 
-		Customer customer = new Customer();
-		customer.setLastName("xyz");
-		customer.setFirstName("abc");
-		sjm.insert(customer);
+    product.setName("abc");
+    sjm.update(product);
+    assertEquals(2, cache.size());
 
-		customer.setLastName("a");
-		sjm.update(customer);
-		assertEquals(1, cache.size());
+    product.setName("aaa");
+    sjm.update(product);
+    assertEquals(2, cache.size());
 
-		customer.setLastName("b");
-		sjm.update(customer);
-		assertEquals(1, cache.size());
+    sjm.delete(customer);
+
+    sjm.delete(product);
+  }
 
-		Product product = new Product();
-		product.setId(10022);
-		product.setName("xyz");
-		sjm.insert(product);
+  @Test
+  void updateSpecificPropertiesCache_test() {
+    UpdateOperation uo = TestUtils.getUpdateOperation(sjm);
+    SimpleCache<String, SqlAndParams> cache = TestUtils.getUpdateSpecificPropertiesSqlCache(uo);
+    cache.clear();
 
-		product.setName("abc");
-		sjm.update(product);
-		assertEquals(2, cache.size());
+    ProductWithNoAuditAnnotationFields product = new ProductWithNoAuditAnnotationFields();
+    product.setId(811);
+    product.setName("p-811");
+    product.setCost(4.75);
+    sjm.insert(product);
 
-		product.setName("aaa");
-		sjm.update(product);
-		assertEquals(2, cache.size());
+    sjm.updateSpecificProperties(product, "cost");
+    assertEquals(1, cache.size());
 
-		sjm.delete(customer);
+    sjm.updateSpecificProperties(product, "cost");
+    assertEquals(1, cache.size());
 
-		sjm.delete(product);
+    sjm.updateSpecificProperties(product, "name");
+    assertEquals(2, cache.size());
 
-	}
+    sjm.updateSpecificProperties(product, "cost", "name");
+    assertEquals(3, cache.size());
 
-	@Test
-	void updateSpecificPropertiesCache_test() {
-		UpdateOperation uo = TestUtils.getUpdateOperation(sjm);
-		SimpleCache<String, SqlAndParams> cache = TestUtils.getUpdateSpecificPropertiesSqlCache(uo);
-		cache.clear();
+    sjm.updateSpecificProperties(product, "cost", "name");
+    assertEquals(3, cache.size());
 
-		ProductWithNoAuditAnnotationFields product = new ProductWithNoAuditAnnotationFields();
-		product.setId(811);
-		product.setName("p-811");
-		product.setCost(4.75);
-		sjm.insert(product);
+    // same properties but order is reversed should still successful from cache
+    sjm.updateSpecificProperties(product, "name", "cost");
+    assertEquals(3, cache.size());
 
-		sjm.updateSpecificProperties(product, "cost");
-		assertEquals(1, cache.size());
+    product.setVersion(1);
+    sjm.updateSpecificProperties(product, "cost", "name", "version");
+    assertEquals(4, cache.size());
 
-		sjm.updateSpecificProperties(product, "cost");
-		assertEquals(1, cache.size());
+    sjm.updateSpecificProperties(
+        product, "cost", "name", "version", "createdOn", "createdBy", "updatedOn");
+    assertEquals(5, cache.size());
 
-		sjm.updateSpecificProperties(product, "name");
-		assertEquals(2, cache.size());
+    sjm.delete(product);
+  }
 
-		sjm.updateSpecificProperties(product, "cost", "name");
-		assertEquals(3, cache.size());
+  @Test
+  void sqlColumnsCache_test() {
+    SimpleJdbcMapperSupport sjms = TestUtils.getSimpleJdbcMapperSupport(sjm);
+    SqlColumnsProvider scp = TestUtils.getSqlColumnsProvider(sjms);
 
-		sjm.updateSpecificProperties(product, "cost", "name");
-		assertEquals(3, cache.size());
-
-		// same properties but order is reversed should still successful from cache
-		sjm.updateSpecificProperties(product, "name", "cost");
-		assertEquals(3, cache.size());
-
-		product.setVersion(1);
-		sjm.updateSpecificProperties(product, "cost", "name", "version");
-		assertEquals(4, cache.size());
-
-		sjm.updateSpecificProperties(product, "cost", "name", "version", "createdOn", "createdBy", "updatedOn");
-		assertEquals(5, cache.size());
-
-		sjm.delete(product);
-
-	}
-
-	@Test
-	void sqlColumnsCache_test() {
-		SimpleJdbcMapperSupport sjms = TestUtils.getSimpleJdbcMapperSupport(sjm);
-		SqlColumnsProvider scp = TestUtils.getSqlColumnsProvider(sjms);
-
-		SimpleCache<Class<?>, String> cache = TestUtils.getSqlColumnsCache(scp);
-		cache.clear();
-
-		sjms.getSqlColumns(Customer.class);
-		assertEquals(1, cache.size());
-
-		sjms.getSqlColumns(Customer.class);
-		assertEquals(1, cache.size());
-
-		sjms.getSqlColumns(Product.class);
-		assertEquals(2, cache.size());
-
-		sjms.getSqlColumns(Product.class);
-		assertEquals(2, cache.size());
-
-	}
-
-	@Test
-	void sqlColumnsAliasCache_test() {
-		SimpleJdbcMapperSupport sjms = TestUtils.getSimpleJdbcMapperSupport(sjm);
-		SqlColumnsProvider scp = TestUtils.getSqlColumnsProvider(sjms);
-		SimpleCache<String, String> cache = TestUtils.getSqlColumnsAliasCache(scp);
-		cache.clear();
-
-		sjms.getSqlColumns(Customer.class, "t1");
-		assertEquals(1, cache.size());
-
-		sjms.getSqlColumns(Customer.class, "t1");
-		assertEquals(1, cache.size());
-
-		sjms.getSqlColumns(Product.class, "p1");
-		assertEquals(2, cache.size());
-
-		sjms.getSqlColumns(Product.class, "p1");
-		assertEquals(2, cache.size());
-
-		sjms.getSqlColumns(Product.class, "p2");
-		assertEquals(3, cache.size());
-
-	}
-
-	@Test
-	void deleteSqlCache_test() {
-		DeleteOperation dop = TestUtils.getDeleteOperation(sjm);
-		SimpleCache<Class<?>, String> cache = TestUtils.getDeleteSqlCache(dop);
-		cache.clear();
-
-		Order ord = new Order();
-		ord.setId(801l);
-		sjm.delete(ord);
-		assertEquals(1, cache.size());
-
-		sjm.deleteById(Order.class, 802);
-		assertEquals(1, cache.size());
-
-		Product prod = new Product();
-		prod.setId(901);
-		sjm.delete(prod);
-		assertEquals(2, cache.size());
-
-		sjm.deleteById(Product.class, 902);
-		assertEquals(2, cache.size());
-
-	}
-
-	@Test
-	void tableMappingCache_test() {
-		SimpleJdbcMapperSupport sjms = TestUtils.getSimpleJdbcMapperSupport(sjm);
-		TableMappingProvider tmpr = TestUtils.getTableMappingProvider(sjms);
-		SimpleCache<Class<?>, TableMapping> cache = TestUtils.getTableMappingCache(tmpr);
-		cache.clear();
-
-		sjm.findById(Customer.class, 1);
-		assertEquals(1, cache.size());
-
-		Product prod = new Product();
-		prod.setId(3121);
-		prod.setName("xyz");
-		sjm.insert(prod);
-		assertEquals(2, cache.size());
-
-		prod.setCost(10.25);
-		sjm.update(prod);
-		assertEquals(2, cache.size());
-
-		prod.setCost(20.22);
-		sjm.updateSpecificProperties(prod, "cost");
-		assertEquals(2, cache.size());
-
-		sjm.delete(prod);
-		assertEquals(2, cache.size());
-
-		Employee emp = new Employee();
-		emp.setId(Integer.valueOf(1));
-		emp.setFirstName("abc");
-		emp.setLastName("xyz");
-		sjm.update(emp);
-		assertEquals(3, cache.size());
-
-		Person person = new Person();
-		person.setPersonId("person101");
-		person.setFirstName("mike");
-		sjm.updateSpecificProperties(person, "firstName");
-		assertEquals(4, cache.size());
-
-	}
-
-	@Test
-	void Cache_common_test() {
-		// cache capacity 2
-		SimpleCache<String, String> cache = new SimpleCache<>(2);
-		cache.put("key1", "value1");
-		assertEquals(1, cache.size());
-
-		cache.put("key2", "value2");
-		assertEquals(2, cache.size());
-
-		cache.put("key3", "value3");
-		assertEquals(2, cache.size());
-
-		cache.remove("key1");
-		assertEquals(1, cache.size());
-
-	}
-
+    SimpleCache<Class<?>, String> cache = TestUtils.getSqlColumnsCache(scp);
+    cache.clear();
+
+    sjms.getSqlColumns(Customer.class);
+    assertEquals(1, cache.size());
+
+    sjms.getSqlColumns(Customer.class);
+    assertEquals(1, cache.size());
+
+    sjms.getSqlColumns(Product.class);
+    assertEquals(2, cache.size());
+
+    sjms.getSqlColumns(Product.class);
+    assertEquals(2, cache.size());
+  }
+
+  @Test
+  void sqlColumnsAliasCache_test() {
+    SimpleJdbcMapperSupport sjms = TestUtils.getSimpleJdbcMapperSupport(sjm);
+    SqlColumnsProvider scp = TestUtils.getSqlColumnsProvider(sjms);
+    SimpleCache<String, String> cache = TestUtils.getSqlColumnsAliasCache(scp);
+    cache.clear();
+
+    sjms.getSqlColumns(Customer.class, "t1");
+    assertEquals(1, cache.size());
+
+    sjms.getSqlColumns(Customer.class, "t1");
+    assertEquals(1, cache.size());
+
+    sjms.getSqlColumns(Product.class, "p1");
+    assertEquals(2, cache.size());
+
+    sjms.getSqlColumns(Product.class, "p1");
+    assertEquals(2, cache.size());
+
+    sjms.getSqlColumns(Product.class, "p2");
+    assertEquals(3, cache.size());
+  }
+
+  @Test
+  void deleteSqlCache_test() {
+    DeleteOperation dop = TestUtils.getDeleteOperation(sjm);
+    SimpleCache<Class<?>, String> cache = TestUtils.getDeleteSqlCache(dop);
+    cache.clear();
+
+    Order ord = new Order();
+    ord.setId(801l);
+    sjm.delete(ord);
+    assertEquals(1, cache.size());
+
+    sjm.deleteById(Order.class, 802);
+    assertEquals(1, cache.size());
+
+    Product prod = new Product();
+    prod.setId(901);
+    sjm.delete(prod);
+    assertEquals(2, cache.size());
+
+    sjm.deleteById(Product.class, 902);
+    assertEquals(2, cache.size());
+  }
+
+  @Test
+  void tableMappingCache_test() {
+    SimpleJdbcMapperSupport sjms = TestUtils.getSimpleJdbcMapperSupport(sjm);
+    TableMappingProvider tmpr = TestUtils.getTableMappingProvider(sjms);
+    SimpleCache<Class<?>, TableMapping> cache = TestUtils.getTableMappingCache(tmpr);
+    cache.clear();
+
+    sjm.findById(Customer.class, 1);
+    assertEquals(1, cache.size());
+
+    Product prod = new Product();
+    prod.setId(3121);
+    prod.setName("xyz");
+    sjm.insert(prod);
+    assertEquals(2, cache.size());
+
+    prod.setCost(10.25);
+    sjm.update(prod);
+    assertEquals(2, cache.size());
+
+    prod.setCost(20.22);
+    sjm.updateSpecificProperties(prod, "cost");
+    assertEquals(2, cache.size());
+
+    sjm.delete(prod);
+    assertEquals(2, cache.size());
+
+    Employee emp = new Employee();
+    emp.setId(Integer.valueOf(1));
+    emp.setFirstName("abc");
+    emp.setLastName("xyz");
+    sjm.update(emp);
+    assertEquals(3, cache.size());
+
+    Person person = new Person();
+    person.setPersonId("person101");
+    person.setFirstName("mike");
+    sjm.updateSpecificProperties(person, "firstName");
+    assertEquals(4, cache.size());
+  }
+
+  @Test
+  void Cache_common_test() {
+    // cache capacity 2
+    SimpleCache<String, String> cache = new SimpleCache<>(2);
+    cache.put("key1", "value1");
+    assertEquals(1, cache.size());
+
+    cache.put("key2", "value2");
+    assertEquals(2, cache.size());
+
+    cache.put("key3", "value3");
+    assertEquals(2, cache.size());
+
+    cache.remove("key1");
+    assertEquals(1, cache.size());
+  }
 }

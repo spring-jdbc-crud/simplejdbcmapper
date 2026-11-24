@@ -1,5 +1,9 @@
 package io.github.simplejdbcmapper.model;
 
+import io.github.simplejdbcmapper.annotation.Column;
+import io.github.simplejdbcmapper.annotation.Id;
+import io.github.simplejdbcmapper.annotation.IdType;
+import io.github.simplejdbcmapper.annotation.Table;
 import java.math.BigDecimal;
 import java.sql.Types;
 import java.time.LocalDate;
@@ -7,231 +11,210 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.util.UUID;
 
-import io.github.simplejdbcmapper.annotation.Column;
-import io.github.simplejdbcmapper.annotation.Id;
-import io.github.simplejdbcmapper.annotation.IdType;
-import io.github.simplejdbcmapper.annotation.Table;
-
 @Table(name = "type_check")
 public class TypeCheckPostgres {
-	@Id(type = IdType.AUTO_GENERATED)
-	private Integer id;
+  @Id(type = IdType.AUTO_GENERATED)
+  private Integer id;
 
-	@Column
-	private LocalDate localDateData;
+  @Column private LocalDate localDateData;
 
-	@Column
-	private java.util.Date javaUtilDateData;
+  @Column private java.util.Date javaUtilDateData;
 
-	@Column
-	private LocalDateTime localDateTimeData;
+  @Column private LocalDateTime localDateTimeData;
 
-	@Column
-	private java.util.Date javaUtilDateTsData;
+  @Column private java.util.Date javaUtilDateTsData;
 
-	@Column
-	private BigDecimal bigDecimalData;
+  @Column private BigDecimal bigDecimalData;
 
-	@Column
-	private Boolean booleanVal;
+  @Column private Boolean booleanVal;
 
-	@Column(sqlType = Types.ARRAY)
-	private byte[] image;
+  @Column(sqlType = Types.ARRAY)
+  private byte[] image;
 
-	@Column(sqlType = Types.LONGVARCHAR)
-	private String clobData;
+  @Column(sqlType = Types.LONGVARCHAR)
+  private String clobData;
 
-	@Column
-	private UUID someUuid;
+  @Column private UUID someUuid;
 
-	@Column(sqlType = Types.TIMESTAMP_WITH_TIMEZONE)
-	private OffsetDateTime offsetDateTimeData;
+  @Column(sqlType = Types.TIMESTAMP_WITH_TIMEZONE)
+  private OffsetDateTime offsetDateTimeData;
 
-	@Column(name = "string_enum")
-	private StatusEnum status;
+  @Column(name = "string_enum")
+  private StatusEnum status;
 
-	@Column
-	private Short shortData;
+  @Column private Short shortData;
 
-	@Column
-	private Integer integerData;
+  @Column private Integer integerData;
 
-	@Column
-	private Float floatData;
+  @Column private Float floatData;
 
-	@Column
-	private Double doubleData;
+  @Column private Double doubleData;
 
-	@Column
-	private Number numberData;
+  @Column private Number numberData;
 
-	@Column
-	private java.sql.Date javaSqlDateData;
+  @Column private java.sql.Date javaSqlDateData;
 
-	@Column
-	private java.sql.Time javaSqlTimeData;
+  @Column private java.sql.Time javaSqlTimeData;
 
-	@Column
-	private java.sql.Timestamp javaSqlTimestampData;
+  @Column private java.sql.Timestamp javaSqlTimestampData;
 
-	public Integer getId() {
-		return id;
-	}
+  public Integer getId() {
+    return id;
+  }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+  public void setId(Integer id) {
+    this.id = id;
+  }
 
-	public LocalDate getLocalDateData() {
-		return localDateData;
-	}
+  public LocalDate getLocalDateData() {
+    return localDateData;
+  }
 
-	public void setLocalDateData(LocalDate localDateData) {
-		this.localDateData = localDateData;
-	}
+  public void setLocalDateData(LocalDate localDateData) {
+    this.localDateData = localDateData;
+  }
 
-	public java.util.Date getJavaUtilDateData() {
-		return javaUtilDateData;
-	}
+  public java.util.Date getJavaUtilDateData() {
+    return javaUtilDateData;
+  }
 
-	public void setJavaUtilDateData(java.util.Date javaUtilDateData) {
-		this.javaUtilDateData = javaUtilDateData;
-	}
+  public void setJavaUtilDateData(java.util.Date javaUtilDateData) {
+    this.javaUtilDateData = javaUtilDateData;
+  }
 
-	public LocalDateTime getLocalDateTimeData() {
-		return localDateTimeData;
-	}
+  public LocalDateTime getLocalDateTimeData() {
+    return localDateTimeData;
+  }
 
-	public void setLocalDateTimeData(LocalDateTime localDateTimeData) {
-		this.localDateTimeData = localDateTimeData;
-	}
+  public void setLocalDateTimeData(LocalDateTime localDateTimeData) {
+    this.localDateTimeData = localDateTimeData;
+  }
 
-	public java.util.Date getJavaUtilDateTsData() {
-		return javaUtilDateTsData;
-	}
+  public java.util.Date getJavaUtilDateTsData() {
+    return javaUtilDateTsData;
+  }
 
-	public void setJavaUtilDateTsData(java.util.Date javaUtilDateTsData) {
-		this.javaUtilDateTsData = javaUtilDateTsData;
-	}
+  public void setJavaUtilDateTsData(java.util.Date javaUtilDateTsData) {
+    this.javaUtilDateTsData = javaUtilDateTsData;
+  }
 
-	public BigDecimal getBigDecimalData() {
-		return bigDecimalData;
-	}
+  public BigDecimal getBigDecimalData() {
+    return bigDecimalData;
+  }
 
-	public void setBigDecimalData(BigDecimal bigDecimalData) {
-		this.bigDecimalData = bigDecimalData;
-	}
+  public void setBigDecimalData(BigDecimal bigDecimalData) {
+    this.bigDecimalData = bigDecimalData;
+  }
 
-	public Boolean getBooleanVal() {
-		return booleanVal;
-	}
+  public Boolean getBooleanVal() {
+    return booleanVal;
+  }
 
-	public void setBooleanVal(Boolean booleanVal) {
-		this.booleanVal = booleanVal;
-	}
+  public void setBooleanVal(Boolean booleanVal) {
+    this.booleanVal = booleanVal;
+  }
 
-	public byte[] getImage() {
-		return image;
-	}
+  public byte[] getImage() {
+    return image;
+  }
 
-	public void setImage(byte[] image) {
-		this.image = image;
-	}
+  public void setImage(byte[] image) {
+    this.image = image;
+  }
 
-	public String getClobData() {
-		return clobData;
-	}
+  public String getClobData() {
+    return clobData;
+  }
 
-	public void setClobData(String clobData) {
-		this.clobData = clobData;
-	}
+  public void setClobData(String clobData) {
+    this.clobData = clobData;
+  }
 
-	public StatusEnum getStatus() {
-		return status;
-	}
+  public StatusEnum getStatus() {
+    return status;
+  }
 
-	public void setStatus(StatusEnum status) {
-		this.status = status;
-	}
+  public void setStatus(StatusEnum status) {
+    this.status = status;
+  }
 
-	public UUID getSomeUuid() {
-		return someUuid;
-	}
+  public UUID getSomeUuid() {
+    return someUuid;
+  }
 
-	public void setSomeUuid(UUID someUuid) {
-		this.someUuid = someUuid;
-	}
+  public void setSomeUuid(UUID someUuid) {
+    this.someUuid = someUuid;
+  }
 
-	public OffsetDateTime getOffsetDateTimeData() {
-		return offsetDateTimeData;
-	}
+  public OffsetDateTime getOffsetDateTimeData() {
+    return offsetDateTimeData;
+  }
 
-	public void setOffsetDateTimeData(OffsetDateTime offsetDateTimeData) {
-		this.offsetDateTimeData = offsetDateTimeData;
-	}
+  public void setOffsetDateTimeData(OffsetDateTime offsetDateTimeData) {
+    this.offsetDateTimeData = offsetDateTimeData;
+  }
 
-	public Short getShortData() {
-		return shortData;
-	}
+  public Short getShortData() {
+    return shortData;
+  }
 
-	public void setShortData(Short shortData) {
-		this.shortData = shortData;
-	}
+  public void setShortData(Short shortData) {
+    this.shortData = shortData;
+  }
 
-	public Integer getIntegerData() {
-		return integerData;
-	}
+  public Integer getIntegerData() {
+    return integerData;
+  }
 
-	public void setIntegerData(Integer integerData) {
-		this.integerData = integerData;
-	}
+  public void setIntegerData(Integer integerData) {
+    this.integerData = integerData;
+  }
 
-	public Float getFloatData() {
-		return floatData;
-	}
+  public Float getFloatData() {
+    return floatData;
+  }
 
-	public void setFloatData(Float floatData) {
-		this.floatData = floatData;
-	}
+  public void setFloatData(Float floatData) {
+    this.floatData = floatData;
+  }
 
-	public Double getDoubleData() {
-		return doubleData;
-	}
+  public Double getDoubleData() {
+    return doubleData;
+  }
 
-	public void setDoubleData(Double doubleData) {
-		this.doubleData = doubleData;
-	}
+  public void setDoubleData(Double doubleData) {
+    this.doubleData = doubleData;
+  }
 
-	public java.sql.Date getJavaSqlDateData() {
-		return javaSqlDateData;
-	}
+  public java.sql.Date getJavaSqlDateData() {
+    return javaSqlDateData;
+  }
 
-	public void setJavaSqlDateData(java.sql.Date javaSqlDateData) {
-		this.javaSqlDateData = javaSqlDateData;
-	}
+  public void setJavaSqlDateData(java.sql.Date javaSqlDateData) {
+    this.javaSqlDateData = javaSqlDateData;
+  }
 
-	public java.sql.Time getJavaSqlTimeData() {
-		return javaSqlTimeData;
-	}
+  public java.sql.Time getJavaSqlTimeData() {
+    return javaSqlTimeData;
+  }
 
-	public void setJavaSqlTimeData(java.sql.Time javaSqlTimeData) {
-		this.javaSqlTimeData = javaSqlTimeData;
-	}
+  public void setJavaSqlTimeData(java.sql.Time javaSqlTimeData) {
+    this.javaSqlTimeData = javaSqlTimeData;
+  }
 
-	public java.sql.Timestamp getJavaSqlTimestampData() {
-		return javaSqlTimestampData;
-	}
+  public java.sql.Timestamp getJavaSqlTimestampData() {
+    return javaSqlTimestampData;
+  }
 
-	public void setJavaSqlTimestampData(java.sql.Timestamp javaSqlTimestampData) {
-		this.javaSqlTimestampData = javaSqlTimestampData;
-	}
+  public void setJavaSqlTimestampData(java.sql.Timestamp javaSqlTimestampData) {
+    this.javaSqlTimestampData = javaSqlTimestampData;
+  }
 
-	public Number getNumberData() {
-		return numberData;
-	}
+  public Number getNumberData() {
+    return numberData;
+  }
 
-	public void setNumberData(Number numberData) {
-		this.numberData = numberData;
-	}
-
+  public void setNumberData(Number numberData) {
+    this.numberData = numberData;
+  }
 }

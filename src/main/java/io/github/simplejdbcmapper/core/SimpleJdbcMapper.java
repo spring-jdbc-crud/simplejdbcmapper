@@ -13,13 +13,12 @@
  */
 package io.github.simplejdbcmapper.core;
 
+import io.github.simplejdbcmapper.relationship.RelationshipMapper;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
-
 import javax.sql.DataSource;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.convert.ConversionService;
@@ -29,846 +28,721 @@ import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
 import org.springframework.jdbc.core.simple.JdbcClient;
 import org.springframework.util.Assert;
 
-import io.github.simplejdbcmapper.relationship.RelationshipMapper;
-
 /**
  * CRUD methods and configuration for SimpleJdbcMapper.
- * 
+ *
  * <pre>
  * SimpleJdbcMapper should always be prepared in a Spring application context
  * and given to services as a bean reference. It maintains state, for example
  * caches insert/update SQL etc.
- * 
+ *
  * <b> Note: An instance of SimpleJdbcMapper is thread safe once configured.</b>
  * </pre>
- * 
+ *
  * @author Antony Joseph
  */
 public final class SimpleJdbcMapper {
 
-	private static final Logger logger = LoggerFactory.getLogger(SimpleJdbcMapper.class);
+  private static final Logger logger = LoggerFactory.getLogger(SimpleJdbcMapper.class);
 
-	private SimpleJdbcMapperSupport simpleJdbcMapperSupport;
+  private SimpleJdbcMapperSupport simpleJdbcMapperSupport;
 
-	private InsertOperation insertOperation;
+  private InsertOperation insertOperation;
 
-	private FindOperation findOperation;
+  private FindOperation findOperation;
 
-	private UpdateOperation updateOperation;
+  private UpdateOperation updateOperation;
 
-	private DeleteOperation deleteOperation;
+  private DeleteOperation deleteOperation;
 
-	/**
-	 * Constructor.
-	 *
-	 * @param dataSource the dataSource.
-	 */
-	public SimpleJdbcMapper(DataSource dataSource) {
-		this(dataSource, null, null);
-	}
+  /**
+   * Constructor.
+   *
+   * @param dataSource the dataSource.
+   */
+  public SimpleJdbcMapper(DataSource dataSource) {
+    this(dataSource, null, null);
+  }
 
-	/**
-	 * Constructor.
-	 *
-	 * @param dataSource the dataSource.
-	 * @param schemaName the schema name.
-	 */
-	public SimpleJdbcMapper(DataSource dataSource, String schemaName) {
-		this(dataSource, schemaName, null);
-	}
+  /**
+   * Constructor.
+   *
+   * @param dataSource the dataSource.
+   * @param schemaName the schema name.
+   */
+  public SimpleJdbcMapper(DataSource dataSource, String schemaName) {
+    this(dataSource, schemaName, null);
+  }
 
-	/**
-	 * Constructor.
-	 *
-	 * @param dataSource  the dataSource.
-	 * @param schemaName  the schema name.
-	 * @param catalogName the catalog name.
-	 */
-	public SimpleJdbcMapper(DataSource dataSource, String schemaName, String catalogName) {
-		Assert.notNull(dataSource, "dataSource must not be null");
-		this.simpleJdbcMapperSupport = new SimpleJdbcMapperSupport(dataSource, schemaName, catalogName);
-		this.insertOperation = new InsertOperation(simpleJdbcMapperSupport);
-		this.findOperation = new FindOperation(simpleJdbcMapperSupport);
-		this.updateOperation = new UpdateOperation(simpleJdbcMapperSupport);
-		this.deleteOperation = new DeleteOperation(simpleJdbcMapperSupport);
-	}
+  /**
+   * Constructor.
+   *
+   * @param dataSource the dataSource.
+   * @param schemaName the schema name.
+   * @param catalogName the catalog name.
+   */
+  public SimpleJdbcMapper(DataSource dataSource, String schemaName, String catalogName) {
+    Assert.notNull(dataSource, "dataSource must not be null");
+    this.simpleJdbcMapperSupport = new SimpleJdbcMapperSupport(dataSource, schemaName, catalogName);
+    this.insertOperation = new InsertOperation(simpleJdbcMapperSupport);
+    this.findOperation = new FindOperation(simpleJdbcMapperSupport);
+    this.updateOperation = new UpdateOperation(simpleJdbcMapperSupport);
+    this.deleteOperation = new DeleteOperation(simpleJdbcMapperSupport);
+  }
 
-	/**
-	 * finds the object by Id. Returns null if not found
-	 *
-	 * @param <T>        the type
-	 * @param entityType the type of object
-	 * @param id         id of object
-	 * @return the object of type T
-	 */
-	public <T> T findById(Class<T> entityType, Object id) {
-		return findOperation.findById(entityType, id);
-	}
+  /**
+   * finds the object by Id. Returns null if not found
+   *
+   * @param <T> the type
+   * @param entityType the type of object
+   * @param id id of object
+   * @return the object of type T
+   */
+  public <T> T findById(Class<T> entityType, Object id) {
+    return findOperation.findById(entityType, id);
+  }
 
-	/**
-	 * @deprecated Instead, issue an SQL query to retrieve the data using
-	 *             JdbcTemplate and EntityRowMapper
-	 *             <p>
-	 * 
-	 *             Find all objects.
-	 *
-	 * @param <T>         the type
-	 * @param entityType  type of object
-	 * @param sortByArray optional argument. An array of SortBy objects that are
-	 *                    used to generate the "ORDER BY" clause
-	 * @return List of objects of type T
-	 */
-	@Deprecated(since = "2.5.1", forRemoval = true)
-	public <T> List<T> findAll(Class<T> entityType, SortBy... sortByArray) {
-		return findOperation.findAll(entityType, sortByArray);
-	}
+  /**
+   * @deprecated Instead, issue an SQL query to retrieve the data using JdbcTemplate and
+   *     EntityRowMapper
+   *     <p>Find all objects.
+   * @param <T> the type
+   * @param entityType type of object
+   * @param sortByArray optional argument. An array of SortBy objects that are used to generate the
+   *     "ORDER BY" clause
+   * @return List of objects of type T
+   */
+  @Deprecated(since = "2.5.1", forRemoval = true)
+  public <T> List<T> findAll(Class<T> entityType, SortBy... sortByArray) {
+    return findOperation.findAll(entityType, sortByArray);
+  }
 
-	/**
-	 * @deprecated Instead, issue an SQL query to retrieve the data using
-	 *             JdbcTemplate and EntityRowMapper
-	 *             <p>
-	 * 
-	 *             Returns list of objects which match the property value. 'IS NULL'
-	 *             clause will be used in the sql for a null value.
-	 *
-	 * @param <T>           the type
-	 * @param entityType    type of objects to be returned
-	 * @param propertyName  the property name
-	 * @param propertyValue the property value
-	 * @param sortByArray   optional argument. An array of SortBy objects that are
-	 *                      used to generate the "ORDER BY" clause
-	 * @return a List of objects of type T
-	 */
-	@Deprecated(since = "2.5.1", forRemoval = true)
-	public <T> List<T> findByPropertyValue(Class<T> entityType, String propertyName, Object propertyValue,
-			SortBy... sortByArray) {
-		return findOperation.findByPropertyValue(entityType, propertyName, propertyValue, sortByArray);
-	}
+  /**
+   * @deprecated Instead, issue an SQL query to retrieve the data using JdbcTemplate and
+   *     EntityRowMapper
+   *     <p>Returns list of objects which match the property value. 'IS NULL' clause will be used in
+   *     the sql for a null value.
+   * @param <T> the type
+   * @param entityType type of objects to be returned
+   * @param propertyName the property name
+   * @param propertyValue the property value
+   * @param sortByArray optional argument. An array of SortBy objects that are used to generate the
+   *     "ORDER BY" clause
+   * @return a List of objects of type T
+   */
+  @Deprecated(since = "2.5.1", forRemoval = true)
+  public <T> List<T> findByPropertyValue(
+      Class<T> entityType, String propertyName, Object propertyValue, SortBy... sortByArray) {
+    return findOperation.findByPropertyValue(entityType, propertyName, propertyValue, sortByArray);
+  }
 
-	/**
-	 * @deprecated Instead, issue an SQL query with JdbcTemplate and EntityRowMapper
-	 *             to retrieve the data
-	 *             <p>
-	 *
-	 *             Returns list of objects which match the collection of property
-	 *             values. Uses an sql 'IN' clause. Large number of values could
-	 *             cause query performance degradation. Also different databases
-	 *             have different number/size limitations for sql 'IN" clauses.
-	 * 
-	 *             <pre>
-	 * Query is constructed in such a way that if there is a null value in the propertyValues
-	 * the returned records will include records which match 'IS NULL' in the database.
-	 *             </pre>
-	 *
-	 * @param <T>            the type
-	 * @param <U>            the type of the property values
-	 * @param entityType     the type of objects to be returned
-	 * @param propertyName   the property name
-	 * @param propertyValues the collection of property values
-	 * @param sortByArray    optional argument. An array of SortBy objects that are
-	 *                       used to generate the "ORDER BY" clause
-	 * @return a List of objects of type T
-	 */
-	@Deprecated(since = "2.5.1", forRemoval = true)
-	public <T, U> List<T> findByPropertyValues(Class<T> entityType, String propertyName, Collection<U> propertyValues,
-			SortBy... sortByArray) {
-		return findOperation.findByPropertyValues(entityType, propertyName, propertyValues, sortByArray);
-	}
+  /**
+   * @deprecated Instead, issue an SQL query with JdbcTemplate and EntityRowMapper to retrieve the
+   *     data
+   *     <p>Returns list of objects which match the collection of property values. Uses an sql 'IN'
+   *     clause. Large number of values could cause query performance degradation. Also different
+   *     databases have different number/size limitations for sql 'IN" clauses.
+   *     <pre>
+   * Query is constructed in such a way that if there is a null value in the propertyValues
+   * the returned records will include records which match 'IS NULL' in the database.
+   *             </pre>
+   *
+   * @param <T> the type
+   * @param <U> the type of the property values
+   * @param entityType the type of objects to be returned
+   * @param propertyName the property name
+   * @param propertyValues the collection of property values
+   * @param sortByArray optional argument. An array of SortBy objects that are used to generate the
+   *     "ORDER BY" clause
+   * @return a List of objects of type T
+   */
+  @Deprecated(since = "2.5.1", forRemoval = true)
+  public <T, U> List<T> findByPropertyValues(
+      Class<T> entityType,
+      String propertyName,
+      Collection<U> propertyValues,
+      SortBy... sortByArray) {
+    return findOperation.findByPropertyValues(
+        entityType, propertyName, propertyValues, sortByArray);
+  }
 
-	/**
-	 * Inserts an object. Objects with auto generated id will have the id set to the
-	 * new id from database. For non auto generated id the id has to be manually set
-	 * before invoking insert().
-	 *
-	 * <pre>
-	 * Will handle the following annotations:
-	 * &#64;CreatedOn if Supplier is configured with SimpleJdbcMapper the property 
-	 *                will be assigned the supplied value
-	 * &#64;CreatedBy if Supplier is configured with SimpleJdbcMapper the property 
-	 *      will be assigned the supplied value
-	 * &#64;UpdatedOn if Supplier is configured with SimpleJdbcMapper the property 
-	 *                will be assigned the supplied value
-	 * &#64;UpdatedBy if Supplier is configured with SimpleJdbcMapper the property
-	 *                will be assigned the supplied value
-	 * &#64;Version property will be set to 1. Used for optimistic locking.
-	 * </pre>
-	 *
-	 * @param object The object to be saved
-	 */
+  /**
+   * Inserts an object. Objects with auto generated id will have the id set to the new id from
+   * database. For non auto generated id the id has to be manually set before invoking insert().
+   *
+   * <pre>
+   * Will handle the following annotations:
+   * &#64;CreatedOn if Supplier is configured with SimpleJdbcMapper the property
+   *                will be assigned the supplied value
+   * &#64;CreatedBy if Supplier is configured with SimpleJdbcMapper the property
+   *      will be assigned the supplied value
+   * &#64;UpdatedOn if Supplier is configured with SimpleJdbcMapper the property
+   *                will be assigned the supplied value
+   * &#64;UpdatedBy if Supplier is configured with SimpleJdbcMapper the property
+   *                will be assigned the supplied value
+   * &#64;Version property will be set to 1. Used for optimistic locking.
+   * </pre>
+   *
+   * @param object The object to be saved
+   */
+  public void insert(Object object) {
+    insertOperation.insert(object);
+  }
 
-	public void insert(Object object) {
-		insertOperation.insert(object);
-	}
+  /**
+   * Update the object.
+   *
+   * <pre>
+   * Will handle the following annotations:
+   * &#64;UpdatedOn if Supplier is configured with SimpleJdbcMapper the property
+   *                will be assigned the supplied value
+   * &#64;UpdatedBy if Supplier is configured with SimpleJdbcMapper the property
+   *                will be assigned the supplied value
+   * &#64;Version property will be incremented on a successful update. An OptimisticLockingException
+   *                will be thrown if object is stale.
+   * </pre>
+   *
+   * @param object object to be updated
+   * @return number of records updated
+   */
+  public Integer update(Object object) {
+    return updateOperation.update(object);
+  }
 
-	/**
-	 * Update the object.
-	 *
-	 * <pre>
-	 * Will handle the following annotations:
-	 * &#64;UpdatedOn if Supplier is configured with SimpleJdbcMapper the property 
-	 *                will be assigned the supplied value
-	 * &#64;UpdatedBy if Supplier is configured with SimpleJdbcMapper the property 
-	 *                will be assigned the supplied value
-	 * &#64;Version property will be incremented on a successful update. An OptimisticLockingException
-	 *                will be thrown if object is stale.
-	 * </pre>
-	 *
-	 * @param object object to be updated
-	 * @return number of records updated
-	 */
-	public Integer update(Object object) {
-		return updateOperation.update(object);
-	}
+  /**
+   * Updates only the specified properties passed in as arguments. Use it to update a property or a
+   * few properties of the object and not the whole object. Issues an SQL update statement for only
+   * for the specific properties and any auto assign properties.
+   *
+   * <pre>
+   * Will handle the following annotations:
+   * &#64;UpdatedOn if Supplier is configured with SimpleJdbcMapper the property
+   *                will be assigned the supplied value
+   * &#64;UpdatedBy if Supplier is configured with SimpleJdbcMapper the property
+   *                will be assigned the supplied value
+   * &#64;Version property will be incremented on a successful update. An OptimisticLockingException
+   *                will be thrown if object is stale.
+   * </pre>
+   *
+   * @param object object to be updated
+   * @param propertyNames the specific property names that need to be updated.
+   * @return number of records updated
+   */
+  public Integer updateSpecificProperties(Object object, String... propertyNames) {
+    return updateOperation.updateSpecificProperties(object, propertyNames);
+  }
 
-	/**
-	 * Updates only the specified properties passed in as arguments. Use it to
-	 * update a property or a few properties of the object and not the whole object.
-	 * Issues an SQL update statement for only for the specific properties and any
-	 * auto assign properties.
-	 *
-	 * <pre>
-	 * Will handle the following annotations:
-	 * &#64;UpdatedOn if Supplier is configured with SimpleJdbcMapper the property 
-	 *                will be assigned the supplied value
-	 * &#64;UpdatedBy if Supplier is configured with SimpleJdbcMapper the property 
-	 *                will be assigned the supplied value
-	 * &#64;Version property will be incremented on a successful update. An OptimisticLockingException
-	 *                will be thrown if object is stale.
-	 * </pre>
-	 *
-	 * @param object        object to be updated
-	 * @param propertyNames the specific property names that need to be updated.
-	 * @return number of records updated
-	 */
-	public Integer updateSpecificProperties(Object object, String... propertyNames) {
-		return updateOperation.updateSpecificProperties(object, propertyNames);
-	}
+  /**
+   * Deletes the object from the database.
+   *
+   * @param object Object to be deleted
+   * @return number of records were deleted (1 or 0)
+   */
+  public Integer delete(Object object) {
+    return deleteOperation.delete(object);
+  }
 
-	/**
-	 * Deletes the object from the database.
-	 *
-	 * @param object Object to be deleted
-	 * @return number of records were deleted (1 or 0)
-	 */
-	public Integer delete(Object object) {
-		return deleteOperation.delete(object);
-	}
+  /**
+   * Deletes the object from the database by id.
+   *
+   * @param entityType type of object to be deleted.
+   * @param id id of object to be deleted
+   * @return number records were deleted (1 or 0)
+   */
+  public Integer deleteById(Class<?> entityType, Object id) {
+    return deleteOperation.deleteById(entityType, id);
+  }
 
-	/**
-	 * Deletes the object from the database by id.
-	 *
-	 * @param entityType type of object to be deleted.
-	 * @param id         id of object to be deleted
-	 * @return number records were deleted (1 or 0)
-	 */
-	public Integer deleteById(Class<?> entityType, Object id) {
-		return deleteOperation.deleteById(entityType, id);
-	}
+  /**
+   * Returns a new EntityRowMapper.
+   *
+   * <p>EntityRowMapper <b>always</b> has to be used with sql columns generated by either
+   *
+   * <pre>
+   * {@link #getSqlColumns(Class<?> entityType)} or
+   * {@link #getSqlColumns(Class<?> entityType, String tableAlias)}
+   * </pre>
+   *
+   * <p>It expects the sql columns to be in a specific order because it uses position indexes to
+   * retrieve the data from the query ResultSet. It will handle the cases where the column to
+   * property mappings do not follow the underscore to camel case naming convention.
+   *
+   * <p>This is the recommended row mapper to use when writing custom queries for mapped objects. It
+   * has optimizations which allows it to process data from the query ResultSet in a performant way.
+   *
+   * <p>Query:
+   *
+   * <pre>
+   * String sql = "SELECT " + sjm.getSqlColumns(Product.class) + "FROM product WHERE name = ?";
+   * </pre>
+   *
+   * Example using JdbcTemplate:
+   *
+   * <pre>
+   * {@code List<Product>} products = sjm.getJdbcTemplate().query(sql,sjm.entityRowMapper(Product.class), "someProductName");
+   * </pre>
+   *
+   * <p>Example using JdbcClient. Note that the EntityRowMaper has to be passed in as an argument,
+   * otherwise JdbcClient will use its internal row mapper SimplePropertyRowMapper which will not
+   * work with the sql.
+   *
+   * <pre>
+   * {@code List<Product>} products = sjm.getJdbcClient().sql(sql)
+   *                                                     .param("someProductName")
+   *                                                     .query(sjm.entityRowMapper(Product.class))
+   *                                                     .list();
+   * </pre>
+   *
+   * @param <T> the type
+   * @param entityType the entity type
+   * @return EntityRowMapper for the type
+   */
+  public <T> EntityRowMapper<T> entityRowMapper(Class<T> entityType) {
+    return simpleJdbcMapperSupport.entityRowMapper(entityType);
+  }
 
-	/**
-	 * Returns a new EntityRowMapper.
-	 * 
-	 * <p>
-	 * EntityRowMapper <b>always</b> has to be used with sql columns generated by
-	 * either
-	 * 
-	 * <pre>
-	 * {@link #getSqlColumns(Class<?> entityType)} or
-	 * {@link #getSqlColumns(Class<?> entityType, String tableAlias)}
-	 * </pre>
-	 * 
-	 * <p>
-	 * It expects the sql columns to be in a specific order because it uses position
-	 * indexes to retrieve the data from the query ResultSet. It will handle the
-	 * cases where the column to property mappings do not follow the underscore to
-	 * camel case naming convention.
-	 * 
-	 * <p>
-	 * This is the recommended row mapper to use when writing custom queries for
-	 * mapped objects. It has optimizations which allows it to process data from the
-	 * query ResultSet in a performant way.
-	 * 
-	 * <p>
-	 * Query:
-	 * 
-	 * <pre>
-	 * String sql = "SELECT " + sjm.getSqlColumns(Product.class) + "FROM product WHERE name = ?";
-	 * </pre>
-	 * 
-	 * Example using JdbcTemplate:
-	 * 
-	 * <pre>
-	 * {@code List<Product>} products = sjm.getJdbcTemplate().query(sql,sjm.entityRowMapper(Product.class), "someProductName");
-	 * </pre>
-	 * 
-	 * <p>
-	 * Example using JdbcClient. Note that the EntityRowMaper has to be passed in as
-	 * an argument, otherwise JdbcClient will use its internal row mapper
-	 * SimplePropertyRowMapper which will not work with the sql.
-	 * 
-	 * <pre>
-	 * {@code List<Product>} products = sjm.getJdbcClient().sql(sql)
-	 *                                                     .param("someProductName")
-	 *                                                     .query(sjm.entityRowMapper(Product.class))
-	 *                                                     .list();
-	 * </pre>
-	 * 
-	 * @param <T>        the type
-	 * @param entityType the entity type
-	 * @return EntityRowMapper for the type
-	 */
-	public <T> EntityRowMapper<T> entityRowMapper(Class<T> entityType) {
-		return simpleJdbcMapperSupport.entityRowMapper(entityType);
-	}
+  /**
+   * @deprecated Use {@link #entityRowMapper(Class)} instead.
+   *     <p>Returns a new EntityRowMapper.
+   *     <p>EntityRowMapper <b>always</b> has to be used with sql columns generated by either
+   *     <pre>
+   * {@link #getEntitySqlColumns(Class<?> entityType)} or
+   * {@link #getEntitySqlColumns(Class<?> entityType, String tableAlias)}
+   * </pre>
+   *     <p>It expects the sql columns to be in a specific order because it uses position indexes to
+   *     retrieve the data from the query ResultSet. It will handle the cases where the column to
+   *     property mappings do not follow the underscore to camel case naming convention.
+   *     <p>This is the recommended row mapper to use when writing custom queries for mapped
+   *     objects. It has optimizations which allows it to process data from the query ResultSet in a
+   *     performant way.
+   *     <p>Query:
+   *     <pre>
+   *             String sql = "SELECT " + sjm.getEntitySqlColumns(Product.class) + "FROM product WHERE name = ?";
+   *             </pre>
+   *     Example using JdbcTemplate:
+   *     <pre>
+   * {@code List<Product>} products = sjm.getJdbcTemplate().query(sql,sjm.newEntityRowMapper(Product.class), "someProductName");
+   * </pre>
+   *     <p>Example using JdbcClient. Note that the EntityRowMaper has to be passed in as an
+   *     argument, otherwise JdbcClient will use its internal row mapper SimplePropertyRowMapper
+   *     which will not work with the sql.
+   *     <pre>
+   * {@code List<Product>} products = sjm.getJdbcClient().sql(sql)
+   *                                                     .param("someProductName")
+   *                                                     .query(sjm.newEntityRowMapper(Product.class))
+   *                                                     .list();
+   * </pre>
+   *
+   * @param <T> the type
+   * @param entityType the entity type
+   * @return EntityRowMapper for the type
+   */
+  @Deprecated(since = "2.4.4", forRemoval = true)
+  public <T> EntityRowMapper<T> newEntityRowMapper(Class<T> entityType) {
+    return simpleJdbcMapperSupport.entityRowMapper(entityType);
+  }
 
-	/**
-	 * @deprecated Use {@link #entityRowMapper(Class)} instead.
-	 *             <p>
-	 * 
-	 *             Returns a new EntityRowMapper.
-	 * 
-	 *             <p>
-	 *             EntityRowMapper <b>always</b> has to be used with sql columns
-	 *             generated by either
-	 * 
-	 *             <pre>
-	 * {@link #getEntitySqlColumns(Class<?> entityType)} or
-	 * {@link #getEntitySqlColumns(Class<?> entityType, String tableAlias)}
-	 * </pre>
-	 * 
-	 *             <p>
-	 *             It expects the sql columns to be in a specific order because it
-	 *             uses position indexes to retrieve the data from the query
-	 *             ResultSet. It will handle the cases where the column to property
-	 *             mappings do not follow the underscore to camel case naming
-	 *             convention.
-	 * 
-	 *             <p>
-	 *             This is the recommended row mapper to use when writing custom
-	 *             queries for mapped objects. It has optimizations which allows it
-	 *             to process data from the query ResultSet in a performant way.
-	 * 
-	 *             <p>
-	 *             Query:
-	 * 
-	 *             <pre>
-	 *             String sql = "SELECT " + sjm.getEntitySqlColumns(Product.class) + "FROM product WHERE name = ?";
-	 *             </pre>
-	 * 
-	 *             Example using JdbcTemplate:
-	 * 
-	 *             <pre>
-	 * {@code List<Product>} products = sjm.getJdbcTemplate().query(sql,sjm.newEntityRowMapper(Product.class), "someProductName");
-	 * </pre>
-	 * 
-	 *             <p>
-	 *             Example using JdbcClient. Note that the EntityRowMaper has to be
-	 *             passed in as an argument, otherwise JdbcClient will use its
-	 *             internal row mapper SimplePropertyRowMapper which will not work
-	 *             with the sql.
-	 * 
-	 *             <pre>
-	 * {@code List<Product>} products = sjm.getJdbcClient().sql(sql)
-	 *                                                     .param("someProductName")
-	 *                                                     .query(sjm.newEntityRowMapper(Product.class))
-	 *                                                     .list();
-	 * </pre>
-	 * 
-	 * @param <T>        the type
-	 * @param entityType the entity type
-	 * @return EntityRowMapper for the type
-	 */
-	@Deprecated(since = "2.4.4", forRemoval = true)
-	public <T> EntityRowMapper<T> newEntityRowMapper(Class<T> entityType) {
-		return simpleJdbcMapperSupport.entityRowMapper(entityType);
-	}
+  /**
+   * Gets the sql columns that works with EntityRowMapper. EntityRowMapper expects the sql columns
+   * to be in a specific order since it uses position indexes to retrieve the data from the query
+   * ResultSet. <b>Do not modify the generated sql columns</b>.
+   *
+   * <p>Always use this method (or its overloaded method {@link #getSqlColumns(Class<?> entityType,
+   * String tableAlias)}) to create your custom query columns when using EntityRowMapper. {@link
+   * io.github.simplejdbcmapper.core.EntityRowMapper} will handle the column to property mapping.
+   *
+   * <pre>
+   * "somecolumn, some_other_column, last_name"
+   * </pre>
+   *
+   * See {@link #entityRowMapper}
+   *
+   * @param entityType the type
+   * @return comma separated select column string
+   */
+  public String getSqlColumns(Class<?> entityType) {
+    return simpleJdbcMapperSupport.getSqlColumns(entityType);
+  }
 
-	/**
-	 * Gets the sql columns that works with EntityRowMapper. EntityRowMapper expects
-	 * the sql columns to be in a specific order since it uses position indexes to
-	 * retrieve the data from the query ResultSet. <b>Do not modify the generated
-	 * sql columns</b>.
-	 * <p>
-	 * Always use this method (or its overloaded method
-	 * {@link #getSqlColumns(Class<?> entityType, String tableAlias)}) to create
-	 * your custom query columns when using EntityRowMapper.
-	 * {@link io.github.simplejdbcmapper.core.EntityRowMapper} will handle the
-	 * column to property mapping.
-	 * 
-	 * <pre>
-	 * "somecolumn, some_other_column, last_name"
-	 * </pre>
-	 *
-	 * See {@link #entityRowMapper}
-	 * 
-	 * @param entityType the type
-	 * @return comma separated select column string
-	 * 
-	 */
-	public String getSqlColumns(Class<?> entityType) {
-		return simpleJdbcMapperSupport.getSqlColumns(entityType);
-	}
+  /**
+   * @deprecated Use {@link #getSqlColumns(Class<?> entityType)} instead.
+   *     <p>Gets the sql columns that works with EntityRowMapper. EntityRowMapper expects the sql
+   *     columns to be in a specific order since it uses position indexes to retrieve the data from
+   *     the query ResultSet. <b>Do not modify the generated sql columns</b>.
+   *     <p>Always use this method (or its overloaded method {@link #getEntitySqlColumns(Class<?>
+   *     entityType, String tableAlias)}) to create your custom query columns when using
+   *     EntityRowMapper. {@link io.github.simplejdbcmapper.core.EntityRowMapper} will handle the
+   *     column to property mapping.
+   *     <pre>
+   *             "somecolumn, some_other_column, last_name"
+   *             </pre>
+   *     See {@link #newEntityRowMapper}
+   * @param entityType the type
+   * @return comma separated select column string
+   */
+  @Deprecated(since = "2.4.4", forRemoval = true)
+  public String getEntitySqlColumns(Class<?> entityType) {
+    return simpleJdbcMapperSupport.getSqlColumns(entityType);
+  }
 
-	/**
-	 * @deprecated Use {@link #getSqlColumns(Class<?> entityType)} instead.
-	 *             <p>
-	 * 
-	 *             Gets the sql columns that works with EntityRowMapper.
-	 *             EntityRowMapper expects the sql columns to be in a specific order
-	 *             since it uses position indexes to retrieve the data from the
-	 *             query ResultSet. <b>Do not modify the generated sql columns</b>.
-	 *             <p>
-	 *             Always use this method (or its overloaded method
-	 *             {@link #getEntitySqlColumns(Class<?> entityType, String
-	 *             tableAlias)}) to create your custom query columns when using
-	 *             EntityRowMapper.
-	 *             {@link io.github.simplejdbcmapper.core.EntityRowMapper} will
-	 *             handle the column to property mapping.
-	 * 
-	 *             <pre>
-	 *             "somecolumn, some_other_column, last_name"
-	 *             </pre>
-	 *
-	 *             See {@link #newEntityRowMapper}
-	 * 
-	 * @param entityType the type
-	 * @return comma separated select column string
-	 * 
-	 */
-	@Deprecated(since = "2.4.4", forRemoval = true)
-	public String getEntitySqlColumns(Class<?> entityType) {
-		return simpleJdbcMapperSupport.getSqlColumns(entityType);
-	}
+  /**
+   * Gets the sql columns with table aliases that works with EntityRowMapper. EntityRowMapper
+   * expects the sql columns to be in a specific order since it uses position indexes to retrieve
+   * the data from the query ResultSet. <b>Do not modify the generated sql columns</b>.
+   *
+   * <p>Always use this method (or its overloaded method {@link #getSqlColumns(Class<?>
+   * entityType)}) to create your custom query columns when using EntityRowMapper. create your
+   * custom query columns when using EntityRowMapper. {@link
+   * io.github.simplejdbcmapper.core.EntityRowMapper} will handle the column to property mapping.
+   *
+   * <p>Use it in your custom queries when you are doing joins and need columns corresponding to a
+   * table alias.
+   *
+   * <p>For tableAlias argument 't1' will return something like below:
+   *
+   * <pre>
+   * "t1.somecolumn, t1.someothercolumn, t1.last_name"
+   * </pre>
+   *
+   * Its good practice to keep the table aliases short and succinct.
+   *
+   * <p>See {@link #entityRowMapper}
+   *
+   * @param entityType the type
+   * @param tableAlias the table alias
+   * @return comma separated select column string
+   */
+  public String getSqlColumns(Class<?> entityType, String tableAlias) {
+    return simpleJdbcMapperSupport.getSqlColumns(entityType, tableAlias);
+  }
 
-	/**
-	 * Gets the sql columns with table aliases that works with EntityRowMapper.
-	 * EntityRowMapper expects the sql columns to be in a specific order since it
-	 * uses position indexes to retrieve the data from the query ResultSet. <b>Do
-	 * not modify the generated sql columns</b>.
-	 * <p>
-	 * Always use this method (or its overloaded method
-	 * {@link #getSqlColumns(Class<?> entityType)}) to create your custom query
-	 * columns when using EntityRowMapper. create your custom query columns when
-	 * using EntityRowMapper.
-	 * {@link io.github.simplejdbcmapper.core.EntityRowMapper} will handle the
-	 * column to property mapping.
-	 * <p>
-	 * Use it in your custom queries when you are doing joins and need columns
-	 * corresponding to a table alias.
-	 * <p>
-	 * For tableAlias argument 't1' will return something like below:
-	 * 
-	 * <pre>
-	 * "t1.somecolumn, t1.someothercolumn, t1.last_name"
-	 * </pre>
-	 * 
-	 * Its good practice to keep the table aliases short and succinct.
-	 * 
-	 * See {@link #entityRowMapper}
-	 * 
-	 * @param entityType the type
-	 * @param tableAlias the table alias
-	 * @return comma separated select column string
-	 * 
-	 */
-	public String getSqlColumns(Class<?> entityType, String tableAlias) {
-		return simpleJdbcMapperSupport.getSqlColumns(entityType, tableAlias);
-	}
+  /**
+   * @deprecated Use {@link #getSqlColumns(Class<?> entityType, String tableAlias)} instead.
+   *     <p>Gets the sql columns with table aliases that works with EntityRowMapper. EntityRowMapper
+   *     expects the sql columns to be in a specific order since it uses position indexes to
+   *     retrieve the data from the query ResultSet. <b>Do not modify the generated sql columns</b>.
+   *     <p>Always use this method (or its overloaded method {@link #getEntitySqlColumns(Class<?>
+   *     entityType)}) to create your custom query columns when using EntityRowMapper. create your
+   *     custom query columns when using EntityRowMapper. {@link
+   *     io.github.simplejdbcmapper.core.EntityRowMapper} will handle the column to property
+   *     mapping.
+   *     <p>Use it in your custom queries when you are doing joins and need columns corresponding to
+   *     a table alias.
+   *     <p>For tableAlias argument 't1' will return something like below:
+   *     <pre>
+   *             "t1.somecolumn, t1.someothercolumn, t1.last_name"
+   *             </pre>
+   *     Its good practice to keep the table aliases short and succinct.
+   *     <p>See {@link #newEntityRowMapper}
+   * @param entityType the type
+   * @param tableAlias the table alias
+   * @return comma separated select column string
+   */
+  @Deprecated(since = "2.4.4", forRemoval = true)
+  public String getEntitySqlColumns(Class<?> entityType, String tableAlias) {
+    return simpleJdbcMapperSupport.getSqlColumns(entityType, tableAlias);
+  }
 
-	/**
-	 * @deprecated Use {@link #getSqlColumns(Class<?> entityType, String
-	 *             tableAlias)} instead.
-	 *             <p>
-	 * 
-	 *             Gets the sql columns with table aliases that works with
-	 *             EntityRowMapper. EntityRowMapper expects the sql columns to be in
-	 *             a specific order since it uses position indexes to retrieve the
-	 *             data from the query ResultSet. <b>Do not modify the generated sql
-	 *             columns</b>.
-	 *             <p>
-	 *             Always use this method (or its overloaded method
-	 *             {@link #getEntitySqlColumns(Class<?> entityType)}) to create your
-	 *             custom query columns when using EntityRowMapper. create your
-	 *             custom query columns when using EntityRowMapper.
-	 *             {@link io.github.simplejdbcmapper.core.EntityRowMapper} will
-	 *             handle the column to property mapping.
-	 *             <p>
-	 *             Use it in your custom queries when you are doing joins and need
-	 *             columns corresponding to a table alias.
-	 *             <p>
-	 *             For tableAlias argument 't1' will return something like below:
-	 * 
-	 *             <pre>
-	 *             "t1.somecolumn, t1.someothercolumn, t1.last_name"
-	 *             </pre>
-	 * 
-	 *             Its good practice to keep the table aliases short and succinct.
-	 * 
-	 *             See {@link #newEntityRowMapper}
-	 * 
-	 * @param entityType the type
-	 * @param tableAlias the table alias
-	 * @return comma separated select column string
-	 * 
-	 */
-	@Deprecated(since = "2.4.4", forRemoval = true)
-	public String getEntitySqlColumns(Class<?> entityType, String tableAlias) {
-		return simpleJdbcMapperSupport.getSqlColumns(entityType, tableAlias);
-	}
+  /**
+   * Gets the sql columns for multi-entity processing. These sql columns are used with the
+   * ResultSetExtractor and <b>should not be modified</b> since the extractor uses position indexes
+   * to retrieve the data from the query ResultSet.
+   *
+   * <p>For the following multi-entity:
+   *
+   * <pre>
+   * new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol")
+   * </pre>
+   *
+   * this will generate sql columns like below:
+   *
+   * <pre>
+   * o.id, o.order_date, ol.id, ol.product_id ...
+   * </pre>
+   *
+   * Its good practice to keep the table aliases short and succinct.
+   *
+   * <p>See {@link #resultSetExtractor}
+   *
+   * @param multiEntity the MultiEntity
+   * @return sql columns string
+   */
+  public String getSqlColumns(MultiEntity multiEntity) {
+    return simpleJdbcMapperSupport.getSqlColumns(multiEntity);
+  }
 
-	/**
-	 * Gets the sql columns for multi-entity processing. These sql columns are used
-	 * with the ResultSetExtractor and <b>should not be modified</b> since the
-	 * extractor uses position indexes to retrieve the data from the query
-	 * ResultSet.
-	 * <p>
-	 * For the following multi-entity:
-	 * 
-	 * <pre>
-	 * new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol")
-	 * </pre>
-	 * 
-	 * this will generate sql columns like below:
-	 * 
-	 * <pre>
-	 * o.id, o.order_date, ol.id, ol.product_id ...
-	 * </pre>
-	 * 
-	 * Its good practice to keep the table aliases short and succinct.
-	 * 
-	 * See {@link #resultSetExtractor}
-	 * 
-	 * @param multiEntity the MultiEntity
-	 * @return sql columns string
-	 */
-	public String getSqlColumns(MultiEntity multiEntity) {
-		return simpleJdbcMapperSupport.getSqlColumns(multiEntity);
-	}
+  /**
+   * @deprecated Use {@link #getSqlColumns(MultiEntity multiEntity)} instead.<br>
+   *     Gets the sql columns for multi-entity processing. These sql columns are used with the
+   *     ResultSetExtractor and <b>should not be modified</b> since the extractor uses position
+   *     indexes to retrieve the data from the query ResultSet.
+   *     <p>For the following multi-entity:
+   *     <pre>
+   *             new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol")
+   *             </pre>
+   *     this will generate sql columns like below:
+   *     <pre>
+   * o.id, o.order_date, ol.id, ol.product_id ...
+   *             </pre>
+   *     Its good practice to keep the table aliases short and succinct.
+   *     <p>See {@link #resultSetExtractor}
+   * @param multiEntity the MultiEntity
+   * @return sql columns string
+   */
+  @Deprecated(since = "2.4.4", forRemoval = true)
+  public String getMultiEntitySqlColumns(MultiEntity multiEntity) {
+    return simpleJdbcMapperSupport.getSqlColumns(multiEntity);
+  }
 
-	/**
-	 * @deprecated Use {@link #getSqlColumns(MultiEntity multiEntity)} instead.<br>
-	 * 
-	 *             Gets the sql columns for multi-entity processing. These sql
-	 *             columns are used with the ResultSetExtractor and <b>should not be
-	 *             modified</b> since the extractor uses position indexes to
-	 *             retrieve the data from the query ResultSet.
-	 *             <p>
-	 *             For the following multi-entity:
-	 * 
-	 *             <pre>
-	 *             new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol")
-	 *             </pre>
-	 * 
-	 *             this will generate sql columns like below:
-	 * 
-	 *             <pre>
-	 * o.id, o.order_date, ol.id, ol.product_id ...
-	 *             </pre>
-	 * 
-	 *             Its good practice to keep the table aliases short and succinct.
-	 * 
-	 *             See {@link #resultSetExtractor}
-	 * 
-	 * @param multiEntity the MultiEntity
-	 * @return sql columns string
-	 */
-	@Deprecated(since = "2.4.4", forRemoval = true)
-	public String getMultiEntitySqlColumns(MultiEntity multiEntity) {
-		return simpleJdbcMapperSupport.getSqlColumns(multiEntity);
-	}
+  /**
+   * The ResultSetExtractor for multiple entities. The results are returned in {@link
+   * io.github.simplejdbcmapper.relationship.RelationshipMapper}. It expects the sql columns to
+   * <b>always</b> be generated using {@link #getSqlColumns(MultiEntity)}. The sql columns need to
+   * be in a specific order since it uses position indexes to retrieve the data from the query
+   * ResultSet. <b>Do not modify the generated sql columns</b>.
+   *
+   * <p>From the query ResultSet a result list is created for each entity. The list for each entity
+   * will be <b>Unique by ID</b>.
+   *
+   * <pre>
+   * For example:
+   * new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol");
+   * The extractor will create 2 lists for RelationshipMapper:
+   * 1. Order list unique by IDs
+   * 2. OrderLine list unique by IDs
+   * </pre>
+   *
+   * It will handle the cases where the column to property mappings do not follow the underscore to
+   * camel case naming convention.
+   *
+   * <p>For more details see the <a href=
+   * "https://github.com/spring-jdbc-crud/simplejdbcmapper#assembling-relationships-from-sql-queries">documentation</a>
+   *
+   * <p>Example code:
+   *
+   * <pre>
+   * // Define the multiple mapped entities you want to select.
+   * MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol");
+   * // build sql using sql columns from getSqlColumns()
+   * String sql = """
+   * 		   SELECT %s
+   * 		   FROM orders o
+   * 		   LEFT JOIN order_line ol ON  o.id = ol.order_id
+   * 		   WHERE o.total_amount >= ?
+   * 		   ORDER BY o.order_date DESC, ol.order_line_id
+   * 		""".formatted(sjm.getSqlColumns(multiEntity));
+   *
+   * // Use this method with JdbcTemplate to extract the data for the multiple entities.
+   * RelationshipMapper relationshipMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity),
+   * 		someAmount);
+   *
+   * </pre>
+   *
+   * @param multiEntity The holds information of the entities that need to be extracted from the
+   *     query ResultSet
+   * @return a Spring ResultSetExtractor that can be used with
+   *     JdbcTemplate/NamedParameterJdbcTemplate and the results are returned in RelationshipMapper
+   */
+  public ResultSetExtractor<RelationshipMapper> resultSetExtractor(MultiEntity multiEntity) {
+    return simpleJdbcMapperSupport.resultSetExtractor(multiEntity);
+  }
 
-	/**
-	 * The ResultSetExtractor for multiple entities. The results are returned in
-	 * {@link io.github.simplejdbcmapper.relationship.RelationshipMapper}. It
-	 * expects the sql columns to <b>always</b> be generated using
-	 * {@link #getSqlColumns(MultiEntity)}. The sql columns need to be in a specific
-	 * order since it uses position indexes to retrieve the data from the query
-	 * ResultSet. <b>Do not modify the generated sql columns</b>.
-	 * 
-	 * <p>
-	 * From the query ResultSet a result list is created for each entity. The list
-	 * for each entity will be <b>Unique by ID</b>.
-	 * 
-	 * <pre>
-	 * For example:
-	 * new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol");
-	 * The extractor will create 2 lists for RelationshipMapper:
-	 * 1. Order list unique by IDs
-	 * 2. OrderLine list unique by IDs
-	 * </pre>
-	 * 
-	 * It will handle the cases where the column to property mappings do not follow
-	 * the underscore to camel case naming convention.
-	 * <p>
-	 * For more details see the <a href=
-	 * "https://github.com/spring-jdbc-crud/simplejdbcmapper#assembling-relationships-from-sql-queries">documentation</a>
-	 * <p>
-	 * Example code:
-	 * 
-	 * <pre>
-	 * // Define the multiple mapped entities you want to select.
-	 * MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol");
-	 * // build sql using sql columns from getSqlColumns()
-	 * String sql = """
-	 * 		   SELECT %s
-	 * 		   FROM orders o
-	 * 		   LEFT JOIN order_line ol ON  o.id = ol.order_id
-	 * 		   WHERE o.total_amount >= ?
-	 * 		   ORDER BY o.order_date DESC, ol.order_line_id
-	 * 		""".formatted(sjm.getSqlColumns(multiEntity));
-	 * 
-	 * // Use this method with JdbcTemplate to extract the data for the multiple entities. 
-	 * RelationshipMapper relationshipMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity),
-	 * 		someAmount);
-	 * 
-	 * </pre>
-	 * 
-	 * 
-	 * @param multiEntity The holds information of the entities that need to be
-	 *                    extracted from the query ResultSet
-	 * @return a Spring ResultSetExtractor that can be used with
-	 *         JdbcTemplate/NamedParameterJdbcTemplate and the results are returned
-	 *         in RelationshipMapper
-	 */
-	public ResultSetExtractor<RelationshipMapper> resultSetExtractor(MultiEntity multiEntity) {
-		return simpleJdbcMapperSupport.resultSetExtractor(multiEntity);
-	}
+  /**
+   * @deprecated Instead use getSqlColumns() with EntityRowMapper to retrieve data
+   *     <p>Gets the sql columns. Works well with Spring row mappers like BeanPropertyRowMapper(),
+   *     SimplePropertyRowMapper() etc. Will create the needed column aliases where the column name
+   *     does not match the corresponding underscore case property name.
+   *     <p>It is a good practice to store this string, since every time this method is invoked the
+   *     columns have to be concatenated along with some string manipulation
+   *     <p>Will return something like below if 'name' property is mapped to 'last_name' column in
+   *     database:
+   *     <pre>
+   *             "somecolumn, someothercolumn, last_name AS name"
+   *             </pre>
+   *     Example:
+   *     <pre>
+   *             String sql = "SELECT " + sjm.getBeanFriendlySqlColumns(Product.class) + " FROM product WHERE product_name = ?";
+   *             </pre>
+   *     Using Spring's JdbcClient api for the above sql. JdbcClient is using
+   *     SimplePropertyRowMapper internally here.
+   *     <pre>
+   * {@code List<Product>} products = sjm.getJdbcClient().sql(sql).param("someProductName").query(Product.class).list();
+   * </pre>
+   *     Using Spring's JdbcTemplate api for the above sql
+   *     <pre>
+   * {@code List<Product>} products = sjm.getJdbcTemplate().query(sql, BeanPropertyRowMapper.newInstance(Product.class), "someProductName");
+   * </pre>
+   *
+   * @param entityType the type
+   * @return comma separated select column string
+   */
+  @Deprecated(since = "2.5.1", forRemoval = true)
+  public String getBeanFriendlySqlColumns(Class<?> entityType) {
+    return findOperation.getBeanFriendlySqlColumns(entityType);
+  }
 
-	/**
-	 * @deprecated Instead use getSqlColumns() with EntityRowMapper to retrieve data
-	 *             <p>
-	 *             Gets the sql columns. Works well with Spring row mappers like
-	 *             BeanPropertyRowMapper(), SimplePropertyRowMapper() etc. Will
-	 *             create the needed column aliases where the column name does not
-	 *             match the corresponding underscore case property name.
-	 *             <p>
-	 *             It is a good practice to store this string, since every time this
-	 *             method is invoked the columns have to be concatenated along with
-	 *             some string manipulation
-	 *
-	 *             <p>
-	 *             Will return something like below if 'name' property is mapped to
-	 *             'last_name' column in database:
-	 *
-	 *             <pre>
-	 *             "somecolumn, someothercolumn, last_name AS name"
-	 *             </pre>
-	 * 
-	 *             Example:
-	 * 
-	 *             <pre>
-	 *             String sql = "SELECT " + sjm.getBeanFriendlySqlColumns(Product.class) + " FROM product WHERE product_name = ?";
-	 *             </pre>
-	 * 
-	 *             Using Spring's JdbcClient api for the above sql. JdbcClient is
-	 *             using SimplePropertyRowMapper internally here.
-	 * 
-	 *             <pre>
-	 * {@code List<Product>} products = sjm.getJdbcClient().sql(sql).param("someProductName").query(Product.class).list();
-	 * </pre>
-	 * 
-	 *             Using Spring's JdbcTemplate api for the above sql
-	 * 
-	 *             <pre>
-	 * {@code List<Product>} products = sjm.getJdbcTemplate().query(sql, BeanPropertyRowMapper.newInstance(Product.class), "someProductName");
-	 * </pre>
-	 * 
-	 * 
-	 * @param entityType the type
-	 * @return comma separated select column string
-	 * 
-	 */
-	@Deprecated(since = "2.5.1", forRemoval = true)
-	public String getBeanFriendlySqlColumns(Class<?> entityType) {
-		return findOperation.getBeanFriendlySqlColumns(entityType);
-	}
+  /**
+   * @deprecated Instead use getSqlColumns() with EntityRowMapper to retrieve data
+   *     <p>Gets the sql columns with columns prefixed with the table alias. Works well with Spring
+   *     row mappers like BeanPropertyRowMapper(), SimplePropertyRowMapper() etc. Will prefix table
+   *     column names with the 'tableAlias.' and will create the needed column aliases where the
+   *     column name does not match the corresponding underscore case property name.
+   *     <p>Use it in your custom queries when you are doing joins and need columns corresponding to
+   *     a table alias.
+   *     <p>It is a good practice to store this string, since every time this method is invoked the
+   *     columns have to be concatenated long with some string manipulation.
+   *     <p>For tableAlias argument 't1' will return something like below if 'name' property is
+   *     mapped to 'last_name' column in database:
+   *     <pre>
+   *             "t1.somecolumn, t1.someothercolumn, t1.last_name AS name"
+   *             </pre>
+   *     Example:
+   *     <pre>
+   *             String sql = "SELECT " + sjm.getBeanFriendlySqlColumns(Product.class, "t1")
+   *             		+ " FROM product t1 WHERE t1.product_name = ?";
+   *             </pre>
+   *     Using Spring's JdbcClient api for the above sql. JdbcClient is using
+   *     SimplePropertyRowMapper internally here.
+   *     <pre>
+   * {@code List<Product>} products = sjm.getJdbcClient().sql(sql).param("someProductName").query(Product.class).list();
+   * </pre>
+   *     Using Spring's JdbcTemplate api for the above sql
+   *     <pre>
+   * {@code List<Product>} products = sjm.getJdbcTemplate().query(sql, BeanPropertyRowMapper.newInstance(Product.class), "someProductName");
+   * </pre>
+   *
+   * @param entityType the type
+   * @param tableAlias the table alias
+   * @return comma separated select column string
+   */
+  @Deprecated(since = "2.5.1", forRemoval = true)
+  public String getBeanFriendlySqlColumns(Class<?> entityType, String tableAlias) {
+    return findOperation.getBeanFriendlySqlColumns(entityType, tableAlias);
+  }
 
-	/**
-	 * @deprecated Instead use getSqlColumns() with EntityRowMapper to retrieve data
-	 *             <p>
-	 *             Gets the sql columns with columns prefixed with the table alias.
-	 *             Works well with Spring row mappers like BeanPropertyRowMapper(),
-	 *             SimplePropertyRowMapper() etc. Will prefix table column names
-	 *             with the 'tableAlias.' and will create the needed column aliases
-	 *             where the column name does not match the corresponding underscore
-	 *             case property name.
-	 *             <p>
-	 *             Use it in your custom queries when you are doing joins and need
-	 *             columns corresponding to a table alias.
-	 *
-	 *             <p>
-	 *             It is a good practice to store this string, since every time this
-	 *             method is invoked the columns have to be concatenated long with
-	 *             some string manipulation.
-	 * 
-	 *             <p>
-	 *             For tableAlias argument 't1' will return something like below if
-	 *             'name' property is mapped to 'last_name' column in database:
-	 *
-	 *             <pre>
-	 *             "t1.somecolumn, t1.someothercolumn, t1.last_name AS name"
-	 *             </pre>
-	 * 
-	 *             Example:
-	 * 
-	 *             <pre>
-	 *             String sql = "SELECT " + sjm.getBeanFriendlySqlColumns(Product.class, "t1")
-	 *             		+ " FROM product t1 WHERE t1.product_name = ?";
-	 *             </pre>
-	 * 
-	 *             Using Spring's JdbcClient api for the above sql. JdbcClient is
-	 *             using SimplePropertyRowMapper internally here.
-	 * 
-	 *             <pre>
-	 * {@code List<Product>} products = sjm.getJdbcClient().sql(sql).param("someProductName").query(Product.class).list();
-	 * </pre>
-	 * 
-	 *             Using Spring's JdbcTemplate api for the above sql
-	 * 
-	 *             <pre>
-	 * {@code List<Product>} products = sjm.getJdbcTemplate().query(sql, BeanPropertyRowMapper.newInstance(Product.class), "someProductName");
-	 * </pre>
-	 * 
-	 * @param entityType the type
-	 * @param tableAlias the table alias
-	 * @return comma separated select column string
-	 * 
-	 */
-	@Deprecated(since = "2.5.1", forRemoval = true)
-	public String getBeanFriendlySqlColumns(Class<?> entityType, String tableAlias) {
-		return findOperation.getBeanFriendlySqlColumns(entityType, tableAlias);
-	}
+  /**
+   * returns a map with all the properties of the mapped class and their corresponding column names
+   *
+   * @param entityType the class
+   * @return map of property and their corresponding columns
+   */
+  public Map<String, String> getPropertyToColumnMappings(Class<?> entityType) {
+    return findOperation.getPropertyToColumnMappings(entityType);
+  }
 
-	/**
-	 * returns a map with all the properties of the mapped class and their
-	 * corresponding column names
-	 * 
-	 * @param entityType the class
-	 * @return map of property and their corresponding columns
-	 * 
-	 */
-	public Map<String, String> getPropertyToColumnMappings(Class<?> entityType) {
-		return findOperation.getPropertyToColumnMappings(entityType);
-	}
+  /**
+   * Gets the JdbcClient of the SimpleJdbcMapper.
+   *
+   * @return the JdbcClient
+   */
+  public JdbcClient getJdbcClient() {
+    return simpleJdbcMapperSupport.getJdbcClient();
+  }
 
-	/**
-	 * Gets the JdbcClient of the SimpleJdbcMapper.
-	 *
-	 * @return the JdbcClient
-	 */
-	public JdbcClient getJdbcClient() {
-		return simpleJdbcMapperSupport.getJdbcClient();
-	}
+  /**
+   * Gets the JdbcTemplate of the SimpleJdbcMapper.
+   *
+   * @return the JdbcTemplate
+   */
+  public JdbcTemplate getJdbcTemplate() {
+    return simpleJdbcMapperSupport.getJdbcTemplate();
+  }
 
-	/**
-	 * Gets the JdbcTemplate of the SimpleJdbcMapper.
-	 *
-	 * @return the JdbcTemplate
-	 */
-	public JdbcTemplate getJdbcTemplate() {
-		return simpleJdbcMapperSupport.getJdbcTemplate();
-	}
+  /**
+   * Gets the NamedParameterJdbcTemplate of the SimpleJdbcMapper.
+   *
+   * @return the NamedParameterJdbcTemplate
+   */
+  public NamedParameterJdbcTemplate getNamedParameterJdbcTemplate() {
+    return simpleJdbcMapperSupport.getNamedParameterJdbcTemplate();
+  }
 
-	/**
-	 * Gets the NamedParameterJdbcTemplate of the SimpleJdbcMapper.
-	 *
-	 * @return the NamedParameterJdbcTemplate
-	 */
-	public NamedParameterJdbcTemplate getNamedParameterJdbcTemplate() {
-		return simpleJdbcMapperSupport.getNamedParameterJdbcTemplate();
-	}
+  /**
+   * Set the Supplier that is used to populate the &#64;CreatedBy and &#64;UpdatedBy annotated
+   * properties.
+   *
+   * @param <T> the type
+   * @param supplier the Supplier for audited by.
+   */
+  public <T> void setRecordAuditedBySupplier(Supplier<T> supplier) {
+    simpleJdbcMapperSupport.setRecordAuditedBySupplier(supplier);
+  }
 
-	/**
-	 * Set the Supplier that is used to populate the &#64;CreatedBy and
-	 * &#64;UpdatedBy annotated properties.
-	 * 
-	 * @param <T>      the type
-	 * @param supplier the Supplier for audited by.
-	 */
-	public <T> void setRecordAuditedBySupplier(Supplier<T> supplier) {
-		simpleJdbcMapperSupport.setRecordAuditedBySupplier(supplier);
-	}
+  /**
+   * Set the Supplier that is used to populate the &#64;CreatedOn and &#64;UpdatedOn annotated
+   * properties.
+   *
+   * @param <T> the type
+   * @param supplier the Supplier for audited on.
+   */
+  public <T> void setRecordAuditedOnSupplier(Supplier<T> supplier) {
+    simpleJdbcMapperSupport.setRecordAuditedOnSupplier(supplier);
+  }
 
-	/**
-	 * Set the Supplier that is used to populate the &#64;CreatedOn and
-	 * &#64;UpdatedOn annotated properties.
-	 *
-	 * @param <T>      the type
-	 * @param supplier the Supplier for audited on.
-	 */
-	public <T> void setRecordAuditedOnSupplier(Supplier<T> supplier) {
-		simpleJdbcMapperSupport.setRecordAuditedOnSupplier(supplier);
-	}
+  /**
+   * @deprecated See {@link io.github.simplejdbcmapper.core.AttributeConverter} on how to use custom
+   *     converters.
+   *     <p>Exposing the conversion service used, so if necessary new converters can be added etc.
+   *     The default conversion service used in SimpleJdbcMapper is Spring's
+   *     DefaultConversionService.
+   * @return the conversion service.
+   */
+  @Deprecated(since = "2.5.0", forRemoval = true)
+  public ConversionService getConversionService() {
+    return simpleJdbcMapperSupport.getConversionService();
+  }
 
-	/**
-	 * @deprecated See {@link io.github.simplejdbcmapper.core.AttributeConverter} on
-	 *             how to use custom converters.
-	 *             <p>
-	 *             Exposing the conversion service used, so if necessary new
-	 *             converters can be added etc. The default conversion service used
-	 *             in SimpleJdbcMapper is Spring's DefaultConversionService.
-	 *
-	 * @return the conversion service.
-	 */
-	@Deprecated(since = "2.5.0", forRemoval = true)
-	public ConversionService getConversionService() {
-		return simpleJdbcMapperSupport.getConversionService();
-	}
+  /**
+   * @deprecated See {@link io.github.simplejdbcmapper.core.AttributeConverter} on how to use custom
+   *     converters.
+   *     <p>Set the conversion service
+   * @param conversionService The conversion service to set
+   */
+  @Deprecated(since = "2.5.0", forRemoval = true)
+  public void setConversionService(ConversionService conversionService) {
+    simpleJdbcMapperSupport.setConversionService(conversionService);
+  }
 
-	/**
-	 * @deprecated See {@link io.github.simplejdbcmapper.core.AttributeConverter} on
-	 *             how to use custom converters.
-	 *             <p>
-	 *             Set the conversion service
-	 * 
-	 * @param conversionService The conversion service to set
-	 */
-	@Deprecated(since = "2.5.0", forRemoval = true)
-	public void setConversionService(ConversionService conversionService) {
-		simpleJdbcMapperSupport.setConversionService(conversionService);
-	}
+  /**
+   * Get the schema name.
+   *
+   * @return the schema name.
+   */
+  public String getSchemaName() {
+    return simpleJdbcMapperSupport.getSchemaName();
+  }
 
-	/**
-	 * Get the schema name.
-	 *
-	 * @return the schema name.
-	 */
-	public String getSchemaName() {
-		return simpleJdbcMapperSupport.getSchemaName();
-	}
+  /**
+   * Get the catalog name.
+   *
+   * @return the catalog name.
+   */
+  public String getCatalogName() {
+    return simpleJdbcMapperSupport.getCatalogName();
+  }
 
-	/**
-	 * Get the catalog name.
-	 *
-	 * @return the catalog name.
-	 */
-	public String getCatalogName() {
-		return simpleJdbcMapperSupport.getCatalogName();
-	}
+  /**
+   * Get fully qualified table name
+   *
+   * @param entityType The entity type
+   * @return fully qualified table name
+   */
+  public String getFullyQualifiedTableName(Class<?> entityType) {
+    return simpleJdbcMapperSupport.getFullyQualifiedTableName(entityType);
+  }
 
-	/**
-	 * Get fully qualified table name
-	 * 
-	 * @param entityType The entity type
-	 * @return fully qualified table name
-	 */
-	public String getFullyQualifiedTableName(Class<?> entityType) {
-		return simpleJdbcMapperSupport.getFullyQualifiedTableName(entityType);
-	}
-
-	/**
-	 * Closes down SimpleJdbcMapper.
-	 * <p>
-	 * This is handled entirely by Spring. Upon the closing of its application
-	 * context this method is invoked automatically.
-	 */
-	public void close() {
-		simpleJdbcMapperSupport = null;
-		insertOperation = null;
-		findOperation = null;
-		updateOperation = null;
-		deleteOperation = null;
-		logger.info("SimpleJdbcMapper shutdown completed. {}", this);
-	}
-
+  /**
+   * Closes down SimpleJdbcMapper.
+   *
+   * <p>This is handled entirely by Spring. Upon the closing of its application context this method
+   * is invoked automatically.
+   */
+  public void close() {
+    simpleJdbcMapperSupport = null;
+    insertOperation = null;
+    findOperation = null;
+    updateOperation = null;
+    deleteOperation = null;
+    logger.info("SimpleJdbcMapper shutdown completed. {}", this);
+  }
 }

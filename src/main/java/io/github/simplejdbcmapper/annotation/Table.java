@@ -24,7 +24,7 @@ import java.lang.annotation.Target;
  * <pre>
  * This is a class level annotation and is required for models.
  * It has the following attributes
- * 
+ *
  * name = "tablename"
  * schema = "schemaname"
  * catalog = "catalogname"
@@ -33,17 +33,17 @@ import java.lang.annotation.Target;
  *  public class Product{
  *    .....
  *  }
- *  
+ *
  * {@literal @}Table(name="products", schema="someSchemaName")
  *  public class Product{
  *    .....
  *  }
- *  
+ *
  * {@literal @}Table(name="products", catalog="someCatalogName")
  *  public class Product{
  *    .....
  *  }
- *  
+ *
  *  {@literal @}Table(name="products", schema="someSchemaName", catalog="someCatalogName")
  *  public class Product{
  *    .....
@@ -56,9 +56,9 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Target(ElementType.TYPE)
 public @interface Table {
-	String name();
+  String name();
 
-	String catalog() default "";
+  String catalog() default "";
 
-	String schema() default "";
+  String schema() default "";
 }

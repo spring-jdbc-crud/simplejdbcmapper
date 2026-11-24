@@ -3,16 +3,6 @@ package io.github.simplejdbcmapper.core;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.sql.Types;
-
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
-
 import io.github.simplejdbcmapper.exception.AnnotationException;
 import io.github.simplejdbcmapper.model.BlankColumnObject;
 import io.github.simplejdbcmapper.model.BlankTableObject;
@@ -39,232 +29,325 @@ import io.github.simplejdbcmapper.model.PersonWithPrimitiveId;
 import io.github.simplejdbcmapper.model.TypeCheckPostgres;
 import io.github.simplejdbcmapper.model.WhitespaceColumnObject;
 import io.github.simplejdbcmapper.model.WhitespaceTableObject;
+import java.sql.Types;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 class AnnotationTest {
 
-	@Value("${spring.datasource.driver-class-name}")
-	private String jdbcDriver;
+  @Value("${spring.datasource.driver-class-name}")
+  private String jdbcDriver;
 
-	@Autowired
-	private SimpleJdbcMapper sjm;
+  @Autowired private SimpleJdbcMapper sjm;
 
-	@Test
-	void noTableAnnotation_Test() {
-		Exception exception = Assertions.assertThrows(AnnotationException.class, () -> {
-			sjm.findById(NoTableAnnotationModel.class, 1);
-		});
-		assertTrue(exception.getMessage().contains("does not have the @Table annotation"));
-	}
+  @Test
+  void noTableAnnotation_Test() {
+    Exception exception =
+        Assertions.assertThrows(
+            AnnotationException.class,
+            () -> {
+              sjm.findById(NoTableAnnotationModel.class, 1);
+            });
+    assertTrue(exception.getMessage().contains("does not have the @Table annotation"));
+  }
 
-	@Test
-	void invalidTable_Test() {
-		Assertions.assertThrows(Exception.class, () -> {
-			sjm.findById(InvalidTableObject.class, 1);
-		});
-	}
+  @Test
+  void invalidTable_Test() {
+    Assertions.assertThrows(
+        Exception.class,
+        () -> {
+          sjm.findById(InvalidTableObject.class, 1);
+        });
+  }
 
-	@Test
-	void blankTable_Test() {
-		Exception exception = Assertions.assertThrows(AnnotationException.class, () -> {
-			sjm.findById(BlankTableObject.class, 1);
-		});
-		assertTrue(exception.getMessage().contains("@Table annotation: table name should not be blank."));
-	}
+  @Test
+  void blankTable_Test() {
+    Exception exception =
+        Assertions.assertThrows(
+            AnnotationException.class,
+            () -> {
+              sjm.findById(BlankTableObject.class, 1);
+            });
+    assertTrue(
+        exception.getMessage().contains("@Table annotation: table name should not be blank."));
+  }
 
-	@Test
-	void whitespaceTable_Test() {
-		Exception exception = Assertions.assertThrows(AnnotationException.class, () -> {
-			sjm.findById(WhitespaceTableObject.class, 1);
-		});
-		assertTrue(exception.getMessage().contains("@Table annotation: no support for table names with spaces"));
-	}
+  @Test
+  void whitespaceTable_Test() {
+    Exception exception =
+        Assertions.assertThrows(
+            AnnotationException.class,
+            () -> {
+              sjm.findById(WhitespaceTableObject.class, 1);
+            });
+    assertTrue(
+        exception
+            .getMessage()
+            .contains("@Table annotation: no support for table names with spaces"));
+  }
 
-	@Test
-	void blankColumnName_Test() {
-		Exception exception = Assertions.assertThrows(AnnotationException.class, () -> {
-			sjm.findById(BlankColumnObject.class, 1);
-		});
-		assertTrue(exception.getMessage().contains("@Column annotation: column name should not be blank"));
-	}
+  @Test
+  void blankColumnName_Test() {
+    Exception exception =
+        Assertions.assertThrows(
+            AnnotationException.class,
+            () -> {
+              sjm.findById(BlankColumnObject.class, 1);
+            });
+    assertTrue(
+        exception.getMessage().contains("@Column annotation: column name should not be blank"));
+  }
 
-	@Test
-	void whitespaceColumnName_Test() {
-		Exception exception = Assertions.assertThrows(AnnotationException.class, () -> {
-			sjm.findById(WhitespaceColumnObject.class, 1);
-		});
-		assertTrue(exception.getMessage().contains("@Column annotation: no support for column names with spaces"));
-	}
+  @Test
+  void whitespaceColumnName_Test() {
+    Exception exception =
+        Assertions.assertThrows(
+            AnnotationException.class,
+            () -> {
+              sjm.findById(WhitespaceColumnObject.class, 1);
+            });
+    assertTrue(
+        exception
+            .getMessage()
+            .contains("@Column annotation: no support for column names with spaces"));
+  }
 
-	@Test
-	void noIdObject_Test() {
-		Exception exception = Assertions.assertThrows(AnnotationException.class, () -> {
-			sjm.findById(NoIdObject.class, 1);
-		});
-		assertTrue(exception.getMessage().contains("@Id annotation not found"));
-	}
+  @Test
+  void noIdObject_Test() {
+    Exception exception =
+        Assertions.assertThrows(
+            AnnotationException.class,
+            () -> {
+              sjm.findById(NoIdObject.class, 1);
+            });
+    assertTrue(exception.getMessage().contains("@Id annotation not found"));
+  }
 
-	@Test
-	void noMatchingColumn_Test() {
-		Assertions.assertThrows(Exception.class, () -> {
-			sjm.findById(NoMatchingColumn.class, 1);
-		});
-	}
+  @Test
+  void noMatchingColumn_Test() {
+    Assertions.assertThrows(
+        Exception.class,
+        () -> {
+          sjm.findById(NoMatchingColumn.class, 1);
+        });
+  }
 
-	@Test
-	void noMatchingColumn2_Test() {
-		Assertions.assertThrows(Exception.class, () -> {
-			sjm.findById(NoMatchingColumn2.class, 1);
-		});
-	}
+  @Test
+  void noMatchingColumn2_Test() {
+    Assertions.assertThrows(
+        Exception.class,
+        () -> {
+          sjm.findById(NoMatchingColumn2.class, 1);
+        });
+  }
 
-	@Test
-	void duplicateIdAnnotation_Test() {
-		Exception exception = Assertions.assertThrows(AnnotationException.class, () -> {
-			sjm.findById(DuplicateIdAnnotion.class, 1);
-		});
-		assertTrue(exception.getMessage().contains("has multiple @Id annotations"));
-	}
+  @Test
+  void duplicateIdAnnotation_Test() {
+    Exception exception =
+        Assertions.assertThrows(
+            AnnotationException.class,
+            () -> {
+              sjm.findById(DuplicateIdAnnotion.class, 1);
+            });
+    assertTrue(exception.getMessage().contains("has multiple @Id annotations"));
+  }
 
-	@Test
-	void duplicateVersionAnnotation_Test() {
-		Exception exception = Assertions.assertThrows(AnnotationException.class, () -> {
-			sjm.findById(DuplicateVersionAnnotation.class, 1);
-		});
-		assertTrue(exception.getMessage().contains("has multiple @Version annotations"));
-	}
+  @Test
+  void duplicateVersionAnnotation_Test() {
+    Exception exception =
+        Assertions.assertThrows(
+            AnnotationException.class,
+            () -> {
+              sjm.findById(DuplicateVersionAnnotation.class, 1);
+            });
+    assertTrue(exception.getMessage().contains("has multiple @Version annotations"));
+  }
 
-	@Test
-	void duplicateCreatedOnAnnotation_Test() {
-		Exception exception = Assertions.assertThrows(AnnotationException.class, () -> {
-			sjm.findById(DuplicateCreatedOnAnnotation.class, 1);
-		});
-		assertTrue(exception.getMessage().contains("has multiple @CreatedOn annotations"));
-	}
+  @Test
+  void duplicateCreatedOnAnnotation_Test() {
+    Exception exception =
+        Assertions.assertThrows(
+            AnnotationException.class,
+            () -> {
+              sjm.findById(DuplicateCreatedOnAnnotation.class, 1);
+            });
+    assertTrue(exception.getMessage().contains("has multiple @CreatedOn annotations"));
+  }
 
-	@Test
-	void duplicateCreatedByAnnotation_Test() {
-		Exception exception = Assertions.assertThrows(AnnotationException.class, () -> {
-			sjm.findById(DuplicateCreatedByAnnotaition.class, 1);
-		});
-		assertTrue(exception.getMessage().contains("has multiple @CreatedBy annotations"));
-	}
+  @Test
+  void duplicateCreatedByAnnotation_Test() {
+    Exception exception =
+        Assertions.assertThrows(
+            AnnotationException.class,
+            () -> {
+              sjm.findById(DuplicateCreatedByAnnotaition.class, 1);
+            });
+    assertTrue(exception.getMessage().contains("has multiple @CreatedBy annotations"));
+  }
 
-	@Test
-	void duplicateUpdatedOnAnnotation_Test() {
-		Exception exception = Assertions.assertThrows(AnnotationException.class, () -> {
-			sjm.findById(DuplicateUpdatedOnAnnotation.class, 1);
-		});
-		assertTrue(exception.getMessage().contains("has multiple @UpdatedOn annotations"));
-	}
+  @Test
+  void duplicateUpdatedOnAnnotation_Test() {
+    Exception exception =
+        Assertions.assertThrows(
+            AnnotationException.class,
+            () -> {
+              sjm.findById(DuplicateUpdatedOnAnnotation.class, 1);
+            });
+    assertTrue(exception.getMessage().contains("has multiple @UpdatedOn annotations"));
+  }
 
-	@Test
-	void duplicateUpdatedByAnnotation_Test() {
-		Exception exception = Assertions.assertThrows(AnnotationException.class, () -> {
-			sjm.findById(DuplicateUpdatedByAnnotation.class, 1);
-		});
-		assertTrue(exception.getMessage().contains("has multiple @UpdatedBy annotations"));
-	}
+  @Test
+  void duplicateUpdatedByAnnotation_Test() {
+    Exception exception =
+        Assertions.assertThrows(
+            AnnotationException.class,
+            () -> {
+              sjm.findById(DuplicateUpdatedByAnnotation.class, 1);
+            });
+    assertTrue(exception.getMessage().contains("has multiple @UpdatedBy annotations"));
+  }
 
-	@Test
-	void conflictingAnnotations_Test() {
-		Exception exception = Assertions.assertThrows(AnnotationException.class, () -> {
-			sjm.findById(ConflictAnnotation.class, 1);
-		});
-		assertTrue(exception.getMessage().contains("id has multiple annotations that conflict"));
-	}
+  @Test
+  void conflictingAnnotations_Test() {
+    Exception exception =
+        Assertions.assertThrows(
+            AnnotationException.class,
+            () -> {
+              sjm.findById(ConflictAnnotation.class, 1);
+            });
+    assertTrue(exception.getMessage().contains("id has multiple annotations that conflict"));
+  }
 
-	@Test
-	void conflictingAnnotations2_Test() {
-		Exception exception = Assertions.assertThrows(AnnotationException.class, () -> {
-			sjm.findById(ConflictAnnotation2.class, 1);
-		});
-		assertTrue(exception.getMessage().contains("has multiple annotations that conflict"));
-	}
+  @Test
+  void conflictingAnnotations2_Test() {
+    Exception exception =
+        Assertions.assertThrows(
+            AnnotationException.class,
+            () -> {
+              sjm.findById(ConflictAnnotation2.class, 1);
+            });
+    assertTrue(exception.getMessage().contains("has multiple annotations that conflict"));
+  }
 
-	@Test
-	void conflictingAnnotations3_Test() {
-		Exception exception = Assertions.assertThrows(AnnotationException.class, () -> {
-			sjm.findById(ConflictAnnotation3.class, 1);
-		});
-		assertTrue(exception.getMessage().contains("has multiple annotations that conflict"));
-	}
+  @Test
+  void conflictingAnnotations3_Test() {
+    Exception exception =
+        Assertions.assertThrows(
+            AnnotationException.class,
+            () -> {
+              sjm.findById(ConflictAnnotation3.class, 1);
+            });
+    assertTrue(exception.getMessage().contains("has multiple annotations that conflict"));
+  }
 
-	@Test
-	void annotationVersionTypeNotInteger_Test() {
-		Exception exception = Assertions.assertThrows(AnnotationException.class, () -> {
-			sjm.findById(ModelWithVersionNotInteger.class, 1);
-		});
-		assertTrue(exception.getMessage().contains("to be Integer"));
-	}
+  @Test
+  void annotationVersionTypeNotInteger_Test() {
+    Exception exception =
+        Assertions.assertThrows(
+            AnnotationException.class,
+            () -> {
+              sjm.findById(ModelWithVersionNotInteger.class, 1);
+            });
+    assertTrue(exception.getMessage().contains("to be Integer"));
+  }
 
-	@Test
-	void annotation_withIdPrimitive_Test() {
-		PersonWithPrimitiveId person = new PersonWithPrimitiveId();
-		person.setLastName("john");
-		person.setFirstName("doe");
+  @Test
+  void annotation_withIdPrimitive_Test() {
+    PersonWithPrimitiveId person = new PersonWithPrimitiveId();
+    person.setLastName("john");
+    person.setFirstName("doe");
 
-		Exception exception = Assertions.assertThrows(AnnotationException.class, () -> {
-			sjm.insert(person);
-		});
+    Exception exception =
+        Assertions.assertThrows(
+            AnnotationException.class,
+            () -> {
+              sjm.insert(person);
+            });
 
-		assertTrue(exception.getMessage().contains("is a primitive. Mapper does not support primitive types."));
-	}
+    assertTrue(
+        exception
+            .getMessage()
+            .contains("is a primitive. Mapper does not support primitive types."));
+  }
 
-	@Test
-	void annotation_withColumnPrimitive_Test() {
-		PersonWithColumnPrimitive person = new PersonWithColumnPrimitive();
-		person.setLastName("john");
-		person.setFirstName("doe");
-		person.setBoolProperty(false);
+  @Test
+  void annotation_withColumnPrimitive_Test() {
+    PersonWithColumnPrimitive person = new PersonWithColumnPrimitive();
+    person.setLastName("john");
+    person.setFirstName("doe");
+    person.setBoolProperty(false);
 
-		Exception exception = Assertions.assertThrows(AnnotationException.class, () -> {
-			sjm.insert(person);
-		});
+    Exception exception =
+        Assertions.assertThrows(
+            AnnotationException.class,
+            () -> {
+              sjm.insert(person);
+            });
 
-		assertTrue(exception.getMessage().contains("is a primitive. Mapper does not support primitive types."));
-	}
+    assertTrue(
+        exception
+            .getMessage()
+            .contains("is a primitive. Mapper does not support primitive types."));
+  }
 
-	@Test
-	void annotation_withOtherPrimitive_Test() {
-		PersonWithOtherPrimitive person = new PersonWithOtherPrimitive();
-		person.setLastName("john");
-		person.setFirstName("doe");
-		person.setCreatedBy(1);
+  @Test
+  void annotation_withOtherPrimitive_Test() {
+    PersonWithOtherPrimitive person = new PersonWithOtherPrimitive();
+    person.setLastName("john");
+    person.setFirstName("doe");
+    person.setCreatedBy(1);
 
-		Exception exception = Assertions.assertThrows(AnnotationException.class, () -> {
-			sjm.insert(person);
-		});
+    Exception exception =
+        Assertions.assertThrows(
+            AnnotationException.class,
+            () -> {
+              sjm.insert(person);
+            });
 
-		assertTrue(exception.getMessage().contains("is a primitive. Mapper does not support primitive types."));
-	}
+    assertTrue(
+        exception
+            .getMessage()
+            .contains("is a primitive. Mapper does not support primitive types."));
+  }
 
-	@Test
-	void insert_BlobTypeTest() {
-		BlobType obj = new BlobType();
-		Exception exception = Assertions.assertThrows(AnnotationException.class, () -> {
-			sjm.insert(obj);
-		});
-		assertTrue(exception.getMessage().contains("is of type java.sql.Blob and is not supported"));
-	}
+  @Test
+  void insert_BlobTypeTest() {
+    BlobType obj = new BlobType();
+    Exception exception =
+        Assertions.assertThrows(
+            AnnotationException.class,
+            () -> {
+              sjm.insert(obj);
+            });
+    assertTrue(exception.getMessage().contains("is of type java.sql.Blob and is not supported"));
+  }
 
-	@Test
-	void insert_ClobTypeTest() {
-		ClobType obj = new ClobType();
-		Exception exception = Assertions.assertThrows(AnnotationException.class, () -> {
-			sjm.insert(obj);
-		});
-		assertTrue(exception.getMessage().contains("is of type java.sql.Clob and is not supported"));
-	}
+  @Test
+  void insert_ClobTypeTest() {
+    ClobType obj = new ClobType();
+    Exception exception =
+        Assertions.assertThrows(
+            AnnotationException.class,
+            () -> {
+              sjm.insert(obj);
+            });
+    assertTrue(exception.getMessage().contains("is of type java.sql.Clob and is not supported"));
+  }
 
-	@Test
-	void sqlType_override_test() {
-		if (jdbcDriver.contains("postgres")) {
-			SimpleJdbcMapperSupport sjmSupport = TestUtils.getSimpleJdbcMapperSupport(sjm);
-			TableMapping tm = sjmSupport.getTableMapping(TypeCheckPostgres.class);
-			assertEquals(Types.LONGVARCHAR, tm.getPropertyMappingByPropertyName("clobData").getColumnSqlType());
-		}
-	}
-
+  @Test
+  void sqlType_override_test() {
+    if (jdbcDriver.contains("postgres")) {
+      SimpleJdbcMapperSupport sjmSupport = TestUtils.getSimpleJdbcMapperSupport(sjm);
+      TableMapping tm = sjmSupport.getTableMapping(TypeCheckPostgres.class);
+      assertEquals(
+          Types.LONGVARCHAR, tm.getPropertyMappingByPropertyName("clobData").getColumnSqlType());
+    }
+  }
 }

@@ -14,16 +14,16 @@
 package io.github.simplejdbcmapper.exception;
 
 /**
- * updates with stale data will throw this exception when model property is
- * annotated with {@literal @}Version.
- * 
+ * updates with stale data will throw this exception when model property is annotated with
+ * {@literal @}Version.
+ *
  * @author Antony Joseph
  */
 public class OptimisticLockingException extends RuntimeException {
 
-	private static final long serialVersionUID = 1L;
+  private static final long serialVersionUID = 1L;
 
-	public OptimisticLockingException(String message) {
-		super(message);
-	}
+  public OptimisticLockingException(String message) {
+    super(message);
+  }
 }

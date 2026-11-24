@@ -6,6 +6,8 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import io.github.simplejdbcmapper.model.StatusEnum;
+import io.github.simplejdbcmapper.model.TypeCheckMysql;
 import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.time.LocalDate;
@@ -13,7 +15,6 @@ import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Date;
-
 import org.junit.jupiter.api.Assumptions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -23,148 +24,142 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import io.github.simplejdbcmapper.model.StatusEnum;
-import io.github.simplejdbcmapper.model.TypeCheckMysql;
-
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 class MysqlSpecificTest {
 
-	@Value("${spring.datasource.driver-class-name}")
-	private String jdbcDriver;
+  @Value("${spring.datasource.driver-class-name}")
+  private String jdbcDriver;
 
-	@Autowired
-	private SimpleJdbcMapper sjm;
+  @Autowired private SimpleJdbcMapper sjm;
 
-	@BeforeEach
-	void beforeMethod() {
-		// tests will run only if mysql
-		if (!jdbcDriver.contains("mysql")) {
-			Assumptions.assumeTrue(false);
-		}
-	}
+  @BeforeEach
+  void beforeMethod() {
+    // tests will run only if mysql
+    if (!jdbcDriver.contains("mysql")) {
+      Assumptions.assumeTrue(false);
+    }
+  }
 
-	@Test
-	void insert_TypeCheckMysqlTest() {
-		TypeCheckMysql iObj = new TypeCheckMysql();
+  @Test
+  void insert_TypeCheckMysqlTest() {
+    TypeCheckMysql iObj = new TypeCheckMysql();
 
-		var localDateVal = LocalDate.now();
-		iObj.setLocalDateData(localDateVal);
+    var localDateVal = LocalDate.now();
+    iObj.setLocalDateData(localDateVal);
 
-		var dateVal = new Date();
-		iObj.setJavaUtilDateData(dateVal);
+    var dateVal = new Date();
+    iObj.setJavaUtilDateData(dateVal);
 
-		var localDateTimeVal = LocalDateTime.now();
-		iObj.setLocalDateTimeData(localDateTimeVal);
+    var localDateTimeVal = LocalDateTime.now();
+    iObj.setLocalDateTimeData(localDateTimeVal);
 
-		var bigDecimalVal = new BigDecimal("10.23");
-		iObj.setBigDecimalData(bigDecimalVal);
+    var bigDecimalVal = new BigDecimal("10.23");
+    iObj.setBigDecimalData(bigDecimalVal);
 
-		iObj.setBooleanVal(true);
+    iObj.setBooleanVal(true);
 
-		iObj.setImage(new byte[] { 10, 20, 30 });
+    iObj.setImage(new byte[] {10, 20, 30});
 
-		var timestampVal = new Date();
-		iObj.setJavaUtilDateTsData(timestampVal);
+    var timestampVal = new Date();
+    iObj.setJavaUtilDateTsData(timestampVal);
 
-		iObj.setStatus(StatusEnum.OPEN);
+    iObj.setStatus(StatusEnum.OPEN);
 
-		var offsetVal = OffsetDateTime.now();
-		iObj.setOffsetDateTimeData(offsetVal);
+    var offsetVal = OffsetDateTime.now();
+    iObj.setOffsetDateTimeData(offsetVal);
 
-		iObj.setTextData("123456");
+    iObj.setTextData("123456");
 
-		iObj.setByteData(Byte.valueOf("1"));
+    iObj.setByteData(Byte.valueOf("1"));
 
-		sjm.insert(iObj);
+    sjm.insert(iObj);
 
-		TypeCheckMysql tc = sjm.findById(TypeCheckMysql.class, iObj.getId());
-		SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
-		assertEquals(localDateVal, tc.getLocalDateData());
+    TypeCheckMysql tc = sjm.findById(TypeCheckMysql.class, iObj.getId());
+    SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
+    assertEquals(localDateVal, tc.getLocalDateData());
 
-		assertEquals(fmt.format(dateVal), fmt.format(tc.getJavaUtilDateData()));
+    assertEquals(fmt.format(dateVal), fmt.format(tc.getJavaUtilDateData()));
 
-		DateTimeFormatter ldtFmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-		assertEquals(ldtFmt.format(localDateTimeVal), ldtFmt.format(tc.getLocalDateTimeData()));
+    DateTimeFormatter ldtFmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    assertEquals(ldtFmt.format(localDateTimeVal), ldtFmt.format(tc.getLocalDateTimeData()));
 
-		assertEquals(0, tc.getBigDecimalData().compareTo(iObj.getBigDecimalData()));
+    assertEquals(0, tc.getBigDecimalData().compareTo(iObj.getBigDecimalData()));
 
-		assertArrayEquals(iObj.getImage(), tc.getImage());
+    assertArrayEquals(iObj.getImage(), tc.getImage());
 
-		assertTrue(tc.getBooleanVal());
+    assertTrue(tc.getBooleanVal());
 
-		SimpleDateFormat fmtTs = new SimpleDateFormat("yyyyMMdd HHmm");
-		assertEquals(fmtTs.format(timestampVal), fmtTs.format(tc.getJavaUtilDateTsData()));
+    SimpleDateFormat fmtTs = new SimpleDateFormat("yyyyMMdd HHmm");
+    assertEquals(fmtTs.format(timestampVal), fmtTs.format(tc.getJavaUtilDateTsData()));
 
-		assertEquals(StatusEnum.OPEN, tc.getStatus());
-		DateTimeFormatter oFmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-		assertEquals(oFmt.format(offsetVal), oFmt.format(tc.getOffsetDateTimeData()));
+    assertEquals(StatusEnum.OPEN, tc.getStatus());
+    DateTimeFormatter oFmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    assertEquals(oFmt.format(offsetVal), oFmt.format(tc.getOffsetDateTimeData()));
 
-		assertEquals(iObj.getTextData(), tc.getTextData());
+    assertEquals(iObj.getTextData(), tc.getTextData());
 
-		assertEquals(Byte.valueOf("1"), tc.getByteData());
-	}
+    assertEquals(Byte.valueOf("1"), tc.getByteData());
+  }
 
-	@Test
-	void update_TypeCheckMysqlTest() {
-		TypeCheckMysql iObj = new TypeCheckMysql();
-		sjm.insert(iObj);
-		TypeCheckMysql uObj = sjm.findById(TypeCheckMysql.class, iObj.getId());
+  @Test
+  void update_TypeCheckMysqlTest() {
+    TypeCheckMysql iObj = new TypeCheckMysql();
+    sjm.insert(iObj);
+    TypeCheckMysql uObj = sjm.findById(TypeCheckMysql.class, iObj.getId());
 
-		var localDateVal = LocalDate.now();
-		uObj.setLocalDateData(localDateVal);
+    var localDateVal = LocalDate.now();
+    uObj.setLocalDateData(localDateVal);
 
-		var dateVal = new Date();
-		uObj.setJavaUtilDateData(dateVal);
+    var dateVal = new Date();
+    uObj.setJavaUtilDateData(dateVal);
 
-		var localDateTimeVal = LocalDateTime.now();
-		uObj.setLocalDateTimeData(localDateTimeVal);
+    var localDateTimeVal = LocalDateTime.now();
+    uObj.setLocalDateTimeData(localDateTimeVal);
 
-		var bigDecimalVal = new BigDecimal("10.23");
-		uObj.setBigDecimalData(bigDecimalVal);
+    var bigDecimalVal = new BigDecimal("10.23");
+    uObj.setBigDecimalData(bigDecimalVal);
 
-		uObj.setBooleanVal(false);
+    uObj.setBooleanVal(false);
 
-		uObj.setImage(new byte[] { 10, 20, 30 });
+    uObj.setImage(new byte[] {10, 20, 30});
 
-		var timestampVal = new Date();
-		uObj.setJavaUtilDateTsData(timestampVal);
+    var timestampVal = new Date();
+    uObj.setJavaUtilDateTsData(timestampVal);
 
-		uObj.setStatus(StatusEnum.OPEN);
+    uObj.setStatus(StatusEnum.OPEN);
 
-		var offsetVal = OffsetDateTime.now();
-		uObj.setOffsetDateTimeData(offsetVal);
+    var offsetVal = OffsetDateTime.now();
+    uObj.setOffsetDateTimeData(offsetVal);
 
-		uObj.setTextData("123456");
+    uObj.setTextData("123456");
 
-		sjm.update(uObj);
+    sjm.update(uObj);
 
-		TypeCheckMysql tc = sjm.findById(TypeCheckMysql.class, uObj.getId());
-		SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
-		assertEquals(localDateVal, tc.getLocalDateData());
+    TypeCheckMysql tc = sjm.findById(TypeCheckMysql.class, uObj.getId());
+    SimpleDateFormat fmt = new SimpleDateFormat("yyyyMMdd");
+    assertEquals(localDateVal, tc.getLocalDateData());
 
-		assertEquals(fmt.format(dateVal), fmt.format(tc.getJavaUtilDateData()));
+    assertEquals(fmt.format(dateVal), fmt.format(tc.getJavaUtilDateData()));
 
-		DateTimeFormatter ldtFmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-		assertEquals(ldtFmt.format(localDateTimeVal), ldtFmt.format(tc.getLocalDateTimeData()));
+    DateTimeFormatter ldtFmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    assertEquals(ldtFmt.format(localDateTimeVal), ldtFmt.format(tc.getLocalDateTimeData()));
 
-		assertEquals(0, tc.getBigDecimalData().compareTo(uObj.getBigDecimalData()));
+    assertEquals(0, tc.getBigDecimalData().compareTo(uObj.getBigDecimalData()));
 
-		assertArrayEquals(uObj.getImage(), tc.getImage());
+    assertArrayEquals(uObj.getImage(), tc.getImage());
 
-		assertFalse(tc.getBooleanVal());
+    assertFalse(tc.getBooleanVal());
 
-		SimpleDateFormat fmtTs = new SimpleDateFormat("yyyyMMdd HHmm");
-		assertEquals(fmtTs.format(timestampVal), fmtTs.format(tc.getJavaUtilDateTsData()));
+    SimpleDateFormat fmtTs = new SimpleDateFormat("yyyyMMdd HHmm");
+    assertEquals(fmtTs.format(timestampVal), fmtTs.format(tc.getJavaUtilDateTsData()));
 
-		assertEquals(StatusEnum.OPEN, tc.getStatus());
-		DateTimeFormatter oFmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-		assertEquals(oFmt.format(offsetVal), oFmt.format(tc.getOffsetDateTimeData()));
+    assertEquals(StatusEnum.OPEN, tc.getStatus());
+    DateTimeFormatter oFmt = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    assertEquals(oFmt.format(offsetVal), oFmt.format(tc.getOffsetDateTimeData()));
 
-		assertEquals(uObj.getTextData(), tc.getTextData());
+    assertEquals(uObj.getTextData(), tc.getTextData());
 
-		assertNull(tc.getByteData()); // this is a primitive test
-
-	}
-
+    assertNull(tc.getByteData()); // this is a primitive test
+  }
 }

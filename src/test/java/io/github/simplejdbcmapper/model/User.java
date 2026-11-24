@@ -1,33 +1,32 @@
 package io.github.simplejdbcmapper.model;
 
 public class User {
-	private Integer id;
-	private String name;
+  private Integer id;
+  private String name;
 
-	private Profile profile;
+  private Profile profile;
 
-	public Integer getId() {
-		return id;
-	}
+  public Integer getId() {
+    return id;
+  }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+  public void setId(Integer id) {
+    this.id = id;
+  }
 
-	public String getName() {
-		return name;
-	}
+  public String getName() {
+    return name;
+  }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+  public void setName(String name) {
+    this.name = name;
+  }
 
-	public Profile getProfile() {
-		return profile;
-	}
+  public Profile getProfile() {
+    return profile;
+  }
 
-	public void setProfile(Profile profile) {
-		this.profile = profile;
-	}
-
+  public void setProfile(Profile profile) {
+    this.profile = profile;
+  }
 }

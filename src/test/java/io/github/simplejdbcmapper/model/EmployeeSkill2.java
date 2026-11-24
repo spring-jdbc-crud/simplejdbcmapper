@@ -8,36 +8,33 @@ import io.github.simplejdbcmapper.annotation.Table;
 @Table(name = "employee_skill")
 public class EmployeeSkill2 {
 
-	@Id(type = IdType.AUTO_GENERATED)
-	private Integer id;
+  @Id(type = IdType.AUTO_GENERATED)
+  private Integer id;
 
-	@Column
-	private Long employeeId;
-	@Column
-	private Integer skillId;
+  @Column private Long employeeId;
+  @Column private Integer skillId;
 
-	public Integer getId() {
-		return id;
-	}
+  public Integer getId() {
+    return id;
+  }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+  public void setId(Integer id) {
+    this.id = id;
+  }
 
-	public Long getEmployeeId() {
-		return employeeId;
-	}
+  public Long getEmployeeId() {
+    return employeeId;
+  }
 
-	public void setEmployeeId(Long employeeId) {
-		this.employeeId = employeeId;
-	}
+  public void setEmployeeId(Long employeeId) {
+    this.employeeId = employeeId;
+  }
 
-	public Integer getSkillId() {
-		return skillId;
-	}
+  public Integer getSkillId() {
+    return skillId;
+  }
 
-	public void setSkillId(Integer skillId) {
-		this.skillId = skillId;
-	}
-
+  public void setSkillId(Integer skillId) {
+    this.skillId = skillId;
+  }
 }

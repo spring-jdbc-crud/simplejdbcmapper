@@ -13,95 +13,109 @@
  */
 package io.github.simplejdbcmapper.relationship;
 
+import io.github.simplejdbcmapper.exception.MapperException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
-import io.github.simplejdbcmapper.exception.MapperException;
-
 /**
  * This handles the toOne relationship.
- * 
+ *
  * @author Antony Joseph
  */
 class ToOne {
-	private Class<?> mainType;
-	private Class<?> relatedType;
-	private Method mainObjJoinPropertyReadMethod;
-	private Method relatedObjJoinPropertyReadMethod;
-	private Method mainObjPropertyToPopulateWriteMethod;
+  private Class<?> mainType;
+  private Class<?> relatedType;
+  private Method mainObjJoinPropertyReadMethod;
+  private Method relatedObjJoinPropertyReadMethod;
+  private Method mainObjPropertyToPopulateWriteMethod;
 
-	ToOne(Class<?> mainType, Class<?> relatedType) {
-		Assert.notNull(mainType, "mainType must not be null");
-		Assert.notNull(relatedType, "relatedType must not be null");
-		this.mainType = mainType;
-		this.relatedType = relatedType;
-	}
+  ToOne(Class<?> mainType, Class<?> relatedType) {
+    Assert.notNull(mainType, "mainType must not be null");
+    Assert.notNull(relatedType, "relatedType must not be null");
+    this.mainType = mainType;
+    this.relatedType = relatedType;
+  }
 
-	void joinOn(String mainObjJoinProperty, String relatedObjJoinProperty) {
-		Assert.notNull(mainObjJoinProperty, "mainObjJoinProperty must not be null");
-		Assert.notNull(relatedObjJoinProperty, "relatedObjJoinProperty must not be null");
+  void joinOn(String mainObjJoinProperty, String relatedObjJoinProperty) {
+    Assert.notNull(mainObjJoinProperty, "mainObjJoinProperty must not be null");
+    Assert.notNull(relatedObjJoinProperty, "relatedObjJoinProperty must not be null");
 
-		Class<?> mainObjJoinPropertyType = RelationshipUtils.getPropertyType(mainType, mainObjJoinProperty);
-		Class<?> relatedObjJoinPropertyType = RelationshipUtils.getPropertyType(relatedType, relatedObjJoinProperty);
-		if (mainObjJoinPropertyType != relatedObjJoinPropertyType) {
-			throw new IllegalArgumentException("Conflicting property types. Property type of "
-					+ mainType.getSimpleName() + "." + mainObjJoinProperty + " and " + relatedType.getSimpleName() + "."
-					+ relatedObjJoinProperty + " are not the same.");
-		}
+    Class<?> mainObjJoinPropertyType =
+        RelationshipUtils.getPropertyType(mainType, mainObjJoinProperty);
+    Class<?> relatedObjJoinPropertyType =
+        RelationshipUtils.getPropertyType(relatedType, relatedObjJoinProperty);
+    if (mainObjJoinPropertyType != relatedObjJoinPropertyType) {
+      throw new IllegalArgumentException(
+          "Conflicting property types. Property type of "
+              + mainType.getSimpleName()
+              + "."
+              + mainObjJoinProperty
+              + " and "
+              + relatedType.getSimpleName()
+              + "."
+              + relatedObjJoinProperty
+              + " are not the same.");
+    }
 
-		this.mainObjJoinPropertyReadMethod = RelationshipUtils.getReadMethod(mainType, mainObjJoinProperty);
-		this.relatedObjJoinPropertyReadMethod = RelationshipUtils.getReadMethod(relatedType, relatedObjJoinProperty);
-	}
+    this.mainObjJoinPropertyReadMethod =
+        RelationshipUtils.getReadMethod(mainType, mainObjJoinProperty);
+    this.relatedObjJoinPropertyReadMethod =
+        RelationshipUtils.getReadMethod(relatedType, relatedObjJoinProperty);
+  }
 
-	void populate(String mainObjPropertyToPopulate) {
-		Assert.notNull(mainObjPropertyToPopulate, "mainObjPropertyToPopulate must not be null");
-		this.mainObjPropertyToPopulateWriteMethod = RelationshipUtils.getWriteMethod(mainType,
-				mainObjPropertyToPopulate);
-	}
+  void populate(String mainObjPropertyToPopulate) {
+    Assert.notNull(mainObjPropertyToPopulate, "mainObjPropertyToPopulate must not be null");
+    this.mainObjPropertyToPopulateWriteMethod =
+        RelationshipUtils.getWriteMethod(mainType, mainObjPropertyToPopulate);
+  }
 
-	<T, U> void process(List<T> mainObjList, List<U> relatedObjList) {
-		if (CollectionUtils.isEmpty(mainObjList) || CollectionUtils.isEmpty(relatedObjList)) {
-			return;
-		}
+  <T, U> void process(List<T> mainObjList, List<U> relatedObjList) {
+    if (CollectionUtils.isEmpty(mainObjList) || CollectionUtils.isEmpty(relatedObjList)) {
+      return;
+    }
 
-		try {
-			Map<Object, U> joinPropToRelatedObjMap = getJoinPropToRelatedObjMap(relatedObjList,
-					relatedObjJoinPropertyReadMethod);
-			for (T mainObj : mainObjList) {
-				if (mainObj != null) {
-					Object mainObjJoinPropertyValue = mainObjJoinPropertyReadMethod.invoke(mainObj);
-					U relatedObj = joinPropToRelatedObjMap.get(mainObjJoinPropertyValue);
-					try {
-						mainObjPropertyToPopulateWriteMethod.invoke(mainObj, relatedObj);
-					} catch (Exception e) {
-						throw new MapperException(e.getMessage() + ". Invoking " + mainObjPropertyToPopulateWriteMethod
-								+ " with value " + relatedObj, e);
-					}
-				}
-			}
-		} catch (Exception e) {
-			throw new MapperException(e.getMessage(), e);
-		}
-	}
+    try {
+      Map<Object, U> joinPropToRelatedObjMap =
+          getJoinPropToRelatedObjMap(relatedObjList, relatedObjJoinPropertyReadMethod);
+      for (T mainObj : mainObjList) {
+        if (mainObj != null) {
+          Object mainObjJoinPropertyValue = mainObjJoinPropertyReadMethod.invoke(mainObj);
+          U relatedObj = joinPropToRelatedObjMap.get(mainObjJoinPropertyValue);
+          try {
+            mainObjPropertyToPopulateWriteMethod.invoke(mainObj, relatedObj);
+          } catch (Exception e) {
+            throw new MapperException(
+                e.getMessage()
+                    + ". Invoking "
+                    + mainObjPropertyToPopulateWriteMethod
+                    + " with value "
+                    + relatedObj,
+                e);
+          }
+        }
+      }
+    } catch (Exception e) {
+      throw new MapperException(e.getMessage(), e);
+    }
+  }
 
-	private <U> Map<Object, U> getJoinPropToRelatedObjMap(List<U> relatedObjList,
-			Method relatedObjJoinPropertyReadMethod) throws IllegalAccessException, InvocationTargetException {
-		Map<Object, U> joinPropToRelatedObjMap = new HashMap<>();
-		for (U relatedObj : relatedObjList) {
-			if (relatedObj != null) {
-				Object relatedObjJoinPropertyValue = relatedObjJoinPropertyReadMethod.invoke(relatedObj);
-				if (relatedObjJoinPropertyValue != null) {
-					joinPropToRelatedObjMap.put(relatedObjJoinPropertyValue, relatedObj);
-				}
-			}
-		}
-		return joinPropToRelatedObjMap;
-	}
-
+  private <U> Map<Object, U> getJoinPropToRelatedObjMap(
+      List<U> relatedObjList, Method relatedObjJoinPropertyReadMethod)
+      throws IllegalAccessException, InvocationTargetException {
+    Map<Object, U> joinPropToRelatedObjMap = new HashMap<>();
+    for (U relatedObj : relatedObjList) {
+      if (relatedObj != null) {
+        Object relatedObjJoinPropertyValue = relatedObjJoinPropertyReadMethod.invoke(relatedObj);
+        if (relatedObjJoinPropertyValue != null) {
+          joinPropToRelatedObjMap.put(relatedObjJoinPropertyValue, relatedObj);
+        }
+      }
+    }
+    return joinPropToRelatedObjMap;
+  }
 }

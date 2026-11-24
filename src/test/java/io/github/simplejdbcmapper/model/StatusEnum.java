@@ -1,10 +1,11 @@
 package io.github.simplejdbcmapper.model;
 
 public enum StatusEnum {
-	OPEN, CLOSED;
+  OPEN,
+  CLOSED;
 
-	@Override
-	public String toString() {
-		return this.name() + "x";
-	}
+  @Override
+  public String toString() {
+    return this.name() + "x";
+  }
 }

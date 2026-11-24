@@ -6,26 +6,23 @@ import io.github.simplejdbcmapper.annotation.Table;
 
 @Table(name = "product")
 public class NoMatchingColumn {
-	@Id
-	private Integer idSomething;
+  @Id private Integer idSomething;
 
-	@Column
-	private Double cost;
+  @Column private Double cost;
 
-	public Integer getIdSomething() {
-		return idSomething;
-	}
+  public Integer getIdSomething() {
+    return idSomething;
+  }
 
-	public void setIdSomething(Integer idSomething) {
-		this.idSomething = idSomething;
-	}
+  public void setIdSomething(Integer idSomething) {
+    this.idSomething = idSomething;
+  }
 
-	public Double getCost() {
-		return cost;
-	}
+  public Double getCost() {
+    return cost;
+  }
 
-	public void setCost(Double cost) {
-		this.cost = cost;
-	}
-
+  public void setCost(Double cost) {
+    this.cost = cost;
+  }
 }

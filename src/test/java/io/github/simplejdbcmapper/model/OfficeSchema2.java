@@ -7,35 +7,33 @@ import io.github.simplejdbcmapper.annotation.Table;
 
 @Table(name = "office", schema = "SCHEMA2")
 public class OfficeSchema2 {
-	@Id(type = IdType.AUTO_GENERATED)
-	private Integer id;
+  @Id(type = IdType.AUTO_GENERATED)
+  private Integer id;
 
-	@Column
-	private Integer companyId;
-	@Column
-	private String address;
+  @Column private Integer companyId;
+  @Column private String address;
 
-	public Integer getId() {
-		return id;
-	}
+  public Integer getId() {
+    return id;
+  }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+  public void setId(Integer id) {
+    this.id = id;
+  }
 
-	public Integer getCompanyId() {
-		return companyId;
-	}
+  public Integer getCompanyId() {
+    return companyId;
+  }
 
-	public void setCompanyId(Integer companyId) {
-		this.companyId = companyId;
-	}
+  public void setCompanyId(Integer companyId) {
+    this.companyId = companyId;
+  }
 
-	public String getAddress() {
-		return address;
-	}
+  public String getAddress() {
+    return address;
+  }
 
-	public void setAddress(String address) {
-		this.address = address;
-	}
+  public void setAddress(String address) {
+    this.address = address;
+  }
 }

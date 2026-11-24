@@ -1,148 +1,140 @@
 package io.github.simplejdbcmapper.model;
 
+import io.github.simplejdbcmapper.annotation.Column;
+import io.github.simplejdbcmapper.annotation.Id;
+import io.github.simplejdbcmapper.annotation.IdType;
+import io.github.simplejdbcmapper.annotation.Table;
 import java.math.BigDecimal;
 import java.sql.Types;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
-import io.github.simplejdbcmapper.annotation.Column;
-import io.github.simplejdbcmapper.annotation.Id;
-import io.github.simplejdbcmapper.annotation.IdType;
-import io.github.simplejdbcmapper.annotation.Table;
-
 @Table(name = "type_check")
 public class TypeCheckMysql {
-	@Id(type = IdType.AUTO_GENERATED)
-	private Integer id;
+  @Id(type = IdType.AUTO_GENERATED)
+  private Integer id;
 
-	@Column
-	private LocalDate localDateData;
+  @Column private LocalDate localDateData;
 
-	@Column(sqlType = Types.DATE)
-	private java.util.Date javaUtilDateData;
+  @Column(sqlType = Types.DATE)
+  private java.util.Date javaUtilDateData;
 
-	@Column
-	private LocalDateTime localDateTimeData;
+  @Column private LocalDateTime localDateTimeData;
 
-	@Column
-	private java.util.Date javaUtilDateTsData;
+  @Column private java.util.Date javaUtilDateTsData;
 
-	@Column
-	private BigDecimal bigDecimalData;
+  @Column private BigDecimal bigDecimalData;
 
-	@Column
-	private OffsetDateTime offsetDateTimeData;
+  @Column private OffsetDateTime offsetDateTimeData;
 
-	@Column
-	private Boolean booleanVal;
+  @Column private Boolean booleanVal;
 
-	@Column(sqlType = Types.LONGVARBINARY)
-	private byte[] image;
+  @Column(sqlType = Types.LONGVARBINARY)
+  private byte[] image;
 
-	@Column(name = "string_enum")
-	private StatusEnum status;
+  @Column(name = "string_enum")
+  private StatusEnum status;
 
-	@Column(sqlType = Types.LONGVARCHAR)
-	private String textData;
+  @Column(sqlType = Types.LONGVARCHAR)
+  private String textData;
 
-	@Column(sqlType = Types.INTEGER)
-	private Byte byteData;
+  @Column(sqlType = Types.INTEGER)
+  private Byte byteData;
 
-	public Integer getId() {
-		return id;
-	}
+  public Integer getId() {
+    return id;
+  }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+  public void setId(Integer id) {
+    this.id = id;
+  }
 
-	public LocalDate getLocalDateData() {
-		return localDateData;
-	}
+  public LocalDate getLocalDateData() {
+    return localDateData;
+  }
 
-	public void setLocalDateData(LocalDate localDateData) {
-		this.localDateData = localDateData;
-	}
+  public void setLocalDateData(LocalDate localDateData) {
+    this.localDateData = localDateData;
+  }
 
-	public java.util.Date getJavaUtilDateData() {
-		return javaUtilDateData;
-	}
+  public java.util.Date getJavaUtilDateData() {
+    return javaUtilDateData;
+  }
 
-	public void setJavaUtilDateData(java.util.Date javaUtilDateData) {
-		this.javaUtilDateData = javaUtilDateData;
-	}
+  public void setJavaUtilDateData(java.util.Date javaUtilDateData) {
+    this.javaUtilDateData = javaUtilDateData;
+  }
 
-	public LocalDateTime getLocalDateTimeData() {
-		return localDateTimeData;
-	}
+  public LocalDateTime getLocalDateTimeData() {
+    return localDateTimeData;
+  }
 
-	public void setLocalDateTimeData(LocalDateTime localDateTimeData) {
-		this.localDateTimeData = localDateTimeData;
-	}
+  public void setLocalDateTimeData(LocalDateTime localDateTimeData) {
+    this.localDateTimeData = localDateTimeData;
+  }
 
-	public java.util.Date getJavaUtilDateTsData() {
-		return javaUtilDateTsData;
-	}
+  public java.util.Date getJavaUtilDateTsData() {
+    return javaUtilDateTsData;
+  }
 
-	public void setJavaUtilDateTsData(java.util.Date javaUtilDateTsData) {
-		this.javaUtilDateTsData = javaUtilDateTsData;
-	}
+  public void setJavaUtilDateTsData(java.util.Date javaUtilDateTsData) {
+    this.javaUtilDateTsData = javaUtilDateTsData;
+  }
 
-	public BigDecimal getBigDecimalData() {
-		return bigDecimalData;
-	}
+  public BigDecimal getBigDecimalData() {
+    return bigDecimalData;
+  }
 
-	public void setBigDecimalData(BigDecimal bigDecimalData) {
-		this.bigDecimalData = bigDecimalData;
-	}
+  public void setBigDecimalData(BigDecimal bigDecimalData) {
+    this.bigDecimalData = bigDecimalData;
+  }
 
-	public Boolean getBooleanVal() {
-		return booleanVal;
-	}
+  public Boolean getBooleanVal() {
+    return booleanVal;
+  }
 
-	public void setBooleanVal(Boolean booleanVal) {
-		this.booleanVal = booleanVal;
-	}
+  public void setBooleanVal(Boolean booleanVal) {
+    this.booleanVal = booleanVal;
+  }
 
-	public byte[] getImage() {
-		return image;
-	}
+  public byte[] getImage() {
+    return image;
+  }
 
-	public void setImage(byte[] image) {
-		this.image = image;
-	}
+  public void setImage(byte[] image) {
+    this.image = image;
+  }
 
-	public OffsetDateTime getOffsetDateTimeData() {
-		return offsetDateTimeData;
-	}
+  public OffsetDateTime getOffsetDateTimeData() {
+    return offsetDateTimeData;
+  }
 
-	public void setOffsetDateTimeData(OffsetDateTime offsetDateTimeData) {
-		this.offsetDateTimeData = offsetDateTimeData;
-	}
+  public void setOffsetDateTimeData(OffsetDateTime offsetDateTimeData) {
+    this.offsetDateTimeData = offsetDateTimeData;
+  }
 
-	public StatusEnum getStatus() {
-		return status;
-	}
+  public StatusEnum getStatus() {
+    return status;
+  }
 
-	public void setStatus(StatusEnum status) {
-		this.status = status;
-	}
+  public void setStatus(StatusEnum status) {
+    this.status = status;
+  }
 
-	public String getTextData() {
-		return textData;
-	}
+  public String getTextData() {
+    return textData;
+  }
 
-	public void setTextData(String textData) {
-		this.textData = textData;
-	}
+  public void setTextData(String textData) {
+    this.textData = textData;
+  }
 
-	public Byte getByteData() {
-		return byteData;
-	}
+  public Byte getByteData() {
+    return byteData;
+  }
 
-	public void setByteData(Byte byteData) {
-		this.byteData = byteData;
-	}
-
+  public void setByteData(Byte byteData) {
+    this.byteData = byteData;
+  }
 }

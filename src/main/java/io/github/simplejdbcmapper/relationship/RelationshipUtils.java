@@ -15,61 +15,63 @@ package io.github.simplejdbcmapper.relationship;
 
 import java.lang.reflect.Field;
 import java.lang.reflect.Method;
-
 import org.springframework.util.ReflectionUtils;
 import org.springframework.util.StringUtils;
 
 /**
  * Some utility methods for relationships
- * 
+ *
  * @author antonyjoseph
  */
 class RelationshipUtils {
-	static final String TO_MANY = "toMany";
-	static final String TO_ONE = "toOne";
-	static final String TO_MANY_THROUGH = "toManyThrough";
+  static final String TO_MANY = "toMany";
+  static final String TO_ONE = "toOne";
+  static final String TO_MANY_THROUGH = "toManyThrough";
 
-	private static final String IS_PREFIX = "is";
-	private static final String GET_PREFIX = "get";
-	private static final String SET_PREFIX = "set";
+  private static final String IS_PREFIX = "is";
+  private static final String GET_PREFIX = "get";
+  private static final String SET_PREFIX = "set";
 
-	static Method getReadMethod(Class<?> type, String propertyName) {
-		Method m = ReflectionUtils.findMethod(type, GET_PREFIX + StringUtils.capitalize(propertyName));
-		if (m == null) {
-			m = ReflectionUtils.findMethod(type, IS_PREFIX + StringUtils.capitalize(propertyName));
-		}
-		if (m == null) {
-			throw new IllegalArgumentException(
-					"Invalid argument. Could not find getter for " + type.getName() + "." + propertyName);
-		}
-		// turn off jvm access verification for invoke()
-		m.trySetAccessible();
-		return m;
-	}
+  static Method getReadMethod(Class<?> type, String propertyName) {
+    Method m = ReflectionUtils.findMethod(type, GET_PREFIX + StringUtils.capitalize(propertyName));
+    if (m == null) {
+      m = ReflectionUtils.findMethod(type, IS_PREFIX + StringUtils.capitalize(propertyName));
+    }
+    if (m == null) {
+      throw new IllegalArgumentException(
+          "Invalid argument. Could not find getter for " + type.getName() + "." + propertyName);
+    }
+    // turn off jvm access verification for invoke()
+    m.trySetAccessible();
+    return m;
+  }
 
-	static Method getWriteMethod(Class<?> type, String propertyName) {
-		Class<?> propertyType = getPropertyType(type, propertyName);
-		Method m = ReflectionUtils.findMethod(type, SET_PREFIX + StringUtils.capitalize(propertyName), propertyType);
-		if (m == null) {
-			throw new IllegalArgumentException(
-					"Invalid argument. Could not find setter for " + type.getName() + "." + propertyName);
-		}
-		// turn off jvm access verification for invoke()
-		m.trySetAccessible();
-		return m;
-	}
+  static Method getWriteMethod(Class<?> type, String propertyName) {
+    Class<?> propertyType = getPropertyType(type, propertyName);
+    Method m =
+        ReflectionUtils.findMethod(
+            type, SET_PREFIX + StringUtils.capitalize(propertyName), propertyType);
+    if (m == null) {
+      throw new IllegalArgumentException(
+          "Invalid argument. Could not find setter for " + type.getName() + "." + propertyName);
+    }
+    // turn off jvm access verification for invoke()
+    m.trySetAccessible();
+    return m;
+  }
 
-	static Class<?> getPropertyType(Class<?> type, String propertyName) {
-		Field field = ReflectionUtils.findField(type, propertyName);
-		if (field != null) {
-			return field.getType();
-		} else {
-			throw new IllegalArgumentException(
-					"Invalid argument. Property name " + propertyName + " does not exist for " + type.getName());
-		}
-	}
+  static Class<?> getPropertyType(Class<?> type, String propertyName) {
+    Field field = ReflectionUtils.findField(type, propertyName);
+    if (field != null) {
+      return field.getType();
+    } else {
+      throw new IllegalArgumentException(
+          "Invalid argument. Property name "
+              + propertyName
+              + " does not exist for "
+              + type.getName());
+    }
+  }
 
-	private RelationshipUtils() {
-	}
-
+  private RelationshipUtils() {}
 }

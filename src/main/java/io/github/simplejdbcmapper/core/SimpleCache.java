@@ -18,43 +18,41 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A simple cache implementation
- * 
+ *
  * @author Antony Joseph
  */
 class SimpleCache<K, V> {
-	private static final int UNLIMITED = -1;
+  private static final int UNLIMITED = -1;
 
-	private final Map<K, V> cache = new ConcurrentHashMap<>();
+  private final Map<K, V> cache = new ConcurrentHashMap<>();
 
-	private int capacity = UNLIMITED;
+  private int capacity = UNLIMITED;
 
-	public SimpleCache() {
-	}
+  public SimpleCache() {}
 
-	public SimpleCache(int capacity) {
-		this.capacity = capacity;
-	}
+  public SimpleCache(int capacity) {
+    this.capacity = capacity;
+  }
 
-	public V get(K key) {
-		return cache.get(key);
-	}
+  public V get(K key) {
+    return cache.get(key);
+  }
 
-	public void put(K key, V value) {
-		if (capacity == UNLIMITED || cache.size() < capacity) {
-			cache.putIfAbsent(key, value);
-		}
-	}
+  public void put(K key, V value) {
+    if (capacity == UNLIMITED || cache.size() < capacity) {
+      cache.putIfAbsent(key, value);
+    }
+  }
 
-	public V remove(K key) {
-		return cache.remove(key);
-	}
+  public V remove(K key) {
+    return cache.remove(key);
+  }
 
-	public int size() {
-		return cache.size();
-	}
+  public int size() {
+    return cache.size();
+  }
 
-	public void clear() {
-		cache.clear();
-	}
-
+  public void clear() {
+    cache.clear();
+  }
 }

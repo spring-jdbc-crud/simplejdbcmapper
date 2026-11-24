@@ -14,7 +14,6 @@
 package io.github.simplejdbcmapper.core;
 
 import java.util.Set;
-
 import org.springframework.util.ObjectUtils;
 import org.springframework.util.StringUtils;
 
@@ -24,23 +23,23 @@ import org.springframework.util.StringUtils;
  * @author Antony Joseph
  */
 class SqlAndParams {
-	private final String sql; // the sql string
+  private final String sql; // the sql string
 
-	private final Set<String> params; // the parameters for the sql
+  private final Set<String> params; // the parameters for the sql
 
-	public SqlAndParams(String sql, Set<String> params) {
-		if (!StringUtils.hasText(sql) || ObjectUtils.isEmpty(params)) {
-			throw new IllegalArgumentException("sql or params cannot be empty");
-		}
-		this.sql = sql;
-		this.params = params;
-	}
+  public SqlAndParams(String sql, Set<String> params) {
+    if (!StringUtils.hasText(sql) || ObjectUtils.isEmpty(params)) {
+      throw new IllegalArgumentException("sql or params cannot be empty");
+    }
+    this.sql = sql;
+    this.params = params;
+  }
 
-	public String getSql() {
-		return sql;
-	}
+  public String getSql() {
+    return sql;
+  }
 
-	public Set<String> getParams() {
-		return params;
-	}
+  public Set<String> getParams() {
+    return params;
+  }
 }

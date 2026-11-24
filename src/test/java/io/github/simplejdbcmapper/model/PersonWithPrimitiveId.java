@@ -7,44 +7,43 @@ import io.github.simplejdbcmapper.annotation.Table;
 
 @Table(name = "person")
 public class PersonWithPrimitiveId {
-	@Id(type = IdType.AUTO_GENERATED)
-	private int personId;
-	@Column
-	private String lastName;
-	@Column
-	private String firstName;
+  @Id(type = IdType.AUTO_GENERATED)
+  private int personId;
 
-	private String someNonDatabaseProperty;
+  @Column private String lastName;
+  @Column private String firstName;
 
-	public int getPersonId() {
-		return personId;
-	}
+  private String someNonDatabaseProperty;
 
-	public void setPersonId(int id) {
-		this.personId = id;
-	}
+  public int getPersonId() {
+    return personId;
+  }
 
-	public String getLastName() {
-		return lastName;
-	}
+  public void setPersonId(int id) {
+    this.personId = id;
+  }
 
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
+  public String getLastName() {
+    return lastName;
+  }
 
-	public String getFirstName() {
-		return firstName;
-	}
+  public void setLastName(String lastName) {
+    this.lastName = lastName;
+  }
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
+  public String getFirstName() {
+    return firstName;
+  }
 
-	public String getSomeNonDatabaseProperty() {
-		return someNonDatabaseProperty;
-	}
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
 
-	public void setSomeNonDatabaseProperty(String someNonDatabaseProperty) {
-		this.someNonDatabaseProperty = someNonDatabaseProperty;
-	}
+  public String getSomeNonDatabaseProperty() {
+    return someNonDatabaseProperty;
+  }
+
+  public void setSomeNonDatabaseProperty(String someNonDatabaseProperty) {
+    this.someNonDatabaseProperty = someNonDatabaseProperty;
+  }
 }

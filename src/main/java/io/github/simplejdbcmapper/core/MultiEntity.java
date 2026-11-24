@@ -13,58 +13,53 @@
  */
 package io.github.simplejdbcmapper.core;
 
+import io.github.simplejdbcmapper.exception.MapperException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.util.Assert;
 
-import io.github.simplejdbcmapper.exception.MapperException;
-
 /**
- * Used in multi-entity processing. Holds information used to generate the
- * multi-entity sql columns using
- * {@link io.github.simplejdbcmapper.core.SimpleJdbcMapper#getSqlColumns(MultiEntity)}
- * and for the library's ResultSetExtractor
- * {@link io.github.simplejdbcmapper.core.SimpleJdbcMapper#resultSetExtractor}
- * 
+ * Used in multi-entity processing. Holds information used to generate the multi-entity sql columns
+ * using {@link io.github.simplejdbcmapper.core.SimpleJdbcMapper#getSqlColumns(MultiEntity)} and for
+ * the library's ResultSetExtractor {@link
+ * io.github.simplejdbcmapper.core.SimpleJdbcMapper#resultSetExtractor}
+ *
  * @author Antony Joseph
  */
 public class MultiEntity {
-	private final List<Map.Entry<Class<?>, String>> entries = new ArrayList<>();
+  private final List<Map.Entry<Class<?>, String>> entries = new ArrayList<>();
 
-	/**
-	 * Add entities for multi-entity processing.
-	 * 
-	 * @param entityType The entityType
-	 * @param tableAlias The table alias for the entity which is used when
-	 *                   generating the sql columns
-	 * @return the MultiEntity
-	 */
-	public MultiEntity add(Class<?> entityType, String tableAlias) {
-		Assert.notNull(entityType, "entityType must not be null");
-		InternalUtils.validateTableAlias(tableAlias);
-		checkDuplicates(entityType, tableAlias);
-		entries.add(Map.entry(entityType, tableAlias));
-		return this;
-	}
+  /**
+   * Add entities for multi-entity processing.
+   *
+   * @param entityType The entityType
+   * @param tableAlias The table alias for the entity which is used when generating the sql columns
+   * @return the MultiEntity
+   */
+  public MultiEntity add(Class<?> entityType, String tableAlias) {
+    Assert.notNull(entityType, "entityType must not be null");
+    InternalUtils.validateTableAlias(tableAlias);
+    checkDuplicates(entityType, tableAlias);
+    entries.add(Map.entry(entityType, tableAlias));
+    return this;
+  }
 
-	List<Map.Entry<Class<?>, String>> getEntries() {
-		if (entries.size() < 2) {
-			throw new MapperException("MultiEntity should have 2 or more entities configured.");
-		}
-		return entries;
-	}
+  List<Map.Entry<Class<?>, String>> getEntries() {
+    if (entries.size() < 2) {
+      throw new MapperException("MultiEntity should have 2 or more entities configured.");
+    }
+    return entries;
+  }
 
-	private void checkDuplicates(Class<?> entityType, String tableAlias) {
-		for (Map.Entry<Class<?>, String> entry : entries) {
-			if (entry.getValue().equals(tableAlias)) {
-				throw new IllegalArgumentException("duplicate tableAlias " + tableAlias);
-			}
-			if (entry.getKey() == entityType) {
-				throw new IllegalArgumentException("duplicate entityType " + entityType);
-			}
-		}
-	}
-
+  private void checkDuplicates(Class<?> entityType, String tableAlias) {
+    for (Map.Entry<Class<?>, String> entry : entries) {
+      if (entry.getValue().equals(tableAlias)) {
+        throw new IllegalArgumentException("duplicate tableAlias " + tableAlias);
+      }
+      if (entry.getKey() == entityType) {
+        throw new IllegalArgumentException("duplicate entityType " + entityType);
+      }
+    }
+  }
 }

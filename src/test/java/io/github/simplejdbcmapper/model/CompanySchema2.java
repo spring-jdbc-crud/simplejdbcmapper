@@ -1,44 +1,42 @@
 package io.github.simplejdbcmapper.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import io.github.simplejdbcmapper.annotation.Column;
 import io.github.simplejdbcmapper.annotation.Id;
 import io.github.simplejdbcmapper.annotation.IdType;
 import io.github.simplejdbcmapper.annotation.Table;
+import java.util.ArrayList;
+import java.util.List;
 
 @Table(name = "company", schema = "SCHEMA2")
 public class CompanySchema2 {
-	@Id(type = IdType.AUTO_GENERATED)
-	private Integer id;
-	@Column
-	private String name;
+  @Id(type = IdType.AUTO_GENERATED)
+  private Integer id;
 
-	List<OfficeSchema2> offices = new ArrayList<>();
+  @Column private String name;
 
-	public Integer getId() {
-		return id;
-	}
+  List<OfficeSchema2> offices = new ArrayList<>();
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+  public Integer getId() {
+    return id;
+  }
 
-	public String getName() {
-		return name;
-	}
+  public void setId(Integer id) {
+    this.id = id;
+  }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+  public String getName() {
+    return name;
+  }
 
-	public List<OfficeSchema2> getOffices() {
-		return offices;
-	}
+  public void setName(String name) {
+    this.name = name;
+  }
 
-	public void setOffices(List<OfficeSchema2> offices) {
-		this.offices = offices;
-	}
+  public List<OfficeSchema2> getOffices() {
+    return offices;
+  }
 
+  public void setOffices(List<OfficeSchema2> offices) {
+    this.offices = offices;
+  }
 }

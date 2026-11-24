@@ -8,56 +8,53 @@ import io.github.simplejdbcmapper.annotation.Table;
 @Table(name = "employee_skill")
 public class EmployeeSkill {
 
-	@Id(type = IdType.AUTO_GENERATED)
-	private Integer id;
+  @Id(type = IdType.AUTO_GENERATED)
+  private Integer id;
 
-	@Column
-	private Integer employeeId;
-	@Column
-	private Integer skillId;
+  @Column private Integer employeeId;
+  @Column private Integer skillId;
 
-	private Skill skill;
+  private Skill skill;
 
-	private Employee employee;
+  private Employee employee;
 
-	public Integer getId() {
-		return id;
-	}
+  public Integer getId() {
+    return id;
+  }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+  public void setId(Integer id) {
+    this.id = id;
+  }
 
-	public Integer getEmployeeId() {
-		return employeeId;
-	}
+  public Integer getEmployeeId() {
+    return employeeId;
+  }
 
-	public void setEmployeeId(Integer employeeId) {
-		this.employeeId = employeeId;
-	}
+  public void setEmployeeId(Integer employeeId) {
+    this.employeeId = employeeId;
+  }
 
-	public Integer getSkillId() {
-		return skillId;
-	}
+  public Integer getSkillId() {
+    return skillId;
+  }
 
-	public void setSkillId(Integer skillId) {
-		this.skillId = skillId;
-	}
+  public void setSkillId(Integer skillId) {
+    this.skillId = skillId;
+  }
 
-	public Skill getSkill() {
-		return skill;
-	}
+  public Skill getSkill() {
+    return skill;
+  }
 
-	public void setSkill(Skill skill) {
-		this.skill = skill;
-	}
+  public void setSkill(Skill skill) {
+    this.skill = skill;
+  }
 
-	public Employee getEmployee() {
-		return employee;
-	}
+  public Employee getEmployee() {
+    return employee;
+  }
 
-	public void setEmployee(Employee employee) {
-		this.employee = employee;
-	}
-
+  public void setEmployee(Employee employee) {
+    this.employee = employee;
+  }
 }

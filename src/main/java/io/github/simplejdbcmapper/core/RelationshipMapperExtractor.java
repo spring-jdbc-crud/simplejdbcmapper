@@ -13,6 +13,8 @@
  */
 package io.github.simplejdbcmapper.core;
 
+import io.github.simplejdbcmapper.exception.MapperException;
+import io.github.simplejdbcmapper.relationship.RelationshipMapper;
 import java.lang.reflect.Method;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -21,96 +23,105 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.core.convert.ConversionService;
 import org.springframework.dao.DataAccessException;
 import org.springframework.jdbc.core.ResultSetExtractor;
 
-import io.github.simplejdbcmapper.exception.MapperException;
-import io.github.simplejdbcmapper.relationship.RelationshipMapper;
-
 /**
  * The extractor of query results for multiple entities
- * 
+ *
  * @author Antony Joseph
  */
 class RelationshipMapperExtractor implements ResultSetExtractor<RelationshipMapper> {
-	private static final Logger logger = LoggerFactory.getLogger(RelationshipMapperExtractor.class);
-	private MultiEntity multiEntity;
-	private TableMappingProvider tableMappingProvider;
-	private ConversionService conversionService;
+  private static final Logger logger = LoggerFactory.getLogger(RelationshipMapperExtractor.class);
+  private MultiEntity multiEntity;
+  private TableMappingProvider tableMappingProvider;
+  private ConversionService conversionService;
 
-	public RelationshipMapperExtractor(MultiEntity multiEntity, TableMappingProvider tableMappingProvider,
-			ConversionService conversionService) {
-		this.multiEntity = multiEntity;
-		this.tableMappingProvider = tableMappingProvider;
-		this.conversionService = conversionService;
-	}
+  public RelationshipMapperExtractor(
+      MultiEntity multiEntity,
+      TableMappingProvider tableMappingProvider,
+      ConversionService conversionService) {
+    this.multiEntity = multiEntity;
+    this.tableMappingProvider = tableMappingProvider;
+    this.conversionService = conversionService;
+  }
 
-	@SuppressWarnings("unchecked")
-	@Override
-	public RelationshipMapper extractData(ResultSet rs) throws SQLException, DataAccessException {
-		List<EntityExtractor> entityExtractors = createEntityExtractors(multiEntity);
-		int rowCnt = 1;
-		while (rs.next()) {
-			for (EntityExtractor entityExtractor : entityExtractors) {
-				processEntityRow(rs, rowCnt, entityExtractor);
-			}
-			rowCnt++;
-		}
-		RelationshipMapper relationshipMapper = new RelationshipMapper();
-		for (EntityExtractor entityExtractor : entityExtractors) {
-			relationshipMapper.addEntityResult(entityExtractor.entityType(), entityExtractor.result(),
-					entityExtractor.idPropertyName());
-		}
-		return relationshipMapper;
-	}
+  @SuppressWarnings("unchecked")
+  @Override
+  public RelationshipMapper extractData(ResultSet rs) throws SQLException, DataAccessException {
+    List<EntityExtractor> entityExtractors = createEntityExtractors(multiEntity);
+    int rowCnt = 1;
+    while (rs.next()) {
+      for (EntityExtractor entityExtractor : entityExtractors) {
+        processEntityRow(rs, rowCnt, entityExtractor);
+      }
+      rowCnt++;
+    }
+    RelationshipMapper relationshipMapper = new RelationshipMapper();
+    for (EntityExtractor entityExtractor : entityExtractors) {
+      relationshipMapper.addEntityResult(
+          entityExtractor.entityType(), entityExtractor.result(), entityExtractor.idPropertyName());
+    }
+    return relationshipMapper;
+  }
 
-	@SuppressWarnings("unchecked")
-	private void processEntityRow(ResultSet rs, int rowCnt, EntityExtractor entityExtractor) throws SQLException {
-		EntityRowMapper<?> rowMapper = entityExtractor.rowMapper();
-		// rowMapper will always return an object
-		Object obj = rowMapper.mapRow(rs, rowCnt);
-		try {
-			Object id = entityExtractor.idReadMethod().invoke(obj);
-			if (id != null && entityExtractor.idSet().add(id)) {
-				// unique by id
-				entityExtractor.result().add(obj);
-			}
-		} catch (Exception e) {
-			throw new MapperException(e.getMessage(), e);
-		}
-	}
+  @SuppressWarnings("unchecked")
+  private void processEntityRow(ResultSet rs, int rowCnt, EntityExtractor entityExtractor)
+      throws SQLException {
+    EntityRowMapper<?> rowMapper = entityExtractor.rowMapper();
+    // rowMapper will always return an object
+    Object obj = rowMapper.mapRow(rs, rowCnt);
+    try {
+      Object id = entityExtractor.idReadMethod().invoke(obj);
+      if (id != null && entityExtractor.idSet().add(id)) {
+        // unique by id
+        entityExtractor.result().add(obj);
+      }
+    } catch (Exception e) {
+      throw new MapperException(e.getMessage(), e);
+    }
+  }
 
-	@SuppressWarnings("rawtypes")
-	private List<EntityExtractor> createEntityExtractors(MultiEntity multiEntity) {
-		int offset = 1;
-		List<EntityExtractor> entityExtractors = new ArrayList<>();
-		for (Map.Entry<Class<?>, String> entry : multiEntity.getEntries()) {
-			Class<?> entityType = entry.getKey();
-			EntityRowMapper<?> rowMapper = getEntityRowMapperInstance(entityType, offset);
-			TableMapping tableMapping = tableMappingProvider.getTableMapping(entityType);
-			Method idReadMethod = tableMapping.getIdPropertyMapping().getReadMethod();
-			entityExtractors.add(new EntityExtractor(entityType, rowMapper, new ArrayList(), idReadMethod,
-					tableMapping.getIdPropertyName(), new HashSet()));
-			offset += tableMapping.getPropertyMappings().length;
-		}
-		return entityExtractors;
-	}
+  @SuppressWarnings("rawtypes")
+  private List<EntityExtractor> createEntityExtractors(MultiEntity multiEntity) {
+    int offset = 1;
+    List<EntityExtractor> entityExtractors = new ArrayList<>();
+    for (Map.Entry<Class<?>, String> entry : multiEntity.getEntries()) {
+      Class<?> entityType = entry.getKey();
+      EntityRowMapper<?> rowMapper = getEntityRowMapperInstance(entityType, offset);
+      TableMapping tableMapping = tableMappingProvider.getTableMapping(entityType);
+      Method idReadMethod = tableMapping.getIdPropertyMapping().getReadMethod();
+      entityExtractors.add(
+          new EntityExtractor(
+              entityType,
+              rowMapper,
+              new ArrayList(),
+              idReadMethod,
+              tableMapping.getIdPropertyName(),
+              new HashSet()));
+      offset += tableMapping.getPropertyMappings().length;
+    }
+    return entityExtractors;
+  }
 
-	private <T> EntityRowMapper<T> getEntityRowMapperInstance(Class<T> entityType, int offset) {
-		TableMapping tableMapping = tableMappingProvider.getTableMapping(entityType);
-		EntityRowMapper<T> rowMapper = new EntityRowMapper<>(tableMapping, conversionService, offset);
-		if (logger.isDebugEnabled()) {
-			logger.debug("EntityRowMapper: {}", rowMapper);
-		}
-		return rowMapper;
-	}
+  private <T> EntityRowMapper<T> getEntityRowMapperInstance(Class<T> entityType, int offset) {
+    TableMapping tableMapping = tableMappingProvider.getTableMapping(entityType);
+    EntityRowMapper<T> rowMapper = new EntityRowMapper<>(tableMapping, conversionService, offset);
+    if (logger.isDebugEnabled()) {
+      logger.debug("EntityRowMapper: {}", rowMapper);
+    }
+    return rowMapper;
+  }
 
-	@SuppressWarnings("rawtypes")
-	record EntityExtractor(Class<?> entityType, EntityRowMapper<?> rowMapper, List result, Method idReadMethod,
-			String idPropertyName, Set idSet) {
-	}
+  @SuppressWarnings("rawtypes")
+  record EntityExtractor(
+      Class<?> entityType,
+      EntityRowMapper<?> rowMapper,
+      List result,
+      Method idReadMethod,
+      String idPropertyName,
+      Set idSet) {}
 }

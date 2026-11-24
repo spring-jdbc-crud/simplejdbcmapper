@@ -5,76 +5,72 @@ import io.github.simplejdbcmapper.annotation.Id;
 import io.github.simplejdbcmapper.annotation.IdType;
 
 public class OrderLineOrderIdInteger {
-	@Id(type = IdType.AUTO_GENERATED)
-	private Integer orderLineId;
-	@Column
-	private Integer orderId;
-	@Column
-	private Integer productId;
-	@Column
-	private Integer numOfUnits;
+  @Id(type = IdType.AUTO_GENERATED)
+  private Integer orderLineId;
 
-	@Column
-	private String lastMappedCol;
+  @Column private Integer orderId;
+  @Column private Integer productId;
+  @Column private Integer numOfUnits;
 
-	private Order order;
+  @Column private String lastMappedCol;
 
-	private Product product;
+  private Order order;
 
-	public Integer getOrderLineId() {
-		return orderLineId;
-	}
+  private Product product;
 
-	public void setOrderLineId(Integer orderLineId) {
-		this.orderLineId = orderLineId;
-	}
+  public Integer getOrderLineId() {
+    return orderLineId;
+  }
 
-	public Integer getOrderId() {
-		return orderId;
-	}
+  public void setOrderLineId(Integer orderLineId) {
+    this.orderLineId = orderLineId;
+  }
 
-	public void setOrderId(Integer orderId) {
-		this.orderId = orderId;
-	}
+  public Integer getOrderId() {
+    return orderId;
+  }
 
-	public Integer getProductId() {
-		return productId;
-	}
+  public void setOrderId(Integer orderId) {
+    this.orderId = orderId;
+  }
 
-	public void setProductId(Integer productId) {
-		this.productId = productId;
-	}
+  public Integer getProductId() {
+    return productId;
+  }
 
-	public Integer getNumOfUnits() {
-		return numOfUnits;
-	}
+  public void setProductId(Integer productId) {
+    this.productId = productId;
+  }
 
-	public void setNumOfUnits(Integer numOfUnits) {
-		this.numOfUnits = numOfUnits;
-	}
+  public Integer getNumOfUnits() {
+    return numOfUnits;
+  }
 
-	public String getLastMappedCol() {
-		return lastMappedCol;
-	}
+  public void setNumOfUnits(Integer numOfUnits) {
+    this.numOfUnits = numOfUnits;
+  }
 
-	public void setLastMappedCol(String lastMappedCol) {
-		this.lastMappedCol = lastMappedCol;
-	}
+  public String getLastMappedCol() {
+    return lastMappedCol;
+  }
 
-	public Order getOrder() {
-		return order;
-	}
+  public void setLastMappedCol(String lastMappedCol) {
+    this.lastMappedCol = lastMappedCol;
+  }
 
-	public void setOrder(Order order) {
-		this.order = order;
-	}
+  public Order getOrder() {
+    return order;
+  }
 
-	public Product getProduct() {
-		return product;
-	}
+  public void setOrder(Order order) {
+    this.order = order;
+  }
 
-	public void setProduct(Product product) {
-		this.product = product;
-	}
+  public Product getProduct() {
+    return product;
+  }
 
+  public void setProduct(Product product) {
+    this.product = product;
+  }
 }

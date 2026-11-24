@@ -13,18 +13,6 @@
  */
 package io.github.simplejdbcmapper.core;
 
-import java.lang.annotation.Annotation;
-import java.lang.reflect.Field;
-import java.sql.Blob;
-import java.sql.Clob;
-import java.util.List;
-import java.util.Map;
-
-import org.springframework.beans.BeanWrapper;
-import org.springframework.beans.BeanWrapperImpl;
-import org.springframework.core.annotation.AnnotationUtils;
-import org.springframework.util.StringUtils;
-
 import io.github.simplejdbcmapper.annotation.Column;
 import io.github.simplejdbcmapper.annotation.ColumnConstants;
 import io.github.simplejdbcmapper.annotation.CreatedBy;
@@ -35,6 +23,16 @@ import io.github.simplejdbcmapper.annotation.UpdatedBy;
 import io.github.simplejdbcmapper.annotation.UpdatedOn;
 import io.github.simplejdbcmapper.annotation.Version;
 import io.github.simplejdbcmapper.exception.AnnotationException;
+import java.lang.annotation.Annotation;
+import java.lang.reflect.Field;
+import java.sql.Blob;
+import java.sql.Clob;
+import java.util.List;
+import java.util.Map;
+import org.springframework.beans.BeanWrapper;
+import org.springframework.beans.BeanWrapperImpl;
+import org.springframework.core.annotation.AnnotationUtils;
+import org.springframework.util.StringUtils;
 
 /**
  * The annotation processor
@@ -43,206 +41,239 @@ import io.github.simplejdbcmapper.exception.AnnotationException;
  */
 class AnnotationProcessor {
 
-	Table getTableAnnotation(Class<?> entityType) {
-		Table tableAnnotation = AnnotationUtils.findAnnotation(entityType, Table.class);
-		validateTableAnnotation(tableAnnotation, entityType);
-		return tableAnnotation;
-	}
+  Table getTableAnnotation(Class<?> entityType) {
+    Table tableAnnotation = AnnotationUtils.findAnnotation(entityType, Table.class);
+    validateTableAnnotation(tableAnnotation, entityType);
+    return tableAnnotation;
+  }
 
-	void processColumnAnnotation(Field field, Map<String, PropertyMapping> propNameToPropertyMapping) {
-		Column colAnnotation = AnnotationUtils.findAnnotation(field, Column.class);
-		if (colAnnotation != null) {
-			String propertyName = field.getName();
-			String colName = colAnnotation.name();
-			if (ColumnConstants.NAME_UNKNOWN.equals(colName)) {
-				// default name
-				colName = InternalUtils.toUnderscoreName(propertyName);
-			}
-			validateColumnName(colName, propertyName);
-			Integer sqlType = InternalUtils.javaTypeToSqlParameterType(field.getType());
-			if (colAnnotation.sqlType() != ColumnConstants.TYPE_UNKNOWN) {
-				// sqlType has been configured in @Column
-				sqlType = colAnnotation.sqlType();
-			}
+  void processColumnAnnotation(
+      Field field, Map<String, PropertyMapping> propNameToPropertyMapping) {
+    Column colAnnotation = AnnotationUtils.findAnnotation(field, Column.class);
+    if (colAnnotation != null) {
+      String propertyName = field.getName();
+      String colName = colAnnotation.name();
+      if (ColumnConstants.NAME_UNKNOWN.equals(colName)) {
+        // default name
+        colName = InternalUtils.toUnderscoreName(propertyName);
+      }
+      validateColumnName(colName, propertyName);
+      Integer sqlType = InternalUtils.javaTypeToSqlParameterType(field.getType());
+      if (colAnnotation.sqlType() != ColumnConstants.TYPE_UNKNOWN) {
+        // sqlType has been configured in @Column
+        sqlType = colAnnotation.sqlType();
+      }
 
-			Class<?> converterClass = null;
-			if (colAnnotation.converter() != Object.class) {
-				// converter has been configured in @Column
-				converterClass = colAnnotation.converter();
-			}
+      Class<?> converterClass = null;
+      if (colAnnotation.converter() != Object.class) {
+        // converter has been configured in @Column
+        converterClass = colAnnotation.converter();
+      }
 
-			PropertyMapping propertyMapping = new PropertyMapping(propertyName, field.getType(), colName, sqlType,
-					converterClass);
-			propNameToPropertyMapping.put(propertyName, propertyMapping);
-		}
-	}
+      PropertyMapping propertyMapping =
+          new PropertyMapping(propertyName, field.getType(), colName, sqlType, converterClass);
+      propNameToPropertyMapping.put(propertyName, propertyMapping);
+    }
+  }
 
-	void processIdAnnotation(Field field, Map<String, PropertyMapping> propNameToPropertyMapping) {
-		processAnnotation(Id.class, field, propNameToPropertyMapping);
-	}
+  void processIdAnnotation(Field field, Map<String, PropertyMapping> propNameToPropertyMapping) {
+    processAnnotation(Id.class, field, propNameToPropertyMapping);
+  }
 
-	void processVersionAnnotation(Field field, Map<String, PropertyMapping> propNameToPropertyMapping) {
-		processAnnotation(Version.class, field, propNameToPropertyMapping);
-	}
+  void processVersionAnnotation(
+      Field field, Map<String, PropertyMapping> propNameToPropertyMapping) {
+    processAnnotation(Version.class, field, propNameToPropertyMapping);
+  }
 
-	void processCreatedOnAnnotation(Field field, Map<String, PropertyMapping> propNameToPropertyMapping) {
-		processAnnotation(CreatedOn.class, field, propNameToPropertyMapping);
-	}
+  void processCreatedOnAnnotation(
+      Field field, Map<String, PropertyMapping> propNameToPropertyMapping) {
+    processAnnotation(CreatedOn.class, field, propNameToPropertyMapping);
+  }
 
-	void processUpdatedOnAnnotation(Field field, Map<String, PropertyMapping> propNameToPropertyMapping) {
-		processAnnotation(UpdatedOn.class, field, propNameToPropertyMapping);
-	}
+  void processUpdatedOnAnnotation(
+      Field field, Map<String, PropertyMapping> propNameToPropertyMapping) {
+    processAnnotation(UpdatedOn.class, field, propNameToPropertyMapping);
+  }
 
-	void processCreatedByAnnotation(Field field, Map<String, PropertyMapping> propNameToPropertyMapping) {
-		processAnnotation(CreatedBy.class, field, propNameToPropertyMapping);
-	}
+  void processCreatedByAnnotation(
+      Field field, Map<String, PropertyMapping> propNameToPropertyMapping) {
+    processAnnotation(CreatedBy.class, field, propNameToPropertyMapping);
+  }
 
-	void processUpdatedByAnnotation(Field field, Map<String, PropertyMapping> propNameToPropertyMapping) {
-		processAnnotation(UpdatedBy.class, field, propNameToPropertyMapping);
-	}
+  void processUpdatedByAnnotation(
+      Field field, Map<String, PropertyMapping> propNameToPropertyMapping) {
+    processAnnotation(UpdatedBy.class, field, propNameToPropertyMapping);
+  }
 
-	void validateAnnotations(List<PropertyMapping> propertyMappings, Class<?> type) {
-		annotationTypeCheck(propertyMappings, type);
-		annotationDuplicateCheck(propertyMappings, type);
-		annotationConflictCheck(propertyMappings, type);
-	}
+  void validateAnnotations(List<PropertyMapping> propertyMappings, Class<?> type) {
+    annotationTypeCheck(propertyMappings, type);
+    annotationDuplicateCheck(propertyMappings, type);
+    annotationConflictCheck(propertyMappings, type);
+  }
 
-	private <T extends Annotation> void processAnnotation(Class<T> annotationType, Field field,
-			Map<String, PropertyMapping> propNameToPropertyMapping) {
-		Annotation annotation = AnnotationUtils.findAnnotation(field, annotationType);
-		if (annotation != null) {
-			String propertyName = field.getName();
-			PropertyMapping propMapping = propNameToPropertyMapping.get(propertyName);
-			if (propMapping == null) { // it means there is no @Column annotation for the property
-				String colName = InternalUtils.toUnderscoreName(propertyName); // the default column name
-				Integer sqlType = InternalUtils.javaTypeToSqlParameterType(field.getType());
-				propMapping = new PropertyMapping(propertyName, field.getType(), colName, sqlType, null);
-				propNameToPropertyMapping.put(propertyName, propMapping);
-			}
-			BeanWrapper bw = new BeanWrapperImpl(propMapping);
-			// set idAnnotation, versionAnnotation, createdOnAnnotation etc on
-			// PropertyMapping object
-			bw.setPropertyValue(StringUtils.uncapitalize(annotationType.getSimpleName()) + "Annotation", true);
-		}
-	}
+  private <T extends Annotation> void processAnnotation(
+      Class<T> annotationType,
+      Field field,
+      Map<String, PropertyMapping> propNameToPropertyMapping) {
+    Annotation annotation = AnnotationUtils.findAnnotation(field, annotationType);
+    if (annotation != null) {
+      String propertyName = field.getName();
+      PropertyMapping propMapping = propNameToPropertyMapping.get(propertyName);
+      if (propMapping == null) { // it means there is no @Column annotation for the property
+        String colName = InternalUtils.toUnderscoreName(propertyName); // the default column name
+        Integer sqlType = InternalUtils.javaTypeToSqlParameterType(field.getType());
+        propMapping = new PropertyMapping(propertyName, field.getType(), colName, sqlType, null);
+        propNameToPropertyMapping.put(propertyName, propMapping);
+      }
+      BeanWrapper bw = new BeanWrapperImpl(propMapping);
+      // set idAnnotation, versionAnnotation, createdOnAnnotation etc on
+      // PropertyMapping object
+      bw.setPropertyValue(
+          StringUtils.uncapitalize(annotationType.getSimpleName()) + "Annotation", true);
+    }
+  }
 
-	private void validateTableAnnotation(Table tableAnnotation, Class<?> entityType) {
-		if (tableAnnotation == null) {
-			throw new AnnotationException(
-					entityType.getSimpleName() + " does not have the @Table annotation. It is required");
-		}
-		if (!StringUtils.hasText(tableAnnotation.name())) {
-			throw new AnnotationException(
-					entityType.getSimpleName() + " - @Table annotation: table name should not be blank.");
-		}
-		if (StringUtils.containsWhitespace(tableAnnotation.name())) {
-			throw new AnnotationException(
-					entityType.getSimpleName() + " - @Table annotation: no support for table names with spaces.");
-		}
-	}
+  private void validateTableAnnotation(Table tableAnnotation, Class<?> entityType) {
+    if (tableAnnotation == null) {
+      throw new AnnotationException(
+          entityType.getSimpleName() + " does not have the @Table annotation. It is required");
+    }
+    if (!StringUtils.hasText(tableAnnotation.name())) {
+      throw new AnnotationException(
+          entityType.getSimpleName() + " - @Table annotation: table name should not be blank.");
+    }
+    if (StringUtils.containsWhitespace(tableAnnotation.name())) {
+      throw new AnnotationException(
+          entityType.getSimpleName()
+              + " - @Table annotation: no support for table names with spaces.");
+    }
+  }
 
-	private void validateColumnName(String colName, String propertyName) {
-		if (!StringUtils.hasText(colName)) {
-			throw new AnnotationException(
-					"@Column annotation: column name should not be blank. property: " + propertyName);
-		}
-		if (StringUtils.containsWhitespace(colName)) {
-			throw new AnnotationException(
-					"@Column annotation: no support for column names with spaces. property: " + propertyName);
-		}
-	}
+  private void validateColumnName(String colName, String propertyName) {
+    if (!StringUtils.hasText(colName)) {
+      throw new AnnotationException(
+          "@Column annotation: column name should not be blank. property: " + propertyName);
+    }
+    if (StringUtils.containsWhitespace(colName)) {
+      throw new AnnotationException(
+          "@Column annotation: no support for column names with spaces. property: " + propertyName);
+    }
+  }
 
-	private void annotationTypeCheck(List<PropertyMapping> propertyMappings, Class<?> entityType) {
-		for (PropertyMapping propMapping : propertyMappings) {
-			if (propMapping.getPropertyType().isPrimitive()) {
-				throw new AnnotationException(entityType.getSimpleName() + "." + propMapping.getPropertyName()
-						+ " is a primitive. Mapper does not support primitive types. Use the corresponding java wrapper type.");
-			} else if (propMapping.getPropertyType() == Blob.class) {
-				throw new AnnotationException(entityType.getSimpleName() + "." + propMapping.getPropertyName()
-						+ " is of type java.sql.Blob and is not supported. Try using java type byte[] instead.");
-			} else if (propMapping.getPropertyType() == Clob.class) {
-				throw new AnnotationException(entityType.getSimpleName() + "." + propMapping.getPropertyName()
-						+ " is of type java.sql.Clob and is not supported. Try using java type String instead.");
-			} else if (propMapping.isVersionAnnotation() && propMapping.getPropertyType() != Integer.class) {
-				throw new AnnotationException("@Version requires the type of property " + entityType.getSimpleName()
-						+ "." + propMapping.getPropertyName() + " to be Integer");
-			}
-		}
-	}
+  private void annotationTypeCheck(List<PropertyMapping> propertyMappings, Class<?> entityType) {
+    for (PropertyMapping propMapping : propertyMappings) {
+      if (propMapping.getPropertyType().isPrimitive()) {
+        throw new AnnotationException(
+            entityType.getSimpleName()
+                + "."
+                + propMapping.getPropertyName()
+                + " is a primitive. Mapper does not support primitive types. Use the corresponding java wrapper type.");
+      } else if (propMapping.getPropertyType() == Blob.class) {
+        throw new AnnotationException(
+            entityType.getSimpleName()
+                + "."
+                + propMapping.getPropertyName()
+                + " is of type java.sql.Blob and is not supported. Try using java type byte[] instead.");
+      } else if (propMapping.getPropertyType() == Clob.class) {
+        throw new AnnotationException(
+            entityType.getSimpleName()
+                + "."
+                + propMapping.getPropertyName()
+                + " is of type java.sql.Clob and is not supported. Try using java type String instead.");
+      } else if (propMapping.isVersionAnnotation()
+          && propMapping.getPropertyType() != Integer.class) {
+        throw new AnnotationException(
+            "@Version requires the type of property "
+                + entityType.getSimpleName()
+                + "."
+                + propMapping.getPropertyName()
+                + " to be Integer");
+      }
+    }
+  }
 
-	private void annotationDuplicateCheck(List<PropertyMapping> propertyMappings, Class<?> entityType) {
-		int idCnt = 0;
-		int versionCnt = 0;
-		int createdByCnt = 0;
-		int createdOnCnt = 0;
-		int updatedOnCnt = 0;
-		int updatedByCnt = 0;
-		for (PropertyMapping propMapping : propertyMappings) {
-			if (propMapping.isIdAnnotation()) {
-				idCnt++;
-			}
-			if (propMapping.isVersionAnnotation()) {
-				versionCnt++;
-			}
-			if (propMapping.isCreatedOnAnnotation()) {
-				createdOnCnt++;
-			}
-			if (propMapping.isCreatedByAnnotation()) {
-				createdByCnt++;
-			}
-			if (propMapping.isUpdatedOnAnnotation()) {
-				updatedOnCnt++;
-			}
-			if (propMapping.isUpdatedByAnnotation()) {
-				updatedByCnt++;
-			}
-		}
-		if (idCnt > 1) {
-			throw new AnnotationException(entityType.getSimpleName() + " has multiple @Id annotations");
-		}
-		if (versionCnt > 1) {
-			throw new AnnotationException(entityType.getSimpleName() + " has multiple @Version annotations");
-		}
-		if (createdOnCnt > 1) {
-			throw new AnnotationException(entityType.getSimpleName() + " has multiple @CreatedOn annotations");
-		}
-		if (createdByCnt > 1) {
-			throw new AnnotationException(entityType.getSimpleName() + " has multiple @CreatedBy annotations");
-		}
-		if (updatedOnCnt > 1) {
-			throw new AnnotationException(entityType.getSimpleName() + " has multiple @UpdatedOn annotations");
-		}
-		if (updatedByCnt > 1) {
-			throw new AnnotationException(entityType.getSimpleName() + " has multiple @UpdatedBy annotations");
-		}
-	}
+  private void annotationDuplicateCheck(
+      List<PropertyMapping> propertyMappings, Class<?> entityType) {
+    int idCnt = 0;
+    int versionCnt = 0;
+    int createdByCnt = 0;
+    int createdOnCnt = 0;
+    int updatedOnCnt = 0;
+    int updatedByCnt = 0;
+    for (PropertyMapping propMapping : propertyMappings) {
+      if (propMapping.isIdAnnotation()) {
+        idCnt++;
+      }
+      if (propMapping.isVersionAnnotation()) {
+        versionCnt++;
+      }
+      if (propMapping.isCreatedOnAnnotation()) {
+        createdOnCnt++;
+      }
+      if (propMapping.isCreatedByAnnotation()) {
+        createdByCnt++;
+      }
+      if (propMapping.isUpdatedOnAnnotation()) {
+        updatedOnCnt++;
+      }
+      if (propMapping.isUpdatedByAnnotation()) {
+        updatedByCnt++;
+      }
+    }
+    if (idCnt > 1) {
+      throw new AnnotationException(entityType.getSimpleName() + " has multiple @Id annotations");
+    }
+    if (versionCnt > 1) {
+      throw new AnnotationException(
+          entityType.getSimpleName() + " has multiple @Version annotations");
+    }
+    if (createdOnCnt > 1) {
+      throw new AnnotationException(
+          entityType.getSimpleName() + " has multiple @CreatedOn annotations");
+    }
+    if (createdByCnt > 1) {
+      throw new AnnotationException(
+          entityType.getSimpleName() + " has multiple @CreatedBy annotations");
+    }
+    if (updatedOnCnt > 1) {
+      throw new AnnotationException(
+          entityType.getSimpleName() + " has multiple @UpdatedOn annotations");
+    }
+    if (updatedByCnt > 1) {
+      throw new AnnotationException(
+          entityType.getSimpleName() + " has multiple @UpdatedBy annotations");
+    }
+  }
 
-	private void annotationConflictCheck(List<PropertyMapping> propertyMappings, Class<?> entityType) {
-		for (PropertyMapping propMapping : propertyMappings) {
-			int conflictCnt = 0;
-			if (propMapping.isIdAnnotation()) {
-				conflictCnt++;
-			}
-			if (propMapping.isVersionAnnotation()) {
-				conflictCnt++;
-			}
-			if (propMapping.isCreatedOnAnnotation()) {
-				conflictCnt++;
-			}
-			if (propMapping.isCreatedByAnnotation()) {
-				conflictCnt++;
-			}
-			if (propMapping.isUpdatedOnAnnotation()) {
-				conflictCnt++;
-			}
-			if (propMapping.isUpdatedByAnnotation()) {
-				conflictCnt++;
-			}
-			if (conflictCnt > 1) {
-				throw new AnnotationException(entityType.getSimpleName() + "." + propMapping.getPropertyName()
-						+ " has multiple annotations that conflict");
-			}
-		}
-	}
-
+  private void annotationConflictCheck(
+      List<PropertyMapping> propertyMappings, Class<?> entityType) {
+    for (PropertyMapping propMapping : propertyMappings) {
+      int conflictCnt = 0;
+      if (propMapping.isIdAnnotation()) {
+        conflictCnt++;
+      }
+      if (propMapping.isVersionAnnotation()) {
+        conflictCnt++;
+      }
+      if (propMapping.isCreatedOnAnnotation()) {
+        conflictCnt++;
+      }
+      if (propMapping.isCreatedByAnnotation()) {
+        conflictCnt++;
+      }
+      if (propMapping.isUpdatedOnAnnotation()) {
+        conflictCnt++;
+      }
+      if (propMapping.isUpdatedByAnnotation()) {
+        conflictCnt++;
+      }
+      if (conflictCnt > 1) {
+        throw new AnnotationException(
+            entityType.getSimpleName()
+                + "."
+                + propMapping.getPropertyName()
+                + " has multiple annotations that conflict");
+      }
+    }
+  }
 }

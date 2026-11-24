@@ -8,15 +8,12 @@ import io.github.simplejdbcmapper.annotation.UpdatedBy;
 
 @Table(name = "annotation_check")
 public class DuplicateUpdatedByAnnotation {
-	@Id(type = IdType.AUTO_GENERATED)
-	private Integer id;
+  @Id(type = IdType.AUTO_GENERATED)
+  private Integer id;
 
-	@UpdatedBy
-	private String updatedBy1;
+  @UpdatedBy private String updatedBy1;
 
-	@UpdatedBy
-	private String updatedBy2;
+  @UpdatedBy private String updatedBy2;
 
-	@Column
-	private String something;
+  @Column private String something;
 }

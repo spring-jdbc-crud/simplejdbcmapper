@@ -5,13 +5,14 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import io.github.simplejdbcmapper.model.FullyQualifiedTableName;
+import io.github.simplejdbcmapper.model.NonDefaultNamingProduct;
+import io.github.simplejdbcmapper.model.Product;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
-
 import javax.sql.DataSource;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -22,249 +23,288 @@ import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import io.github.simplejdbcmapper.model.FullyQualifiedTableName;
-import io.github.simplejdbcmapper.model.NonDefaultNamingProduct;
-import io.github.simplejdbcmapper.model.Product;
-
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 class SimpleJdbcMapperTest {
 
-	@Value("${spring.datasource.driver-class-name}")
-	private String jdbcDriver;
+  @Value("${spring.datasource.driver-class-name}")
+  private String jdbcDriver;
 
-	@Autowired
-	private DataSource dataSource;
+  @Autowired private DataSource dataSource;
 
-	@Autowired
-	private SimpleJdbcMapper sjm;
+  @Autowired private SimpleJdbcMapper sjm;
 
-	@Test
-	void getBeanFriendlySqlColumns_test() {
-		NonDefaultNamingProduct p = new NonDefaultNamingProduct();
-		p.setId(9812);
-		p.setProductName("test9812");
-		p.setCost(10.25);
-		sjm.insert(p);
+  @Test
+  void getBeanFriendlySqlColumns_test() {
+    NonDefaultNamingProduct p = new NonDefaultNamingProduct();
+    p.setId(9812);
+    p.setProductName("test9812");
+    p.setCost(10.25);
+    sjm.insert(p);
 
-		String sql = "SELECT " + sjm.getBeanFriendlySqlColumns(NonDefaultNamingProduct.class)
-				+ " FROM product WHERE name = ?";
+    String sql =
+        "SELECT "
+            + sjm.getBeanFriendlySqlColumns(NonDefaultNamingProduct.class)
+            + " FROM product WHERE name = ?";
 
-		// Using JdbcClient api for the above sql
-		List<NonDefaultNamingProduct> products = sjm.getJdbcClient().sql(sql).param("test9812")
-				.query(NonDefaultNamingProduct.class).list();
+    // Using JdbcClient api for the above sql
+    List<NonDefaultNamingProduct> products =
+        sjm.getJdbcClient().sql(sql).param("test9812").query(NonDefaultNamingProduct.class).list();
 
-		assertEquals(1, products.size());
-		assertEquals(10.25, products.get(0).getCost());
-		assertEquals("test9812", products.get(0).getProductName());
+    assertEquals(1, products.size());
+    assertEquals(10.25, products.get(0).getCost());
+    assertEquals("test9812", products.get(0).getProductName());
 
-		// Using JdbcTemplate api for the above sql
-		List<NonDefaultNamingProduct> products2 = sjm.getJdbcTemplate().query(sql,
-				BeanPropertyRowMapper.newInstance(NonDefaultNamingProduct.class), "test9812");
+    // Using JdbcTemplate api for the above sql
+    List<NonDefaultNamingProduct> products2 =
+        sjm.getJdbcTemplate()
+            .query(
+                sql, BeanPropertyRowMapper.newInstance(NonDefaultNamingProduct.class), "test9812");
 
-		assertEquals(1, products2.size());
-		assertEquals(10.25, products2.get(0).getCost());
-		assertEquals("test9812", products2.get(0).getProductName());
-	}
+    assertEquals(1, products2.size());
+    assertEquals(10.25, products2.get(0).getCost());
+    assertEquals("test9812", products2.get(0).getProductName());
+  }
 
-	@Test
-	void getBeanFriendlySqlColumns_withTableAlias_test() {
-		NonDefaultNamingProduct p = new NonDefaultNamingProduct();
-		p.setId(9900);
-		p.setProductName("test9900");
-		p.setCost(10.25);
-		sjm.insert(p);
+  @Test
+  void getBeanFriendlySqlColumns_withTableAlias_test() {
+    NonDefaultNamingProduct p = new NonDefaultNamingProduct();
+    p.setId(9900);
+    p.setProductName("test9900");
+    p.setCost(10.25);
+    sjm.insert(p);
 
-		String sql = "SELECT " + sjm.getBeanFriendlySqlColumns(NonDefaultNamingProduct.class, "t1")
-				+ " FROM product t1 WHERE t1.name = ?";
+    String sql =
+        "SELECT "
+            + sjm.getBeanFriendlySqlColumns(NonDefaultNamingProduct.class, "t1")
+            + " FROM product t1 WHERE t1.name = ?";
 
-		// Using JdbcClient api for the above sql
-		List<NonDefaultNamingProduct> products = sjm.getJdbcClient().sql(sql).param("test9900")
-				.query(NonDefaultNamingProduct.class).list();
+    // Using JdbcClient api for the above sql
+    List<NonDefaultNamingProduct> products =
+        sjm.getJdbcClient().sql(sql).param("test9900").query(NonDefaultNamingProduct.class).list();
 
-		assertEquals(1, products.size());
-		assertEquals(10.25, products.get(0).getCost());
-		assertEquals("test9900", products.get(0).getProductName());
+    assertEquals(1, products.size());
+    assertEquals(10.25, products.get(0).getCost());
+    assertEquals("test9900", products.get(0).getProductName());
 
-		// Using JdbcTemplate api for the above sql
-		List<NonDefaultNamingProduct> products2 = sjm.getJdbcTemplate().query(sql,
-				BeanPropertyRowMapper.newInstance(NonDefaultNamingProduct.class), "test9900");
+    // Using JdbcTemplate api for the above sql
+    List<NonDefaultNamingProduct> products2 =
+        sjm.getJdbcTemplate()
+            .query(
+                sql, BeanPropertyRowMapper.newInstance(NonDefaultNamingProduct.class), "test9900");
 
-		assertEquals(1, products2.size());
-		assertEquals(10.25, products2.get(0).getCost());
-		assertEquals("test9900", products2.get(0).getProductName());
-	}
+    assertEquals(1, products2.size());
+    assertEquals(10.25, products2.get(0).getCost());
+    assertEquals("test9900", products2.get(0).getProductName());
+  }
 
-	@Test
-	void getBeanFriendlySqlColumns_IllegalArgs_test() {
-		Assertions.assertThrows(IllegalArgumentException.class, () -> {
-			sjm.getBeanFriendlySqlColumns(null);
-		});
+  @Test
+  void getBeanFriendlySqlColumns_IllegalArgs_test() {
+    Assertions.assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          sjm.getBeanFriendlySqlColumns(null);
+        });
 
-		Assertions.assertThrows(IllegalArgumentException.class, () -> {
-			sjm.getBeanFriendlySqlColumns(null, "t1");
-		});
-		Assertions.assertThrows(IllegalArgumentException.class, () -> {
-			sjm.getBeanFriendlySqlColumns(Product.class, null);
-		});
+    Assertions.assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          sjm.getBeanFriendlySqlColumns(null, "t1");
+        });
+    Assertions.assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          sjm.getBeanFriendlySqlColumns(Product.class, null);
+        });
 
-		Assertions.assertThrows(IllegalArgumentException.class, () -> {
-			sjm.getBeanFriendlySqlColumns(Product.class, "   ");
-		});
-	}
+    Assertions.assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          sjm.getBeanFriendlySqlColumns(Product.class, "   ");
+        });
+  }
 
-	@Test
-	void getSqlColumns_test() {
-		NonDefaultNamingProduct p = new NonDefaultNamingProduct();
-		p.setId(5461);
-		p.setProductName("test5461");
-		p.setCost(10.25);
-		sjm.insert(p);
+  @Test
+  void getSqlColumns_test() {
+    NonDefaultNamingProduct p = new NonDefaultNamingProduct();
+    p.setId(5461);
+    p.setProductName("test5461");
+    p.setCost(10.25);
+    sjm.insert(p);
 
-		String sql = "SELECT " + sjm.getSqlColumns(NonDefaultNamingProduct.class) + " FROM product WHERE name = ?";
+    String sql =
+        "SELECT "
+            + sjm.getSqlColumns(NonDefaultNamingProduct.class)
+            + " FROM product WHERE name = ?";
 
-		// Using JdbcClient api for the above sql
-		List<NonDefaultNamingProduct> products = sjm.getJdbcClient().sql(sql).param("test5461")
-				.query(sjm.entityRowMapper(NonDefaultNamingProduct.class)).list();
+    // Using JdbcClient api for the above sql
+    List<NonDefaultNamingProduct> products =
+        sjm.getJdbcClient()
+            .sql(sql)
+            .param("test5461")
+            .query(sjm.entityRowMapper(NonDefaultNamingProduct.class))
+            .list();
 
-		assertEquals(1, products.size());
-		assertEquals(10.25, products.get(0).getCost());
-		assertEquals("test5461", products.get(0).getProductName());
+    assertEquals(1, products.size());
+    assertEquals(10.25, products.get(0).getCost());
+    assertEquals("test5461", products.get(0).getProductName());
 
-		// Using JdbcTemplate api for the above sql
-		List<NonDefaultNamingProduct> products2 = sjm.getJdbcTemplate().query(sql,
-				sjm.entityRowMapper(NonDefaultNamingProduct.class), "test5461");
+    // Using JdbcTemplate api for the above sql
+    List<NonDefaultNamingProduct> products2 =
+        sjm.getJdbcTemplate()
+            .query(sql, sjm.entityRowMapper(NonDefaultNamingProduct.class), "test5461");
 
-		assertEquals(1, products2.size());
-		assertEquals(10.25, products2.get(0).getCost());
-		assertEquals("test5461", products2.get(0).getProductName());
-	}
+    assertEquals(1, products2.size());
+    assertEquals(10.25, products2.get(0).getCost());
+    assertEquals("test5461", products2.get(0).getProductName());
+  }
 
-	@Test
-	void getSqlColumns_IllegalArgs_test() {
-		Assertions.assertThrows(IllegalArgumentException.class, () -> {
-			sjm.getSqlColumns((Class<?>) null);
-		});
+  @Test
+  void getSqlColumns_IllegalArgs_test() {
+    Assertions.assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          sjm.getSqlColumns((Class<?>) null);
+        });
 
-		Assertions.assertThrows(IllegalArgumentException.class, () -> {
-			sjm.getSqlColumns(null, "t1");
-		});
-		Assertions.assertThrows(IllegalArgumentException.class, () -> {
-			sjm.getSqlColumns(Product.class, null);
-		});
+    Assertions.assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          sjm.getSqlColumns(null, "t1");
+        });
+    Assertions.assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          sjm.getSqlColumns(Product.class, null);
+        });
 
-		Assertions.assertThrows(IllegalArgumentException.class, () -> {
-			sjm.getSqlColumns(Product.class, "   ");
-		});
-	}
+    Assertions.assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          sjm.getSqlColumns(Product.class, "   ");
+        });
+  }
 
-	@Test
-	void getSqlColumns_withTableAlias_test() {
-		NonDefaultNamingProduct p = new NonDefaultNamingProduct();
-		p.setId(7190);
-		p.setProductName("test7190");
-		p.setCost(10.25);
-		sjm.insert(p);
+  @Test
+  void getSqlColumns_withTableAlias_test() {
+    NonDefaultNamingProduct p = new NonDefaultNamingProduct();
+    p.setId(7190);
+    p.setProductName("test7190");
+    p.setCost(10.25);
+    sjm.insert(p);
 
-		String sql = "SELECT " + sjm.getSqlColumns(NonDefaultNamingProduct.class, "t1")
-				+ " FROM product t1 WHERE t1.name = ?";
+    String sql =
+        "SELECT "
+            + sjm.getSqlColumns(NonDefaultNamingProduct.class, "t1")
+            + " FROM product t1 WHERE t1.name = ?";
 
-		// Using JdbcClient api for the above sql
-		List<NonDefaultNamingProduct> products = sjm.getJdbcClient().sql(sql).param("test7190")
-				.query(sjm.entityRowMapper(NonDefaultNamingProduct.class)).list();
+    // Using JdbcClient api for the above sql
+    List<NonDefaultNamingProduct> products =
+        sjm.getJdbcClient()
+            .sql(sql)
+            .param("test7190")
+            .query(sjm.entityRowMapper(NonDefaultNamingProduct.class))
+            .list();
 
-		assertEquals(1, products.size());
-		assertEquals(10.25, products.get(0).getCost());
-		assertEquals("test7190", products.get(0).getProductName());
+    assertEquals(1, products.size());
+    assertEquals(10.25, products.get(0).getCost());
+    assertEquals("test7190", products.get(0).getProductName());
 
-		// Using JdbcTemplate api for the above sql
-		List<NonDefaultNamingProduct> products2 = sjm.getJdbcTemplate().query(sql,
-				sjm.entityRowMapper(NonDefaultNamingProduct.class), "test7190");
+    // Using JdbcTemplate api for the above sql
+    List<NonDefaultNamingProduct> products2 =
+        sjm.getJdbcTemplate()
+            .query(sql, sjm.entityRowMapper(NonDefaultNamingProduct.class), "test7190");
 
-		assertEquals(1, products2.size());
-		assertEquals(10.25, products2.get(0).getCost());
-		assertEquals("test7190", products2.get(0).getProductName());
-	}
+    assertEquals(1, products2.size());
+    assertEquals(10.25, products2.get(0).getCost());
+    assertEquals("test7190", products2.get(0).getProductName());
+  }
 
-	@Test
-	void setRecordAuditedBySupplier_resetting_failure() {
-		SimpleJdbcMapper m = new SimpleJdbcMapper(dataSource);
-		Supplier<String> supplier = () -> "tester";
-		m.setRecordAuditedBySupplier(supplier);
-		Assertions.assertThrows(IllegalStateException.class, () -> {
-			m.setRecordAuditedBySupplier(supplier);
-		});
-	}
+  @Test
+  void setRecordAuditedBySupplier_resetting_failure() {
+    SimpleJdbcMapper m = new SimpleJdbcMapper(dataSource);
+    Supplier<String> supplier = () -> "tester";
+    m.setRecordAuditedBySupplier(supplier);
+    Assertions.assertThrows(
+        IllegalStateException.class,
+        () -> {
+          m.setRecordAuditedBySupplier(supplier);
+        });
+  }
 
-	@Test
-	void setRecordAuditedOnSupplier_resetting_failure() {
-		SimpleJdbcMapper m = new SimpleJdbcMapper(dataSource);
-		Supplier<LocalDateTime> supplier = LocalDateTime::now;
-		m.setRecordAuditedOnSupplier(supplier);
-		Assertions.assertThrows(IllegalStateException.class, () -> {
-			m.setRecordAuditedOnSupplier(supplier);
-		});
-	}
+  @Test
+  void setRecordAuditedOnSupplier_resetting_failure() {
+    SimpleJdbcMapper m = new SimpleJdbcMapper(dataSource);
+    Supplier<LocalDateTime> supplier = LocalDateTime::now;
+    m.setRecordAuditedOnSupplier(supplier);
+    Assertions.assertThrows(
+        IllegalStateException.class,
+        () -> {
+          m.setRecordAuditedOnSupplier(supplier);
+        });
+  }
 
-	@Test
-	void setConversionService_resetting_failure() {
-		SimpleJdbcMapper m = new SimpleJdbcMapper(dataSource);
-		DefaultConversionService dcs = new DefaultConversionService();
-		m.setConversionService(dcs);
-		Assertions.assertThrows(IllegalStateException.class, () -> {
-			m.setConversionService(dcs);
-		});
-	}
+  @Test
+  void setConversionService_resetting_failure() {
+    SimpleJdbcMapper m = new SimpleJdbcMapper(dataSource);
+    DefaultConversionService dcs = new DefaultConversionService();
+    m.setConversionService(dcs);
+    Assertions.assertThrows(
+        IllegalStateException.class,
+        () -> {
+          m.setConversionService(dcs);
+        });
+  }
 
-	@Test
-	void getSchemaName_test() {
-		if (jdbcDriver.contains("oracle")) {
-			SimpleJdbcMapper sjm1 = new SimpleJdbcMapper(dataSource, "schema1");
-			assertEquals("schema1", sjm1.getSchemaName());
-		}
-	}
+  @Test
+  void getSchemaName_test() {
+    if (jdbcDriver.contains("oracle")) {
+      SimpleJdbcMapper sjm1 = new SimpleJdbcMapper(dataSource, "schema1");
+      assertEquals("schema1", sjm1.getSchemaName());
+    }
+  }
 
-	@Test
-	void getCatalogName_test() {
-		if (jdbcDriver.contains("mysql")) {
-			SimpleJdbcMapper sjm1 = new SimpleJdbcMapper(dataSource, null, "schema1");
-			assertEquals("schema1", sjm1.getCatalogName());
-		}
-	}
+  @Test
+  void getCatalogName_test() {
+    if (jdbcDriver.contains("mysql")) {
+      SimpleJdbcMapper sjm1 = new SimpleJdbcMapper(dataSource, null, "schema1");
+      assertEquals("schema1", sjm1.getCatalogName());
+    }
+  }
 
-	@Test
-	void getFullyQualifiedTableName_test() {
-		assertEquals("CATALOG1.SCHEMA2.company", sjm.getFullyQualifiedTableName(FullyQualifiedTableName.class));
-	}
+  @Test
+  void getFullyQualifiedTableName_test() {
+    assertEquals(
+        "CATALOG1.SCHEMA2.company", sjm.getFullyQualifiedTableName(FullyQualifiedTableName.class));
+  }
 
-	@Test
-	void getConversionService_test() {
-		SimpleJdbcMapper sjm1 = new SimpleJdbcMapper(dataSource);
-		assertNotNull(sjm1.getConversionService());
-	}
+  @Test
+  void getConversionService_test() {
+    SimpleJdbcMapper sjm1 = new SimpleJdbcMapper(dataSource);
+    assertNotNull(sjm1.getConversionService());
+  }
 
-	@Test
-	void getNamedParameterJdbcTemplate_test() {
-		assertNotNull(sjm.getNamedParameterJdbcTemplate());
-	}
+  @Test
+  void getNamedParameterJdbcTemplate_test() {
+    assertNotNull(sjm.getNamedParameterJdbcTemplate());
+  }
 
-	@Test
-	void getPropertyToColumnMappings_Test() {
-		Map<String, String> map = sjm.getPropertyToColumnMappings(Product.class);
-		assertEquals(10, map.size());
-		assertTrue(map.containsKey("cost"));
-	}
+  @Test
+  void getPropertyToColumnMappings_Test() {
+    Map<String, String> map = sjm.getPropertyToColumnMappings(Product.class);
+    assertEquals(10, map.size());
+    assertTrue(map.containsKey("cost"));
+  }
 
-	// Order of tests causing problem. Address it another day. It works when run on
-	// its own
-	// @Test
-	void close_Test() {
-		sjm.close();
-		assertNull(TestUtils.getSimpleJdbcMapperSupport(sjm));
-		assertNull(TestUtils.getFindOperation(sjm));
-		assertNull(TestUtils.getInsertOperation(sjm));
-		assertNull(TestUtils.getUpdateOperation(sjm));
-		assertNull(TestUtils.getDeleteOperation(sjm));
-	}
-
+  // Order of tests causing problem. Address it another day. It works when run on
+  // its own
+  // @Test
+  void close_Test() {
+    sjm.close();
+    assertNull(TestUtils.getSimpleJdbcMapperSupport(sjm));
+    assertNull(TestUtils.getFindOperation(sjm));
+    assertNull(TestUtils.getInsertOperation(sjm));
+    assertNull(TestUtils.getUpdateOperation(sjm));
+    assertNull(TestUtils.getDeleteOperation(sjm));
+  }
 }

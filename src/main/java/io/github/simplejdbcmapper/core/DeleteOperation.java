@@ -22,32 +22,37 @@ import org.springframework.util.Assert;
  * @author Antony Joseph
  */
 class DeleteOperation {
-	private final SimpleJdbcMapperSupport sjmSupport;
+  private final SimpleJdbcMapperSupport sjmSupport;
 
-	private final SimpleCache<Class<?>, String> deleteSqlCache = new SimpleCache<>();
+  private final SimpleCache<Class<?>, String> deleteSqlCache = new SimpleCache<>();
 
-	public DeleteOperation(SimpleJdbcMapperSupport sjmSupport) {
-		this.sjmSupport = sjmSupport;
-	}
+  public DeleteOperation(SimpleJdbcMapperSupport sjmSupport) {
+    this.sjmSupport = sjmSupport;
+  }
 
-	public Integer delete(Object object) {
-		Assert.notNull(object, "object must not be null");
-		TableMapping tableMapping = sjmSupport.getTableMapping(object.getClass());
-		EntityWrapper ew = new EntityWrapper(object);
-		return deleteById(object.getClass(), ew.getPropertyValue(tableMapping.getIdPropertyMapping()));
-	}
+  public Integer delete(Object object) {
+    Assert.notNull(object, "object must not be null");
+    TableMapping tableMapping = sjmSupport.getTableMapping(object.getClass());
+    EntityWrapper ew = new EntityWrapper(object);
+    return deleteById(object.getClass(), ew.getPropertyValue(tableMapping.getIdPropertyMapping()));
+  }
 
-	public Integer deleteById(Class<?> entityType, Object id) {
-		Assert.notNull(entityType, "entityType must not be null");
-		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
-		String sql = deleteSqlCache.get(entityType);
-		if (sql == null) {
-			sql = "DELETE FROM " + tableMapping.fullyQualifiedTableName() + " WHERE " + tableMapping.getIdColumnName()
-					+ " = ?";
-			deleteSqlCache.put(entityType, sql);
-		}
-		return sjmSupport.getJdbcTemplate().update(sql,
-				new SqlParameterValue(tableMapping.getIdPropertyMapping().getColumnSqlType(), id));
-	}
-
+  public Integer deleteById(Class<?> entityType, Object id) {
+    Assert.notNull(entityType, "entityType must not be null");
+    TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
+    String sql = deleteSqlCache.get(entityType);
+    if (sql == null) {
+      sql =
+          "DELETE FROM "
+              + tableMapping.fullyQualifiedTableName()
+              + " WHERE "
+              + tableMapping.getIdColumnName()
+              + " = ?";
+      deleteSqlCache.put(entityType, sql);
+    }
+    return sjmSupport
+        .getJdbcTemplate()
+        .update(
+            sql, new SqlParameterValue(tableMapping.getIdPropertyMapping().getColumnSqlType(), id));
+  }
 }

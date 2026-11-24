@@ -8,10 +8,9 @@ import io.github.simplejdbcmapper.annotation.Version;
 
 @Table(name = "annotation_check")
 public class ConflictAnnotation {
-	@Id(type = IdType.AUTO_GENERATED)
-	@Version
-	private Integer id;
+  @Id(type = IdType.AUTO_GENERATED)
+  @Version
+  private Integer id;
 
-	@Column
-	private String something;
+  @Column private String something;
 }

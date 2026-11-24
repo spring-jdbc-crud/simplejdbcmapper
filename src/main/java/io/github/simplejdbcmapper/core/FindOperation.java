@@ -13,6 +13,7 @@
  */
 package io.github.simplejdbcmapper.core;
 
+import io.github.simplejdbcmapper.exception.MapperException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.LinkedHashMap;
@@ -21,14 +22,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.StringJoiner;
-
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.SqlParameterValue;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.util.Assert;
 import org.springframework.util.ObjectUtils;
-
-import io.github.simplejdbcmapper.exception.MapperException;
 
 /**
  * The find operations
@@ -36,220 +34,259 @@ import io.github.simplejdbcmapper.exception.MapperException;
  * @author Antony Joseph
  */
 class FindOperation {
-	private static final String ENTITY_TYPE_MUST_NOT_BE_NULL = "entityType must not be null";
+  private static final String ENTITY_TYPE_MUST_NOT_BE_NULL = "entityType must not be null";
 
-	private final SimpleJdbcMapperSupport sjmSupport;
+  private final SimpleJdbcMapperSupport sjmSupport;
 
-	private final SimpleCache<Class<?>, String> findByIdSqlCache = new SimpleCache<>();
+  private final SimpleCache<Class<?>, String> findByIdSqlCache = new SimpleCache<>();
 
-	public FindOperation(SimpleJdbcMapperSupport sjmSupport) {
-		this.sjmSupport = sjmSupport;
-	}
+  public FindOperation(SimpleJdbcMapperSupport sjmSupport) {
+    this.sjmSupport = sjmSupport;
+  }
 
-	public <T> T findById(Class<T> entityType, Object id) {
-		Assert.notNull(entityType, ENTITY_TYPE_MUST_NOT_BE_NULL);
-		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
-		String sql = findByIdSqlCache.get(entityType);
-		if (sql == null) {
-			sql = "SELECT " + sjmSupport.getSqlColumns(entityType) + " FROM " + tableMapping.fullyQualifiedTableName()
-					+ " WHERE " + tableMapping.getIdColumnName() + " = ?";
-			findByIdSqlCache.put(entityType, sql);
-		}
-		T obj = null;
-		try {
-			obj = sjmSupport.getJdbcTemplate().queryForObject(sql, sjmSupport.entityRowMapper(entityType),
-					new SqlParameterValue(tableMapping.getIdPropertyMapping().getColumnSqlType(), getValue(id)));
-		} catch (EmptyResultDataAccessException e) {
-			// do nothing
-		}
-		return obj;
-	}
+  public <T> T findById(Class<T> entityType, Object id) {
+    Assert.notNull(entityType, ENTITY_TYPE_MUST_NOT_BE_NULL);
+    TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
+    String sql = findByIdSqlCache.get(entityType);
+    if (sql == null) {
+      sql =
+          "SELECT "
+              + sjmSupport.getSqlColumns(entityType)
+              + " FROM "
+              + tableMapping.fullyQualifiedTableName()
+              + " WHERE "
+              + tableMapping.getIdColumnName()
+              + " = ?";
+      findByIdSqlCache.put(entityType, sql);
+    }
+    T obj = null;
+    try {
+      obj =
+          sjmSupport
+              .getJdbcTemplate()
+              .queryForObject(
+                  sql,
+                  sjmSupport.entityRowMapper(entityType),
+                  new SqlParameterValue(
+                      tableMapping.getIdPropertyMapping().getColumnSqlType(), getValue(id)));
+    } catch (EmptyResultDataAccessException e) {
+      // do nothing
+    }
+    return obj;
+  }
 
-	/**
-	 * @deprecated
-	 */
-	@Deprecated(since = "2.5.1", forRemoval = true)
-	public <T> List<T> findAll(Class<T> entityType, SortBy... sortByArray) {
-		Assert.notNull(entityType, ENTITY_TYPE_MUST_NOT_BE_NULL);
-		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
-		StringBuilder sql = new StringBuilder(256);
-		sql.append("SELECT ").append(sjmSupport.getSqlColumns(entityType)).append(" FROM ")
-				.append(tableMapping.fullyQualifiedTableName())
-				.append(orderByClause(entityType, sortByArray, tableMapping));
-		return sjmSupport.getJdbcTemplate().query(sql.toString(), sjmSupport.entityRowMapper(entityType));
-	}
+  /**
+   * @deprecated
+   */
+  @Deprecated(since = "2.5.1", forRemoval = true)
+  public <T> List<T> findAll(Class<T> entityType, SortBy... sortByArray) {
+    Assert.notNull(entityType, ENTITY_TYPE_MUST_NOT_BE_NULL);
+    TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
+    StringBuilder sql = new StringBuilder(256);
+    sql.append("SELECT ")
+        .append(sjmSupport.getSqlColumns(entityType))
+        .append(" FROM ")
+        .append(tableMapping.fullyQualifiedTableName())
+        .append(orderByClause(entityType, sortByArray, tableMapping));
+    return sjmSupport
+        .getJdbcTemplate()
+        .query(sql.toString(), sjmSupport.entityRowMapper(entityType));
+  }
 
-	/**
-	 * @deprecated
-	 */
-	@Deprecated(since = "2.5.1", forRemoval = true)
-	public <T> List<T> findByPropertyValue(Class<T> entityType, String propertyName, Object propertyValue,
-			SortBy... sortByArray) {
-		Assert.notNull(entityType, ENTITY_TYPE_MUST_NOT_BE_NULL);
-		Assert.notNull(propertyName, "propertyName must not be null");
-		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
-		PropertyMapping propMapping = tableMapping.getPropertyMappingByPropertyName(propertyName);
-		if (propMapping == null) {
-			throw new MapperException(entityType.getSimpleName() + "." + propertyName + " does not have a mapping.");
-		}
-		StringBuilder sql = new StringBuilder(256);
-		sql.append("SELECT ").append(sjmSupport.getSqlColumns(entityType)).append(" FROM ")
-				.append(tableMapping.fullyQualifiedTableName()).append(" WHERE ");
-		if (propertyValue == null) {
-			sql.append(propMapping.getColumnName()).append(" IS NULL");
-		} else {
-			sql.append(propMapping.getColumnName()).append(" = ?");
-		}
-		sql.append(orderByClause(entityType, sortByArray, tableMapping));
-		if (propertyValue == null) {
-			return sjmSupport.getJdbcTemplate().query(sql.toString(), sjmSupport.entityRowMapper(entityType));
-		} else {
-			return sjmSupport.getJdbcTemplate().query(sql.toString(), sjmSupport.entityRowMapper(entityType),
-					new SqlParameterValue(propMapping.getColumnSqlType(), getValue(propertyValue)));
-		}
-	}
+  /**
+   * @deprecated
+   */
+  @Deprecated(since = "2.5.1", forRemoval = true)
+  public <T> List<T> findByPropertyValue(
+      Class<T> entityType, String propertyName, Object propertyValue, SortBy... sortByArray) {
+    Assert.notNull(entityType, ENTITY_TYPE_MUST_NOT_BE_NULL);
+    Assert.notNull(propertyName, "propertyName must not be null");
+    TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
+    PropertyMapping propMapping = tableMapping.getPropertyMappingByPropertyName(propertyName);
+    if (propMapping == null) {
+      throw new MapperException(
+          entityType.getSimpleName() + "." + propertyName + " does not have a mapping.");
+    }
+    StringBuilder sql = new StringBuilder(256);
+    sql.append("SELECT ")
+        .append(sjmSupport.getSqlColumns(entityType))
+        .append(" FROM ")
+        .append(tableMapping.fullyQualifiedTableName())
+        .append(" WHERE ");
+    if (propertyValue == null) {
+      sql.append(propMapping.getColumnName()).append(" IS NULL");
+    } else {
+      sql.append(propMapping.getColumnName()).append(" = ?");
+    }
+    sql.append(orderByClause(entityType, sortByArray, tableMapping));
+    if (propertyValue == null) {
+      return sjmSupport
+          .getJdbcTemplate()
+          .query(sql.toString(), sjmSupport.entityRowMapper(entityType));
+    } else {
+      return sjmSupport
+          .getJdbcTemplate()
+          .query(
+              sql.toString(),
+              sjmSupport.entityRowMapper(entityType),
+              new SqlParameterValue(propMapping.getColumnSqlType(), getValue(propertyValue)));
+    }
+  }
 
-	/**
-	 * @deprecated
-	 */
-	@Deprecated(since = "2.5.1", forRemoval = true)
-	public <T, U> List<T> findByPropertyValues(Class<T> entityType, String propertyName, Collection<U> propertyValues,
-			SortBy... sortByArray) {
-		Assert.notNull(entityType, ENTITY_TYPE_MUST_NOT_BE_NULL);
-		Assert.notNull(propertyName, "propertyName must not be null");
-		Assert.notNull(propertyValues, "propertyValues must not be null");
-		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
-		PropertyMapping propMapping = tableMapping.getPropertyMappingByPropertyName(propertyName);
-		if (propMapping == null) {
-			throw new MapperException(entityType.getSimpleName() + "." + propertyName + " does not have a mapping.");
-		}
-		if (ObjectUtils.isEmpty(propertyValues)) {
-			return new ArrayList<>();
-		}
-		Set<U> localPropertyValues = new LinkedHashSet<>(propertyValues);
-		boolean hasNullInSet = localPropertyValues.remove(null); // need to handle nulls in the set.
-		StringBuilder sql = new StringBuilder(256);
-		sql.append("SELECT ").append(sjmSupport.getSqlColumns(entityType)).append(" FROM ")
-				.append(tableMapping.fullyQualifiedTableName()).append(" WHERE ");
-		if (ObjectUtils.isEmpty(localPropertyValues)) {
-			sql.append(propMapping.getColumnName()).append(" IS NULL");
-		} else {
-			sql.append(propMapping.getColumnName()).append(" IN (:propertyValues)");
-			if (hasNullInSet) {
-				sql.append(" OR ").append(propMapping.getColumnName()).append(" IS NULL");
-			}
-		}
-		sql.append(orderByClause(entityType, sortByArray, tableMapping));
-		if (ObjectUtils.isEmpty(localPropertyValues)) {
-			return sjmSupport.getJdbcTemplate().query(sql.toString(), sjmSupport.entityRowMapper(entityType));
-		} else {
-			Set<?> values = getValues(localPropertyValues);
-			MapSqlParameterSource param = new MapSqlParameterSource();
-			param.addValue("propertyValues", values, propMapping.getColumnSqlType());
-			return sjmSupport.getNamedParameterJdbcTemplate().query(sql.toString(), param,
-					sjmSupport.entityRowMapper(entityType));
-		}
-	}
+  /**
+   * @deprecated
+   */
+  @Deprecated(since = "2.5.1", forRemoval = true)
+  public <T, U> List<T> findByPropertyValues(
+      Class<T> entityType,
+      String propertyName,
+      Collection<U> propertyValues,
+      SortBy... sortByArray) {
+    Assert.notNull(entityType, ENTITY_TYPE_MUST_NOT_BE_NULL);
+    Assert.notNull(propertyName, "propertyName must not be null");
+    Assert.notNull(propertyValues, "propertyValues must not be null");
+    TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
+    PropertyMapping propMapping = tableMapping.getPropertyMappingByPropertyName(propertyName);
+    if (propMapping == null) {
+      throw new MapperException(
+          entityType.getSimpleName() + "." + propertyName + " does not have a mapping.");
+    }
+    if (ObjectUtils.isEmpty(propertyValues)) {
+      return new ArrayList<>();
+    }
+    Set<U> localPropertyValues = new LinkedHashSet<>(propertyValues);
+    boolean hasNullInSet = localPropertyValues.remove(null); // need to handle nulls in the set.
+    StringBuilder sql = new StringBuilder(256);
+    sql.append("SELECT ")
+        .append(sjmSupport.getSqlColumns(entityType))
+        .append(" FROM ")
+        .append(tableMapping.fullyQualifiedTableName())
+        .append(" WHERE ");
+    if (ObjectUtils.isEmpty(localPropertyValues)) {
+      sql.append(propMapping.getColumnName()).append(" IS NULL");
+    } else {
+      sql.append(propMapping.getColumnName()).append(" IN (:propertyValues)");
+      if (hasNullInSet) {
+        sql.append(" OR ").append(propMapping.getColumnName()).append(" IS NULL");
+      }
+    }
+    sql.append(orderByClause(entityType, sortByArray, tableMapping));
+    if (ObjectUtils.isEmpty(localPropertyValues)) {
+      return sjmSupport
+          .getJdbcTemplate()
+          .query(sql.toString(), sjmSupport.entityRowMapper(entityType));
+    } else {
+      Set<?> values = getValues(localPropertyValues);
+      MapSqlParameterSource param = new MapSqlParameterSource();
+      param.addValue("propertyValues", values, propMapping.getColumnSqlType());
+      return sjmSupport
+          .getNamedParameterJdbcTemplate()
+          .query(sql.toString(), param, sjmSupport.entityRowMapper(entityType));
+    }
+  }
 
-	/**
-	 * @deprecated
-	 */
-	@Deprecated(since = "2.5.1", forRemoval = true)
-	public String getBeanFriendlySqlColumns(Class<?> entityType) {
-		Assert.notNull(entityType, ENTITY_TYPE_MUST_NOT_BE_NULL);
-		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
-		StringJoiner sj = new StringJoiner(", ", " ", " ");
-		for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {
-			String underscorePropertyName = InternalUtils.toUnderscoreName(propMapping.getPropertyName());
-			if (underscorePropertyName.equals(propMapping.getColumnName())) {
-				sj.add(propMapping.getColumnName());
-			} else {
-				sj.add(propMapping.getColumnName() + " AS " + underscorePropertyName);
-			}
-		}
-		return sj.toString();
-	}
+  /**
+   * @deprecated
+   */
+  @Deprecated(since = "2.5.1", forRemoval = true)
+  public String getBeanFriendlySqlColumns(Class<?> entityType) {
+    Assert.notNull(entityType, ENTITY_TYPE_MUST_NOT_BE_NULL);
+    TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
+    StringJoiner sj = new StringJoiner(", ", " ", " ");
+    for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {
+      String underscorePropertyName = InternalUtils.toUnderscoreName(propMapping.getPropertyName());
+      if (underscorePropertyName.equals(propMapping.getColumnName())) {
+        sj.add(propMapping.getColumnName());
+      } else {
+        sj.add(propMapping.getColumnName() + " AS " + underscorePropertyName);
+      }
+    }
+    return sj.toString();
+  }
 
-	/**
-	 * @deprecated
-	 */
-	@Deprecated(since = "2.5.1", forRemoval = true)
-	public String getBeanFriendlySqlColumns(Class<?> entityType, String tableAlias) {
-		Assert.notNull(entityType, ENTITY_TYPE_MUST_NOT_BE_NULL);
-		InternalUtils.validateTableAlias(tableAlias);
-		String tablePrefix = tableAlias + ".";
-		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
-		StringJoiner sj = new StringJoiner(", ", " ", " ");
-		for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {
-			String underscorePropertyName = InternalUtils.toUnderscoreName(propMapping.getPropertyName());
-			if (underscorePropertyName.equals(propMapping.getColumnName())) {
-				sj.add(tablePrefix + propMapping.getColumnName());
-			} else {
-				sj.add(tablePrefix + propMapping.getColumnName() + " AS " + underscorePropertyName);
-			}
-		}
-		return sj.toString();
-	}
+  /**
+   * @deprecated
+   */
+  @Deprecated(since = "2.5.1", forRemoval = true)
+  public String getBeanFriendlySqlColumns(Class<?> entityType, String tableAlias) {
+    Assert.notNull(entityType, ENTITY_TYPE_MUST_NOT_BE_NULL);
+    InternalUtils.validateTableAlias(tableAlias);
+    String tablePrefix = tableAlias + ".";
+    TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
+    StringJoiner sj = new StringJoiner(", ", " ", " ");
+    for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {
+      String underscorePropertyName = InternalUtils.toUnderscoreName(propMapping.getPropertyName());
+      if (underscorePropertyName.equals(propMapping.getColumnName())) {
+        sj.add(tablePrefix + propMapping.getColumnName());
+      } else {
+        sj.add(tablePrefix + propMapping.getColumnName() + " AS " + underscorePropertyName);
+      }
+    }
+    return sj.toString();
+  }
 
-	public Map<String, String> getPropertyToColumnMappings(Class<?> entityType) {
-		Assert.notNull(entityType, ENTITY_TYPE_MUST_NOT_BE_NULL);
-		TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
-		Map<String, String> map = new LinkedHashMap<>();
-		for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {
-			map.put(propMapping.getPropertyName(), propMapping.getColumnName());
-		}
-		return map;
-	}
+  public Map<String, String> getPropertyToColumnMappings(Class<?> entityType) {
+    Assert.notNull(entityType, ENTITY_TYPE_MUST_NOT_BE_NULL);
+    TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
+    Map<String, String> map = new LinkedHashMap<>();
+    for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {
+      map.put(propMapping.getPropertyName(), propMapping.getColumnName());
+    }
+    return map;
+  }
 
-	/**
-	 * @deprecated
-	 */
-	@Deprecated(since = "2.5.1", forRemoval = true)
-	private String orderByClause(Class<?> entityType, SortBy[] sortByArray, TableMapping tableMapping) {
-		if (sortByArray.length > 0) {
-			StringBuilder clause = new StringBuilder(64);
-			clause.append(" ORDER BY ");
-			int cnt = 0;
-			for (SortBy sortBy : sortByArray) {
-				PropertyMapping propMapping = tableMapping.getPropertyMappingByPropertyName(sortBy.getPropertyName());
-				if (propMapping == null) {
-					throw new IllegalArgumentException(
-							sortBy.getPropertyName() + " is not a mapped property for class " + entityType.getName());
-				}
-				if (cnt > 0) {
-					clause.append(", ");
-				}
-				clause.append(propMapping.getColumnName()).append(" ").append(sortBy.getDirection());
-				cnt++;
-			}
-			return clause.toString();
-		} else {
-			return "";
-		}
-	}
+  /**
+   * @deprecated
+   */
+  @Deprecated(since = "2.5.1", forRemoval = true)
+  private String orderByClause(
+      Class<?> entityType, SortBy[] sortByArray, TableMapping tableMapping) {
+    if (sortByArray.length > 0) {
+      StringBuilder clause = new StringBuilder(64);
+      clause.append(" ORDER BY ");
+      int cnt = 0;
+      for (SortBy sortBy : sortByArray) {
+        PropertyMapping propMapping =
+            tableMapping.getPropertyMappingByPropertyName(sortBy.getPropertyName());
+        if (propMapping == null) {
+          throw new IllegalArgumentException(
+              sortBy.getPropertyName()
+                  + " is not a mapped property for class "
+                  + entityType.getName());
+        }
+        if (cnt > 0) {
+          clause.append(", ");
+        }
+        clause.append(propMapping.getColumnName()).append(" ").append(sortBy.getDirection());
+        cnt++;
+      }
+      return clause.toString();
+    } else {
+      return "";
+    }
+  }
 
-	private Object getValue(Object obj) {
-		if (obj != null && obj.getClass().isEnum()) {
-			return ((Enum<?>) obj).name();
-		}
-		return obj;
-	}
+  private Object getValue(Object obj) {
+    if (obj != null && obj.getClass().isEnum()) {
+      return ((Enum<?>) obj).name();
+    }
+    return obj;
+  }
 
-	/**
-	 * @deprecated
-	 */
-	@Deprecated(since = "2.5.1", forRemoval = true)
-	private Set<?> getValues(Set<?> set) {
-		// method gets called only if there are values in the set that are not null
-		Object obj = set.iterator().next();
-		if (obj != null && obj.getClass().isEnum()) {
-			Set<String> values = new LinkedHashSet<>();
-			for (Object val : set) {
-				values.add(((Enum<?>) val).name());
-			}
-			return values;
-		}
-		return set;
-	}
-
+  /**
+   * @deprecated
+   */
+  @Deprecated(since = "2.5.1", forRemoval = true)
+  private Set<?> getValues(Set<?> set) {
+    // method gets called only if there are values in the set that are not null
+    Object obj = set.iterator().next();
+    if (obj != null && obj.getClass().isEnum()) {
+      Set<String> values = new LinkedHashSet<>();
+      for (Object val : set) {
+        values.add(((Enum<?>) val).name());
+      }
+      return values;
+    }
+    return set;
+  }
 }

@@ -1,58 +1,53 @@
 package io.github.simplejdbcmapper.model;
 
-import java.time.LocalDateTime;
-
 import io.github.simplejdbcmapper.annotation.Column;
 import io.github.simplejdbcmapper.annotation.Table;
+import java.time.LocalDateTime;
 
 @Table(name = "orders")
 public class OrderInheritedOverriddenId extends OrderIdBaseClass {
 
-	// The annotation in on super class and since this hides it annotation
-	// validation should throw exception
-	private Long id;
+  // The annotation in on super class and since this hides it annotation
+  // validation should throw exception
+  private Long id;
 
-	@Column
-	private LocalDateTime orderDate;
+  @Column private LocalDateTime orderDate;
 
-	@Column
-	private Integer customerId;
+  @Column private Integer customerId;
 
-	@Column
-	private String status;
+  @Column private String status;
 
-	public LocalDateTime getOrderDate() {
-		return orderDate;
-	}
+  public LocalDateTime getOrderDate() {
+    return orderDate;
+  }
 
-	@Override
-	public Long getId() {
-		return id;
-	}
+  @Override
+  public Long getId() {
+    return id;
+  }
 
-	@Override
-	public void setId(Long orderId) {
-		this.id = orderId;
-	}
+  @Override
+  public void setId(Long orderId) {
+    this.id = orderId;
+  }
 
-	public Integer getCustomerId() {
-		return customerId;
-	}
+  public Integer getCustomerId() {
+    return customerId;
+  }
 
-	public void setCustomerId(Integer customerId) {
-		this.customerId = customerId;
-	}
+  public void setCustomerId(Integer customerId) {
+    this.customerId = customerId;
+  }
 
-	public String getStatus() {
-		return status;
-	}
+  public String getStatus() {
+    return status;
+  }
 
-	public void setStatus(String status) {
-		this.status = status;
-	}
+  public void setStatus(String status) {
+    this.status = status;
+  }
 
-	public void setOrderDate(LocalDateTime orderDate) {
-		this.orderDate = orderDate;
-	}
-
+  public void setOrderDate(LocalDateTime orderDate) {
+    this.orderDate = orderDate;
+  }
 }

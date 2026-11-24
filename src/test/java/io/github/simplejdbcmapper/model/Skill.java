@@ -1,44 +1,42 @@
 package io.github.simplejdbcmapper.model;
 
-import java.util.ArrayList;
-import java.util.List;
-
 import io.github.simplejdbcmapper.annotation.Column;
 import io.github.simplejdbcmapper.annotation.Id;
 import io.github.simplejdbcmapper.annotation.IdType;
 import io.github.simplejdbcmapper.annotation.Table;
+import java.util.ArrayList;
+import java.util.List;
 
 @Table(name = "skill")
 public class Skill {
-	@Id(type = IdType.AUTO_GENERATED)
-	private Integer id;
+  @Id(type = IdType.AUTO_GENERATED)
+  private Integer id;
 
-	@Column
-	private String name;
+  @Column private String name;
 
-	private List<Employee> employees = new ArrayList<>();
+  private List<Employee> employees = new ArrayList<>();
 
-	public Integer getId() {
-		return id;
-	}
+  public Integer getId() {
+    return id;
+  }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+  public void setId(Integer id) {
+    this.id = id;
+  }
 
-	public String getName() {
-		return name;
-	}
+  public String getName() {
+    return name;
+  }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+  public void setName(String name) {
+    this.name = name;
+  }
 
-	public List<Employee> getEmployees() {
-		return employees;
-	}
+  public List<Employee> getEmployees() {
+    return employees;
+  }
 
-	public void setEmployees(List<Employee> employees) {
-		this.employees = employees;
-	}
+  public void setEmployees(List<Employee> employees) {
+    this.employees = employees;
+  }
 }

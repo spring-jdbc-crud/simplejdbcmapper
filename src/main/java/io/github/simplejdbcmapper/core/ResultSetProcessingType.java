@@ -16,53 +16,68 @@ package io.github.simplejdbcmapper.core;
 import java.math.BigDecimal;
 
 /**
- * enum for switch statements in the EntityRowMapper so it can be compiled into
- * a 'tableswitch' by java (which it does).
+ * enum for switch statements in the EntityRowMapper so it can be compiled into a 'tableswitch' by
+ * java (which it does).
  *
  * @author Antony Joseph
  */
 enum ResultSetProcessingType {
+  BIGDECIMAL,
+  BOOLEAN,
+  BYTEARRAY,
+  BYTE,
+  DATE,
+  DOUBLE,
+  ENUM,
+  FLOAT,
+  INTEGER,
+  LONG,
+  NUMBER,
+  SHORT,
+  STRING,
+  TIMESTAMP,
+  TIME,
+  UTILDATE,
+  CUSTOMCONVERTER,
+  UNKNOWN;
 
-	BIGDECIMAL, BOOLEAN, BYTEARRAY, BYTE, DATE, DOUBLE, ENUM, FLOAT, INTEGER, LONG, NUMBER, SHORT, STRING, TIMESTAMP,
-	TIME, UTILDATE, CUSTOMCONVERTER, UNKNOWN;
-
-	public static ResultSetProcessingType getResultSetProcessingType(Class<?> type, boolean isAttributeWithConverter) {
-		if (isAttributeWithConverter) {
-			return CUSTOMCONVERTER;
-		} else if (BigDecimal.class == type) {
-			return BIGDECIMAL;
-		} else if (Boolean.class == type) {
-			return BOOLEAN;
-		} else if (byte[].class == type) {
-			return BYTEARRAY;
-		} else if (Byte.class == type) {
-			return BYTE;
-		} else if (java.sql.Date.class == type) {
-			return DATE;
-		} else if (Double.class == type) {
-			return DOUBLE;
-		} else if (type.isEnum()) {
-			return ENUM;
-		} else if (Float.class == type) {
-			return FLOAT;
-		} else if (Integer.class == type) {
-			return INTEGER;
-		} else if (Long.class == type) {
-			return LONG;
-		} else if (Number.class == type) {
-			return NUMBER;
-		} else if (Short.class == type) {
-			return SHORT;
-		} else if (String.class == type) {
-			return STRING;
-		} else if (java.sql.Timestamp.class == type) {
-			return TIMESTAMP;
-		} else if (java.sql.Time.class == type) {
-			return TIME;
-		} else if (java.util.Date.class == type) {
-			return UTILDATE;
-		}
-		return UNKNOWN;
-	}
-
+  public static ResultSetProcessingType getResultSetProcessingType(
+      Class<?> type, boolean isAttributeWithConverter) {
+    if (isAttributeWithConverter) {
+      return CUSTOMCONVERTER;
+    } else if (BigDecimal.class == type) {
+      return BIGDECIMAL;
+    } else if (Boolean.class == type) {
+      return BOOLEAN;
+    } else if (byte[].class == type) {
+      return BYTEARRAY;
+    } else if (Byte.class == type) {
+      return BYTE;
+    } else if (java.sql.Date.class == type) {
+      return DATE;
+    } else if (Double.class == type) {
+      return DOUBLE;
+    } else if (type.isEnum()) {
+      return ENUM;
+    } else if (Float.class == type) {
+      return FLOAT;
+    } else if (Integer.class == type) {
+      return INTEGER;
+    } else if (Long.class == type) {
+      return LONG;
+    } else if (Number.class == type) {
+      return NUMBER;
+    } else if (Short.class == type) {
+      return SHORT;
+    } else if (String.class == type) {
+      return STRING;
+    } else if (java.sql.Timestamp.class == type) {
+      return TIMESTAMP;
+    } else if (java.sql.Time.class == type) {
+      return TIME;
+    } else if (java.util.Date.class == type) {
+      return UTILDATE;
+    }
+    return UNKNOWN;
+  }
 }

@@ -5,8 +5,13 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import io.github.simplejdbcmapper.exception.MapperException;
+import io.github.simplejdbcmapper.exception.OptimisticLockingException;
+import io.github.simplejdbcmapper.model.Customer;
+import io.github.simplejdbcmapper.model.Order;
+import io.github.simplejdbcmapper.model.Person;
+import io.github.simplejdbcmapper.model.Product;
 import java.time.LocalDateTime;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -15,254 +20,283 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
 
-import io.github.simplejdbcmapper.exception.MapperException;
-import io.github.simplejdbcmapper.exception.OptimisticLockingException;
-import io.github.simplejdbcmapper.model.Customer;
-import io.github.simplejdbcmapper.model.Order;
-import io.github.simplejdbcmapper.model.Person;
-import io.github.simplejdbcmapper.model.Product;
-
 @SpringBootTest
 @ExtendWith(SpringExtension.class)
 class UpdateTest {
-	@Autowired
-	private SimpleJdbcMapper sjm;
+  @Autowired private SimpleJdbcMapper sjm;
 
-	private SimpleJdbcMapperSupport sjmSupport;
+  private SimpleJdbcMapperSupport sjmSupport;
 
-	@BeforeEach
-	void beforeMethod() {
-		sjmSupport = TestUtils.getSimpleJdbcMapperSupport(sjm);
-	}
+  @BeforeEach
+  void beforeMethod() {
+    sjmSupport = TestUtils.getSimpleJdbcMapperSupport(sjm);
+  }
 
-	@Test
-	void update_Test() throws Exception {
-		Order order = sjm.findById(Order.class, 1);
-		LocalDateTime prevUpdatedOn = order.getUpdatedOn();
+  @Test
+  void update_Test() throws Exception {
+    Order order = sjm.findById(Order.class, 1);
+    LocalDateTime prevUpdatedOn = order.getUpdatedOn();
 
-		Thread.sleep(1000); // provide interval so timestamps end up different
+    Thread.sleep(1000); // provide interval so timestamps end up different
 
-		order.setStatus("COMPLETE");
-		sjm.update(order);
+    order.setStatus("COMPLETE");
+    sjm.update(order);
 
-		// check if auto assigned properties have changed.
-		assertEquals(2, order.getVersion());
-		if (sjmSupport.getRecordAuditedBySupplier() != null) {
-			assertEquals("tester", order.getUpdatedBy());
-		}
-		if (sjmSupport.getRecordAuditedOnSupplier() != null) {
-			assertNotNull(order.getUpdatedOn());
-			assertTrue(order.getUpdatedOn().isAfter(prevUpdatedOn));
-		}
+    // check if auto assigned properties have changed.
+    assertEquals(2, order.getVersion());
+    if (sjmSupport.getRecordAuditedBySupplier() != null) {
+      assertEquals("tester", order.getUpdatedBy());
+    }
+    if (sjmSupport.getRecordAuditedOnSupplier() != null) {
+      assertNotNull(order.getUpdatedOn());
+      assertTrue(order.getUpdatedOn().isAfter(prevUpdatedOn));
+    }
 
-		// requery and check
-		order = sjm.findById(Order.class, 1);
-		assertEquals("COMPLETE", order.getStatus());
-		assertEquals(2, order.getVersion()); // version incremented
-		if (sjmSupport.getRecordAuditedBySupplier() != null) {
-			assertEquals("tester", order.getUpdatedBy());
-		}
-		if (sjmSupport.getRecordAuditedOnSupplier() != null) {
-			assertNotNull(order.getUpdatedOn());
-			assertTrue(order.getUpdatedOn().isAfter(prevUpdatedOn));
-		}
+    // requery and check
+    order = sjm.findById(Order.class, 1);
+    assertEquals("COMPLETE", order.getStatus());
+    assertEquals(2, order.getVersion()); // version incremented
+    if (sjmSupport.getRecordAuditedBySupplier() != null) {
+      assertEquals("tester", order.getUpdatedBy());
+    }
+    if (sjmSupport.getRecordAuditedOnSupplier() != null) {
+      assertNotNull(order.getUpdatedOn());
+      assertTrue(order.getUpdatedOn().isAfter(prevUpdatedOn));
+    }
 
-		// reset status for later tests to work. Refactor
-		order.setStatus("IN PROCESS");
-		sjm.update(order);
-	}
+    // reset status for later tests to work. Refactor
+    order.setStatus("IN PROCESS");
+    sjm.update(order);
+  }
 
-	@Test
-	void update_withIdOfTypeInteger_Test() {
-		Product product = sjm.findById(Product.class, 6);
-		Product product1 = sjm.findById(Product.class, 6);
-		product1.setName("xyz");
-		sjm.update(product1);
+  @Test
+  void update_withIdOfTypeInteger_Test() {
+    Product product = sjm.findById(Product.class, 6);
+    Product product1 = sjm.findById(Product.class, 6);
+    product1.setName("xyz");
+    sjm.update(product1);
 
-		Product product2 = sjm.findById(Product.class, 6);
+    Product product2 = sjm.findById(Product.class, 6);
 
-		assertEquals("xyz", product1.getName());
-		assertTrue(product2.getVersion() > product.getVersion()); // version incremented
-	}
+    assertEquals("xyz", product1.getName());
+    assertTrue(product2.getVersion() > product.getVersion()); // version incremented
+  }
 
-	@Test
-	void update_withIdOfTypeString_Test() {
-		Person person = sjm.findById(Person.class, "person101");
-		person.setLastName("new name");
-		sjm.update(person);
+  @Test
+  void update_withIdOfTypeString_Test() {
+    Person person = sjm.findById(Person.class, "person101");
+    person.setLastName("new name");
+    sjm.update(person);
 
-		Person person1 = sjm.findById(Person.class, "person101");
+    Person person1 = sjm.findById(Person.class, "person101");
 
-		assertEquals("new name", person1.getLastName());
-	}
+    assertEquals("new name", person1.getLastName());
+  }
 
-	@Test
-	void update_throwsOptimisticLockingException_Test() {
-		Order order = sjm.findById(Order.class, 2);
-		order.setVersion(order.getVersion() - 1);
-		Assertions.assertThrows(OptimisticLockingException.class, () -> {
-			sjm.update(order);
-		});
-	}
+  @Test
+  void update_throwsOptimisticLockingException_Test() {
+    Order order = sjm.findById(Order.class, 2);
+    order.setVersion(order.getVersion() - 1);
+    Assertions.assertThrows(
+        OptimisticLockingException.class,
+        () -> {
+          sjm.update(order);
+        });
+  }
 
-	@Test
-	void update_withNullVersion_Test() {
-		Order order = sjm.findById(Order.class, 2);
-		order.setVersion(null);
-		Exception exception = Assertions.assertThrows(MapperException.class, () -> {
-			sjm.update(order);
-		});
+  @Test
+  void update_withNullVersion_Test() {
+    Order order = sjm.findById(Order.class, 2);
+    order.setVersion(null);
+    Exception exception =
+        Assertions.assertThrows(
+            MapperException.class,
+            () -> {
+              sjm.update(order);
+            });
 
-		assertTrue(exception.getMessage().contains("must not be null when updating"));
+    assertTrue(exception.getMessage().contains("must not be null when updating"));
+  }
 
-	}
+  @Test
+  void update_nullObjectFailure_Test() {
+    Exception exception =
+        Assertions.assertThrows(
+            IllegalArgumentException.class,
+            () -> {
+              sjm.update(null);
+            });
+    assertTrue(exception.getMessage().contains("object must not be null"));
+  }
 
-	@Test
-	void update_nullObjectFailure_Test() {
-		Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
-			sjm.update(null);
-		});
-		assertTrue(exception.getMessage().contains("object must not be null"));
-	}
+  @Test
+  void update_nullIdFailure_Test() {
+    Customer customer = sjm.findById(Customer.class, 1);
+    customer.setId(null);
+    Exception exception =
+        Assertions.assertThrows(
+            IllegalArgumentException.class,
+            () -> {
+              sjm.update(customer);
+            });
+    assertTrue(exception.getMessage().contains("is the id and must not be null"));
+  }
 
-	@Test
-	void update_nullIdFailure_Test() {
-		Customer customer = sjm.findById(Customer.class, 1);
-		customer.setId(null);
-		Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
-			sjm.update(customer);
-		});
-		assertTrue(exception.getMessage().contains("is the id and must not be null"));
-	}
+  @Test
+  void update_nonDatabaseProperty_Test() {
+    Person person = sjm.findById(Person.class, "person101");
+    person.setSomeNonDatabaseProperty("xyz");
+    sjm.update(person);
 
-	@Test
-	void update_nonDatabaseProperty_Test() {
-		Person person = sjm.findById(Person.class, "person101");
-		person.setSomeNonDatabaseProperty("xyz");
-		sjm.update(person);
+    // requery
+    Person person2 = sjm.findById(Person.class, "person101");
 
-		// requery
-		Person person2 = sjm.findById(Person.class, "person101");
+    assertNotNull(person2);
+    assertNull(person2.getSomeNonDatabaseProperty());
+  }
 
-		assertNotNull(person2);
-		assertNull(person2.getSomeNonDatabaseProperty());
-	}
+  @Test
+  void updateSpecificProperties_IdAndAutoAssign_failure() {
+    Order order = sjm.findById(Order.class, 1);
 
-	@Test
-	void updateSpecificProperties_IdAndAutoAssign_failure() {
-		Order order = sjm.findById(Order.class, 1);
+    Exception exception =
+        Assertions.assertThrows(
+            IllegalArgumentException.class,
+            () -> {
+              sjm.updateSpecificProperties(order, "id");
+            });
+    assertTrue(exception.getMessage().contains("cannot be updated"));
 
-		Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
-			sjm.updateSpecificProperties(order, "id");
-		});
-		assertTrue(exception.getMessage().contains("cannot be updated"));
+    exception =
+        Assertions.assertThrows(
+            IllegalArgumentException.class,
+            () -> {
+              sjm.updateSpecificProperties(order, "createdOn"); // @CreatedOn auto assign
+            });
+    assertTrue(exception.getMessage().contains("cannot be updated using updateSpecificProperties"));
 
-		exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
-			sjm.updateSpecificProperties(order, "createdOn"); // @CreatedOn auto assign
-		});
-		assertTrue(exception.getMessage().contains("cannot be updated using updateSpecificProperties"));
+    exception =
+        Assertions.assertThrows(
+            IllegalArgumentException.class,
+            () -> {
+              sjm.updateSpecificProperties(order, "createdBy"); // @CreatedBy auto assign
+            });
+    assertTrue(exception.getMessage().contains("cannot be updated using updateSpecificProperties"));
 
-		exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
-			sjm.updateSpecificProperties(order, "createdBy"); // @CreatedBy auto assign
-		});
-		assertTrue(exception.getMessage().contains("cannot be updated using updateSpecificProperties"));
+    exception =
+        Assertions.assertThrows(
+            IllegalArgumentException.class,
+            () -> {
+              sjm.updateSpecificProperties(order, "updatedOn"); // @UpdatedOn auto assign
+            });
+    assertTrue(exception.getMessage().contains("cannot be updated using updateSpecificProperties"));
 
-		exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
-			sjm.updateSpecificProperties(order, "updatedOn"); // @UpdatedOn auto assign
-		});
-		assertTrue(exception.getMessage().contains("cannot be updated using updateSpecificProperties"));
+    exception =
+        Assertions.assertThrows(
+            IllegalArgumentException.class,
+            () -> {
+              sjm.updateSpecificProperties(order, "updatedBy"); // @UpdatedBy auto assign
+            });
+    assertTrue(exception.getMessage().contains("cannot be updated using updateSpecificProperties"));
 
-		exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
-			sjm.updateSpecificProperties(order, "updatedBy"); // @UpdatedBy auto assign
-		});
-		assertTrue(exception.getMessage().contains("cannot be updated using updateSpecificProperties"));
+    exception =
+        Assertions.assertThrows(
+            IllegalArgumentException.class,
+            () -> {
+              sjm.updateSpecificProperties(order, "version"); // @Version auto assign
+            });
+    assertTrue(exception.getMessage().contains("cannot be updated using updateSpecificProperties"));
+  }
 
-		exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
-			sjm.updateSpecificProperties(order, "version"); // @Version auto assign
-		});
-		assertTrue(exception.getMessage().contains("cannot be updated using updateSpecificProperties"));
+  @Test
+  void updateSpecificProperties_invalidProperty_failure() {
+    Order order = sjm.findById(Order.class, 1);
+    Exception exception =
+        Assertions.assertThrows(
+            IllegalArgumentException.class,
+            () -> {
+              sjm.updateSpecificProperties(order, "xyz");
+            });
+    assertTrue(exception.getMessage().contains("No mapping found for property"));
 
-	}
+    exception =
+        Assertions.assertThrows(
+            Exception.class,
+            () -> {
+              sjm.updateSpecificProperties(order, "status", null);
+            });
+    assertTrue(exception.getMessage().contains("must not be null"));
+  }
 
-	@Test
-	void updateSpecificProperties_invalidProperty_failure() {
-		Order order = sjm.findById(Order.class, 1);
-		Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
-			sjm.updateSpecificProperties(order, "xyz");
-		});
-		assertTrue(exception.getMessage().contains("No mapping found for property"));
+  @Test
+  void updateSpecificProperties_emptyAndNull_failure() {
+    Order order = sjm.findById(Order.class, 1);
+    Exception exception =
+        Assertions.assertThrows(
+            IllegalArgumentException.class,
+            () -> {
+              sjm.updateSpecificProperties(order);
+            });
+    assertTrue(exception.getMessage().contains("propertyNames array must not be empty"));
 
-		exception = Assertions.assertThrows(Exception.class, () -> {
-			sjm.updateSpecificProperties(order, "status", null);
-		});
-		assertTrue(exception.getMessage().contains("must not be null"));
+    exception =
+        Assertions.assertThrows(
+            IllegalArgumentException.class,
+            () -> {
+              sjm.updateSpecificProperties(order, "status", null);
+            });
+    assertTrue(exception.getMessage().contains("property name must not be null in argument array"));
+  }
 
-	}
+  @Test
+  void updateSpecificProperties_duplicateProperty_failure() {
+    Order order = sjm.findById(Order.class, 1);
 
-	@Test
-	void updateSpecificProperties_emptyAndNull_failure() {
-		Order order = sjm.findById(Order.class, 1);
-		Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
-			sjm.updateSpecificProperties(order);
-		});
-		assertTrue(exception.getMessage().contains("propertyNames array must not be empty"));
+    Exception exception =
+        Assertions.assertThrows(
+            IllegalArgumentException.class,
+            () -> {
+              sjm.updateSpecificProperties(order, "status", "status");
+            });
+    assertTrue(exception.getMessage().contains("duplicate property name in argument array"));
+  }
 
-		exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
-			sjm.updateSpecificProperties(order, "status", null);
-		});
-		assertTrue(exception.getMessage().contains("property name must not be null in argument array"));
+  @Test
+  void updateSpecificProperties_success() throws Exception {
+    Customer customer = sjm.findById(Customer.class, 4);
 
-	}
+    customer.setLastName("bbb");
+    customer.setFirstName("aaa");
+    sjm.updateSpecificProperties(customer, "lastName", "firstName");
 
-	@Test
-	void updateSpecificProperties_duplicateProperty_failure() {
-		Order order = sjm.findById(Order.class, 1);
+    customer = sjm.findById(Customer.class, customer.getId());
+    assertEquals("bbb", customer.getLastName());
+    assertEquals("aaa", customer.getFirstName());
 
-		Exception exception = Assertions.assertThrows(IllegalArgumentException.class, () -> {
-			sjm.updateSpecificProperties(order, "status", "status");
-		});
-		assertTrue(exception.getMessage().contains("duplicate property name in argument array"));
+    Order order = new Order();
+    order.setStatus("PENDING");
+    sjm.insert(order);
 
-	}
+    LocalDateTime prevUpdatedOn = order.getUpdatedOn();
 
-	@Test
-	void updateSpecificProperties_success() throws Exception {
-		Customer customer = sjm.findById(Customer.class, 4);
+    Thread.sleep(1000); // avoid timing issue.
 
-		customer.setLastName("bbb");
-		customer.setFirstName("aaa");
-		sjm.updateSpecificProperties(customer, "lastName", "firstName");
+    order.setStatus("DONE");
+    sjm.updateSpecificProperties(order, "status");
 
-		customer = sjm.findById(Customer.class, customer.getId());
-		assertEquals("bbb", customer.getLastName());
-		assertEquals("aaa", customer.getFirstName());
+    assertEquals("DONE", order.getStatus());
+    // check if auto assigned properties have changed.
+    assertEquals(2, order.getVersion());
+    if (sjmSupport.getRecordAuditedOnSupplier() != null) {
+      assertTrue(order.getUpdatedOn().isAfter(prevUpdatedOn));
+    }
+    if (sjmSupport.getRecordAuditedBySupplier() != null) {
+      assertEquals("tester", order.getUpdatedBy());
+    }
+    if (sjmSupport.getRecordAuditedOnSupplier() != null) {
+      assertNotNull(order.getUpdatedOn());
+    }
 
-		Order order = new Order();
-		order.setStatus("PENDING");
-		sjm.insert(order);
-
-		LocalDateTime prevUpdatedOn = order.getUpdatedOn();
-
-		Thread.sleep(1000); // avoid timing issue.
-
-		order.setStatus("DONE");
-		sjm.updateSpecificProperties(order, "status");
-
-		assertEquals("DONE", order.getStatus());
-		// check if auto assigned properties have changed.
-		assertEquals(2, order.getVersion());
-		if (sjmSupport.getRecordAuditedOnSupplier() != null) {
-			assertTrue(order.getUpdatedOn().isAfter(prevUpdatedOn));
-		}
-		if (sjmSupport.getRecordAuditedBySupplier() != null) {
-			assertEquals("tester", order.getUpdatedBy());
-		}
-		if (sjmSupport.getRecordAuditedOnSupplier() != null) {
-			assertNotNull(order.getUpdatedOn());
-		}
-
-		sjm.delete(order);
-
-	}
-
+    sjm.delete(order);
+  }
 }

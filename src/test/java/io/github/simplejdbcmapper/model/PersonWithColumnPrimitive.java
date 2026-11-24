@@ -7,46 +7,43 @@ import io.github.simplejdbcmapper.annotation.Table;
 
 @Table(name = "person")
 public class PersonWithColumnPrimitive {
-	@Id(type = IdType.AUTO_GENERATED)
-	private Integer personId;
-	@Column
-	private String lastName;
-	@Column
-	private String firstName;
+  @Id(type = IdType.AUTO_GENERATED)
+  private Integer personId;
 
-	@Column
-	private boolean boolProperty;
+  @Column private String lastName;
+  @Column private String firstName;
 
-	public Integer getPersonId() {
-		return personId;
-	}
+  @Column private boolean boolProperty;
 
-	public void setPersonId(Integer id) {
-		this.personId = id;
-	}
+  public Integer getPersonId() {
+    return personId;
+  }
 
-	public String getLastName() {
-		return lastName;
-	}
+  public void setPersonId(Integer id) {
+    this.personId = id;
+  }
 
-	public void setLastName(String lastName) {
-		this.lastName = lastName;
-	}
+  public String getLastName() {
+    return lastName;
+  }
 
-	public String getFirstName() {
-		return firstName;
-	}
+  public void setLastName(String lastName) {
+    this.lastName = lastName;
+  }
 
-	public void setFirstName(String firstName) {
-		this.firstName = firstName;
-	}
+  public String getFirstName() {
+    return firstName;
+  }
 
-	public boolean isBoolProperty() {
-		return boolProperty;
-	}
+  public void setFirstName(String firstName) {
+    this.firstName = firstName;
+  }
 
-	public void setBoolProperty(boolean boolProperty) {
-		this.boolProperty = boolProperty;
-	}
+  public boolean isBoolProperty() {
+    return boolProperty;
+  }
 
+  public void setBoolProperty(boolean boolProperty) {
+    this.boolProperty = boolProperty;
+  }
 }

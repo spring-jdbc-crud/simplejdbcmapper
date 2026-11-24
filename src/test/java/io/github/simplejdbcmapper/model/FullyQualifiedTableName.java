@@ -7,25 +7,24 @@ import io.github.simplejdbcmapper.annotation.Table;
 
 @Table(name = "company", schema = "SCHEMA2", catalog = "CATALOG1")
 public class FullyQualifiedTableName {
-	@Id(type = IdType.AUTO_GENERATED)
-	private Integer id;
-	@Column
-	private String name;
+  @Id(type = IdType.AUTO_GENERATED)
+  private Integer id;
 
-	public Integer getId() {
-		return id;
-	}
+  @Column private String name;
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+  public Integer getId() {
+    return id;
+  }
 
-	public String getName() {
-		return name;
-	}
+  public void setId(Integer id) {
+    this.id = id;
+  }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+  public String getName() {
+    return name;
+  }
 
+  public void setName(String name) {
+    this.name = name;
+  }
 }

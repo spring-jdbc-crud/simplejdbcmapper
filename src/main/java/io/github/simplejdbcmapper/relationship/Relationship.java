@@ -16,153 +16,154 @@ package io.github.simplejdbcmapper.relationship;
 import org.springframework.util.Assert;
 
 /**
- * The relationship definition. It is thread safe and can be used with different
- * query results which have the same relationship.
- * 
+ * The relationship definition. It is thread safe and can be used with different query results which
+ * have the same relationship.
+ *
  * <pre>
- * Relationship orderToManyOrderLine = 
+ * Relationship orderToManyOrderLine =
  *      Relationshp.type(Order.class).toMany(OrderLine.class).joinOn("id", "orderId".populate("orderLines");
- *                                               
+ *
  * {@code List<Order>} orders = relationshipMapper.assemble(orderToManyOrderLine).getList(Order.class);
- * 
+ *
  * </pre>
- * <p>
- * For more details see the <a href=
+ *
+ * <p>For more details see the <a href=
  * "https://github.com/spring-jdbc-crud/simplejdbcmapper#assembling-relationships-from-sql-queries">documentation</a>
- * 
- * 
+ *
  * @author Antony Joseph
  */
 public class Relationship {
-	private final Class<?> mainType;
-	private final Class<?> relatedType;
-	private final Class<?> throughType;
-	private final ToOne toOne;
-	private final ToMany toMany;
-	private final ToManyThrough toManyThrough;
-	private final String relationshipType;
+  private final Class<?> mainType;
+  private final Class<?> relatedType;
+  private final Class<?> throughType;
+  private final ToOne toOne;
+  private final ToMany toMany;
+  private final ToManyThrough toManyThrough;
+  private final String relationshipType;
 
-	Relationship(RelationshipBuilder builder) {
-		this.mainType = builder.mainType;
-		this.relatedType = builder.relatedType;
-		this.throughType = builder.throughType;
-		this.toOne = builder.toOne;
-		this.toMany = builder.toMany;
-		this.toManyThrough = builder.toManyThrough;
-		this.relationshipType = builder.relationshipType;
-	}
+  Relationship(RelationshipBuilder builder) {
+    this.mainType = builder.mainType;
+    this.relatedType = builder.relatedType;
+    this.throughType = builder.throughType;
+    this.toOne = builder.toOne;
+    this.toMany = builder.toMany;
+    this.toManyThrough = builder.toManyThrough;
+    this.relationshipType = builder.relationshipType;
+  }
 
-	/**
-	 * Starts the relationship fluent flow.
-	 * 
-	 * @param type the main object type
-	 * @return RelationshipFluent.RelationshipType
-	 */
-	public static RelationshipFluent.RelationshipType type(Class<?> type) {
-		Assert.notNull(type, "type must not be null");
-		return new RelationshipBuilder(type);
-	}
+  /**
+   * Starts the relationship fluent flow.
+   *
+   * @param type the main object type
+   * @return RelationshipFluent.RelationshipType
+   */
+  public static RelationshipFluent.RelationshipType type(Class<?> type) {
+    Assert.notNull(type, "type must not be null");
+    return new RelationshipBuilder(type);
+  }
 
-	Class<?> getMainType() {
-		return mainType;
-	}
+  Class<?> getMainType() {
+    return mainType;
+  }
 
-	Class<?> getRelatedType() {
-		return relatedType;
-	}
+  Class<?> getRelatedType() {
+    return relatedType;
+  }
 
-	String getRelationshipType() {
-		return relationshipType;
-	}
+  String getRelationshipType() {
+    return relationshipType;
+  }
 
-	Class<?> getThroughType() {
-		return throughType;
-	}
+  Class<?> getThroughType() {
+    return throughType;
+  }
 
-	ToOne getToOne() {
-		return toOne;
-	}
+  ToOne getToOne() {
+    return toOne;
+  }
 
-	ToMany getToMany() {
-		return toMany;
-	}
+  ToMany getToMany() {
+    return toMany;
+  }
 
-	ToManyThrough getToManyThrough() {
-		return toManyThrough;
-	}
+  ToManyThrough getToManyThrough() {
+    return toManyThrough;
+  }
 
-	@Override
-	public String toString() {
-		return mainType.getSimpleName() + " " + relationshipType + " " + relatedType.getSimpleName();
-	}
+  @Override
+  public String toString() {
+    return mainType.getSimpleName() + " " + relationshipType + " " + relatedType.getSimpleName();
+  }
 
-	private static class RelationshipBuilder implements RelationshipFluent.RelationshipType, RelationshipFluent.ToOne,
-			RelationshipFluent.ToMany, RelationshipFluent.Populate {
-		private Class<?> mainType;
-		private Class<?> relatedType;
-		private Class<?> throughType;
-		private ToOne toOne;
-		private ToMany toMany;
-		private ToManyThrough toManyThrough;
-		private String relationshipType;
+  private static class RelationshipBuilder
+      implements RelationshipFluent.RelationshipType,
+          RelationshipFluent.ToOne,
+          RelationshipFluent.ToMany,
+          RelationshipFluent.Populate {
+    private Class<?> mainType;
+    private Class<?> relatedType;
+    private Class<?> throughType;
+    private ToOne toOne;
+    private ToMany toMany;
+    private ToManyThrough toManyThrough;
+    private String relationshipType;
 
-		public RelationshipBuilder(Class<?> mainType) {
-			this.mainType = mainType;
-		}
+    public RelationshipBuilder(Class<?> mainType) {
+      this.mainType = mainType;
+    }
 
-		public RelationshipFluent.ToOne toOne(Class<?> relatedType) {
-			Assert.notNull(relatedType, "relatedType must not be null");
-			if (mainType == relatedType) {
-				throw new IllegalArgumentException("mainType and relatedType cannot be same.");
-			}
-			this.relatedType = relatedType;
-			this.relationshipType = RelationshipUtils.TO_ONE;
-			this.toOne = new ToOne(mainType, relatedType);
-			return this;
-		}
+    public RelationshipFluent.ToOne toOne(Class<?> relatedType) {
+      Assert.notNull(relatedType, "relatedType must not be null");
+      if (mainType == relatedType) {
+        throw new IllegalArgumentException("mainType and relatedType cannot be same.");
+      }
+      this.relatedType = relatedType;
+      this.relationshipType = RelationshipUtils.TO_ONE;
+      this.toOne = new ToOne(mainType, relatedType);
+      return this;
+    }
 
-		public RelationshipFluent.ToMany toMany(Class<?> relatedType) {
-			Assert.notNull(relatedType, "relatedType must not be null");
-			if (mainType == relatedType) {
-				throw new IllegalArgumentException("mainType and relatedType cannot be same.");
-			}
-			this.relatedType = relatedType;
-			this.relationshipType = RelationshipUtils.TO_MANY;
-			this.toMany = new ToMany(mainType, relatedType);
-			return this;
-		}
+    public RelationshipFluent.ToMany toMany(Class<?> relatedType) {
+      Assert.notNull(relatedType, "relatedType must not be null");
+      if (mainType == relatedType) {
+        throw new IllegalArgumentException("mainType and relatedType cannot be same.");
+      }
+      this.relatedType = relatedType;
+      this.relationshipType = RelationshipUtils.TO_MANY;
+      this.toMany = new ToMany(mainType, relatedType);
+      return this;
+    }
 
-		public RelationshipFluent.Populate joinOn(String mainObjJoinProperty, String relatedObjJoinProperty) {
-			if (relationshipType.equals(RelationshipUtils.TO_ONE)) {
-				toOne.joinOn(mainObjJoinProperty, relatedObjJoinProperty);
-			} else if (relationshipType.equals(RelationshipUtils.TO_MANY)) {
-				toMany.joinOn(mainObjJoinProperty, relatedObjJoinProperty);
-			}
-			return this;
-		}
+    public RelationshipFluent.Populate joinOn(
+        String mainObjJoinProperty, String relatedObjJoinProperty) {
+      if (relationshipType.equals(RelationshipUtils.TO_ONE)) {
+        toOne.joinOn(mainObjJoinProperty, relatedObjJoinProperty);
+      } else if (relationshipType.equals(RelationshipUtils.TO_MANY)) {
+        toMany.joinOn(mainObjJoinProperty, relatedObjJoinProperty);
+      }
+      return this;
+    }
 
-		public RelationshipFluent.Populate through(Class<?> throughType, String fkPropertyToMainObjId,
-				String fkPropertyToRelatedObjId) {
-			this.toMany = null;
-			this.throughType = throughType;
-			this.relationshipType = RelationshipUtils.TO_MANY_THROUGH;
-			this.toManyThrough = new ToManyThrough(mainType, relatedType);
-			toManyThrough.through(throughType, fkPropertyToMainObjId, fkPropertyToRelatedObjId);
-			return this;
-		}
+    public RelationshipFluent.Populate through(
+        Class<?> throughType, String fkPropertyToMainObjId, String fkPropertyToRelatedObjId) {
+      this.toMany = null;
+      this.throughType = throughType;
+      this.relationshipType = RelationshipUtils.TO_MANY_THROUGH;
+      this.toManyThrough = new ToManyThrough(mainType, relatedType);
+      toManyThrough.through(throughType, fkPropertyToMainObjId, fkPropertyToRelatedObjId);
+      return this;
+    }
 
-		public Relationship populate(String mainObjPropertyToPopulate) {
-			if (relationshipType.equals(RelationshipUtils.TO_ONE)) {
-				toOne.populate(mainObjPropertyToPopulate);
-			} else if (relationshipType.equals(RelationshipUtils.TO_MANY)) {
-				toMany.populate(mainObjPropertyToPopulate);
-			} else {
-				// toManyThrough
-				toManyThrough.populate(mainObjPropertyToPopulate);
-			}
-			return new Relationship(this);
-		}
-
-	}
-
+    public Relationship populate(String mainObjPropertyToPopulate) {
+      if (relationshipType.equals(RelationshipUtils.TO_ONE)) {
+        toOne.populate(mainObjPropertyToPopulate);
+      } else if (relationshipType.equals(RelationshipUtils.TO_MANY)) {
+        toMany.populate(mainObjPropertyToPopulate);
+      } else {
+        // toManyThrough
+        toManyThrough.populate(mainObjPropertyToPopulate);
+      }
+      return new Relationship(this);
+    }
+  }
 }

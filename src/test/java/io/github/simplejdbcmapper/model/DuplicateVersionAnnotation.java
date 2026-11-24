@@ -8,15 +8,12 @@ import io.github.simplejdbcmapper.annotation.Version;
 
 @Table(name = "annotation_check")
 public class DuplicateVersionAnnotation {
-	@Id(type = IdType.AUTO_GENERATED)
-	private Integer id;
+  @Id(type = IdType.AUTO_GENERATED)
+  private Integer id;
 
-	@Version
-	private Integer version1;
+  @Version private Integer version1;
 
-	@Version
-	private Integer version2;
+  @Version private Integer version2;
 
-	@Column
-	private String something;
+  @Column private String something;
 }

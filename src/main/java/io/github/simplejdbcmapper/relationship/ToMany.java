@@ -13,105 +13,117 @@
  */
 package io.github.simplejdbcmapper.relationship;
 
+import io.github.simplejdbcmapper.exception.MapperException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
-import io.github.simplejdbcmapper.exception.MapperException;
-
 /**
  * This handles the toMany relationship.
- * 
+ *
  * @author Antony Joseph
  */
 class ToMany {
-	private Class<?> mainType;
-	private Class<?> relatedType;
-	private Method mainObjIdPropertyReadMethod;
-	private Method relatedObjFkPropertyReadMethod;
-	private Method mainObjPropertyToPopulateWriteMethod;
+  private Class<?> mainType;
+  private Class<?> relatedType;
+  private Method mainObjIdPropertyReadMethod;
+  private Method relatedObjFkPropertyReadMethod;
+  private Method mainObjPropertyToPopulateWriteMethod;
 
-	ToMany(Class<?> mainType, Class<?> relatedType) {
-		Assert.notNull(mainType, "mainType must not be null");
-		Assert.notNull(relatedType, "relatedType must not be null");
-		this.mainType = mainType;
-		this.relatedType = relatedType;
-	}
+  ToMany(Class<?> mainType, Class<?> relatedType) {
+    Assert.notNull(mainType, "mainType must not be null");
+    Assert.notNull(relatedType, "relatedType must not be null");
+    this.mainType = mainType;
+    this.relatedType = relatedType;
+  }
 
-	void joinOn(String mainObjIdProperty, String relatedObjFkProperty) {
-		Assert.notNull(mainObjIdProperty, "mainObjIdProperty must not be null");
-		Assert.notNull(relatedObjFkProperty, "relatedObjFkProperty must not be null");
+  void joinOn(String mainObjIdProperty, String relatedObjFkProperty) {
+    Assert.notNull(mainObjIdProperty, "mainObjIdProperty must not be null");
+    Assert.notNull(relatedObjFkProperty, "relatedObjFkProperty must not be null");
 
-		Class<?> mainObjIdPropertyType = RelationshipUtils.getPropertyType(mainType, mainObjIdProperty);
-		Class<?> relatedObjFkPropertyType = RelationshipUtils.getPropertyType(relatedType, relatedObjFkProperty);
-		if (mainObjIdPropertyType != relatedObjFkPropertyType) {
-			throw new IllegalArgumentException("Conflicting property types. Property type of "
-					+ mainType.getSimpleName() + "." + mainObjIdProperty + " and " + relatedType.getSimpleName() + "."
-					+ relatedObjFkProperty + " are not the same.");
-		}
-		this.mainObjIdPropertyReadMethod = RelationshipUtils.getReadMethod(mainType, mainObjIdProperty);
-		this.relatedObjFkPropertyReadMethod = RelationshipUtils.getReadMethod(relatedType, relatedObjFkProperty);
-	}
+    Class<?> mainObjIdPropertyType = RelationshipUtils.getPropertyType(mainType, mainObjIdProperty);
+    Class<?> relatedObjFkPropertyType =
+        RelationshipUtils.getPropertyType(relatedType, relatedObjFkProperty);
+    if (mainObjIdPropertyType != relatedObjFkPropertyType) {
+      throw new IllegalArgumentException(
+          "Conflicting property types. Property type of "
+              + mainType.getSimpleName()
+              + "."
+              + mainObjIdProperty
+              + " and "
+              + relatedType.getSimpleName()
+              + "."
+              + relatedObjFkProperty
+              + " are not the same.");
+    }
+    this.mainObjIdPropertyReadMethod = RelationshipUtils.getReadMethod(mainType, mainObjIdProperty);
+    this.relatedObjFkPropertyReadMethod =
+        RelationshipUtils.getReadMethod(relatedType, relatedObjFkProperty);
+  }
 
-	void populate(String mainObjPropertyToPopulate) {
-		Assert.notNull(mainObjPropertyToPopulate, "mainObjPropertyToPopulate must not be null");
-		this.mainObjPropertyToPopulateWriteMethod = RelationshipUtils.getWriteMethod(mainType,
-				mainObjPropertyToPopulate);
-	}
+  void populate(String mainObjPropertyToPopulate) {
+    Assert.notNull(mainObjPropertyToPopulate, "mainObjPropertyToPopulate must not be null");
+    this.mainObjPropertyToPopulateWriteMethod =
+        RelationshipUtils.getWriteMethod(mainType, mainObjPropertyToPopulate);
+  }
 
-	<T, U> void process(List<T> mainObjList, List<U> relatedObjList) {
-		if (CollectionUtils.isEmpty(mainObjList) || CollectionUtils.isEmpty(relatedObjList)) {
-			return;
-		}
-		try {
-			Map<Object, List<U>> fkToRelatedObjListMap = getFkToRelatedObjListMap(relatedObjList,
-					relatedObjFkPropertyReadMethod);
-			for (T mainObj : mainObjList) {
-				if (mainObj != null) {
-					Object mainObjIdPropertyValue = mainObjIdPropertyReadMethod.invoke(mainObj);
-					List<U> populaterList = fkToRelatedObjListMap.get(mainObjIdPropertyValue);
-					if (populaterList == null) {
-						populaterList = new ArrayList<>();
-					}
-					try {
-						mainObjPropertyToPopulateWriteMethod.invoke(mainObj, populaterList);
-					} catch (Exception e) {
-						throw new MapperException(e.getMessage() + ". Invoking " + mainObjPropertyToPopulateWriteMethod
-								+ " with value " + populaterList, e);
-					}
-				}
-			}
-		} catch (Exception e) {
-			throw new MapperException(e.getMessage(), e);
-		}
-	}
+  <T, U> void process(List<T> mainObjList, List<U> relatedObjList) {
+    if (CollectionUtils.isEmpty(mainObjList) || CollectionUtils.isEmpty(relatedObjList)) {
+      return;
+    }
+    try {
+      Map<Object, List<U>> fkToRelatedObjListMap =
+          getFkToRelatedObjListMap(relatedObjList, relatedObjFkPropertyReadMethod);
+      for (T mainObj : mainObjList) {
+        if (mainObj != null) {
+          Object mainObjIdPropertyValue = mainObjIdPropertyReadMethod.invoke(mainObj);
+          List<U> populaterList = fkToRelatedObjListMap.get(mainObjIdPropertyValue);
+          if (populaterList == null) {
+            populaterList = new ArrayList<>();
+          }
+          try {
+            mainObjPropertyToPopulateWriteMethod.invoke(mainObj, populaterList);
+          } catch (Exception e) {
+            throw new MapperException(
+                e.getMessage()
+                    + ". Invoking "
+                    + mainObjPropertyToPopulateWriteMethod
+                    + " with value "
+                    + populaterList,
+                e);
+          }
+        }
+      }
+    } catch (Exception e) {
+      throw new MapperException(e.getMessage(), e);
+    }
+  }
 
-	private <U> Map<Object, List<U>> getFkToRelatedObjListMap(List<U> relatedObjList,
-			Method relatedObjFkPropertyReadMethod) throws IllegalAccessException, InvocationTargetException {
-		// relatedObjFk - List of relatedObj
-		Map<Object, List<U>> foreignKeyToListMap = new HashMap<>();
-		for (U relatedObj : relatedObjList) {
-			if (relatedObj != null) {
-				Object foreignKeyPropertyValue = relatedObjFkPropertyReadMethod.invoke(relatedObj);
-				if (foreignKeyPropertyValue != null) {
-					List<U> list = foreignKeyToListMap.get(foreignKeyPropertyValue);
-					if (list == null) {
-						list = new ArrayList<>();
-						list.add(relatedObj);
-						foreignKeyToListMap.put(foreignKeyPropertyValue, list);
-					} else {
-						list.add(relatedObj);
-					}
-				}
-			}
-		}
-		return foreignKeyToListMap;
-	}
-
+  private <U> Map<Object, List<U>> getFkToRelatedObjListMap(
+      List<U> relatedObjList, Method relatedObjFkPropertyReadMethod)
+      throws IllegalAccessException, InvocationTargetException {
+    // relatedObjFk - List of relatedObj
+    Map<Object, List<U>> foreignKeyToListMap = new HashMap<>();
+    for (U relatedObj : relatedObjList) {
+      if (relatedObj != null) {
+        Object foreignKeyPropertyValue = relatedObjFkPropertyReadMethod.invoke(relatedObj);
+        if (foreignKeyPropertyValue != null) {
+          List<U> list = foreignKeyToListMap.get(foreignKeyPropertyValue);
+          if (list == null) {
+            list = new ArrayList<>();
+            list.add(relatedObj);
+            foreignKeyToListMap.put(foreignKeyPropertyValue, list);
+          } else {
+            list.add(relatedObj);
+          }
+        }
+      }
+    }
+    return foreignKeyToListMap;
+  }
 }

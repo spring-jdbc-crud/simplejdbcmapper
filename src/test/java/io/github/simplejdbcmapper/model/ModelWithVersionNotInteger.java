@@ -7,36 +7,32 @@ import io.github.simplejdbcmapper.annotation.Version;
 
 @Table(name = "product")
 public class ModelWithVersionNotInteger {
-	@Id
-	private Integer productId;
-	@Column
-	private String name;
+  @Id private Integer productId;
+  @Column private String name;
 
-	@Version
-	private Double version;
+  @Version private Double version;
 
-	public Integer getProductId() {
-		return productId;
-	}
+  public Integer getProductId() {
+    return productId;
+  }
 
-	public void setProductId(Integer productId) {
-		this.productId = productId;
-	}
+  public void setProductId(Integer productId) {
+    this.productId = productId;
+  }
 
-	public String getName() {
-		return name;
-	}
+  public String getName() {
+    return name;
+  }
 
-	public void setName(String name) {
-		this.name = name;
-	}
+  public void setName(String name) {
+    this.name = name;
+  }
 
-	public Double getVersion() {
-		return version;
-	}
+  public Double getVersion() {
+    return version;
+  }
 
-	public void setVersion(Double version) {
-		this.version = version;
-	}
-
+  public void setVersion(Double version) {
+    this.version = version;
+  }
 }

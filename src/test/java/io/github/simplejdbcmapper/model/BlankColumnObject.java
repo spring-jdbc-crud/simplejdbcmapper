@@ -6,9 +6,8 @@ import io.github.simplejdbcmapper.annotation.Table;
 
 @Table(name = "xyz")
 public class BlankColumnObject {
-	@Id
-	private Integer id;
+  @Id private Integer id;
 
-	@Column(name = "  ")
-	private String username;
+  @Column(name = "  ")
+  private String username;
 }

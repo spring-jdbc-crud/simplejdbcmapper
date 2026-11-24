@@ -17,18 +17,16 @@ import java.util.List;
 
 /**
  * Get list by type interface.
- * 
+ *
  * @author Antony Joseph
  */
 public interface GetListSpec {
 
-	/**
-	 * Gets list by type for the relationship
-	 * 
-	 * @param type the type
-	 * 
-	 * @return the list of type
-	 */
-	<E> List<E> getList(Class<E> type);
-
+  /**
+   * Gets list by type for the relationship
+   *
+   * @param type the type
+   * @return the list of type
+   */
+  <E> List<E> getList(Class<E> type);
 }

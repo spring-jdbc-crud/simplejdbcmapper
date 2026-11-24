@@ -17,38 +17,37 @@ import io.github.simplejdbcmapper.exception.MapperException;
 
 /**
  * Entity wrapper to get and set property values.
- * 
+ *
  * @author Antony Joseph
  */
 class EntityWrapper {
-	private Object entityObj;
+  private Object entityObj;
 
-	public EntityWrapper(Object entityObj) {
-		this.entityObj = entityObj;
-	}
+  public EntityWrapper(Object entityObj) {
+    this.entityObj = entityObj;
+  }
 
-	public Object getPropertyValue(PropertyMapping propMapping) {
-		try {
-			return propMapping.getReadMethod().invoke(entityObj);
-		} catch (Exception e) {
-			throw new MapperException(e);
-		}
-	}
+  public Object getPropertyValue(PropertyMapping propMapping) {
+    try {
+      return propMapping.getReadMethod().invoke(entityObj);
+    } catch (Exception e) {
+      throw new MapperException(e);
+    }
+  }
 
-	public void setPropertyValue(PropertyMapping propMapping, Object val) {
-		try {
-			propMapping.getWriteMethod().invoke(entityObj, val);
-		} catch (Exception e) {
-			throw new MapperException(e);
-		}
-	}
+  public void setPropertyValue(PropertyMapping propMapping, Object val) {
+    try {
+      propMapping.getWriteMethod().invoke(entityObj, val);
+    } catch (Exception e) {
+      throw new MapperException(e);
+    }
+  }
 
-	public Class<?> getWrappedClass() {
-		return entityObj.getClass();
-	}
+  public Class<?> getWrappedClass() {
+    return entityObj.getClass();
+  }
 
-	public Object getWrappedInstance() {
-		return entityObj;
-	}
-
+  public Object getWrappedInstance() {
+    return entityObj;
+  }
 }

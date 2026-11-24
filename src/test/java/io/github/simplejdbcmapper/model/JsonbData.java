@@ -8,26 +8,25 @@ import io.github.simplejdbcmapper.annotation.Table;
 @Table(name = "jsonb_data")
 public class JsonbData {
 
-	@Id(type = IdType.AUTO_GENERATED)
-	private Integer id;
+  @Id(type = IdType.AUTO_GENERATED)
+  private Integer id;
 
-	@Column(name = "product_json", converter = ProductToJsonPostgresConverter.class)
-	private Product product;
+  @Column(name = "product_json", converter = ProductToJsonPostgresConverter.class)
+  private Product product;
 
-	public Integer getId() {
-		return id;
-	}
+  public Integer getId() {
+    return id;
+  }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+  public void setId(Integer id) {
+    this.id = id;
+  }
 
-	public Product getProduct() {
-		return product;
-	}
+  public Product getProduct() {
+    return product;
+  }
 
-	public void setProduct(Product product) {
-		this.product = product;
-	}
-
+  public void setProduct(Product product) {
+    this.product = product;
+  }
 }

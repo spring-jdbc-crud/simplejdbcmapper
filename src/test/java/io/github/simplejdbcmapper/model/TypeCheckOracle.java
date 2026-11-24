@@ -1,148 +1,141 @@
 package io.github.simplejdbcmapper.model;
 
+import io.github.simplejdbcmapper.annotation.Column;
+import io.github.simplejdbcmapper.annotation.Id;
+import io.github.simplejdbcmapper.annotation.IdType;
+import io.github.simplejdbcmapper.annotation.Table;
 import java.math.BigDecimal;
 import java.sql.Types;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.OffsetDateTime;
 
-import io.github.simplejdbcmapper.annotation.Column;
-import io.github.simplejdbcmapper.annotation.Id;
-import io.github.simplejdbcmapper.annotation.IdType;
-import io.github.simplejdbcmapper.annotation.Table;
-
 @Table(name = "type_check")
 public class TypeCheckOracle {
-	@Id(type = IdType.AUTO_GENERATED)
-	private Integer id;
+  @Id(type = IdType.AUTO_GENERATED)
+  private Integer id;
 
-	@Column
-	private LocalDate localDateData;
+  @Column private LocalDate localDateData;
 
-	@Column
-	private java.util.Date javaUtilDateData;
+  @Column private java.util.Date javaUtilDateData;
 
-	@Column
-	private LocalDateTime localDateTimeData;
+  @Column private LocalDateTime localDateTimeData;
 
-	@Column
-	private java.util.Date javaUtilDateTsData;
+  @Column private java.util.Date javaUtilDateTsData;
 
-	@Column
-	private BigDecimal bigDecimalData;
+  @Column private BigDecimal bigDecimalData;
 
-	@Column(sqlType = oracle.jdbc.OracleTypes.TIMESTAMPTZ)
-	private OffsetDateTime offsetDateTimeData;
+  @Column(sqlType = oracle.jdbc.OracleTypes.TIMESTAMPTZ)
+  private OffsetDateTime offsetDateTimeData;
 
-	@Column(name = "string_enum")
-	private StatusEnum status;
+  @Column(name = "string_enum")
+  private StatusEnum status;
 
-	@Column(sqlType = Types.BLOB)
-	private byte[] image;
+  @Column(sqlType = Types.BLOB)
+  private byte[] image;
 
-	@Column(sqlType = Types.CLOB)
-	private String clobData;
+  @Column(sqlType = Types.CLOB)
+  private String clobData;
 
-	@Column(sqlType = Types.CLOB)
-	private String clobDataStr;
+  @Column(sqlType = Types.CLOB)
+  private String clobDataStr;
 
-	@Column(sqlType = Types.NCLOB)
-	private String nclobData;
+  @Column(sqlType = Types.NCLOB)
+  private String nclobData;
 
-	public StatusEnum getStatus() {
-		return status;
-	}
+  public StatusEnum getStatus() {
+    return status;
+  }
 
-	public void setStatus(StatusEnum status) {
-		this.status = status;
-	}
+  public void setStatus(StatusEnum status) {
+    this.status = status;
+  }
 
-	public Integer getId() {
-		return id;
-	}
+  public Integer getId() {
+    return id;
+  }
 
-	public void setId(Integer id) {
-		this.id = id;
-	}
+  public void setId(Integer id) {
+    this.id = id;
+  }
 
-	public LocalDate getLocalDateData() {
-		return localDateData;
-	}
+  public LocalDate getLocalDateData() {
+    return localDateData;
+  }
 
-	public void setLocalDateData(LocalDate localDateData) {
-		this.localDateData = localDateData;
-	}
+  public void setLocalDateData(LocalDate localDateData) {
+    this.localDateData = localDateData;
+  }
 
-	public java.util.Date getJavaUtilDateData() {
-		return javaUtilDateData;
-	}
+  public java.util.Date getJavaUtilDateData() {
+    return javaUtilDateData;
+  }
 
-	public void setJavaUtilDateData(java.util.Date javaUtilDateData) {
-		this.javaUtilDateData = javaUtilDateData;
-	}
+  public void setJavaUtilDateData(java.util.Date javaUtilDateData) {
+    this.javaUtilDateData = javaUtilDateData;
+  }
 
-	public LocalDateTime getLocalDateTimeData() {
-		return localDateTimeData;
-	}
+  public LocalDateTime getLocalDateTimeData() {
+    return localDateTimeData;
+  }
 
-	public void setLocalDateTimeData(LocalDateTime localDateTimeData) {
-		this.localDateTimeData = localDateTimeData;
-	}
+  public void setLocalDateTimeData(LocalDateTime localDateTimeData) {
+    this.localDateTimeData = localDateTimeData;
+  }
 
-	public java.util.Date getJavaUtilDateTsData() {
-		return javaUtilDateTsData;
-	}
+  public java.util.Date getJavaUtilDateTsData() {
+    return javaUtilDateTsData;
+  }
 
-	public void setJavaUtilDateTsData(java.util.Date javaUtilDateTsData) {
-		this.javaUtilDateTsData = javaUtilDateTsData;
-	}
+  public void setJavaUtilDateTsData(java.util.Date javaUtilDateTsData) {
+    this.javaUtilDateTsData = javaUtilDateTsData;
+  }
 
-	public BigDecimal getBigDecimalData() {
-		return bigDecimalData;
-	}
+  public BigDecimal getBigDecimalData() {
+    return bigDecimalData;
+  }
 
-	public void setBigDecimalData(BigDecimal bigDecimalData) {
-		this.bigDecimalData = bigDecimalData;
-	}
+  public void setBigDecimalData(BigDecimal bigDecimalData) {
+    this.bigDecimalData = bigDecimalData;
+  }
 
-	public OffsetDateTime getOffsetDateTimeData() {
-		return offsetDateTimeData;
-	}
+  public OffsetDateTime getOffsetDateTimeData() {
+    return offsetDateTimeData;
+  }
 
-	public void setOffsetDateTimeData(OffsetDateTime offsetDateTimeData) {
-		this.offsetDateTimeData = offsetDateTimeData;
-	}
+  public void setOffsetDateTimeData(OffsetDateTime offsetDateTimeData) {
+    this.offsetDateTimeData = offsetDateTimeData;
+  }
 
-	public byte[] getImage() {
-		return image;
-	}
+  public byte[] getImage() {
+    return image;
+  }
 
-	public void setImage(byte[] image) {
-		this.image = image;
-	}
+  public void setImage(byte[] image) {
+    this.image = image;
+  }
 
-	public String getClobData() {
-		return clobData;
-	}
+  public String getClobData() {
+    return clobData;
+  }
 
-	public void setClobData(String clobData) {
-		this.clobData = clobData;
-	}
+  public void setClobData(String clobData) {
+    this.clobData = clobData;
+  }
 
-	public String getNclobData() {
-		return nclobData;
-	}
+  public String getNclobData() {
+    return nclobData;
+  }
 
-	public void setNclobData(String nclobData) {
-		this.nclobData = nclobData;
-	}
+  public void setNclobData(String nclobData) {
+    this.nclobData = nclobData;
+  }
 
-	public String getClobDataStr() {
-		return clobDataStr;
-	}
+  public String getClobDataStr() {
+    return clobDataStr;
+  }
 
-	public void setClobDataStr(String clobDataStr) {
-		this.clobDataStr = clobDataStr;
-	}
-
+  public void setClobDataStr(String clobDataStr) {
+    this.clobDataStr = clobDataStr;
+  }
 }

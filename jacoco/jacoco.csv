@@ -1,5 +1,5 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
-simplejdbcmapper,io.github.simplejdbcmapper.relationship,ToOne,0,173,1,15,0,51,1,12,0,5
+simplejdbcmapper,io.github.simplejdbcmapper.relationship,ToOne,0,178,1,15,0,53,1,13,0,6
 simplejdbcmapper,io.github.simplejdbcmapper.relationship,RelationshipMapper.ExtractorEntityResult,0,12,0,0,0,1,0,1,0,1
 simplejdbcmapper,io.github.simplejdbcmapper.relationship,RelationshipMapper,0,229,0,22,0,49,0,20,0,9
 simplejdbcmapper,io.github.simplejdbcmapper.relationship,Relationship,10,60,0,0,1,18,1,9,1,9

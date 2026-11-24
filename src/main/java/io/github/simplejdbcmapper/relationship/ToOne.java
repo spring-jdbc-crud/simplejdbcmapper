@@ -95,7 +95,7 @@ class ToOne {
   }
 
   private <U, T> void populateProperty(T mainObj, U relatedObj) {
-  try {
+    try {
       mainObjPropertyToPopulateWriteMethod.invoke(mainObj, relatedObj);
     } catch (Exception e) {
       throw new MapperException(

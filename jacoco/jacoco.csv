@@ -7,7 +7,7 @@ simplejdbcmapper,io.github.simplejdbcmapper.relationship,RelationshipUtils,22,55
 simplejdbcmapper,io.github.simplejdbcmapper.relationship,Relationship.RelationshipBuilder,0,140,1,11,0,34,1,11,0,6
 simplejdbcmapper,io.github.simplejdbcmapper.relationship,ToManyThrough,0,282,2,26,0,79,2,20,0,8
 simplejdbcmapper,io.github.simplejdbcmapper.relationship,ToManyThrough.ThroughJoiner,9,81,2,10,3,22,2,6,0,2
-simplejdbcmapper,io.github.simplejdbcmapper.relationship,ToMany,0,200,1,19,0,56,1,14,0,5
+simplejdbcmapper,io.github.simplejdbcmapper.relationship,ToMany,0,205,1,19,0,58,1,15,0,6
 simplejdbcmapper,io.github.simplejdbcmapper.core,SimpleCache,0,60,0,4,0,14,0,9,0,7
 simplejdbcmapper,io.github.simplejdbcmapper.core,InternalUtils,4,103,3,19,2,22,3,13,0,5
 simplejdbcmapper,io.github.simplejdbcmapper.core,RelationshipMapperExtractor.EntityExtractor,0,21,0,0,0,1,0,1,0,1

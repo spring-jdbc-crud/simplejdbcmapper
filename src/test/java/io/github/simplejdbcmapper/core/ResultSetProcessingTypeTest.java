@@ -2,15 +2,14 @@ package io.github.simplejdbcmapper.core;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import io.github.simplejdbcmapper.model.StatusEnum;
 import java.math.BigDecimal;
+
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import io.github.simplejdbcmapper.model.StatusEnum;
 
 @SpringBootTest
-@ExtendWith(SpringExtension.class)
 class ResultSetProcessingTypeTest {
   @Test
   void resultSetProcessingType_fromClass_Test() {

@@ -27,6 +27,9 @@ jobs:
         java-version: '21'
         distribution: 'temurin'
         cache: maven      
+
+    - name: Check code formatting
+      run: mvn spotless:check
               
     - name: Download dependencies and plugins
       run: mvn dependency:go-offline dependency:resolve dependency:resolve-plugins

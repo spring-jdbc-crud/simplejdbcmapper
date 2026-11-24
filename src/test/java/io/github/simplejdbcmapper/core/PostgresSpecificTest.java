@@ -111,7 +111,7 @@ class PostgresSpecificTest {
     sjm.update(jd2);
     JsonbData jd3 = sjm.findById(JsonbData.class, jd2.getId());
 
-    assertEquals(jd3.getProduct().getName(), "xyz");
+    assertEquals("xyz", jd3.getProduct().getName());
   }
 
   @Test

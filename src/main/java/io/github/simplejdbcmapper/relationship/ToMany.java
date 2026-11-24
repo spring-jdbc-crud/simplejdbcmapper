@@ -86,21 +86,25 @@ class ToMany {
           if (populaterList == null) {
             populaterList = new ArrayList<>();
           }
-          try {
-            mainObjPropertyToPopulateWriteMethod.invoke(mainObj, populaterList);
-          } catch (Exception e) {
-            throw new MapperException(
-                e.getMessage()
-                    + ". Invoking "
-                    + mainObjPropertyToPopulateWriteMethod
-                    + " with value "
-                    + populaterList,
-                e);
-          }
+          populateProperty(mainObj, populaterList);
         }
       }
     } catch (Exception e) {
       throw new MapperException(e.getMessage(), e);
+    }
+  }
+
+  private <T, U> void populateProperty(T mainObj, List<U> populaterList) {
+  try {
+      mainObjPropertyToPopulateWriteMethod.invoke(mainObj, populaterList);
+    } catch (Exception e) {
+      throw new MapperException(
+          e.getMessage()
+              + ". Invoking "
+              + mainObjPropertyToPopulateWriteMethod
+              + " with value "
+              + populaterList,
+          e);
     }
   }
 

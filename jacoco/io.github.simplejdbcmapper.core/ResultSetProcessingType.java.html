@@ -16,54 +16,69 @@ package io.github.simplejdbcmapper.core;
 import java.math.BigDecimal;
 
 /**
- * enum for switch statements in the EntityRowMapper so it can be compiled into
- * a 'tableswitch' by java (which it does).
+ * enum for switch statements in the EntityRowMapper so it can be compiled into a 'tableswitch' by
+ * java (which it does).
  *
  * @author Antony Joseph
  */
 <span class="fc" id="L24">enum ResultSetProcessingType {</span>
+<span class="fc" id="L25">  BIGDECIMAL,</span>
+<span class="fc" id="L26">  BOOLEAN,</span>
+<span class="fc" id="L27">  BYTEARRAY,</span>
+<span class="fc" id="L28">  BYTE,</span>
+<span class="fc" id="L29">  DATE,</span>
+<span class="fc" id="L30">  DOUBLE,</span>
+<span class="fc" id="L31">  ENUM,</span>
+<span class="fc" id="L32">  FLOAT,</span>
+<span class="fc" id="L33">  INTEGER,</span>
+<span class="fc" id="L34">  LONG,</span>
+<span class="fc" id="L35">  NUMBER,</span>
+<span class="fc" id="L36">  SHORT,</span>
+<span class="fc" id="L37">  STRING,</span>
+<span class="fc" id="L38">  TIMESTAMP,</span>
+<span class="fc" id="L39">  TIME,</span>
+<span class="fc" id="L40">  UTILDATE,</span>
+<span class="fc" id="L41">  CUSTOMCONVERTER,</span>
+<span class="fc" id="L42">  UNKNOWN;</span>
 
-<span class="fc" id="L26">	BIGDECIMAL, BOOLEAN, BYTEARRAY, BYTE, DATE, DOUBLE, ENUM, FLOAT, INTEGER, LONG, NUMBER, SHORT, STRING, TIMESTAMP,</span>
-<span class="fc" id="L27">	TIME, UTILDATE, CUSTOMCONVERTER, UNKNOWN;</span>
-
-	public static ResultSetProcessingType getResultSetProcessingType(Class&lt;?&gt; type, boolean isAttributeWithConverter) {
-<span class="fc bfc" id="L30" title="All 2 branches covered.">		if (isAttributeWithConverter) {</span>
-<span class="fc" id="L31">			return CUSTOMCONVERTER;</span>
-<span class="fc bfc" id="L32" title="All 2 branches covered.">		} else if (BigDecimal.class == type) {</span>
-<span class="fc" id="L33">			return BIGDECIMAL;</span>
-<span class="fc bfc" id="L34" title="All 2 branches covered.">		} else if (Boolean.class == type) {</span>
-<span class="fc" id="L35">			return BOOLEAN;</span>
-<span class="fc bfc" id="L36" title="All 2 branches covered.">		} else if (byte[].class == type) {</span>
-<span class="fc" id="L37">			return BYTEARRAY;</span>
-<span class="fc bfc" id="L38" title="All 2 branches covered.">		} else if (Byte.class == type) {</span>
-<span class="fc" id="L39">			return BYTE;</span>
-<span class="fc bfc" id="L40" title="All 2 branches covered.">		} else if (java.sql.Date.class == type) {</span>
-<span class="fc" id="L41">			return DATE;</span>
-<span class="fc bfc" id="L42" title="All 2 branches covered.">		} else if (Double.class == type) {</span>
-<span class="fc" id="L43">			return DOUBLE;</span>
-<span class="fc bfc" id="L44" title="All 2 branches covered.">		} else if (type.isEnum()) {</span>
-<span class="fc" id="L45">			return ENUM;</span>
-<span class="fc bfc" id="L46" title="All 2 branches covered.">		} else if (Float.class == type) {</span>
-<span class="fc" id="L47">			return FLOAT;</span>
-<span class="fc bfc" id="L48" title="All 2 branches covered.">		} else if (Integer.class == type) {</span>
-<span class="fc" id="L49">			return INTEGER;</span>
-<span class="fc bfc" id="L50" title="All 2 branches covered.">		} else if (Long.class == type) {</span>
-<span class="fc" id="L51">			return LONG;</span>
-<span class="fc bfc" id="L52" title="All 2 branches covered.">		} else if (Number.class == type) {</span>
-<span class="fc" id="L53">			return NUMBER;</span>
-<span class="fc bfc" id="L54" title="All 2 branches covered.">		} else if (Short.class == type) {</span>
-<span class="fc" id="L55">			return SHORT;</span>
-<span class="fc bfc" id="L56" title="All 2 branches covered.">		} else if (String.class == type) {</span>
-<span class="fc" id="L57">			return STRING;</span>
-<span class="fc bfc" id="L58" title="All 2 branches covered.">		} else if (java.sql.Timestamp.class == type) {</span>
-<span class="fc" id="L59">			return TIMESTAMP;</span>
-<span class="fc bfc" id="L60" title="All 2 branches covered.">		} else if (java.sql.Time.class == type) {</span>
-<span class="fc" id="L61">			return TIME;</span>
-<span class="fc bfc" id="L62" title="All 2 branches covered.">		} else if (java.util.Date.class == type) {</span>
-<span class="fc" id="L63">			return UTILDATE;</span>
-		}
-<span class="fc" id="L65">		return UNKNOWN;</span>
-	}
-
+  public static ResultSetProcessingType getResultSetProcessingType(
+      Class&lt;?&gt; type, boolean isAttributeWithConverter) {
+<span class="fc bfc" id="L46" title="All 2 branches covered.">    if (isAttributeWithConverter) {</span>
+<span class="fc" id="L47">      return CUSTOMCONVERTER;</span>
+<span class="fc bfc" id="L48" title="All 2 branches covered.">    } else if (BigDecimal.class == type) {</span>
+<span class="fc" id="L49">      return BIGDECIMAL;</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">    } else if (Boolean.class == type) {</span>
+<span class="fc" id="L51">      return BOOLEAN;</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">    } else if (byte[].class == type) {</span>
+<span class="fc" id="L53">      return BYTEARRAY;</span>
+<span class="fc bfc" id="L54" title="All 2 branches covered.">    } else if (Byte.class == type) {</span>
+<span class="fc" id="L55">      return BYTE;</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">    } else if (java.sql.Date.class == type) {</span>
+<span class="fc" id="L57">      return DATE;</span>
+<span class="fc bfc" id="L58" title="All 2 branches covered.">    } else if (Double.class == type) {</span>
+<span class="fc" id="L59">      return DOUBLE;</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">    } else if (type.isEnum()) {</span>
+<span class="fc" id="L61">      return ENUM;</span>
+<span class="fc bfc" id="L62" title="All 2 branches covered.">    } else if (Float.class == type) {</span>
+<span class="fc" id="L63">      return FLOAT;</span>
+<span class="fc bfc" id="L64" title="All 2 branches covered.">    } else if (Integer.class == type) {</span>
+<span class="fc" id="L65">      return INTEGER;</span>
+<span class="fc bfc" id="L66" title="All 2 branches covered.">    } else if (Long.class == type) {</span>
+<span class="fc" id="L67">      return LONG;</span>
+<span class="fc bfc" id="L68" title="All 2 branches covered.">    } else if (Number.class == type) {</span>
+<span class="fc" id="L69">      return NUMBER;</span>
+<span class="fc bfc" id="L70" title="All 2 branches covered.">    } else if (Short.class == type) {</span>
+<span class="fc" id="L71">      return SHORT;</span>
+<span class="fc bfc" id="L72" title="All 2 branches covered.">    } else if (String.class == type) {</span>
+<span class="fc" id="L73">      return STRING;</span>
+<span class="fc bfc" id="L74" title="All 2 branches covered.">    } else if (java.sql.Timestamp.class == type) {</span>
+<span class="fc" id="L75">      return TIMESTAMP;</span>
+<span class="fc bfc" id="L76" title="All 2 branches covered.">    } else if (java.sql.Time.class == type) {</span>
+<span class="fc" id="L77">      return TIME;</span>
+<span class="fc bfc" id="L78" title="All 2 branches covered.">    } else if (java.util.Date.class == type) {</span>
+<span class="fc" id="L79">      return UTILDATE;</span>
+    }
+<span class="fc" id="L81">    return UNKNOWN;</span>
+  }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main f8719a208f03c0f1cdeed2b2136ad601b1a3da51 2026-11-23T12:15:46</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main a690f3152141c65efc750eabcf6e5401c05eb540 2026-11-24T15:08:54</div></body></html>

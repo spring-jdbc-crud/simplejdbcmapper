@@ -18,44 +18,42 @@ import java.util.concurrent.ConcurrentHashMap;
 
 /**
  * A simple cache implementation
- * 
+ *
  * @author Antony Joseph
  */
 class SimpleCache&lt;K, V&gt; {
-	private static final int UNLIMITED = -1;
+  private static final int UNLIMITED = -1;
 
-<span class="fc" id="L27">	private final Map&lt;K, V&gt; cache = new ConcurrentHashMap&lt;&gt;();</span>
+<span class="fc" id="L27">  private final Map&lt;K, V&gt; cache = new ConcurrentHashMap&lt;&gt;();</span>
 
-<span class="fc" id="L29">	private int capacity = UNLIMITED;</span>
+<span class="fc" id="L29">  private int capacity = UNLIMITED;</span>
 
-<span class="fc" id="L31">	public SimpleCache() {</span>
-<span class="fc" id="L32">	}</span>
+<span class="fc" id="L31">  public SimpleCache() {}</span>
 
-<span class="fc" id="L34">	public SimpleCache(int capacity) {</span>
-<span class="fc" id="L35">		this.capacity = capacity;</span>
-<span class="fc" id="L36">	}</span>
+<span class="fc" id="L33">  public SimpleCache(int capacity) {</span>
+<span class="fc" id="L34">    this.capacity = capacity;</span>
+<span class="fc" id="L35">  }</span>
 
-	public V get(K key) {
-<span class="fc" id="L39">		return cache.get(key);</span>
-	}
+  public V get(K key) {
+<span class="fc" id="L38">    return cache.get(key);</span>
+  }
 
-	public void put(K key, V value) {
-<span class="fc bfc" id="L43" title="All 4 branches covered.">		if (capacity == UNLIMITED || cache.size() &lt; capacity) {</span>
-<span class="fc" id="L44">			cache.putIfAbsent(key, value);</span>
-		}
-<span class="fc" id="L46">	}</span>
+  public void put(K key, V value) {
+<span class="fc bfc" id="L42" title="All 4 branches covered.">    if (capacity == UNLIMITED || cache.size() &lt; capacity) {</span>
+<span class="fc" id="L43">      cache.putIfAbsent(key, value);</span>
+    }
+<span class="fc" id="L45">  }</span>
 
-	public V remove(K key) {
-<span class="fc" id="L49">		return cache.remove(key);</span>
-	}
+  public V remove(K key) {
+<span class="fc" id="L48">    return cache.remove(key);</span>
+  }
 
-	public int size() {
-<span class="fc" id="L53">		return cache.size();</span>
-	}
+  public int size() {
+<span class="fc" id="L52">    return cache.size();</span>
+  }
 
-	public void clear() {
-<span class="fc" id="L57">		cache.clear();</span>
-<span class="fc" id="L58">	}</span>
-
+  public void clear() {
+<span class="fc" id="L56">    cache.clear();</span>
+<span class="fc" id="L57">  }</span>
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main f8719a208f03c0f1cdeed2b2136ad601b1a3da51 2026-11-23T12:15:46</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main a690f3152141c65efc750eabcf6e5401c05eb540 2026-11-24T15:08:54</div></body></html>

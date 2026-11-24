@@ -15,7 +15,6 @@ package io.github.simplejdbcmapper.core;
 
 import java.sql.Types;
 import java.util.Locale;
-
 import org.springframework.jdbc.core.StatementCreatorUtils;
 import org.springframework.util.StringUtils;
 
@@ -25,64 +24,65 @@ import org.springframework.util.StringUtils;
  * @author Antony Joseph
  */
 class InternalUtils {
-	public static Integer javaTypeToSqlParameterType(Class&lt;?&gt; type) {
-<span class="fc bfc" id="L29" title="All 2 branches covered.">		if (type.isEnum()) {</span>
-<span class="fc" id="L30">			return Types.VARCHAR;</span>
-		} else {
-			// use springs default mappings.
-<span class="fc" id="L33">			return StatementCreatorUtils.javaTypeToSqlParameterType(type);</span>
-		}
-	}
+  public static Integer javaTypeToSqlParameterType(Class&lt;?&gt; type) {
+<span class="fc bfc" id="L28" title="All 2 branches covered.">    if (type.isEnum()) {</span>
+<span class="fc" id="L29">      return Types.VARCHAR;</span>
+    } else {
+      // use springs default mappings.
+<span class="fc" id="L32">      return StatementCreatorUtils.javaTypeToSqlParameterType(type);</span>
+    }
+  }
 
-	/**
-	 * Converts camel case to underscore case. Ex: userLastName gets converted to
-	 * user_last_name. Copy of code from Spring BeanPropertyRowMapper
-	 *
-	 * @param str camel case string
-	 * @return the underscore case string
-	 */
-	public static String toUnderscoreName(String str) {
-<span class="pc bpc" id="L45" title="1 of 2 branches missed.">		if (!StringUtils.hasText(str)) {</span>
-<span class="nc" id="L46">			return &quot;&quot;;</span>
-		}
-<span class="fc" id="L48">		StringBuilder result = new StringBuilder();</span>
-<span class="fc" id="L49">		result.append(Character.toLowerCase(str.charAt(0)));</span>
-<span class="fc bfc" id="L50" title="All 2 branches covered.">		for (int i = 1; i &lt; str.length(); i++) {</span>
-<span class="fc" id="L51">			char c = str.charAt(i);</span>
-<span class="fc bfc" id="L52" title="All 2 branches covered.">			if (Character.isUpperCase(c)) {</span>
-<span class="fc" id="L53">				result.append('_').append(Character.toLowerCase(c));</span>
-			} else {
-<span class="fc" id="L55">				result.append(c);</span>
-			}
-		}
-<span class="fc" id="L58">		return result.toString();</span>
-	}
+  /**
+   * Converts camel case to underscore case. Ex: userLastName gets converted to user_last_name. Copy
+   * of code from Spring BeanPropertyRowMapper
+   *
+   * @param str camel case string
+   * @return the underscore case string
+   */
+  public static String toUnderscoreName(String str) {
+<span class="pc bpc" id="L44" title="1 of 2 branches missed.">    if (!StringUtils.hasText(str)) {</span>
+<span class="nc" id="L45">      return &quot;&quot;;</span>
+    }
+<span class="fc" id="L47">    StringBuilder result = new StringBuilder();</span>
+<span class="fc" id="L48">    result.append(Character.toLowerCase(str.charAt(0)));</span>
+<span class="fc bfc" id="L49" title="All 2 branches covered.">    for (int i = 1; i &lt; str.length(); i++) {</span>
+<span class="fc" id="L50">      char c = str.charAt(i);</span>
+<span class="fc bfc" id="L51" title="All 2 branches covered.">      if (Character.isUpperCase(c)) {</span>
+<span class="fc" id="L52">        result.append('_').append(Character.toLowerCase(c));</span>
+      } else {
+<span class="fc" id="L54">        result.append(c);</span>
+      }
+    }
+<span class="fc" id="L57">    return result.toString();</span>
+  }
 
-	public static String toLowerCase(String str) {
-<span class="pc bpc" id="L62" title="1 of 2 branches missed.">		if (!StringUtils.hasLength(str)) {</span>
-<span class="nc" id="L63">			return &quot;&quot;;</span>
-		}
-<span class="fc" id="L65">		return str.toLowerCase(Locale.US);</span>
-	}
+  public static String toLowerCase(String str) {
+<span class="pc bpc" id="L61" title="1 of 2 branches missed.">    if (!StringUtils.hasLength(str)) {</span>
+<span class="nc" id="L62">      return &quot;&quot;;</span>
+    }
+<span class="fc" id="L64">    return str.toLowerCase(Locale.US);</span>
+  }
 
-	public static boolean isAlphanumericPlusUnderscore(String str) {
-<span class="pc bpc" id="L69" title="1 of 4 branches missed.">		return str != null &amp;&amp; str.matches(&quot;^[a-zA-Z0-9_]*$&quot;);</span>
-	}
+  public static boolean isAlphanumericPlusUnderscore(String str) {
+<span class="pc bpc" id="L68" title="1 of 4 branches missed.">    return str != null &amp;&amp; str.matches(&quot;^[a-zA-Z0-9_]*$&quot;);</span>
+  }
 
-	public static void validateTableAlias(String tableAlias) {
-<span class="fc bfc" id="L73" title="All 2 branches covered.">		if (!StringUtils.hasText(tableAlias)) {</span>
-<span class="fc" id="L74">			throw new IllegalArgumentException(&quot;tableAlias has no value&quot;);</span>
-		}
-<span class="fc bfc" id="L76" title="All 2 branches covered.">		if (isAlphanumericPlusUnderscore(tableAlias)) {</span>
-<span class="fc bfc" id="L77" title="All 4 branches covered.">			if (!Character.isLetter(tableAlias.charAt(0)) &amp;&amp; tableAlias.charAt(0) != '_') {</span>
-<span class="fc" id="L78">				throw new IllegalArgumentException(&quot;tableAlias should start with an alphabet or underscore.&quot;);</span>
-			}
-		} else {
-<span class="fc" id="L81">			throw new IllegalArgumentException(&quot;tableAlias should be alphanumberic and can include underscore.&quot;);</span>
-		}
-<span class="fc" id="L83">	}</span>
+  public static void validateTableAlias(String tableAlias) {
+<span class="fc bfc" id="L72" title="All 2 branches covered.">    if (!StringUtils.hasText(tableAlias)) {</span>
+<span class="fc" id="L73">      throw new IllegalArgumentException(&quot;tableAlias has no value&quot;);</span>
+    }
+<span class="fc bfc" id="L75" title="All 2 branches covered.">    if (isAlphanumericPlusUnderscore(tableAlias)) {</span>
+<span class="fc bfc" id="L76" title="All 4 branches covered.">      if (!Character.isLetter(tableAlias.charAt(0)) &amp;&amp; tableAlias.charAt(0) != '_') {</span>
+<span class="fc" id="L77">        throw new IllegalArgumentException(</span>
+            &quot;tableAlias should start with an alphabet or underscore.&quot;);
+      }
+    } else {
+<span class="fc" id="L81">      throw new IllegalArgumentException(</span>
+          &quot;tableAlias should be alphanumberic and can include underscore.&quot;);
+    }
+<span class="fc" id="L84">  }</span>
 
-	private InternalUtils() {
-	}
+  private InternalUtils() {}
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main f8719a208f03c0f1cdeed2b2136ad601b1a3da51 2026-11-23T12:15:46</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main a690f3152141c65efc750eabcf6e5401c05eb540 2026-11-24T15:08:54</div></body></html>

@@ -15,70 +15,73 @@ package io.github.simplejdbcmapper.core;
 
 import java.util.Map;
 import java.util.StringJoiner;
-
 import org.springframework.util.Assert;
 
+/**
+ * gets the sql columns string
+ *
+ * @author Antony Joseph
+ */
 class SqlColumnsProvider {
-	// Map key - classname
-	// value - the column sql string
-<span class="fc" id="L24">	private final SimpleCache&lt;Class&lt;?&gt;, String&gt; sqlColumnsCache = new SimpleCache&lt;&gt;();</span>
+  // Map key - classname
+  // value - the column sql string
+<span class="fc" id="L28">  private final SimpleCache&lt;Class&lt;?&gt;, String&gt; sqlColumnsCache = new SimpleCache&lt;&gt;();</span>
 
-	// Map key - classname-tableAlias
-	// value - the column sql string with columns prefixed with table alias
-<span class="fc" id="L28">	private final SimpleCache&lt;String, String&gt; sqlColumnsAliasCache = new SimpleCache&lt;&gt;(5000);</span>
+  // Map key - classname-tableAlias
+  // value - the column sql string with columns prefixed with table alias
+<span class="fc" id="L32">  private final SimpleCache&lt;String, String&gt; sqlColumnsAliasCache = new SimpleCache&lt;&gt;(5000);</span>
 
-	private final TableMappingProvider tableMappingProvider;
+  private final TableMappingProvider tableMappingProvider;
 
-<span class="fc" id="L32">	public SqlColumnsProvider(TableMappingProvider tableMappingProvider) {</span>
-<span class="fc" id="L33">		this.tableMappingProvider = tableMappingProvider;</span>
-<span class="fc" id="L34">	}</span>
+<span class="fc" id="L36">  public SqlColumnsProvider(TableMappingProvider tableMappingProvider) {</span>
+<span class="fc" id="L37">    this.tableMappingProvider = tableMappingProvider;</span>
+<span class="fc" id="L38">  }</span>
 
-	public String getSqlColumns(Class&lt;?&gt; entityType) {
-<span class="fc" id="L37">		Assert.notNull(entityType, &quot;entityType must not be null&quot;);</span>
-<span class="fc" id="L38">		String columnsSql = sqlColumnsCache.get(entityType);</span>
-<span class="fc bfc" id="L39" title="All 2 branches covered.">		if (columnsSql == null) {</span>
-<span class="fc" id="L40">			TableMapping tableMapping = tableMappingProvider.getTableMapping(entityType);</span>
-<span class="fc" id="L41">			StringJoiner sj = new StringJoiner(&quot;, &quot;, &quot; &quot;, &quot; &quot;);</span>
-<span class="fc bfc" id="L42" title="All 2 branches covered.">			for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {</span>
-<span class="fc" id="L43">				sj.add(propMapping.getColumnName());</span>
-			}
-<span class="fc" id="L45">			columnsSql = sj.toString();</span>
-<span class="fc" id="L46">			sqlColumnsCache.put(entityType, columnsSql);</span>
-		}
-<span class="fc" id="L48">		return columnsSql;</span>
-	}
+  public String getSqlColumns(Class&lt;?&gt; entityType) {
+<span class="fc" id="L41">    Assert.notNull(entityType, &quot;entityType must not be null&quot;);</span>
+<span class="fc" id="L42">    String columnsSql = sqlColumnsCache.get(entityType);</span>
+<span class="fc bfc" id="L43" title="All 2 branches covered.">    if (columnsSql == null) {</span>
+<span class="fc" id="L44">      TableMapping tableMapping = tableMappingProvider.getTableMapping(entityType);</span>
+<span class="fc" id="L45">      StringJoiner sj = new StringJoiner(&quot;, &quot;, &quot; &quot;, &quot; &quot;);</span>
+<span class="fc bfc" id="L46" title="All 2 branches covered.">      for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {</span>
+<span class="fc" id="L47">        sj.add(propMapping.getColumnName());</span>
+      }
+<span class="fc" id="L49">      columnsSql = sj.toString();</span>
+<span class="fc" id="L50">      sqlColumnsCache.put(entityType, columnsSql);</span>
+    }
+<span class="fc" id="L52">    return columnsSql;</span>
+  }
 
-	public String getSqlColumns(Class&lt;?&gt; entityType, String tableAlias) {
-<span class="fc" id="L52">		Assert.notNull(entityType, &quot;entityType must not be null&quot;);</span>
-<span class="fc" id="L53">		InternalUtils.validateTableAlias(tableAlias);</span>
-<span class="fc" id="L54">		String cacheKey = entityType.getName() + &quot;-&quot; + tableAlias;</span>
-<span class="fc" id="L55">		String columnsSql = sqlColumnsAliasCache.get(cacheKey);</span>
-<span class="fc bfc" id="L56" title="All 2 branches covered.">		if (columnsSql == null) {</span>
-<span class="fc" id="L57">			String tablePrefix = tableAlias + &quot;.&quot;;</span>
-<span class="fc" id="L58">			TableMapping tableMapping = tableMappingProvider.getTableMapping(entityType);</span>
-<span class="fc" id="L59">			StringJoiner sj = new StringJoiner(&quot;, &quot;);</span>
-<span class="fc bfc" id="L60" title="All 2 branches covered.">			for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {</span>
-<span class="fc" id="L61">				sj.add(tablePrefix + propMapping.getColumnName());</span>
-			}
-<span class="fc" id="L63">			columnsSql = sj.toString();</span>
-<span class="fc" id="L64">			sqlColumnsAliasCache.put(cacheKey, columnsSql);</span>
-		}
-<span class="fc" id="L66">		return columnsSql;</span>
-	}
+  public String getSqlColumns(Class&lt;?&gt; entityType, String tableAlias) {
+<span class="fc" id="L56">    Assert.notNull(entityType, &quot;entityType must not be null&quot;);</span>
+<span class="fc" id="L57">    InternalUtils.validateTableAlias(tableAlias);</span>
+<span class="fc" id="L58">    String cacheKey = entityType.getName() + &quot;-&quot; + tableAlias;</span>
+<span class="fc" id="L59">    String columnsSql = sqlColumnsAliasCache.get(cacheKey);</span>
+<span class="fc bfc" id="L60" title="All 2 branches covered.">    if (columnsSql == null) {</span>
+<span class="fc" id="L61">      String tablePrefix = tableAlias + &quot;.&quot;;</span>
+<span class="fc" id="L62">      TableMapping tableMapping = tableMappingProvider.getTableMapping(entityType);</span>
+<span class="fc" id="L63">      StringJoiner sj = new StringJoiner(&quot;, &quot;);</span>
+<span class="fc bfc" id="L64" title="All 2 branches covered.">      for (PropertyMapping propMapping : tableMapping.getPropertyMappings()) {</span>
+<span class="fc" id="L65">        sj.add(tablePrefix + propMapping.getColumnName());</span>
+      }
+<span class="fc" id="L67">      columnsSql = sj.toString();</span>
+<span class="fc" id="L68">      sqlColumnsAliasCache.put(cacheKey, columnsSql);</span>
+    }
+<span class="fc" id="L70">    return columnsSql;</span>
+  }
 
-	public String getSqlColumns(MultiEntity multiEntity) {
-<span class="fc" id="L70">		Assert.notNull(multiEntity, &quot;multiEntity must not be null&quot;);</span>
-<span class="fc" id="L71">		StringBuilder sb = new StringBuilder(256);</span>
-<span class="fc" id="L72">		int cnt = 0;</span>
-<span class="fc bfc" id="L73" title="All 2 branches covered.">		for (Map.Entry&lt;Class&lt;?&gt;, String&gt; entry : multiEntity.getEntries()) {</span>
-<span class="fc bfc" id="L74" title="All 2 branches covered.">			if (cnt &gt; 0) {</span>
-<span class="fc" id="L75">				sb.append(&quot;, &quot;);</span>
-			}
-<span class="fc" id="L77">			sb.append(getSqlColumns(entry.getKey(), entry.getValue()));</span>
-<span class="fc" id="L78">			cnt++;</span>
-<span class="fc" id="L79">		}</span>
-<span class="fc" id="L80">		return sb.toString();</span>
-	}
-
+  public String getSqlColumns(MultiEntity multiEntity) {
+<span class="fc" id="L74">    Assert.notNull(multiEntity, &quot;multiEntity must not be null&quot;);</span>
+<span class="fc" id="L75">    StringBuilder sb = new StringBuilder(256);</span>
+<span class="fc" id="L76">    int cnt = 0;</span>
+<span class="fc bfc" id="L77" title="All 2 branches covered.">    for (Map.Entry&lt;Class&lt;?&gt;, String&gt; entry : multiEntity.getEntries()) {</span>
+<span class="fc bfc" id="L78" title="All 2 branches covered.">      if (cnt &gt; 0) {</span>
+<span class="fc" id="L79">        sb.append(&quot;, &quot;);</span>
+      }
+<span class="fc" id="L81">      sb.append(getSqlColumns(entry.getKey(), entry.getValue()));</span>
+<span class="fc" id="L82">      cnt++;</span>
+<span class="fc" id="L83">    }</span>
+<span class="fc" id="L84">    return sb.toString();</span>
+  }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main f8719a208f03c0f1cdeed2b2136ad601b1a3da51 2026-11-23T12:15:46</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main a690f3152141c65efc750eabcf6e5401c05eb540 2026-11-24T15:08:54</div></body></html>

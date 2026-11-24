@@ -17,39 +17,38 @@ import io.github.simplejdbcmapper.exception.MapperException;
 
 /**
  * Entity wrapper to get and set property values.
- * 
+ *
  * @author Antony Joseph
  */
 class EntityWrapper {
-	private Object entityObj;
+  private Object entityObj;
 
-<span class="fc" id="L26">	public EntityWrapper(Object entityObj) {</span>
-<span class="fc" id="L27">		this.entityObj = entityObj;</span>
-<span class="fc" id="L28">	}</span>
+<span class="fc" id="L26">  public EntityWrapper(Object entityObj) {</span>
+<span class="fc" id="L27">    this.entityObj = entityObj;</span>
+<span class="fc" id="L28">  }</span>
 
-	public Object getPropertyValue(PropertyMapping propMapping) {
-		try {
-<span class="fc" id="L32">			return propMapping.getReadMethod().invoke(entityObj);</span>
-<span class="nc" id="L33">		} catch (Exception e) {</span>
-<span class="nc" id="L34">			throw new MapperException(e);</span>
-		}
-	}
+  public Object getPropertyValue(PropertyMapping propMapping) {
+    try {
+<span class="fc" id="L32">      return propMapping.getReadMethod().invoke(entityObj);</span>
+<span class="nc" id="L33">    } catch (Exception e) {</span>
+<span class="nc" id="L34">      throw new MapperException(e);</span>
+    }
+  }
 
-	public void setPropertyValue(PropertyMapping propMapping, Object val) {
-		try {
-<span class="fc" id="L40">			propMapping.getWriteMethod().invoke(entityObj, val);</span>
-<span class="fc" id="L41">		} catch (Exception e) {</span>
-<span class="fc" id="L42">			throw new MapperException(e);</span>
-<span class="fc" id="L43">		}</span>
-<span class="fc" id="L44">	}</span>
+  public void setPropertyValue(PropertyMapping propMapping, Object val) {
+    try {
+<span class="fc" id="L40">      propMapping.getWriteMethod().invoke(entityObj, val);</span>
+<span class="fc" id="L41">    } catch (Exception e) {</span>
+<span class="fc" id="L42">      throw new MapperException(e);</span>
+<span class="fc" id="L43">    }</span>
+<span class="fc" id="L44">  }</span>
 
-	public Class&lt;?&gt; getWrappedClass() {
-<span class="fc" id="L47">		return entityObj.getClass();</span>
-	}
+  public Class&lt;?&gt; getWrappedClass() {
+<span class="fc" id="L47">    return entityObj.getClass();</span>
+  }
 
-	public Object getWrappedInstance() {
-<span class="nc" id="L51">		return entityObj;</span>
-	}
-
+  public Object getWrappedInstance() {
+<span class="nc" id="L51">    return entityObj;</span>
+  }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main f8719a208f03c0f1cdeed2b2136ad601b1a3da51 2026-11-23T12:15:46</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main a690f3152141c65efc750eabcf6e5401c05eb540 2026-11-24T15:08:54</div></body></html>

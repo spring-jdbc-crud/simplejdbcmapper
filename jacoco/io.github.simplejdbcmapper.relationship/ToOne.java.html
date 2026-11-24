@@ -13,96 +13,110 @@
  */
 package io.github.simplejdbcmapper.relationship;
 
+import io.github.simplejdbcmapper.exception.MapperException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
 
-import io.github.simplejdbcmapper.exception.MapperException;
-
 /**
  * This handles the toOne relationship.
- * 
+ *
  * @author Antony Joseph
  */
 class ToOne {
-	private Class&lt;?&gt; mainType;
-	private Class&lt;?&gt; relatedType;
-	private Method mainObjJoinPropertyReadMethod;
-	private Method relatedObjJoinPropertyReadMethod;
-	private Method mainObjPropertyToPopulateWriteMethod;
+  private Class&lt;?&gt; mainType;
+  private Class&lt;?&gt; relatedType;
+  private Method mainObjJoinPropertyReadMethod;
+  private Method relatedObjJoinPropertyReadMethod;
+  private Method mainObjPropertyToPopulateWriteMethod;
 
-<span class="fc" id="L39">	ToOne(Class&lt;?&gt; mainType, Class&lt;?&gt; relatedType) {</span>
-<span class="fc" id="L40">		Assert.notNull(mainType, &quot;mainType must not be null&quot;);</span>
-<span class="fc" id="L41">		Assert.notNull(relatedType, &quot;relatedType must not be null&quot;);</span>
-<span class="fc" id="L42">		this.mainType = mainType;</span>
-<span class="fc" id="L43">		this.relatedType = relatedType;</span>
-<span class="fc" id="L44">	}</span>
+<span class="fc" id="L37">  ToOne(Class&lt;?&gt; mainType, Class&lt;?&gt; relatedType) {</span>
+<span class="fc" id="L38">    Assert.notNull(mainType, &quot;mainType must not be null&quot;);</span>
+<span class="fc" id="L39">    Assert.notNull(relatedType, &quot;relatedType must not be null&quot;);</span>
+<span class="fc" id="L40">    this.mainType = mainType;</span>
+<span class="fc" id="L41">    this.relatedType = relatedType;</span>
+<span class="fc" id="L42">  }</span>
 
-	void joinOn(String mainObjJoinProperty, String relatedObjJoinProperty) {
-<span class="fc" id="L47">		Assert.notNull(mainObjJoinProperty, &quot;mainObjJoinProperty must not be null&quot;);</span>
-<span class="fc" id="L48">		Assert.notNull(relatedObjJoinProperty, &quot;relatedObjJoinProperty must not be null&quot;);</span>
+  void joinOn(String mainObjJoinProperty, String relatedObjJoinProperty) {
+<span class="fc" id="L45">    Assert.notNull(mainObjJoinProperty, &quot;mainObjJoinProperty must not be null&quot;);</span>
+<span class="fc" id="L46">    Assert.notNull(relatedObjJoinProperty, &quot;relatedObjJoinProperty must not be null&quot;);</span>
 
-<span class="fc" id="L50">		Class&lt;?&gt; mainObjJoinPropertyType = RelationshipUtils.getPropertyType(mainType, mainObjJoinProperty);</span>
-<span class="fc" id="L51">		Class&lt;?&gt; relatedObjJoinPropertyType = RelationshipUtils.getPropertyType(relatedType, relatedObjJoinProperty);</span>
-<span class="fc bfc" id="L52" title="All 2 branches covered.">		if (mainObjJoinPropertyType != relatedObjJoinPropertyType) {</span>
-<span class="fc" id="L53">			throw new IllegalArgumentException(&quot;Conflicting property types. Property type of &quot;</span>
-<span class="fc" id="L54">					+ mainType.getSimpleName() + &quot;.&quot; + mainObjJoinProperty + &quot; and &quot; + relatedType.getSimpleName() + &quot;.&quot;</span>
-					+ relatedObjJoinProperty + &quot; are not the same.&quot;);
-		}
+<span class="fc" id="L48">    Class&lt;?&gt; mainObjJoinPropertyType =</span>
+<span class="fc" id="L49">        RelationshipUtils.getPropertyType(mainType, mainObjJoinProperty);</span>
+<span class="fc" id="L50">    Class&lt;?&gt; relatedObjJoinPropertyType =</span>
+<span class="fc" id="L51">        RelationshipUtils.getPropertyType(relatedType, relatedObjJoinProperty);</span>
+<span class="fc bfc" id="L52" title="All 2 branches covered.">    if (mainObjJoinPropertyType != relatedObjJoinPropertyType) {</span>
+<span class="fc" id="L53">      throw new IllegalArgumentException(</span>
+          &quot;Conflicting property types. Property type of &quot;
+<span class="fc" id="L55">              + mainType.getSimpleName()</span>
+              + &quot;.&quot;
+              + mainObjJoinProperty
+              + &quot; and &quot;
+<span class="fc" id="L59">              + relatedType.getSimpleName()</span>
+              + &quot;.&quot;
+              + relatedObjJoinProperty
+              + &quot; are not the same.&quot;);
+    }
 
-<span class="fc" id="L58">		this.mainObjJoinPropertyReadMethod = RelationshipUtils.getReadMethod(mainType, mainObjJoinProperty);</span>
-<span class="fc" id="L59">		this.relatedObjJoinPropertyReadMethod = RelationshipUtils.getReadMethod(relatedType, relatedObjJoinProperty);</span>
-<span class="fc" id="L60">	}</span>
+<span class="fc" id="L65">    this.mainObjJoinPropertyReadMethod =</span>
+<span class="fc" id="L66">        RelationshipUtils.getReadMethod(mainType, mainObjJoinProperty);</span>
+<span class="fc" id="L67">    this.relatedObjJoinPropertyReadMethod =</span>
+<span class="fc" id="L68">        RelationshipUtils.getReadMethod(relatedType, relatedObjJoinProperty);</span>
+<span class="fc" id="L69">  }</span>
 
-	void populate(String mainObjPropertyToPopulate) {
-<span class="fc" id="L63">		Assert.notNull(mainObjPropertyToPopulate, &quot;mainObjPropertyToPopulate must not be null&quot;);</span>
-<span class="fc" id="L64">		this.mainObjPropertyToPopulateWriteMethod = RelationshipUtils.getWriteMethod(mainType,</span>
-				mainObjPropertyToPopulate);
-<span class="fc" id="L66">	}</span>
+  void populate(String mainObjPropertyToPopulate) {
+<span class="fc" id="L72">    Assert.notNull(mainObjPropertyToPopulate, &quot;mainObjPropertyToPopulate must not be null&quot;);</span>
+<span class="fc" id="L73">    this.mainObjPropertyToPopulateWriteMethod =</span>
+<span class="fc" id="L74">        RelationshipUtils.getWriteMethod(mainType, mainObjPropertyToPopulate);</span>
+<span class="fc" id="L75">  }</span>
 
-	&lt;T, U&gt; void process(List&lt;T&gt; mainObjList, List&lt;U&gt; relatedObjList) {
-<span class="pc bpc" id="L69" title="1 of 4 branches missed.">		if (CollectionUtils.isEmpty(mainObjList) || CollectionUtils.isEmpty(relatedObjList)) {</span>
-<span class="fc" id="L70">			return;</span>
-		}
+  &lt;T, U&gt; void process(List&lt;T&gt; mainObjList, List&lt;U&gt; relatedObjList) {
+<span class="pc bpc" id="L78" title="1 of 4 branches missed.">    if (CollectionUtils.isEmpty(mainObjList) || CollectionUtils.isEmpty(relatedObjList)) {</span>
+<span class="fc" id="L79">      return;</span>
+    }
 
-		try {
-<span class="fc" id="L74">			Map&lt;Object, U&gt; joinPropToRelatedObjMap = getJoinPropToRelatedObjMap(relatedObjList,</span>
-					relatedObjJoinPropertyReadMethod);
-<span class="fc bfc" id="L76" title="All 2 branches covered.">			for (T mainObj : mainObjList) {</span>
-<span class="fc bfc" id="L77" title="All 2 branches covered.">				if (mainObj != null) {</span>
-<span class="fc" id="L78">					Object mainObjJoinPropertyValue = mainObjJoinPropertyReadMethod.invoke(mainObj);</span>
-<span class="fc" id="L79">					U relatedObj = joinPropToRelatedObjMap.get(mainObjJoinPropertyValue);</span>
-					try {
-<span class="fc" id="L81">						mainObjPropertyToPopulateWriteMethod.invoke(mainObj, relatedObj);</span>
-<span class="fc" id="L82">					} catch (Exception e) {</span>
-<span class="fc" id="L83">						throw new MapperException(e.getMessage() + &quot;. Invoking &quot; + mainObjPropertyToPopulateWriteMethod</span>
-								+ &quot; with value &quot; + relatedObj, e);
-<span class="fc" id="L85">					}</span>
-				}
-<span class="fc" id="L87">			}</span>
-<span class="fc" id="L88">		} catch (Exception e) {</span>
-<span class="fc" id="L89">			throw new MapperException(e.getMessage(), e);</span>
-<span class="fc" id="L90">		}</span>
-<span class="fc" id="L91">	}</span>
+    try {
+<span class="fc" id="L83">      Map&lt;Object, U&gt; joinPropToRelatedObjMap =</span>
+<span class="fc" id="L84">          getJoinPropToRelatedObjMap(relatedObjList, relatedObjJoinPropertyReadMethod);</span>
+<span class="fc bfc" id="L85" title="All 2 branches covered.">      for (T mainObj : mainObjList) {</span>
+<span class="fc bfc" id="L86" title="All 2 branches covered.">        if (mainObj != null) {</span>
+<span class="fc" id="L87">          Object mainObjJoinPropertyValue = mainObjJoinPropertyReadMethod.invoke(mainObj);</span>
+<span class="fc" id="L88">          U relatedObj = joinPropToRelatedObjMap.get(mainObjJoinPropertyValue);</span>
+          try {
+<span class="fc" id="L90">            mainObjPropertyToPopulateWriteMethod.invoke(mainObj, relatedObj);</span>
+<span class="fc" id="L91">          } catch (Exception e) {</span>
+<span class="fc" id="L92">            throw new MapperException(</span>
+<span class="fc" id="L93">                e.getMessage()</span>
+                    + &quot;. Invoking &quot;
+                    + mainObjPropertyToPopulateWriteMethod
+                    + &quot; with value &quot;
+                    + relatedObj,
+                e);
+<span class="fc" id="L99">          }</span>
+        }
+<span class="fc" id="L101">      }</span>
+<span class="fc" id="L102">    } catch (Exception e) {</span>
+<span class="fc" id="L103">      throw new MapperException(e.getMessage(), e);</span>
+<span class="fc" id="L104">    }</span>
+<span class="fc" id="L105">  }</span>
 
-	private &lt;U&gt; Map&lt;Object, U&gt; getJoinPropToRelatedObjMap(List&lt;U&gt; relatedObjList,
-			Method relatedObjJoinPropertyReadMethod) throws IllegalAccessException, InvocationTargetException {
-<span class="fc" id="L95">		Map&lt;Object, U&gt; joinPropToRelatedObjMap = new HashMap&lt;&gt;();</span>
-<span class="fc bfc" id="L96" title="All 2 branches covered.">		for (U relatedObj : relatedObjList) {</span>
-<span class="fc bfc" id="L97" title="All 2 branches covered.">			if (relatedObj != null) {</span>
-<span class="fc" id="L98">				Object relatedObjJoinPropertyValue = relatedObjJoinPropertyReadMethod.invoke(relatedObj);</span>
-<span class="fc bfc" id="L99" title="All 2 branches covered.">				if (relatedObjJoinPropertyValue != null) {</span>
-<span class="fc" id="L100">					joinPropToRelatedObjMap.put(relatedObjJoinPropertyValue, relatedObj);</span>
-				}
-			}
-<span class="fc" id="L103">		}</span>
-<span class="fc" id="L104">		return joinPropToRelatedObjMap;</span>
-	}
-
+  private &lt;U&gt; Map&lt;Object, U&gt; getJoinPropToRelatedObjMap(
+      List&lt;U&gt; relatedObjList, Method relatedObjJoinPropertyReadMethod)
+      throws IllegalAccessException, InvocationTargetException {
+<span class="fc" id="L110">    Map&lt;Object, U&gt; joinPropToRelatedObjMap = new HashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L111" title="All 2 branches covered.">    for (U relatedObj : relatedObjList) {</span>
+<span class="fc bfc" id="L112" title="All 2 branches covered.">      if (relatedObj != null) {</span>
+<span class="fc" id="L113">        Object relatedObjJoinPropertyValue = relatedObjJoinPropertyReadMethod.invoke(relatedObj);</span>
+<span class="fc bfc" id="L114" title="All 2 branches covered.">        if (relatedObjJoinPropertyValue != null) {</span>
+<span class="fc" id="L115">          joinPropToRelatedObjMap.put(relatedObjJoinPropertyValue, relatedObj);</span>
+        }
+      }
+<span class="fc" id="L118">    }</span>
+<span class="fc" id="L119">    return joinPropToRelatedObjMap;</span>
+  }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main f8719a208f03c0f1cdeed2b2136ad601b1a3da51 2026-11-23T12:15:46</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main a690f3152141c65efc750eabcf6e5401c05eb540 2026-11-24T15:08:54</div></body></html>

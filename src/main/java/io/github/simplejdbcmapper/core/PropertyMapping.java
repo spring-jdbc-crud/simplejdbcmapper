@@ -27,7 +27,7 @@ class PropertyMapping {
   private final String propertyName;
 
   private final Class<?> propertyType;
-
+  
   private final String columnName;
 
   private final Integer columnSqlType;

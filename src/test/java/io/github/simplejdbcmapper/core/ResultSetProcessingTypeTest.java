@@ -2,10 +2,12 @@ package io.github.simplejdbcmapper.core;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import io.github.simplejdbcmapper.model.StatusEnum;
 import java.math.BigDecimal;
+
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
+
+import io.github.simplejdbcmapper.model.StatusEnum;
 
 @SpringBootTest
 class ResultSetProcessingTypeTest {

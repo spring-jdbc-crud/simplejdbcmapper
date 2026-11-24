@@ -95,7 +95,7 @@ class ToMany {
   }
 
   private <T, U> void populateProperty(T mainObj, List<U> populaterList) {
-    try {
+  try {
       mainObjPropertyToPopulateWriteMethod.invoke(mainObj, populaterList);
     } catch (Exception e) {
       throw new MapperException(

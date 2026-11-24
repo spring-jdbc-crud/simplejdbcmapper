@@ -29,7 +29,7 @@ import org.springframework.util.StringUtils;
  */
 class TableMapping {
   private final Class<?> mappedObjType;
-
+  
   private final PropertyMapping[] propertyMappings;
 
   private final String tableName;

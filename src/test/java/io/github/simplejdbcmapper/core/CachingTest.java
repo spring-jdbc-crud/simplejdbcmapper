@@ -2,18 +2,20 @@ package io.github.simplejdbcmapper.core;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
+import java.time.LocalDateTime;
+
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+
 import io.github.simplejdbcmapper.model.Customer;
 import io.github.simplejdbcmapper.model.Employee;
 import io.github.simplejdbcmapper.model.Order;
 import io.github.simplejdbcmapper.model.Person;
 import io.github.simplejdbcmapper.model.Product;
 import io.github.simplejdbcmapper.model.ProductWithNoAuditAnnotationFields;
-import java.time.LocalDateTime;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
 @SpringBootTest
 class CachingTest {

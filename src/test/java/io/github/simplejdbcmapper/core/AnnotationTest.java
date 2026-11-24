@@ -3,6 +3,14 @@ package io.github.simplejdbcmapper.core;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.sql.Types;
+
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.boot.test.context.SpringBootTest;
+
 import io.github.simplejdbcmapper.exception.AnnotationException;
 import io.github.simplejdbcmapper.model.BlankColumnObject;
 import io.github.simplejdbcmapper.model.BlankTableObject;
@@ -29,12 +37,6 @@ import io.github.simplejdbcmapper.model.PersonWithPrimitiveId;
 import io.github.simplejdbcmapper.model.TypeCheckPostgres;
 import io.github.simplejdbcmapper.model.WhitespaceColumnObject;
 import io.github.simplejdbcmapper.model.WhitespaceTableObject;
-import java.sql.Types;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 class AnnotationTest {

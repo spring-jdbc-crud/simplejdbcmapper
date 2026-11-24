@@ -29,8 +29,8 @@ import org.springframework.util.CollectionUtils;
  * @author Antony Joseph
  */
 class ToMany {
-  private Class<?> mainType;
-  private Class<?> relatedType;
+  private final Class<?> mainType;
+  private final Class<?> relatedType;
   private Method mainObjIdPropertyReadMethod;
   private Method relatedObjFkPropertyReadMethod;
   private Method mainObjPropertyToPopulateWriteMethod;

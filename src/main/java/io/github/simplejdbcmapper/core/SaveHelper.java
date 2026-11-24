@@ -18,6 +18,11 @@ import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
 import org.springframework.jdbc.core.support.SqlBinaryValue;
 import org.springframework.jdbc.core.support.SqlCharacterValue;
 
+/**
+ * Helper for insert/update
+ *
+ * @author Antony Joseph
+ */
 class SaveHelper {
   static void addMapSqlParameterSource(
       MapSqlParameterSource mapSqlParameterSource,

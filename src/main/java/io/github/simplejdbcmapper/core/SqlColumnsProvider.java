@@ -17,6 +17,11 @@ import java.util.Map;
 import java.util.StringJoiner;
 import org.springframework.util.Assert;
 
+/**
+ * gets the sql columns string
+ *
+ * @author Antony Joseph
+ */
 class SqlColumnsProvider {
   // Map key - classname
   // value - the column sql string

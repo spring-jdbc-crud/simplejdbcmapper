@@ -3,13 +3,12 @@ package io.github.simplejdbcmapper.core;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
+import io.github.simplejdbcmapper.model.CustomerSchema1;
+import io.github.simplejdbcmapper.model.PersonSchema1;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import io.github.simplejdbcmapper.model.CustomerSchema1;
-import io.github.simplejdbcmapper.model.PersonSchema1;
 
 @SpringBootTest
 class TableAnnotationWithSchemaTest {

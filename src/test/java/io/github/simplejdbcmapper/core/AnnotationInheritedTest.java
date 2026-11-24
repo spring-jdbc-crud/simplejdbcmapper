@@ -4,22 +4,20 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.List;
-
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeEach;
-import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-
 import io.github.simplejdbcmapper.exception.AnnotationException;
 import io.github.simplejdbcmapper.model.ModelWithInheritedTableAnnotation;
 import io.github.simplejdbcmapper.model.OrderInheritedAudit;
 import io.github.simplejdbcmapper.model.OrderInheritedColumn;
 import io.github.simplejdbcmapper.model.OrderInheritedId;
 import io.github.simplejdbcmapper.model.OrderInheritedOverriddenId;
+import java.time.LocalDateTime;
+import java.util.Arrays;
+import java.util.List;
+import org.junit.jupiter.api.Assertions;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
 
 @SpringBootTest
 class AnnotationInheritedTest {

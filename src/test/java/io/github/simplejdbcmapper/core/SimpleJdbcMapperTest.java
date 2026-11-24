@@ -5,13 +5,14 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import io.github.simplejdbcmapper.model.FullyQualifiedTableName;
+import io.github.simplejdbcmapper.model.NonDefaultNamingProduct;
+import io.github.simplejdbcmapper.model.Product;
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 import java.util.function.Supplier;
-
 import javax.sql.DataSource;
-
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,10 +20,6 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.convert.support.DefaultConversionService;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
-
-import io.github.simplejdbcmapper.model.FullyQualifiedTableName;
-import io.github.simplejdbcmapper.model.NonDefaultNamingProduct;
-import io.github.simplejdbcmapper.model.Product;
 
 @SpringBootTest
 class SimpleJdbcMapperTest {

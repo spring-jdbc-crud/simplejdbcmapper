@@ -3,17 +3,15 @@ package io.github.simplejdbcmapper.core;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import io.github.simplejdbcmapper.model.Order;
-import io.github.simplejdbcmapper.model.OrderLine;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import io.github.simplejdbcmapper.model.Order;
+import io.github.simplejdbcmapper.model.OrderLine;
 
 @SpringBootTest
-@ExtendWith(SpringExtension.class)
 class MultiEntityTest {
   @Autowired private SimpleJdbcMapper sjm;
 

@@ -2,22 +2,21 @@ package io.github.simplejdbcmapper.core;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import io.github.simplejdbcmapper.model.Order;
-import io.github.simplejdbcmapper.model.OrderLine;
-import io.github.simplejdbcmapper.model.Product;
-import io.github.simplejdbcmapper.relationship.RelationshipMapper;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.stream.Collectors;
+
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
+
+import io.github.simplejdbcmapper.model.Order;
+import io.github.simplejdbcmapper.model.OrderLine;
+import io.github.simplejdbcmapper.model.Product;
+import io.github.simplejdbcmapper.relationship.RelationshipMapper;
 
 @SpringBootTest
-@ExtendWith(SpringExtension.class)
 class RelationshipMapperExtractorTest {
   @Autowired private SimpleJdbcMapper sjm;
 

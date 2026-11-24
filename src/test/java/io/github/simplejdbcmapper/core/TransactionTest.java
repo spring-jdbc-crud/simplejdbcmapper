@@ -6,15 +6,12 @@ import io.github.simplejdbcmapper.model.Customer;
 import io.github.simplejdbcmapper.model.Employee;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
-import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
-@ExtendWith(SpringExtension.class)
 class TransactionTest {
 
   @Autowired private SimpleJdbcMapper sjm;

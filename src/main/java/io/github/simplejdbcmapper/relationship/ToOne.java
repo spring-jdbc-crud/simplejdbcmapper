@@ -28,8 +28,8 @@ import org.springframework.util.CollectionUtils;
  * @author Antony Joseph
  */
 class ToOne {
-  private Class<?> mainType;
-  private Class<?> relatedType;
+  private final Class<?> mainType;
+  private final Class<?> relatedType;
   private Method mainObjJoinPropertyReadMethod;
   private Method relatedObjJoinPropertyReadMethod;
   private Method mainObjPropertyToPopulateWriteMethod;
@@ -86,21 +86,25 @@ class ToOne {
         if (mainObj != null) {
           Object mainObjJoinPropertyValue = mainObjJoinPropertyReadMethod.invoke(mainObj);
           U relatedObj = joinPropToRelatedObjMap.get(mainObjJoinPropertyValue);
-          try {
-            mainObjPropertyToPopulateWriteMethod.invoke(mainObj, relatedObj);
-          } catch (Exception e) {
-            throw new MapperException(
-                e.getMessage()
-                    + ". Invoking "
-                    + mainObjPropertyToPopulateWriteMethod
-                    + " with value "
-                    + relatedObj,
-                e);
-          }
+          populateProperty(mainObj, relatedObj);
         }
       }
     } catch (Exception e) {
       throw new MapperException(e.getMessage(), e);
+    }
+  }
+
+  private <U, T> void populateProperty(T mainObj, U relatedObj) {
+  try {
+      mainObjPropertyToPopulateWriteMethod.invoke(mainObj, relatedObj);
+    } catch (Exception e) {
+      throw new MapperException(
+          e.getMessage()
+              + ". Invoking "
+              + mainObjPropertyToPopulateWriteMethod
+              + " with value "
+              + relatedObj,
+          e);
     }
   }
 

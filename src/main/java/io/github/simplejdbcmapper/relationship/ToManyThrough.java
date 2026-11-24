@@ -29,8 +29,8 @@ import org.springframework.util.CollectionUtils;
  * @author Antony Joseph
  */
 class ToManyThrough {
-  private Class<?> mainType;
-  private Class<?> relatedType;
+  private final Class<?> mainType;
+  private final Class<?> relatedType;
   private Class<?> throughType;
   private String fkPropertyToMainObjId;
   private String fkPropertyToRelatedObjId;

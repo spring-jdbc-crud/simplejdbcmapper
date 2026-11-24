@@ -3,13 +3,12 @@ package io.github.simplejdbcmapper.core;
 import static org.junit.jupiter.api.Assertions.assertDoesNotThrow;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import io.github.simplejdbcmapper.model.Order;
+import io.github.simplejdbcmapper.model.OrderLine;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-
-import io.github.simplejdbcmapper.model.Order;
-import io.github.simplejdbcmapper.model.OrderLine;
 
 @SpringBootTest
 class MultiEntityTest {

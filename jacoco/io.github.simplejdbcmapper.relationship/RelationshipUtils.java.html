@@ -39,40 +39,40 @@ class RelationshipUtils {
     }
 <span class="pc bpc" id="L40" title="1 of 2 branches missed.">    if (m == null) {</span>
 <span class="nc" id="L41">      throw new IllegalArgumentException(</span>
-<span class="nc" id="L42">          &quot;Invalid argument. Could not find getter for &quot; + type.getName() + &quot;.&quot; + propertyName);</span>
+          &quot;Invalid argument. Could not find getter for %.%s&quot;
+<span class="nc" id="L43">              .formatted(type.getSimpleName(), propertyName));</span>
     }
     // turn off jvm access verification for invoke()
-<span class="fc" id="L45">    m.trySetAccessible();</span>
-<span class="fc" id="L46">    return m;</span>
+<span class="fc" id="L46">    m.trySetAccessible();</span>
+<span class="fc" id="L47">    return m;</span>
   }
 
   static Method getWriteMethod(Class&lt;?&gt; type, String propertyName) {
-<span class="fc" id="L50">    Class&lt;?&gt; propertyType = getPropertyType(type, propertyName);</span>
-<span class="fc" id="L51">    Method m =</span>
-<span class="fc" id="L52">        ReflectionUtils.findMethod(</span>
-<span class="fc" id="L53">            type, SET_PREFIX + StringUtils.capitalize(propertyName), propertyType);</span>
-<span class="pc bpc" id="L54" title="1 of 2 branches missed.">    if (m == null) {</span>
-<span class="nc" id="L55">      throw new IllegalArgumentException(</span>
-<span class="nc" id="L56">          &quot;Invalid argument. Could not find setter for &quot; + type.getName() + &quot;.&quot; + propertyName);</span>
+<span class="fc" id="L51">    Class&lt;?&gt; propertyType = getPropertyType(type, propertyName);</span>
+<span class="fc" id="L52">    Method m =</span>
+<span class="fc" id="L53">        ReflectionUtils.findMethod(</span>
+<span class="fc" id="L54">            type, SET_PREFIX + StringUtils.capitalize(propertyName), propertyType);</span>
+<span class="pc bpc" id="L55" title="1 of 2 branches missed.">    if (m == null) {</span>
+<span class="nc" id="L56">      throw new IllegalArgumentException(</span>
+          &quot;Invalid argument. Could not find setter for %s.%s&quot;
+<span class="nc" id="L58">              .formatted(type.getSimpleName(), propertyName));</span>
     }
     // turn off jvm access verification for invoke()
-<span class="fc" id="L59">    m.trySetAccessible();</span>
-<span class="fc" id="L60">    return m;</span>
+<span class="fc" id="L61">    m.trySetAccessible();</span>
+<span class="fc" id="L62">    return m;</span>
   }
 
   static Class&lt;?&gt; getPropertyType(Class&lt;?&gt; type, String propertyName) {
-<span class="fc" id="L64">    Field field = ReflectionUtils.findField(type, propertyName);</span>
-<span class="fc bfc" id="L65" title="All 2 branches covered.">    if (field != null) {</span>
-<span class="fc" id="L66">      return field.getType();</span>
+<span class="fc" id="L66">    Field field = ReflectionUtils.findField(type, propertyName);</span>
+<span class="fc bfc" id="L67" title="All 2 branches covered.">    if (field != null) {</span>
+<span class="fc" id="L68">      return field.getType();</span>
     } else {
-<span class="fc" id="L68">      throw new IllegalArgumentException(</span>
-          &quot;Invalid argument. Property name &quot;
-              + propertyName
-              + &quot; does not exist for &quot;
-<span class="fc" id="L72">              + type.getName());</span>
+<span class="fc" id="L70">      throw new IllegalArgumentException(</span>
+          &quot;Invalid argument. Property name %s  does not exist for &quot;
+<span class="fc" id="L72">              .formatted(propertyName, type.getName()));</span>
     }
   }
 
   private RelationshipUtils() {}
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main dc394cdfb7cdcda0d7015f450161aa7a8aab6129 2026-11-25T10:26:48</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 47229152584f4a0fb2b64c90b17efd214327430c 2026-11-25T15:28:51</div></body></html>

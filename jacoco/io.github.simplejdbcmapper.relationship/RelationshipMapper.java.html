@@ -143,23 +143,22 @@ import org.springframework.util.Assert;
       }
 <span class="fc bfc" id="L144" title="All 2 branches covered.">      if (!set.add(rel.getMainType().getName() + &quot;-&quot; + rel.getRelatedType().getName())) {</span>
 <span class="fc" id="L145">        throw new IllegalArgumentException(</span>
-            &quot;You cannot have multiple relationships between &quot;
-<span class="fc" id="L147">                + rel.getMainType().getSimpleName()</span>
-                + &quot; and  &quot;
-<span class="fc" id="L149">                + rel.getRelatedType().getSimpleName());</span>
+            &quot;You cannot have multiple relationships between %s and %s&quot;
+<span class="fc" id="L147">                .formatted(</span>
+<span class="fc" id="L148">                    rel.getMainType().getSimpleName(), rel.getRelatedType().getSimpleName()));</span>
       }
     }
-<span class="fc" id="L152">  }</span>
+<span class="fc" id="L151">  }</span>
 
   private ExtractorEntityResult getExtractorEntityResult(Class&lt;?&gt; type) {
-<span class="fc bfc" id="L155" title="All 2 branches covered.">    for (ExtractorEntityResult entityResult : results) {</span>
-<span class="fc bfc" id="L156" title="All 2 branches covered.">      if (entityResult.entityType() == type) {</span>
-<span class="fc" id="L157">        return entityResult;</span>
+<span class="fc bfc" id="L154" title="All 2 branches covered.">    for (ExtractorEntityResult entityResult : results) {</span>
+<span class="fc bfc" id="L155" title="All 2 branches covered.">      if (entityResult.entityType() == type) {</span>
+<span class="fc" id="L156">        return entityResult;</span>
       }
-<span class="fc" id="L159">    }</span>
-<span class="fc" id="L160">    throw new IllegalArgumentException(type + &quot; was not part of the query results&quot;);</span>
+<span class="fc" id="L158">    }</span>
+<span class="fc" id="L159">    throw new IllegalArgumentException(type + &quot; was not part of the query results&quot;);</span>
   }
 
-<span class="fc" id="L163">  record ExtractorEntityResult(Class&lt;?&gt; entityType, List&lt;?&gt; list, String idPropertyName) {}</span>
+<span class="fc" id="L162">  record ExtractorEntityResult(Class&lt;?&gt; entityType, List&lt;?&gt; list, String idPropertyName) {}</span>
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main dc394cdfb7cdcda0d7015f450161aa7a8aab6129 2026-11-25T10:26:48</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 47229152584f4a0fb2b64c90b17efd214327430c 2026-11-25T15:28:51</div></body></html>

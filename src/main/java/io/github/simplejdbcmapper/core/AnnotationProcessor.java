@@ -137,27 +137,31 @@ class AnnotationProcessor {
   private void validateTableAnnotation(Table tableAnnotation, Class<?> entityType) {
     if (tableAnnotation == null) {
       throw new AnnotationException(
-          entityType.getSimpleName() + " does not have the @Table annotation. It is required");
+          "%s does not have the @Table annotation. It is required"
+              .formatted(entityType.getSimpleName()));
     }
     if (!StringUtils.hasText(tableAnnotation.name())) {
       throw new AnnotationException(
-          entityType.getSimpleName() + " - @Table annotation: table name should not be blank.");
+          "%s - @Table annotation: table name should not be blank."
+              .formatted(entityType.getSimpleName()));
     }
     if (StringUtils.containsWhitespace(tableAnnotation.name())) {
       throw new AnnotationException(
-          entityType.getSimpleName()
-              + " - @Table annotation: no support for table names with spaces.");
+          "%s - @Table annotation: no support for table names with spaces."
+              .formatted(entityType.getSimpleName()));
     }
   }
 
   private void validateColumnName(String colName, String propertyName) {
     if (!StringUtils.hasText(colName)) {
       throw new AnnotationException(
-          "@Column annotation: column name should not be blank. property: " + propertyName);
+          "@Column annotation: column name should not be blank. property: %s"
+              .formatted(propertyName));
     }
     if (StringUtils.containsWhitespace(colName)) {
       throw new AnnotationException(
-          "@Column annotation: no support for column names with spaces. property: " + propertyName);
+          "@Column annotation: no support for column names with spaces. property: %s"
+              .formatted(propertyName));
     }
   }
 
@@ -165,30 +169,21 @@ class AnnotationProcessor {
     for (PropertyMapping propMapping : propertyMappings) {
       if (propMapping.getPropertyType().isPrimitive()) {
         throw new AnnotationException(
-            entityType.getSimpleName()
-                + "."
-                + propMapping.getPropertyName()
-                + " is a primitive. Mapper does not support primitive types. Use the corresponding java wrapper type.");
+            "%s.%s is a primitive. Mapper does not support primitive types. Use the corresponding java wrapper type."
+                .formatted(entityType.getSimpleName(), propMapping.getPropertyName()));
       } else if (propMapping.getPropertyType() == Blob.class) {
         throw new AnnotationException(
-            entityType.getSimpleName()
-                + "."
-                + propMapping.getPropertyName()
-                + " is of type java.sql.Blob and is not supported. Try using java type byte[] instead.");
+            "%s.%s is of type java.sql.Blob and is not supported. Try using java type byte[] instead."
+                .formatted(entityType.getSimpleName(), propMapping.getPropertyName()));
       } else if (propMapping.getPropertyType() == Clob.class) {
         throw new AnnotationException(
-            entityType.getSimpleName()
-                + "."
-                + propMapping.getPropertyName()
-                + " is of type java.sql.Clob and is not supported. Try using java type String instead.");
+            "%s.%s is of type java.sql.Clob and is not supported. Try using java type String instead."
+                .formatted(entityType.getSimpleName(), propMapping.getPropertyName()));
       } else if (propMapping.isVersionAnnotation()
           && propMapping.getPropertyType() != Integer.class) {
         throw new AnnotationException(
-            "@Version requires the type of property "
-                + entityType.getSimpleName()
-                + "."
-                + propMapping.getPropertyName()
-                + " to be Integer");
+            "@Version requires the type of property %s.%s to be Integer"
+                .formatted(entityType.getSimpleName(), propMapping.getPropertyName()));
       }
     }
   }
@@ -211,9 +206,8 @@ class AnnotationProcessor {
         }
         if (entry.getValue() > 1) {
           throw new AnnotationException(
-              String.format(
-                  "%s has multiple @%s annotations",
-                  entityType.getSimpleName(), entry.getKey().getSimpleName()));
+              "%s has multiple @%s annotations"
+                  .formatted(entityType.getSimpleName(), entry.getKey().getSimpleName()));
         }
       }
     }
@@ -243,10 +237,8 @@ class AnnotationProcessor {
       }
       if (conflictCnt > 1) {
         throw new AnnotationException(
-            entityType.getSimpleName()
-                + "."
-                + propMapping.getPropertyName()
-                + " has multiple annotations that conflict");
+            "%s.%s has multiple annotations that conflict"
+                .formatted(entityType.getSimpleName(), propMapping.getPropertyName()));
       }
     }
   }

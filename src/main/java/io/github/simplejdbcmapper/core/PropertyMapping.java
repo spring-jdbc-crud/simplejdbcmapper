@@ -13,6 +13,12 @@
  */
 package io.github.simplejdbcmapper.core;
 
+import io.github.simplejdbcmapper.annotation.CreatedBy;
+import io.github.simplejdbcmapper.annotation.CreatedOn;
+import io.github.simplejdbcmapper.annotation.Id;
+import io.github.simplejdbcmapper.annotation.UpdatedBy;
+import io.github.simplejdbcmapper.annotation.UpdatedOn;
+import io.github.simplejdbcmapper.annotation.Version;
 import io.github.simplejdbcmapper.exception.MapperException;
 import java.lang.reflect.Method;
 import java.sql.Types;
@@ -127,6 +133,24 @@ class PropertyMapping {
 
   public void setUpdatedOnAnnotation(boolean updatedOnAnnotation) {
     this.updatedOnAnnotation = updatedOnAnnotation;
+  }
+
+  public boolean hasAnnotation(Class<?> annotationType) {
+    if (annotationType == Id.class) {
+      return isIdAnnotation();
+    } else if (annotationType == Version.class) {
+      return isVersionAnnotation();
+    } else if (annotationType == CreatedOn.class) {
+      return isCreatedOnAnnotation();
+    } else if (annotationType == CreatedBy.class) {
+      return isCreatedByAnnotation();
+    } else if (annotationType == UpdatedOn.class) {
+      return isUpdatedOnAnnotation();
+    } else if (annotationType == UpdatedBy.class) {
+      return isUpdatedByAnnotation();
+    } else {
+      return false;
+    }
   }
 
   public boolean isVersionAnnotation() {

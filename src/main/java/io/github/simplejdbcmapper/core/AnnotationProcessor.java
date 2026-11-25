@@ -27,6 +27,7 @@ import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
 import java.sql.Blob;
 import java.sql.Clob;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.springframework.beans.BeanWrapper;
@@ -194,35 +195,26 @@ class AnnotationProcessor {
 
   private void annotationDuplicateCheck(
       List<PropertyMapping> propertyMappings, Class<?> entityType) {
-    int idCnt = 0;
-    int versionCnt = 0;
-    int createdByCnt = 0;
-    int createdOnCnt = 0;
-    int updatedOnCnt = 0;
-    int updatedByCnt = 0;
+
+    Map<Class<?>, Integer> map = new HashMap<>();
+    map.put(Id.class, 0);
+    map.put(Version.class, 0);
+    map.put(CreatedOn.class, 0);
+    map.put(CreatedBy.class, 0);
+    map.put(UpdatedOn.class, 0);
+    map.put(UpdatedBy.class, 0);
+
     for (PropertyMapping propMapping : propertyMappings) {
-      if (propMapping.isIdAnnotation() && ++idCnt > 1) {
-        throw new AnnotationException(entityType.getSimpleName() + " has multiple @Id annotations");
-      }
-      if (propMapping.isVersionAnnotation() && ++versionCnt > 1) {
-        throw new AnnotationException(
-            entityType.getSimpleName() + " has multiple @Version annotations");
-      }
-      if (propMapping.isCreatedOnAnnotation() && ++createdOnCnt > 1) {
-        throw new AnnotationException(
-            entityType.getSimpleName() + " has multiple @CreatedOn annotations");
-      }
-      if (propMapping.isCreatedByAnnotation() && ++createdByCnt > 1) {
-        throw new AnnotationException(
-            entityType.getSimpleName() + " has multiple @CreatedBy annotations");
-      }
-      if (propMapping.isUpdatedOnAnnotation() && ++updatedOnCnt > 1) {
-        throw new AnnotationException(
-            entityType.getSimpleName() + " has multiple @UpdatedOn annotations");
-      }
-      if (propMapping.isUpdatedByAnnotation() && ++updatedByCnt > 1) {
-        throw new AnnotationException(
-            entityType.getSimpleName() + " has multiple @UpdatedBy annotations");
+      for (Map.Entry<Class<?>, Integer> entry : map.entrySet()) {
+        if (propMapping.hasAnnotation(entry.getKey())) {
+          map.merge(entry.getKey(), 1, Integer::sum);
+        }
+        if (entry.getValue() > 1) {
+          throw new AnnotationException(
+              String.format(
+                  "%s has multiple @%s annotations",
+                  entityType.getSimpleName(), entry.getKey().getSimpleName()));
+        }
       }
     }
   }

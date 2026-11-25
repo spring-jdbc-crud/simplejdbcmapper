@@ -39,7 +39,8 @@ class RelationshipUtils {
     }
     if (m == null) {
       throw new IllegalArgumentException(
-          "Invalid argument. Could not find getter for " + type.getName() + "." + propertyName);
+          "Invalid argument. Could not find getter for %.%s"
+              .formatted(type.getSimpleName(), propertyName));
     }
     // turn off jvm access verification for invoke()
     m.trySetAccessible();
@@ -53,7 +54,8 @@ class RelationshipUtils {
             type, SET_PREFIX + StringUtils.capitalize(propertyName), propertyType);
     if (m == null) {
       throw new IllegalArgumentException(
-          "Invalid argument. Could not find setter for " + type.getName() + "." + propertyName);
+          "Invalid argument. Could not find setter for %s.%s"
+              .formatted(type.getSimpleName(), propertyName));
     }
     // turn off jvm access verification for invoke()
     m.trySetAccessible();
@@ -66,10 +68,8 @@ class RelationshipUtils {
       return field.getType();
     } else {
       throw new IllegalArgumentException(
-          "Invalid argument. Property name "
-              + propertyName
-              + " does not exist for "
-              + type.getName());
+          "Invalid argument. Property name %s  does not exist for "
+              .formatted(propertyName, type.getName()));
     }
   }
 

@@ -55,10 +55,8 @@ class SaveHelper {
       mapSqlParameterSource.addValue(paramName, new SqlBinaryValue(byteArray), columnSqlType);
     } else {
       throw new MapperException(
-          val.getClass().getSimpleName()
-              + " "
-              + paramName
-              + " : java type has to be byte[] for a BLOB mapping. No other type is supported.");
+          "%s.%s : java type has to be byte[] for a BLOB mapping. No other type is supported."
+              .formatted(val.getClass().getSimpleName(), paramName));
     }
   }
 
@@ -73,10 +71,8 @@ class SaveHelper {
       mapSqlParameterSource.addValue(paramName, new SqlCharacterValue(str), columnSqlType);
     } else {
       throw new MapperException(
-          val.getClass().getSimpleName()
-              + "."
-              + paramName
-              + " : java type has to be String for a CLOB mapping. No other type is supported");
+          "%s.%s : java type has to be String for a CLOB mapping. No other type is supported"
+              .formatted(val.getClass().getSimpleName(), paramName));
     }
   }
 

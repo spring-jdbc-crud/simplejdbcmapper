@@ -88,11 +88,9 @@ class UpdateOperation {
     Assert.notNull(sqlAndParams, "sqlAndParams must not be null");
     if (ew.getPropertyValue(tableMapping.getIdPropertyMapping()) == null) {
       throw new IllegalArgumentException(
-          "Property "
-              + tableMapping.getMappedObjType().getName()
-              + "."
-              + tableMapping.getIdPropertyName()
-              + " is the id and must not be null.");
+          "Property %s.%s is the id and must not be null."
+              .formatted(
+                  tableMapping.getMappedObjType().getName(), tableMapping.getIdPropertyName()));
     }
     Set<String> parameters = sqlAndParams.getParams();
     populateAuditProperties(ew, tableMapping);
@@ -108,15 +106,13 @@ class UpdateOperation {
               .update(sqlAndParams.getSql(), mapSqlParameterSource);
       if (cnt == 0) {
         throw new OptimisticLockingException(
-            ew.getWrappedClass().getSimpleName()
-                + " update failed due to stale data. Failed for "
-                + tableMapping.getIdColumnName()
-                + " = "
-                + ew.getPropertyValue(tableMapping.getIdPropertyMapping())
-                + " and "
-                + tableMapping.getVersionPropertyMapping().getColumnName()
-                + " = "
-                + ew.getPropertyValue(tableMapping.getVersionPropertyMapping()));
+            "%s update failed due to stale data. Failed for %s = %s and %s = %s"
+                .formatted(
+                    ew.getWrappedClass().getSimpleName(),
+                    tableMapping.getIdColumnName(),
+                    ew.getPropertyValue(tableMapping.getIdPropertyMapping()),
+                    tableMapping.getVersionPropertyMapping().getColumnName(),
+                    ew.getPropertyValue(tableMapping.getVersionPropertyMapping())));
       }
       // update the version in object with new version
       ew.setPropertyValue(
@@ -164,12 +160,11 @@ class UpdateOperation {
     Integer versionVal = (Integer) ew.getPropertyValue(tableMapping.getVersionPropertyMapping());
     if (versionVal == null) {
       throw new MapperException(
-          ew.getWrappedClass().getSimpleName()
-              + "."
-              + tableMapping.getVersionPropertyMapping().getPropertyName()
-              + " is configured with annotation @Version. Property "
-              + tableMapping.getVersionPropertyMapping().getPropertyName()
-              + " must not be null when updating.");
+          "%s.%s is configured with annotation @Version. Property %s must not be null when updating."
+              .formatted(
+                  ew.getWrappedClass().getSimpleName(),
+                  tableMapping.getVersionPropertyMapping().getPropertyName(),
+                  tableMapping.getVersionPropertyMapping().getPropertyName()));
     }
     return versionVal + 1;
   }
@@ -275,18 +270,13 @@ class UpdateOperation {
       PropertyMapping propertyMapping = tableMapping.getPropertyMappingByPropertyName(propertyName);
       if (propertyMapping == null) {
         throw new IllegalArgumentException(
-            "No mapping found for property '"
-                + propertyName
-                + "' in class "
-                + tableMapping.getMappedObjType().getName());
+            "No mapping found for property '%s' in class %s"
+                .formatted(propertyName, tableMapping.getMappedObjType().getName()));
       }
       if (propertyMapping.isIdAnnotation()) {
         throw new IllegalArgumentException(
-            "Id property "
-                + tableMapping.getMappedObjType().getName()
-                + "."
-                + propertyName
-                + " cannot be updated using updateSpecificProperties() method.");
+            "Id property %s.%s cannot be updated using updateSpecificProperties() method."
+                .formatted(tableMapping.getMappedObjType().getSimpleName(), propertyName));
       }
       if (propertyMapping.isCreatedByAnnotation()
           || propertyMapping.isCreatedOnAnnotation()
@@ -294,15 +284,12 @@ class UpdateOperation {
           || propertyMapping.isUpdatedOnAnnotation()
           || propertyMapping.isVersionAnnotation()) {
         throw new IllegalArgumentException(
-            "Auto assign property "
-                + tableMapping.getMappedObjType().getName()
-                + "."
-                + propertyName
-                + " cannot be updated using updateSpecificProperties() method.");
+            "Auto assign property %s.%s  cannot be updated using updateSpecificProperties() method."
+                .formatted(tableMapping.getMappedObjType().getSimpleName(), propertyName));
       }
       if (!set.add(propertyName)) {
         throw new IllegalArgumentException(
-            "duplicate property name in argument array: " + propertyNames);
+            "duplicate property name in argument array: %s".formatted(propertyName));
       }
     }
   }

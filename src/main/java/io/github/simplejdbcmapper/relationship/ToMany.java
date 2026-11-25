@@ -51,15 +51,12 @@ class ToMany {
         RelationshipUtils.getPropertyType(relatedType, relatedObjFkProperty);
     if (mainObjIdPropertyType != relatedObjFkPropertyType) {
       throw new IllegalArgumentException(
-          "Conflicting property types. Property type of "
-              + mainType.getSimpleName()
-              + "."
-              + mainObjIdProperty
-              + " and "
-              + relatedType.getSimpleName()
-              + "."
-              + relatedObjFkProperty
-              + " are not the same.");
+          "Conflicting property types. Property type of %s.%s and %s.%s are not the same."
+              .formatted(
+                  mainType.getSimpleName(),
+                  mainObjIdProperty,
+                  relatedType.getSimpleName(),
+                  relatedObjFkProperty));
     }
     this.mainObjIdPropertyReadMethod = RelationshipUtils.getReadMethod(mainType, mainObjIdProperty);
     this.relatedObjFkPropertyReadMethod =

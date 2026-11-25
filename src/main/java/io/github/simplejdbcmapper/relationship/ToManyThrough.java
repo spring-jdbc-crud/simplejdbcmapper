@@ -102,15 +102,12 @@ class ToManyThrough {
         RelationshipUtils.getPropertyType(throughType, fkPropertyToMainObjId);
     if (mainObjIdPropertyType != fkPropertyToMainObjIdType) {
       throw new IllegalArgumentException(
-          "Conflicting property types. Property type of "
-              + mainType.getSimpleName()
-              + "."
-              + mainObjIdProperty
-              + " and "
-              + throughType.getSimpleName()
-              + "."
-              + fkPropertyToMainObjId
-              + " are not the same.");
+          "Conflicting property types. Property type of %s.%s and %s.%s are not the same."
+              .formatted(
+                  mainType.getSimpleName(),
+                  mainObjIdProperty,
+                  throughType.getSimpleName(),
+                  fkPropertyToMainObjId));
     }
 
     Class<?> relatedObjIdPropertyType =
@@ -119,19 +116,16 @@ class ToManyThrough {
         RelationshipUtils.getPropertyType(throughType, fkPropertyToRelatedObjId);
     if (relatedObjIdPropertyType != fkPropertyToRelatedObjIdType) {
       throw new IllegalArgumentException(
-          "Conflicting property types. Property type of "
-              + relatedType.getSimpleName()
-              + "."
-              + relatedObjIdProperty
-              + " and "
-              + throughType.getSimpleName()
-              + "."
-              + fkPropertyToRelatedObjId
-              + " are not the same.");
+          "Conflicting property types. Property type of %s.%s and %s.%s are not the same."
+              .formatted(
+                  relatedType.getSimpleName(),
+                  relatedObjIdProperty,
+                  throughType.getSimpleName(),
+                  fkPropertyToRelatedObjId));
     }
   }
 
-  @SuppressWarnings({"rawtypes", "unchecked"})
+  @SuppressWarnings({"rawtypes"})
   private <U, T> void processMainObj(
       T mainObj,
       Map<Object, U> idToRelatedObjMap,

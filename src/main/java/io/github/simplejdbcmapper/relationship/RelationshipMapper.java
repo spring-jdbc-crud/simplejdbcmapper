@@ -143,10 +143,9 @@ public class RelationshipMapper implements GetListSpec {
       }
       if (!set.add(rel.getMainType().getName() + "-" + rel.getRelatedType().getName())) {
         throw new IllegalArgumentException(
-            "You cannot have multiple relationships between "
-                + rel.getMainType().getSimpleName()
-                + " and  "
-                + rel.getRelatedType().getSimpleName());
+            "You cannot have multiple relationships between %s and %s"
+                .formatted(
+                    rel.getMainType().getSimpleName(), rel.getRelatedType().getSimpleName()));
       }
     }
   }

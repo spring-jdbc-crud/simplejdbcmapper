@@ -39,7 +39,7 @@ class RelationshipUtils {
     }
     if (m == null) {
       throw new IllegalArgumentException(
-          "Invalid argument. Could not find getter for %.%s"
+          "Invalid argument. Could not find getter for %s.%s"
               .formatted(type.getSimpleName(), propertyName));
     }
     // turn off jvm access verification for invoke()
@@ -68,7 +68,7 @@ class RelationshipUtils {
       return field.getType();
     } else {
       throw new IllegalArgumentException(
-          "Invalid argument. Property name %s  does not exist for "
+          "Invalid argument. Property name %s  does not exist for %s"
               .formatted(propertyName, type.getName()));
     }
   }

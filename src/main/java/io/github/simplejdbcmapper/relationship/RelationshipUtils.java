@@ -68,7 +68,7 @@ class RelationshipUtils {
       return field.getType();
     } else {
       throw new IllegalArgumentException(
-          "Invalid argument. Property name %s  does not exist for %s"
+          "Invalid argument. Property name %s does not exist for %s"
               .formatted(propertyName, type.getName()));
     }
   }

@@ -239,7 +239,7 @@ public final class EntityRowMapper<T> implements RowMapper<T> {
 
   @Override
   public String toString() {
-    return "%s startIndex: %s  endIndex: %s"
+    return "%s startIndex: %d  endIndex: %d"
         .formatted(mappedObjConstructor.getName(), startIndex, endIndex);
   }
 }

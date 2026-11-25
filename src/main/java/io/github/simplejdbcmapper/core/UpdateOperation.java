@@ -289,7 +289,7 @@ class UpdateOperation {
       }
       if (!set.add(propertyName)) {
         throw new IllegalArgumentException(
-            "duplicate property name in argument array: %s".formatted(propertyName));
+            "duplicate property name in argument array: " + propertyNames);
       }
     }
   }

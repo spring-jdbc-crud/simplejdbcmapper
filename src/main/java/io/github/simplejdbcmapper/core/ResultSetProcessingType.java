@@ -14,6 +14,8 @@
 package io.github.simplejdbcmapper.core;
 
 import java.math.BigDecimal;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * enum for switch statements in the EntityRowMapper so it can be compiled into a 'tableswitch' by
@@ -41,43 +43,35 @@ enum ResultSetProcessingType {
   CUSTOMCONVERTER,
   UNKNOWN;
 
+  private static final Map<Class<?>, ResultSetProcessingType> map = new HashMap<>();
+
+  static {
+    map.put(BigDecimal.class, BIGDECIMAL);
+    map.put(Boolean.class, BOOLEAN);
+    map.put(byte[].class, BYTEARRAY);
+    map.put(Byte.class, BYTE);
+    map.put(java.sql.Date.class, DATE);
+    map.put(Double.class, DOUBLE);
+    map.put(Float.class, FLOAT);
+    map.put(Integer.class, INTEGER);
+    map.put(Long.class, LONG);
+    map.put(Number.class, NUMBER);
+    map.put(Short.class, SHORT);
+    map.put(String.class, STRING);
+    map.put(java.sql.Timestamp.class, TIMESTAMP);
+    map.put(java.sql.Time.class, TIME);
+    map.put(java.util.Date.class, UTILDATE);
+  }
+
   public static ResultSetProcessingType getResultSetProcessingType(
       Class<?> type, boolean isAttributeWithConverter) {
     if (isAttributeWithConverter) {
       return CUSTOMCONVERTER;
-    } else if (BigDecimal.class == type) {
-      return BIGDECIMAL;
-    } else if (Boolean.class == type) {
-      return BOOLEAN;
-    } else if (byte[].class == type) {
-      return BYTEARRAY;
-    } else if (Byte.class == type) {
-      return BYTE;
-    } else if (java.sql.Date.class == type) {
-      return DATE;
-    } else if (Double.class == type) {
-      return DOUBLE;
     } else if (type.isEnum()) {
       return ENUM;
-    } else if (Float.class == type) {
-      return FLOAT;
-    } else if (Integer.class == type) {
-      return INTEGER;
-    } else if (Long.class == type) {
-      return LONG;
-    } else if (Number.class == type) {
-      return NUMBER;
-    } else if (Short.class == type) {
-      return SHORT;
-    } else if (String.class == type) {
-      return STRING;
-    } else if (java.sql.Timestamp.class == type) {
-      return TIMESTAMP;
-    } else if (java.sql.Time.class == type) {
-      return TIME;
-    } else if (java.util.Date.class == type) {
-      return UTILDATE;
     }
-    return UNKNOWN;
+
+    ResultSetProcessingType val = map.get(type);
+    return val == null ? UNKNOWN : val;
   }
 }

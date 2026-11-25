@@ -201,47 +201,29 @@ class AnnotationProcessor {
     int updatedOnCnt = 0;
     int updatedByCnt = 0;
     for (PropertyMapping propMapping : propertyMappings) {
-      if (propMapping.isIdAnnotation()) {
-        idCnt++;
+      if (propMapping.isIdAnnotation() && ++idCnt > 1) {
+        throw new AnnotationException(entityType.getSimpleName() + " has multiple @Id annotations");
       }
-      if (propMapping.isVersionAnnotation()) {
-        versionCnt++;
+      if (propMapping.isVersionAnnotation() && ++versionCnt > 1) {
+        throw new AnnotationException(
+            entityType.getSimpleName() + " has multiple @Version annotations");
       }
-      if (propMapping.isCreatedOnAnnotation()) {
-        createdOnCnt++;
+      if (propMapping.isCreatedOnAnnotation() && ++createdOnCnt > 1) {
+        throw new AnnotationException(
+            entityType.getSimpleName() + " has multiple @CreatedOn annotations");
       }
-      if (propMapping.isCreatedByAnnotation()) {
-        createdByCnt++;
+      if (propMapping.isCreatedByAnnotation() && ++createdByCnt > 1) {
+        throw new AnnotationException(
+            entityType.getSimpleName() + " has multiple @CreatedBy annotations");
       }
-      if (propMapping.isUpdatedOnAnnotation()) {
-        updatedOnCnt++;
+      if (propMapping.isUpdatedOnAnnotation() && ++updatedOnCnt > 1) {
+        throw new AnnotationException(
+            entityType.getSimpleName() + " has multiple @UpdatedOn annotations");
       }
-      if (propMapping.isUpdatedByAnnotation()) {
-        updatedByCnt++;
+      if (propMapping.isUpdatedByAnnotation() && ++updatedByCnt > 1) {
+        throw new AnnotationException(
+            entityType.getSimpleName() + " has multiple @UpdatedBy annotations");
       }
-    }
-    if (idCnt > 1) {
-      throw new AnnotationException(entityType.getSimpleName() + " has multiple @Id annotations");
-    }
-    if (versionCnt > 1) {
-      throw new AnnotationException(
-          entityType.getSimpleName() + " has multiple @Version annotations");
-    }
-    if (createdOnCnt > 1) {
-      throw new AnnotationException(
-          entityType.getSimpleName() + " has multiple @CreatedOn annotations");
-    }
-    if (createdByCnt > 1) {
-      throw new AnnotationException(
-          entityType.getSimpleName() + " has multiple @CreatedBy annotations");
-    }
-    if (updatedOnCnt > 1) {
-      throw new AnnotationException(
-          entityType.getSimpleName() + " has multiple @UpdatedOn annotations");
-    }
-    if (updatedByCnt > 1) {
-      throw new AnnotationException(
-          entityType.getSimpleName() + " has multiple @UpdatedBy annotations");
     }
   }
 

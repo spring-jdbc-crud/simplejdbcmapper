@@ -43,11 +43,8 @@ class DeleteOperation {
     String sql = deleteSqlCache.get(entityType);
     if (sql == null) {
       sql =
-          "DELETE FROM "
-              + tableMapping.fullyQualifiedTableName()
-              + " WHERE "
-              + tableMapping.getIdColumnName()
-              + " = ?";
+          "DELETE FROM %s WHERE %s = ?"
+              .formatted(tableMapping.fullyQualifiedTableName(), tableMapping.getIdColumnName());
       deleteSqlCache.put(entityType, sql);
     }
     return sjmSupport

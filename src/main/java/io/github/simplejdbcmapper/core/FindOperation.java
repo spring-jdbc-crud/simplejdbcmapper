@@ -35,6 +35,10 @@ import org.springframework.util.ObjectUtils;
  */
 class FindOperation {
   private static final String ENTITY_TYPE_MUST_NOT_BE_NULL = "entityType must not be null";
+  private static final String IS_NULL = " IS NULL";
+  private static final String SELECT = "SELECT ";
+  private static final String FROM = " FROM ";
+  private static final String WHERE = " WHERE ";
 
   private final SimpleJdbcMapperSupport sjmSupport;
 
@@ -50,13 +54,11 @@ class FindOperation {
     String sql = findByIdSqlCache.get(entityType);
     if (sql == null) {
       sql =
-          "SELECT "
-              + sjmSupport.getSqlColumns(entityType)
-              + " FROM "
-              + tableMapping.fullyQualifiedTableName()
-              + " WHERE "
-              + tableMapping.getIdColumnName()
-              + " = ?";
+          "SELECT %s FROM %s WHERE %s = ?"
+              .formatted(
+                  sjmSupport.getSqlColumns(entityType),
+                  tableMapping.fullyQualifiedTableName(),
+                  tableMapping.getIdColumnName());
       findByIdSqlCache.put(entityType, sql);
     }
     T obj = null;
@@ -83,9 +85,9 @@ class FindOperation {
     Assert.notNull(entityType, ENTITY_TYPE_MUST_NOT_BE_NULL);
     TableMapping tableMapping = sjmSupport.getTableMapping(entityType);
     StringBuilder sql = new StringBuilder(256);
-    sql.append("SELECT ")
+    sql.append(SELECT)
         .append(sjmSupport.getSqlColumns(entityType))
-        .append(" FROM ")
+        .append(FROM)
         .append(tableMapping.fullyQualifiedTableName())
         .append(orderByClause(entityType, sortByArray, tableMapping));
     return sjmSupport
@@ -108,13 +110,13 @@ class FindOperation {
           entityType.getSimpleName() + "." + propertyName + " does not have a mapping.");
     }
     StringBuilder sql = new StringBuilder(256);
-    sql.append("SELECT ")
+    sql.append(SELECT)
         .append(sjmSupport.getSqlColumns(entityType))
-        .append(" FROM ")
+        .append(FROM)
         .append(tableMapping.fullyQualifiedTableName())
-        .append(" WHERE ");
+        .append(WHERE);
     if (propertyValue == null) {
-      sql.append(propMapping.getColumnName()).append(" IS NULL");
+      sql.append(propMapping.getColumnName()).append(IS_NULL);
     } else {
       sql.append(propMapping.getColumnName()).append(" = ?");
     }
@@ -157,17 +159,17 @@ class FindOperation {
     Set<U> localPropertyValues = new LinkedHashSet<>(propertyValues);
     boolean hasNullInSet = localPropertyValues.remove(null); // need to handle nulls in the set.
     StringBuilder sql = new StringBuilder(256);
-    sql.append("SELECT ")
+    sql.append(SELECT)
         .append(sjmSupport.getSqlColumns(entityType))
-        .append(" FROM ")
+        .append(FROM)
         .append(tableMapping.fullyQualifiedTableName())
-        .append(" WHERE ");
+        .append(WHERE);
     if (ObjectUtils.isEmpty(localPropertyValues)) {
-      sql.append(propMapping.getColumnName()).append(" IS NULL");
+      sql.append(propMapping.getColumnName()).append(IS_NULL);
     } else {
       sql.append(propMapping.getColumnName()).append(" IN (:propertyValues)");
       if (hasNullInSet) {
-        sql.append(" OR ").append(propMapping.getColumnName()).append(" IS NULL");
+        sql.append(" OR ").append(propMapping.getColumnName()).append(IS_NULL);
       }
     }
     sql.append(orderByClause(entityType, sortByArray, tableMapping));

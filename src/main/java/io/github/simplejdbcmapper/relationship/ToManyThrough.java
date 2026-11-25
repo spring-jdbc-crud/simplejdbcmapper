@@ -13,15 +13,17 @@
  */
 package io.github.simplejdbcmapper.relationship;
 
-import io.github.simplejdbcmapper.exception.MapperException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.springframework.util.Assert;
 import org.springframework.util.CollectionUtils;
+
+import io.github.simplejdbcmapper.exception.MapperException;
 
 /**
  * This handles the toManyThrough relationship.
@@ -181,9 +183,9 @@ class ToManyThrough {
   }
 
   private static class ThroughJoiner {
-    @SuppressWarnings("rawtypes")
     // key: fkToMainObjIdValue,
     // value: list of fkToRelatedObjIdValue
+    @SuppressWarnings("rawtypes")
     private Map<Object, List> mainObjIdMap = new HashMap<>();
 
     @SuppressWarnings({"unchecked", "rawtypes"})

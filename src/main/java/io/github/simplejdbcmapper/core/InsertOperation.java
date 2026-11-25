@@ -81,7 +81,7 @@ class InsertOperation {
       if (idValue != null) {
         throw new MapperException(
             "For insert() the property %s.%s has to be null since this insert is for an object whose id is auto generated"
-                .formatted(ew.getWrappedClass().getSimpleName(),tableMapping.getIdPropertyName()));
+                .formatted(ew.getWrappedClass().getSimpleName(), tableMapping.getIdPropertyName()));
       }
     } else {
       if (idValue == null) {

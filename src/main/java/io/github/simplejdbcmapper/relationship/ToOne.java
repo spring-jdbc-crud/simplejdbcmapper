@@ -51,15 +51,12 @@ class ToOne {
         RelationshipUtils.getPropertyType(relatedType, relatedObjJoinProperty);
     if (mainObjJoinPropertyType != relatedObjJoinPropertyType) {
       throw new IllegalArgumentException(
-          "Conflicting property types. Property type of "
-              + mainType.getSimpleName()
-              + "."
-              + mainObjJoinProperty
-              + " and "
-              + relatedType.getSimpleName()
-              + "."
-              + relatedObjJoinProperty
-              + " are not the same.");
+          "Conflicting property types. Property type of %s.%s and %s.%s are not the same."
+              .formatted(
+                  mainType.getSimpleName(),
+                  mainObjJoinProperty,
+                  relatedType.getSimpleName(),
+                  relatedObjJoinProperty));
     }
 
     this.mainObjJoinPropertyReadMethod =

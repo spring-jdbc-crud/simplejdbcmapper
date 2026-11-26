@@ -190,7 +190,6 @@ class AnnotationProcessor {
 
   private void annotationDuplicateCheck(
       List<PropertyMapping> propertyMappings, Class<?> entityType) {
-
     Map<Class<?>, Integer> map = new HashMap<>();
     map.put(Id.class, 0);
     map.put(Version.class, 0);
@@ -202,7 +201,7 @@ class AnnotationProcessor {
     for (PropertyMapping propMapping : propertyMappings) {
       for (Map.Entry<Class<?>, Integer> entry : map.entrySet()) {
         if (propMapping.hasAnnotation(entry.getKey())) {
-          map.merge(entry.getKey(), 1, Integer::sum);
+          map.merge(entry.getKey(), 1, Integer::sum); // add 1
         }
         if (entry.getValue() > 1) {
           throw new AnnotationException(

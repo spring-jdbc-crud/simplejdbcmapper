@@ -40,139 +40,136 @@ import org.springframework.util.StringUtils;
  */
 class TableMappingProvider {
   private final String schemaName;
-
   private final String catalogName;
-
-<span class="fc" id="L46">  private final SimpleCache&lt;Class&lt;?&gt;, TableMapping&gt; tableMappingCache = new SimpleCache&lt;&gt;();</span>
-
+<span class="fc" id="L44">  private final SimpleCache&lt;Class&lt;?&gt;, TableMapping&gt; tableMappingCache = new SimpleCache&lt;&gt;();</span>
   private final AnnotationProcessor ap;
 
-<span class="fc" id="L50">  public TableMappingProvider(String schemaName, String catalogName) {</span>
-<span class="fc" id="L51">    this.schemaName = schemaName;</span>
-<span class="fc" id="L52">    this.catalogName = catalogName;</span>
-<span class="fc" id="L53">    this.ap = new AnnotationProcessor();</span>
-<span class="fc" id="L54">  }</span>
+<span class="fc" id="L47">  public TableMappingProvider(String schemaName, String catalogName) {</span>
+<span class="fc" id="L48">    this.schemaName = schemaName;</span>
+<span class="fc" id="L49">    this.catalogName = catalogName;</span>
+<span class="fc" id="L50">    this.ap = new AnnotationProcessor();</span>
+<span class="fc" id="L51">  }</span>
 
   TableMapping getTableMapping(Class&lt;?&gt; entityType) {
-<span class="fc" id="L57">    Assert.notNull(entityType, &quot;entityType must not be null&quot;);</span>
-<span class="fc" id="L58">    TableMapping tableMapping = tableMappingCache.get(entityType);</span>
-<span class="fc bfc" id="L59" title="All 2 branches covered.">    if (tableMapping == null) {</span>
-<span class="fc" id="L60">      Table tableAnnotation = ap.getTableAnnotation(entityType);</span>
-<span class="fc" id="L61">      String tableName = tableAnnotation.name();</span>
-<span class="fc" id="L62">      String catalog = getCatalogForTable(tableAnnotation);</span>
-<span class="fc" id="L63">      String schema = getSchemaForTable(tableAnnotation);</span>
-<span class="fc" id="L64">      List&lt;Field&gt; fields = getAllFields(entityType);</span>
-<span class="fc" id="L65">      IdPropertyInfo idPropertyInfo = getIdPropertyInfo(entityType, fields);</span>
-<span class="fc" id="L66">      List&lt;PropertyMapping&gt; propertyMappings = getPropertyMappings(entityType, fields);</span>
-<span class="fc" id="L67">      tableMapping =</span>
+<span class="fc" id="L54">    Assert.notNull(entityType, &quot;entityType must not be null&quot;);</span>
+<span class="fc" id="L55">    TableMapping tableMapping = tableMappingCache.get(entityType);</span>
+<span class="fc bfc" id="L56" title="All 2 branches covered.">    if (tableMapping == null) {</span>
+<span class="fc" id="L57">      Table tableAnnotation = ap.getTableAnnotation(entityType);</span>
+<span class="fc" id="L58">      String tableName = tableAnnotation.name();</span>
+<span class="fc" id="L59">      String catalog = getCatalogForTable(tableAnnotation);</span>
+<span class="fc" id="L60">      String schema = getSchemaForTable(tableAnnotation);</span>
+<span class="fc" id="L61">      List&lt;Field&gt; fields = getAllFields(entityType);</span>
+<span class="fc" id="L62">      IdPropertyInfo idPropertyInfo = getIdPropertyInfo(entityType, fields);</span>
+<span class="fc" id="L63">      List&lt;PropertyMapping&gt; propertyMappings = getPropertyMappings(entityType, fields);</span>
+<span class="fc" id="L64">      tableMapping =</span>
           new TableMapping(
               entityType, tableName, schema, catalog, idPropertyInfo, propertyMappings);
-<span class="fc" id="L70">      tableMappingCache.put(entityType, tableMapping);</span>
+<span class="fc" id="L67">      tableMappingCache.put(entityType, tableMapping);</span>
     }
-<span class="fc" id="L72">    return tableMapping;</span>
+<span class="fc" id="L69">    return tableMapping;</span>
   }
 
   private List&lt;PropertyMapping&gt; getPropertyMappings(Class&lt;?&gt; entityType, List&lt;Field&gt; fields) {
     // key:propertyName, value:PropertyMapping. LinkedHashMap to maintain order of
     // properties
-<span class="fc" id="L78">    Map&lt;String, PropertyMapping&gt; propNameToPropertyMapping = new LinkedHashMap&lt;&gt;();</span>
-<span class="fc bfc" id="L79" title="All 2 branches covered.">    for (Field field : fields) {</span>
+<span class="fc" id="L75">    Map&lt;String, PropertyMapping&gt; propNameToPropertyMapping = new LinkedHashMap&lt;&gt;();</span>
+<span class="fc bfc" id="L76" title="All 2 branches covered.">    for (Field field : fields) {</span>
       // process column annotation always first
-<span class="fc" id="L81">      ap.processColumnAnnotation(field, propNameToPropertyMapping);</span>
-<span class="fc" id="L82">      ap.processIdAnnotation(field, propNameToPropertyMapping);</span>
-<span class="fc" id="L83">      ap.processVersionAnnotation(field, propNameToPropertyMapping);</span>
-<span class="fc" id="L84">      ap.processCreatedOnAnnotation(field, propNameToPropertyMapping);</span>
-<span class="fc" id="L85">      ap.processUpdatedOnAnnotation(field, propNameToPropertyMapping);</span>
-<span class="fc" id="L86">      ap.processCreatedByAnnotation(field, propNameToPropertyMapping);</span>
-<span class="fc" id="L87">      ap.processUpdatedByAnnotation(field, propNameToPropertyMapping);</span>
-<span class="fc" id="L88">    }</span>
-<span class="fc" id="L89">    List&lt;PropertyMapping&gt; propertyMappings = new ArrayList&lt;&gt;(propNameToPropertyMapping.values());</span>
-<span class="fc" id="L90">    ap.validateAnnotations(propertyMappings, entityType);</span>
-<span class="fc" id="L91">    assignReflectionReadWriteMethods(entityType, propertyMappings);</span>
-<span class="fc" id="L92">    assignResultSetProcessingType(propertyMappings);</span>
-<span class="fc" id="L93">    return propertyMappings;</span>
+<span class="fc" id="L78">      ap.processColumnAnnotation(field, propNameToPropertyMapping);</span>
+<span class="fc" id="L79">      ap.processIdAnnotation(field, propNameToPropertyMapping);</span>
+<span class="fc" id="L80">      ap.processVersionAnnotation(field, propNameToPropertyMapping);</span>
+<span class="fc" id="L81">      ap.processCreatedOnAnnotation(field, propNameToPropertyMapping);</span>
+<span class="fc" id="L82">      ap.processUpdatedOnAnnotation(field, propNameToPropertyMapping);</span>
+<span class="fc" id="L83">      ap.processCreatedByAnnotation(field, propNameToPropertyMapping);</span>
+<span class="fc" id="L84">      ap.processUpdatedByAnnotation(field, propNameToPropertyMapping);</span>
+<span class="fc" id="L85">    }</span>
+<span class="fc" id="L86">    List&lt;PropertyMapping&gt; propertyMappings = new ArrayList&lt;&gt;(propNameToPropertyMapping.values());</span>
+<span class="fc" id="L87">    ap.validateAnnotations(propertyMappings, entityType);</span>
+<span class="fc" id="L88">    assignReflectionReadWriteMethods(entityType, propertyMappings);</span>
+<span class="fc" id="L89">    assignResultSetProcessingType(propertyMappings);</span>
+<span class="fc" id="L90">    return propertyMappings;</span>
   }
 
   private List&lt;Field&gt; getAllFields(Class&lt;?&gt; entityType) {
-<span class="fc" id="L97">    List&lt;Field&gt; fields = new ArrayList&lt;&gt;();</span>
-<span class="fc" id="L98">    Class&lt;?&gt; clazz = entityType;</span>
-<span class="pc bpc" id="L99" title="1 of 4 branches missed.">    while (clazz != null &amp;&amp; clazz != Object.class) {</span>
-<span class="fc" id="L100">      Collections.addAll(fields, clazz.getDeclaredFields());</span>
-<span class="fc" id="L101">      clazz = clazz.getSuperclass();</span>
+<span class="fc" id="L94">    List&lt;Field&gt; fields = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L95">    Class&lt;?&gt; clazz = entityType;</span>
+<span class="pc bpc" id="L96" title="1 of 4 branches missed.">    while (clazz != null &amp;&amp; clazz != Object.class) {</span>
+<span class="fc" id="L97">      Collections.addAll(fields, clazz.getDeclaredFields());</span>
+<span class="fc" id="L98">      clazz = clazz.getSuperclass();</span>
     }
     // there could be duplicate fields due to super classes. Get unique fields list
     // by name
-<span class="fc" id="L105">    Set&lt;String&gt; set = new HashSet&lt;&gt;();</span>
-<span class="fc" id="L106">    return fields.stream().filter(p -&gt; set.add(p.getName())).toList();</span>
+<span class="fc" id="L102">    Set&lt;String&gt; set = new HashSet&lt;&gt;();</span>
+<span class="fc" id="L103">    return fields.stream().filter(p -&gt; set.add(p.getName())).toList();</span>
   }
 
   private void assignReflectionReadWriteMethods(
       Class&lt;?&gt; entityType, List&lt;PropertyMapping&gt; propertyMappings) {
     try {
-<span class="fc" id="L112">      BeanWrapperImpl bw = new BeanWrapperImpl(entityType);</span>
-<span class="fc bfc" id="L113" title="All 2 branches covered.">      for (PropertyMapping propMapping : propertyMappings) {</span>
-<span class="fc" id="L114">        PropertyDescriptor pd = bw.getPropertyDescriptor(propMapping.getPropertyName());</span>
-<span class="fc" id="L115">        Method writeMethod = pd.getWriteMethod();</span>
-<span class="fc bfc" id="L116" title="All 2 branches covered.">        if (writeMethod == null) {</span>
-<span class="fc" id="L117">          throw new MapperException(</span>
+<span class="fc" id="L109">      BeanWrapperImpl bw = new BeanWrapperImpl(entityType);</span>
+<span class="fc bfc" id="L110" title="All 2 branches covered.">      for (PropertyMapping propMapping : propertyMappings) {</span>
+<span class="fc" id="L111">        PropertyDescriptor pd = bw.getPropertyDescriptor(propMapping.getPropertyName());</span>
+<span class="fc" id="L112">        Method writeMethod = pd.getWriteMethod();</span>
+<span class="fc bfc" id="L113" title="All 2 branches covered.">        if (writeMethod == null) {</span>
+<span class="fc" id="L114">          throw new MapperException(</span>
               &quot;setter method was not accessible for property %s.%s  Check the method's visibility.&quot;
-<span class="fc" id="L119">                  .formatted(entityType.getName(), propMapping.getPropertyName()));</span>
+<span class="fc" id="L116">                  .formatted(entityType.getName(), propMapping.getPropertyName()));</span>
         }
         // turn off jvm access verification for invoke()
-<span class="fc" id="L122">        writeMethod.trySetAccessible();</span>
-<span class="fc" id="L123">        propMapping.setWriteMethod(writeMethod);</span>
+<span class="fc" id="L119">        writeMethod.trySetAccessible();</span>
+<span class="fc" id="L120">        propMapping.setWriteMethod(writeMethod);</span>
 
-<span class="fc" id="L125">        Method readMethod = pd.getReadMethod();</span>
-<span class="pc bpc" id="L126" title="1 of 2 branches missed.">        if (readMethod == null) {</span>
-<span class="nc" id="L127">          throw new MapperException(</span>
+<span class="fc" id="L122">        Method readMethod = pd.getReadMethod();</span>
+<span class="pc bpc" id="L123" title="1 of 2 branches missed.">        if (readMethod == null) {</span>
+<span class="nc" id="L124">          throw new MapperException(</span>
               &quot;getter method was not accessible for property %s.%s  Check the method's visibility.&quot;
-<span class="nc" id="L129">                  .formatted(entityType.getName(), propMapping.getPropertyName()));</span>
+<span class="nc" id="L126">                  .formatted(entityType.getName(), propMapping.getPropertyName()));</span>
         }
         // turn off jvm access verification for invoke()
-<span class="fc" id="L132">        readMethod.trySetAccessible();</span>
-<span class="fc" id="L133">        propMapping.setReadMethod(readMethod);</span>
-<span class="fc" id="L134">      }</span>
-<span class="fc" id="L135">    } catch (Exception e) {</span>
-<span class="fc" id="L136">      throw new MapperException(e.getMessage(), e);</span>
-<span class="fc" id="L137">    }</span>
-<span class="fc" id="L138">  }</span>
+<span class="fc" id="L129">        readMethod.trySetAccessible();</span>
+<span class="fc" id="L130">        propMapping.setReadMethod(readMethod);</span>
+<span class="fc" id="L131">      }</span>
+<span class="fc" id="L132">    } catch (Exception e) {</span>
+<span class="fc" id="L133">      throw new MapperException(e.getMessage(), e);</span>
+<span class="fc" id="L134">    }</span>
+<span class="fc" id="L135">  }</span>
 
   private void assignResultSetProcessingType(List&lt;PropertyMapping&gt; propertyMappings) {
-<span class="fc bfc" id="L141" title="All 2 branches covered.">    for (PropertyMapping propMapping : propertyMappings) {</span>
-<span class="fc" id="L142">      ResultSetProcessingType rsType =</span>
-<span class="fc" id="L143">          ResultSetProcessingType.getResultSetProcessingType(</span>
-<span class="fc" id="L144">              propMapping.getPropertyType(), propMapping.isWithConverterAttribute());</span>
-<span class="fc" id="L145">      propMapping.setResultSetProcessingType(rsType);</span>
-<span class="fc" id="L146">    }</span>
-<span class="fc" id="L147">  }</span>
+<span class="fc bfc" id="L138" title="All 2 branches covered.">    for (PropertyMapping propMapping : propertyMappings) {</span>
+<span class="fc" id="L139">      ResultSetProcessingType rsType =</span>
+<span class="fc" id="L140">          ResultSetProcessingType.getResultSetProcessingType(</span>
+<span class="fc" id="L141">              propMapping.getPropertyType(), propMapping.isWithConverterAttribute());</span>
+<span class="fc" id="L142">      propMapping.setResultSetProcessingType(rsType);</span>
+<span class="fc" id="L143">    }</span>
+<span class="fc" id="L144">  }</span>
 
   private IdPropertyInfo getIdPropertyInfo(Class&lt;?&gt; entityType, List&lt;Field&gt; fields) {
-<span class="fc" id="L150">    Id idAnnotation = null;</span>
-<span class="fc" id="L151">    String idPropertyName = null;</span>
-<span class="fc" id="L152">    boolean isIdAutoGenerated = false;</span>
-<span class="fc bfc" id="L153" title="All 2 branches covered.">    for (Field field : fields) {</span>
-<span class="fc" id="L154">      idAnnotation = AnnotationUtils.findAnnotation(field, Id.class);</span>
-<span class="fc bfc" id="L155" title="All 2 branches covered.">      if (idAnnotation != null) {</span>
-<span class="fc" id="L156">        idPropertyName = field.getName();</span>
-<span class="fc bfc" id="L157" title="All 2 branches covered.">        if (idAnnotation.type() == IdType.AUTO_GENERATED) {</span>
-<span class="fc" id="L158">          isIdAutoGenerated = true;</span>
+<span class="fc" id="L147">    Id idAnnotation = null;</span>
+<span class="fc" id="L148">    String idPropertyName = null;</span>
+<span class="fc" id="L149">    boolean isIdAutoGenerated = false;</span>
+<span class="fc bfc" id="L150" title="All 2 branches covered.">    for (Field field : fields) {</span>
+<span class="fc" id="L151">      idAnnotation = AnnotationUtils.findAnnotation(field, Id.class);</span>
+<span class="fc bfc" id="L152" title="All 2 branches covered.">      if (idAnnotation != null) {</span>
+<span class="fc" id="L153">        idPropertyName = field.getName();</span>
+<span class="fc bfc" id="L154" title="All 2 branches covered.">        if (idAnnotation.type() == IdType.AUTO_GENERATED) {</span>
+<span class="fc" id="L155">          isIdAutoGenerated = true;</span>
         }
         break;
       }
-<span class="fc" id="L162">    }</span>
-<span class="fc bfc" id="L163" title="All 2 branches covered.">    if (idAnnotation == null) {</span>
-<span class="fc" id="L164">      throw new AnnotationException(</span>
-<span class="fc" id="L165">          &quot;@Id annotation not found in class %s . It is required&quot;.formatted(entityType.getName()));</span>
+<span class="fc" id="L159">    }</span>
+<span class="fc bfc" id="L160" title="All 2 branches covered.">    if (idAnnotation == null) {</span>
+<span class="fc" id="L161">      throw new AnnotationException(</span>
+<span class="fc" id="L162">          &quot;@Id annotation not found in class %s . It is required&quot;.formatted(entityType.getName()));</span>
     }
-<span class="fc" id="L167">    return new IdPropertyInfo(idPropertyName, isIdAutoGenerated);</span>
+<span class="fc" id="L164">    return new IdPropertyInfo(idPropertyName, isIdAutoGenerated);</span>
   }
 
   private String getCatalogForTable(Table tableAnnotation) {
-<span class="fc bfc" id="L171" title="All 2 branches covered.">    return StringUtils.hasText(tableAnnotation.catalog()) ? tableAnnotation.catalog() : catalogName;</span>
+<span class="fc bfc" id="L168" title="All 2 branches covered.">    return StringUtils.hasText(tableAnnotation.catalog()) ? tableAnnotation.catalog() : catalogName;</span>
   }
 
   private String getSchemaForTable(Table tableAnnotation) {
-<span class="fc bfc" id="L175" title="All 2 branches covered.">    return StringUtils.hasText(tableAnnotation.schema()) ? tableAnnotation.schema() : schemaName;</span>
+<span class="fc bfc" id="L172" title="All 2 branches covered.">    return StringUtils.hasText(tableAnnotation.schema()) ? tableAnnotation.schema() : schemaName;</span>
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main f8d0bb3bd5c051a658614533cce427a009eb83db 2026-11-26T01:39:35</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main f4efa5fa49a6ae6c4f284b098680c84a10174cdd 2026-11-26T02:20:11</div></body></html>

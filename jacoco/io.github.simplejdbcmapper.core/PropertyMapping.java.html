@@ -29,45 +29,28 @@ import java.sql.Types;
  * @author Antony Joseph
  */
 class PropertyMapping {
-
   private final String propertyName;
-
   private final Class&lt;?&gt; propertyType;
-
   private final String columnName;
-
   private final Integer columnSqlType;
-
   private Method writeMethod;
-
   private Method readMethod;
-
   private ResultSetProcessingType resultSetProcessingType;
 
   @SuppressWarnings(&quot;rawtypes&quot;)
   private AttributeConverter converter;
 
-<span class="fc" id="L50">  private boolean idAnnotation = false;</span>
-
-<span class="fc" id="L52">  private boolean createdOnAnnotation = false;</span>
-
-<span class="fc" id="L54">  private boolean updatedOnAnnotation = false;</span>
-
-<span class="fc" id="L56">  private boolean versionAnnotation = false;</span>
-
-<span class="fc" id="L58">  private boolean createdByAnnotation = false;</span>
-
-<span class="fc" id="L60">  private boolean updatedByAnnotation = false;</span>
-
-<span class="fc" id="L62">  private boolean blobAttribute = false;</span>
-
-<span class="fc" id="L64">  private boolean clobAttribute = false;</span>
-
-<span class="fc" id="L66">  private boolean enumAttribute = false;</span>
-
-<span class="fc" id="L68">  private boolean standardAttribute = false;</span>
-
-<span class="fc" id="L70">  private boolean withConverterAttribute = false;</span>
+<span class="fc" id="L43">  private boolean idAnnotation = false;</span>
+<span class="fc" id="L44">  private boolean createdOnAnnotation = false;</span>
+<span class="fc" id="L45">  private boolean updatedOnAnnotation = false;</span>
+<span class="fc" id="L46">  private boolean versionAnnotation = false;</span>
+<span class="fc" id="L47">  private boolean createdByAnnotation = false;</span>
+<span class="fc" id="L48">  private boolean updatedByAnnotation = false;</span>
+<span class="fc" id="L49">  private boolean blobAttribute = false;</span>
+<span class="fc" id="L50">  private boolean clobAttribute = false;</span>
+<span class="fc" id="L51">  private boolean enumAttribute = false;</span>
+<span class="fc" id="L52">  private boolean standardAttribute = false;</span>
+<span class="fc" id="L53">  private boolean withConverterAttribute = false;</span>
 
   @SuppressWarnings(&quot;rawtypes&quot;)
   public PropertyMapping(
@@ -75,177 +58,177 @@ class PropertyMapping {
       Class&lt;?&gt; propertyType,
       String columnName,
       Integer columnSqlType,
-<span class="fc" id="L78">      Class&lt;?&gt; converterClass) {</span>
-<span class="pc bpc" id="L79" title="3 of 6 branches missed.">    if (propertyName == null || propertyType == null || columnName == null) {</span>
-<span class="nc" id="L80">      throw new IllegalArgumentException(&quot;propertyName, propertyType, columnName must not be null&quot;);</span>
+<span class="fc" id="L61">      Class&lt;?&gt; converterClass) {</span>
+<span class="pc bpc" id="L62" title="3 of 6 branches missed.">    if (propertyName == null || propertyType == null || columnName == null) {</span>
+<span class="nc" id="L63">      throw new IllegalArgumentException(&quot;propertyName, propertyType, columnName must not be null&quot;);</span>
     }
-<span class="fc" id="L82">    this.propertyName = propertyName;</span>
-<span class="fc" id="L83">    this.propertyType = propertyType;</span>
+<span class="fc" id="L65">    this.propertyName = propertyName;</span>
+<span class="fc" id="L66">    this.propertyType = propertyType;</span>
     // column names stored in lower case always. No plans to support case sensitive
     // table column names or column names with spaces in them
-<span class="fc" id="L86">    this.columnName = InternalUtils.toLowerCase(columnName);</span>
-<span class="fc" id="L87">    this.columnSqlType = columnSqlType;</span>
-<span class="fc bfc" id="L88" title="All 2 branches covered.">    if (converterClass != null) {</span>
+<span class="fc" id="L69">    this.columnName = InternalUtils.toLowerCase(columnName);</span>
+<span class="fc" id="L70">    this.columnSqlType = columnSqlType;</span>
+<span class="fc bfc" id="L71" title="All 2 branches covered.">    if (converterClass != null) {</span>
       try {
-<span class="fc" id="L90">        converter = (AttributeConverter) converterClass.getDeclaredConstructor().newInstance();</span>
-<span class="nc" id="L91">      } catch (Exception e) {</span>
-<span class="nc" id="L92">        throw new MapperException(e);</span>
-<span class="fc" id="L93">      }</span>
+<span class="fc" id="L73">        converter = (AttributeConverter) converterClass.getDeclaredConstructor().newInstance();</span>
+<span class="nc" id="L74">      } catch (Exception e) {</span>
+<span class="nc" id="L75">        throw new MapperException(e);</span>
+<span class="fc" id="L76">      }</span>
     }
-<span class="fc" id="L95">    determineAttributeProcessingType();</span>
-<span class="fc" id="L96">  }</span>
+<span class="fc" id="L78">    determineAttributeProcessingType();</span>
+<span class="fc" id="L79">  }</span>
 
   public int getColumnSqlType() {
-<span class="fc" id="L99">    return columnSqlType;</span>
+<span class="fc" id="L82">    return columnSqlType;</span>
   }
 
   public String getPropertyName() {
-<span class="fc" id="L103">    return propertyName;</span>
+<span class="fc" id="L86">    return propertyName;</span>
   }
 
   public Class&lt;?&gt; getPropertyType() {
-<span class="fc" id="L107">    return this.propertyType;</span>
+<span class="fc" id="L90">    return this.propertyType;</span>
   }
 
   public String getColumnName() {
-<span class="fc" id="L111">    return columnName;</span>
+<span class="fc" id="L94">    return columnName;</span>
   }
 
   public boolean isIdAnnotation() {
-<span class="fc" id="L115">    return idAnnotation;</span>
+<span class="fc" id="L98">    return idAnnotation;</span>
   }
 
   public void setIdAnnotation(boolean idAnnotation) {
-<span class="fc" id="L119">    this.idAnnotation = idAnnotation;</span>
-<span class="fc" id="L120">  }</span>
+<span class="fc" id="L102">    this.idAnnotation = idAnnotation;</span>
+<span class="fc" id="L103">  }</span>
 
   public boolean isCreatedOnAnnotation() {
-<span class="fc" id="L123">    return createdOnAnnotation;</span>
+<span class="fc" id="L106">    return createdOnAnnotation;</span>
   }
 
   public void setCreatedOnAnnotation(boolean createdOnAnnotation) {
-<span class="fc" id="L127">    this.createdOnAnnotation = createdOnAnnotation;</span>
-<span class="fc" id="L128">  }</span>
+<span class="fc" id="L110">    this.createdOnAnnotation = createdOnAnnotation;</span>
+<span class="fc" id="L111">  }</span>
 
   public boolean isUpdatedOnAnnotation() {
-<span class="fc" id="L131">    return updatedOnAnnotation;</span>
+<span class="fc" id="L114">    return updatedOnAnnotation;</span>
   }
 
   public void setUpdatedOnAnnotation(boolean updatedOnAnnotation) {
-<span class="fc" id="L135">    this.updatedOnAnnotation = updatedOnAnnotation;</span>
-<span class="fc" id="L136">  }</span>
+<span class="fc" id="L118">    this.updatedOnAnnotation = updatedOnAnnotation;</span>
+<span class="fc" id="L119">  }</span>
 
   public boolean hasAnnotation(Class&lt;?&gt; annotationType) {
-<span class="fc bfc" id="L139" title="All 2 branches covered.">    if (annotationType == Id.class) {</span>
-<span class="fc" id="L140">      return isIdAnnotation();</span>
-<span class="fc bfc" id="L141" title="All 2 branches covered.">    } else if (annotationType == Version.class) {</span>
-<span class="fc" id="L142">      return isVersionAnnotation();</span>
-<span class="fc bfc" id="L143" title="All 2 branches covered.">    } else if (annotationType == CreatedOn.class) {</span>
-<span class="fc" id="L144">      return isCreatedOnAnnotation();</span>
-<span class="fc bfc" id="L145" title="All 2 branches covered.">    } else if (annotationType == CreatedBy.class) {</span>
-<span class="fc" id="L146">      return isCreatedByAnnotation();</span>
-<span class="fc bfc" id="L147" title="All 2 branches covered.">    } else if (annotationType == UpdatedOn.class) {</span>
-<span class="fc" id="L148">      return isUpdatedOnAnnotation();</span>
-<span class="pc bpc" id="L149" title="1 of 2 branches missed.">    } else if (annotationType == UpdatedBy.class) {</span>
-<span class="fc" id="L150">      return isUpdatedByAnnotation();</span>
+<span class="fc bfc" id="L122" title="All 2 branches covered.">    if (annotationType == Id.class) {</span>
+<span class="fc" id="L123">      return isIdAnnotation();</span>
+<span class="fc bfc" id="L124" title="All 2 branches covered.">    } else if (annotationType == Version.class) {</span>
+<span class="fc" id="L125">      return isVersionAnnotation();</span>
+<span class="fc bfc" id="L126" title="All 2 branches covered.">    } else if (annotationType == CreatedOn.class) {</span>
+<span class="fc" id="L127">      return isCreatedOnAnnotation();</span>
+<span class="fc bfc" id="L128" title="All 2 branches covered.">    } else if (annotationType == CreatedBy.class) {</span>
+<span class="fc" id="L129">      return isCreatedByAnnotation();</span>
+<span class="fc bfc" id="L130" title="All 2 branches covered.">    } else if (annotationType == UpdatedOn.class) {</span>
+<span class="fc" id="L131">      return isUpdatedOnAnnotation();</span>
+<span class="pc bpc" id="L132" title="1 of 2 branches missed.">    } else if (annotationType == UpdatedBy.class) {</span>
+<span class="fc" id="L133">      return isUpdatedByAnnotation();</span>
     } else {
-<span class="nc" id="L152">      return false;</span>
+<span class="nc" id="L135">      return false;</span>
     }
   }
 
   public boolean isVersionAnnotation() {
-<span class="fc" id="L157">    return versionAnnotation;</span>
+<span class="fc" id="L140">    return versionAnnotation;</span>
   }
 
   public void setVersionAnnotation(boolean versionAnnotation) {
-<span class="fc" id="L161">    this.versionAnnotation = versionAnnotation;</span>
-<span class="fc" id="L162">  }</span>
+<span class="fc" id="L144">    this.versionAnnotation = versionAnnotation;</span>
+<span class="fc" id="L145">  }</span>
 
   public boolean isCreatedByAnnotation() {
-<span class="fc" id="L165">    return createdByAnnotation;</span>
+<span class="fc" id="L148">    return createdByAnnotation;</span>
   }
 
   public void setCreatedByAnnotation(boolean createdByAnnotation) {
-<span class="fc" id="L169">    this.createdByAnnotation = createdByAnnotation;</span>
-<span class="fc" id="L170">  }</span>
+<span class="fc" id="L152">    this.createdByAnnotation = createdByAnnotation;</span>
+<span class="fc" id="L153">  }</span>
 
   public boolean isUpdatedByAnnotation() {
-<span class="fc" id="L173">    return updatedByAnnotation;</span>
+<span class="fc" id="L156">    return updatedByAnnotation;</span>
   }
 
   public void setUpdatedByAnnotation(boolean updatedByAnnotation) {
-<span class="fc" id="L177">    this.updatedByAnnotation = updatedByAnnotation;</span>
-<span class="fc" id="L178">  }</span>
+<span class="fc" id="L160">    this.updatedByAnnotation = updatedByAnnotation;</span>
+<span class="fc" id="L161">  }</span>
 
   public boolean isBlobAttribute() {
-<span class="fc" id="L181">    return blobAttribute;</span>
+<span class="fc" id="L164">    return blobAttribute;</span>
   }
 
   public boolean isClobAttribute() {
-<span class="fc" id="L185">    return clobAttribute;</span>
+<span class="fc" id="L168">    return clobAttribute;</span>
   }
 
   public boolean isEnumAttribute() {
-<span class="fc" id="L189">    return enumAttribute;</span>
+<span class="fc" id="L172">    return enumAttribute;</span>
   }
 
   public boolean isStandardAttribute() {
-<span class="fc" id="L193">    return standardAttribute;</span>
+<span class="fc" id="L176">    return standardAttribute;</span>
   }
 
   public boolean isWithConverterAttribute() {
-<span class="fc" id="L197">    return withConverterAttribute;</span>
+<span class="fc" id="L180">    return withConverterAttribute;</span>
   }
 
   @SuppressWarnings(&quot;rawtypes&quot;)
   public AttributeConverter getConverter() {
-<span class="fc" id="L202">    return this.converter;</span>
+<span class="fc" id="L185">    return this.converter;</span>
   }
 
   public Method getReadMethod() {
-<span class="fc" id="L206">    return readMethod;</span>
+<span class="fc" id="L189">    return readMethod;</span>
   }
 
   public void setReadMethod(Method readMethod) {
-<span class="fc" id="L210">    this.readMethod = readMethod;</span>
-<span class="fc" id="L211">  }</span>
+<span class="fc" id="L193">    this.readMethod = readMethod;</span>
+<span class="fc" id="L194">  }</span>
 
   public Method getWriteMethod() {
-<span class="fc" id="L214">    return writeMethod;</span>
+<span class="fc" id="L197">    return writeMethod;</span>
   }
 
   public void setWriteMethod(Method writeMethod) {
-<span class="fc" id="L218">    this.writeMethod = writeMethod;</span>
-<span class="fc" id="L219">  }</span>
+<span class="fc" id="L201">    this.writeMethod = writeMethod;</span>
+<span class="fc" id="L202">  }</span>
 
   public ResultSetProcessingType getResultSetProcessingType() {
-<span class="fc" id="L222">    return resultSetProcessingType;</span>
+<span class="fc" id="L205">    return resultSetProcessingType;</span>
   }
 
   public void setResultSetProcessingType(ResultSetProcessingType resultSetProcessingType) {
-<span class="fc" id="L226">    this.resultSetProcessingType = resultSetProcessingType;</span>
-<span class="fc" id="L227">  }</span>
+<span class="fc" id="L209">    this.resultSetProcessingType = resultSetProcessingType;</span>
+<span class="fc" id="L210">  }</span>
 
   private void determineAttributeProcessingType() {
-<span class="fc bfc" id="L230" title="All 2 branches covered.">    if (converter != null) {</span>
-<span class="fc" id="L231">      withConverterAttribute = true;</span>
-<span class="fc bfc" id="L232" title="All 2 branches covered.">    } else if (propertyType.isEnum()) {</span>
-<span class="fc" id="L233">      enumAttribute = true;</span>
-<span class="pc bpc" id="L234" title="1 of 2 branches missed.">    } else if (columnSqlType != null</span>
-<span class="fc bfc" id="L235" title="All 2 branches covered.">        &amp;&amp; (columnSqlType == Types.BLOB</span>
-<span class="fc bfc" id="L236" title="All 2 branches covered.">            || columnSqlType == Types.ARRAY</span>
-<span class="fc bfc" id="L237" title="All 2 branches covered.">            || columnSqlType == Types.LONGVARBINARY</span>
-<span class="pc bpc" id="L238" title="1 of 2 branches missed.">            || columnSqlType == Types.VARBINARY)) {</span>
-<span class="fc" id="L239">      blobAttribute = true;</span>
-<span class="pc bpc" id="L240" title="1 of 2 branches missed.">    } else if (columnSqlType != null</span>
-<span class="fc bfc" id="L241" title="All 2 branches covered.">        &amp;&amp; (columnSqlType == Types.CLOB</span>
-<span class="fc bfc" id="L242" title="All 2 branches covered.">            || columnSqlType == Types.NCLOB</span>
-<span class="fc bfc" id="L243" title="All 2 branches covered.">            || columnSqlType == Types.LONGVARCHAR</span>
-<span class="pc bpc" id="L244" title="1 of 2 branches missed.">            || columnSqlType == Types.LONGNVARCHAR)) {</span>
-<span class="fc" id="L245">      clobAttribute = true;</span>
+<span class="fc bfc" id="L213" title="All 2 branches covered.">    if (converter != null) {</span>
+<span class="fc" id="L214">      withConverterAttribute = true;</span>
+<span class="fc bfc" id="L215" title="All 2 branches covered.">    } else if (propertyType.isEnum()) {</span>
+<span class="fc" id="L216">      enumAttribute = true;</span>
+<span class="pc bpc" id="L217" title="1 of 2 branches missed.">    } else if (columnSqlType != null</span>
+<span class="fc bfc" id="L218" title="All 2 branches covered.">        &amp;&amp; (columnSqlType == Types.BLOB</span>
+<span class="fc bfc" id="L219" title="All 2 branches covered.">            || columnSqlType == Types.ARRAY</span>
+<span class="fc bfc" id="L220" title="All 2 branches covered.">            || columnSqlType == Types.LONGVARBINARY</span>
+<span class="pc bpc" id="L221" title="1 of 2 branches missed.">            || columnSqlType == Types.VARBINARY)) {</span>
+<span class="fc" id="L222">      blobAttribute = true;</span>
+<span class="pc bpc" id="L223" title="1 of 2 branches missed.">    } else if (columnSqlType != null</span>
+<span class="fc bfc" id="L224" title="All 2 branches covered.">        &amp;&amp; (columnSqlType == Types.CLOB</span>
+<span class="fc bfc" id="L225" title="All 2 branches covered.">            || columnSqlType == Types.NCLOB</span>
+<span class="fc bfc" id="L226" title="All 2 branches covered.">            || columnSqlType == Types.LONGVARCHAR</span>
+<span class="pc bpc" id="L227" title="1 of 2 branches missed.">            || columnSqlType == Types.LONGNVARCHAR)) {</span>
+<span class="fc" id="L228">      clobAttribute = true;</span>
     } else {
-<span class="fc" id="L247">      standardAttribute = true;</span>
+<span class="fc" id="L230">      standardAttribute = true;</span>
     }
-<span class="fc" id="L249">  }</span>
+<span class="fc" id="L232">  }</span>
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main f8d0bb3bd5c051a658614533cce427a009eb83db 2026-11-26T01:39:35</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main f4efa5fa49a6ae6c4f284b098680c84a10174cdd 2026-11-26T02:20:11</div></body></html>

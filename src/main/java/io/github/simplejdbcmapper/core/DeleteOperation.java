@@ -23,7 +23,6 @@ import org.springframework.util.Assert;
  */
 class DeleteOperation {
   private final SimpleJdbcMapperSupport sjmSupport;
-
   private final SimpleCache<Class<?>, String> deleteSqlCache = new SimpleCache<>();
 
   public DeleteOperation(SimpleJdbcMapperSupport sjmSupport) {

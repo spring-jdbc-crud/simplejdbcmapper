@@ -27,7 +27,6 @@ import org.springframework.util.Assert;
  */
 class InsertOperation {
   private final SimpleJdbcMapperSupport sjmSupport;
-
   private final SimpleCache<Class<?>, SimpleJdbcInsert> insertSqlCache = new SimpleCache<>();
 
   public InsertOperation(SimpleJdbcMapperSupport sjmSupport) {

@@ -40,11 +40,8 @@ import org.springframework.util.StringUtils;
  */
 class TableMappingProvider {
   private final String schemaName;
-
   private final String catalogName;
-
   private final SimpleCache<Class<?>, TableMapping> tableMappingCache = new SimpleCache<>();
-
   private final AnnotationProcessor ap;
 
   public TableMappingProvider(String schemaName, String catalogName) {

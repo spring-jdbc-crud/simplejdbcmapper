@@ -41,7 +41,6 @@ class FindOperation {
   private static final String WHERE = " WHERE ";
 
   private final SimpleJdbcMapperSupport sjmSupport;
-
   private final SimpleCache<Class<?>, String> findByIdSqlCache = new SimpleCache<>();
 
   public FindOperation(SimpleJdbcMapperSupport sjmSupport) {

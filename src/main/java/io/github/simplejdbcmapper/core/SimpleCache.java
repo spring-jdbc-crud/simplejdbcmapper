@@ -25,7 +25,6 @@ class SimpleCache<K, V> {
   private static final int UNLIMITED = -1;
 
   private final Map<K, V> cache = new ConcurrentHashMap<>();
-
   private int capacity = UNLIMITED;
 
   public SimpleCache() {}

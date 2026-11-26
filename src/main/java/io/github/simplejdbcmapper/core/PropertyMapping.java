@@ -39,6 +39,7 @@ class PropertyMapping {
 
   @SuppressWarnings("rawtypes")
   private AttributeConverter converter;
+
   private boolean idAnnotation = false;
   private boolean createdOnAnnotation = false;
   private boolean updatedOnAnnotation = false;

@@ -24,7 +24,6 @@ import org.springframework.util.StringUtils;
  */
 class SqlAndParams {
   private final String sql; // the sql string
-
   private final Set<String> params; // the parameters for the sql
 
   public SqlAndParams(String sql, Set<String> params) {

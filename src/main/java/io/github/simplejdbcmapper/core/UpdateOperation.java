@@ -32,13 +32,10 @@ import org.springframework.util.Assert;
  */
 class UpdateOperation {
   private static final String TABLE_MAPPING_MUST_NOT_BE_NULL = "tableMapping must not be null";
-
   private static final String INCREMENTED_VERSION = "[incrementedVersion]";
 
   private final SimpleJdbcMapperSupport sjmSupport;
-
   private final SimpleCache<Class<?>, SqlAndParams> updateSqlCache = new SimpleCache<>();
-
   // Map key - class name and properties concatenated by hyphens
   // value - the update sql and params
   private final SimpleCache<String, SqlAndParams> updateSpecificPropertiesSqlCache =

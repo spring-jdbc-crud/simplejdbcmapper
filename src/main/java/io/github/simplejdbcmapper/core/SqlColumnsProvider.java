@@ -26,11 +26,9 @@ class SqlColumnsProvider {
   // Map key - classname
   // value - the column sql string
   private final SimpleCache<Class<?>, String> sqlColumnsCache = new SimpleCache<>();
-
   // Map key - classname-tableAlias
   // value - the column sql string with columns prefixed with table alias
   private final SimpleCache<String, String> sqlColumnsAliasCache = new SimpleCache<>(5000);
-
   private final TableMappingProvider tableMappingProvider;
 
   public SqlColumnsProvider(TableMappingProvider tableMappingProvider) {

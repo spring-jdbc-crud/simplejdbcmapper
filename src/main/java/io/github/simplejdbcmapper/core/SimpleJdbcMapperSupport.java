@@ -30,31 +30,19 @@ import org.springframework.util.Assert;
  * @author Antony Joseph
  */
 class SimpleJdbcMapperSupport {
-
   private final DataSource dataSource;
-
   private final String schemaName;
-
   private final String catalogName;
-
-  private JdbcClient jdbcClient;
-
   private final JdbcTemplate jdbcTemplate;
-
   private final NamedParameterJdbcTemplate npJdbcTemplate;
-
   private final TableMappingProvider tableMappingProvider;
-
   private final SqlColumnsProvider sqlColumnsProvider;
-
+  private JdbcClient jdbcClient;
   // Using Spring's DefaultConversionService as conversionService for
   // SimpleJdbcMapper
   private ConversionService conversionService = new DefaultConversionService();
-
   private Supplier<?> recordAuditedOnSupplier;
-
   private Supplier<?> recordAuditedBySupplier;
-
   private boolean conversionServiceManuallySet = false;
 
   /**

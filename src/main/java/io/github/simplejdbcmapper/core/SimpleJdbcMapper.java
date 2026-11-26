@@ -42,17 +42,12 @@ import org.springframework.util.Assert;
  * @author Antony Joseph
  */
 public final class SimpleJdbcMapper {
-
   private static final Logger logger = LoggerFactory.getLogger(SimpleJdbcMapper.class);
 
   private SimpleJdbcMapperSupport simpleJdbcMapperSupport;
-
   private InsertOperation insertOperation;
-
   private FindOperation findOperation;
-
   private UpdateOperation updateOperation;
-
   private DeleteOperation deleteOperation;
 
   /**

@@ -143,6 +143,18 @@ class SimpleJdbcMapperSupport {
     return sqlColumnsProvider.getSqlColumns(multiEntity);
   }
 
+  public QueryFluent.Query select(MultiEntity multiEntity) {
+    return new Select(getSqlColumns(multiEntity));
+  }
+
+  public QueryFluent.Query select(Class<?> entityType) {
+    return new Select(getSqlColumns(entityType));
+  }
+
+  public QueryFluent.Query select(Class<?> entityType, String tableAlias) {
+    return new Select(getSqlColumns(entityType, tableAlias));
+  }
+
   public <T> EntityRowMapper<T> entityRowMapper(Class<T> entityType) {
     TableMapping tableMapping = getTableMapping(entityType);
     return new EntityRowMapper<>(tableMapping, conversionService, 1);

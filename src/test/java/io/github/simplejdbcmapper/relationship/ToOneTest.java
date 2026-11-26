@@ -339,13 +339,13 @@ class ToOneTest {
     MultiEntity multiEntity = new MultiEntity().add(OrderLine.class, "ol").add(Product.class, "p");
 
     String sql =
-        """
-        	SELECT %s
-        	FROM order_line ol
-        	LEFT JOIN product p ON ol.product_id = p.id
-            WHERE ol.order_line_id <= 4 ORDER BY ol.order_line_id;
-        """
-            .formatted(sjm.getSqlColumns(multiEntity));
+        sjm.select(multiEntity)
+            .clauses(
+                """
+                	FROM order_line ol
+                	LEFT JOIN product p ON ol.product_id = p.id
+                    WHERE ol.order_line_id <= 4 ORDER BY ol.order_line_id
+                """);
 
     RelationshipMapper relMapper =
         sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));

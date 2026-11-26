@@ -29,44 +29,26 @@ import java.sql.Types;
  * @author Antony Joseph
  */
 class PropertyMapping {
-
   private final String propertyName;
-
   private final Class<?> propertyType;
-
   private final String columnName;
-
   private final Integer columnSqlType;
-
   private Method writeMethod;
-
   private Method readMethod;
-
   private ResultSetProcessingType resultSetProcessingType;
 
   @SuppressWarnings("rawtypes")
   private AttributeConverter converter;
-
   private boolean idAnnotation = false;
-
   private boolean createdOnAnnotation = false;
-
   private boolean updatedOnAnnotation = false;
-
   private boolean versionAnnotation = false;
-
   private boolean createdByAnnotation = false;
-
   private boolean updatedByAnnotation = false;
-
   private boolean blobAttribute = false;
-
   private boolean clobAttribute = false;
-
   private boolean enumAttribute = false;
-
   private boolean standardAttribute = false;
-
   private boolean withConverterAttribute = false;
 
   @SuppressWarnings("rawtypes")

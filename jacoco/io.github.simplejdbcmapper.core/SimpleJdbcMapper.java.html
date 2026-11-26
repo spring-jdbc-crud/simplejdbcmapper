@@ -702,7 +702,7 @@ public final class SimpleJdbcMapper {
   }
 
   /**
-   * Generates the sql select statment when used along with &quot;withClauses&quot;.
+   * Constructs the sql select statement when used along with &quot;withClauses&quot;.
    *
    * &lt;pre&gt;
    * MultiEntity multiEntity = new MultiEntity().add(Order.class, &quot;o&quot;).add(OrderLine.class, &quot;ol&quot;);
@@ -723,7 +723,7 @@ public final class SimpleJdbcMapper {
   }
 
   /**
-   * Generates the sql select statment when used along with &quot;withClauses&quot;.
+   * Constructs the sql select statement when used along with &quot;withClauses&quot;.
    *
    * &lt;pre&gt;
    * String sql = sjm.select(Product.class).withClauses(&quot;FROM product WHERE name = ?&quot;);
@@ -737,7 +737,7 @@ public final class SimpleJdbcMapper {
   }
 
   /**
-   * Generates the sql select statment when used along with &quot;withClauses&quot;.
+   * Constructs the sql select statement when used along with &quot;withClauses&quot;.
    *
    * &lt;pre&gt;
    * String sql = sjm.select(Product.class, &quot;p&quot;).withClauses(&quot;FROM product p WHERE name = ?&quot;);
@@ -765,4 +765,4 @@ public final class SimpleJdbcMapper {
 <span class="fc" id="L765">    logger.info(&quot;SimpleJdbcMapper shutdown completed. {}&quot;, this);</span>
 <span class="fc" id="L766">  }</span>
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 0fb23a1de0e0a2261a481c7ea00b132185b21dd3 2026-11-26T20:30:37</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 93a0f323ac87ca7fc154b786ac7ac522052c0b57 2026-11-26T21:20:42</div></body></html>

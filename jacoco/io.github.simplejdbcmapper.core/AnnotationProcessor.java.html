@@ -190,57 +190,56 @@ import org.springframework.util.StringUtils;
 
   private void annotationDuplicateCheck(
       List&lt;PropertyMapping&gt; propertyMappings, Class&lt;?&gt; entityType) {
+<span class="fc" id="L193">    Map&lt;Class&lt;?&gt;, Integer&gt; map = new HashMap&lt;&gt;();</span>
+<span class="fc" id="L194">    map.put(Id.class, 0);</span>
+<span class="fc" id="L195">    map.put(Version.class, 0);</span>
+<span class="fc" id="L196">    map.put(CreatedOn.class, 0);</span>
+<span class="fc" id="L197">    map.put(CreatedBy.class, 0);</span>
+<span class="fc" id="L198">    map.put(UpdatedOn.class, 0);</span>
+<span class="fc" id="L199">    map.put(UpdatedBy.class, 0);</span>
 
-<span class="fc" id="L194">    Map&lt;Class&lt;?&gt;, Integer&gt; map = new HashMap&lt;&gt;();</span>
-<span class="fc" id="L195">    map.put(Id.class, 0);</span>
-<span class="fc" id="L196">    map.put(Version.class, 0);</span>
-<span class="fc" id="L197">    map.put(CreatedOn.class, 0);</span>
-<span class="fc" id="L198">    map.put(CreatedBy.class, 0);</span>
-<span class="fc" id="L199">    map.put(UpdatedOn.class, 0);</span>
-<span class="fc" id="L200">    map.put(UpdatedBy.class, 0);</span>
-
-<span class="fc bfc" id="L202" title="All 2 branches covered.">    for (PropertyMapping propMapping : propertyMappings) {</span>
-<span class="fc bfc" id="L203" title="All 2 branches covered.">      for (Map.Entry&lt;Class&lt;?&gt;, Integer&gt; entry : map.entrySet()) {</span>
-<span class="fc bfc" id="L204" title="All 2 branches covered.">        if (propMapping.hasAnnotation(entry.getKey())) {</span>
-<span class="fc" id="L205">          map.merge(entry.getKey(), 1, Integer::sum);</span>
+<span class="fc bfc" id="L201" title="All 2 branches covered.">    for (PropertyMapping propMapping : propertyMappings) {</span>
+<span class="fc bfc" id="L202" title="All 2 branches covered.">      for (Map.Entry&lt;Class&lt;?&gt;, Integer&gt; entry : map.entrySet()) {</span>
+<span class="fc bfc" id="L203" title="All 2 branches covered.">        if (propMapping.hasAnnotation(entry.getKey())) {</span>
+<span class="fc" id="L204">          map.merge(entry.getKey(), 1, Integer::sum); // add 1</span>
         }
-<span class="fc bfc" id="L207" title="All 2 branches covered.">        if (entry.getValue() &gt; 1) {</span>
-<span class="fc" id="L208">          throw new AnnotationException(</span>
+<span class="fc bfc" id="L206" title="All 2 branches covered.">        if (entry.getValue() &gt; 1) {</span>
+<span class="fc" id="L207">          throw new AnnotationException(</span>
               &quot;%s has multiple @%s annotations&quot;
-<span class="fc" id="L210">                  .formatted(entityType.getSimpleName(), entry.getKey().getSimpleName()));</span>
+<span class="fc" id="L209">                  .formatted(entityType.getSimpleName(), entry.getKey().getSimpleName()));</span>
         }
-<span class="fc" id="L212">      }</span>
-<span class="fc" id="L213">    }</span>
-<span class="fc" id="L214">  }</span>
+<span class="fc" id="L211">      }</span>
+<span class="fc" id="L212">    }</span>
+<span class="fc" id="L213">  }</span>
 
   private void annotationConflictCheck(
       List&lt;PropertyMapping&gt; propertyMappings, Class&lt;?&gt; entityType) {
-<span class="fc bfc" id="L218" title="All 2 branches covered.">    for (PropertyMapping propMapping : propertyMappings) {</span>
-<span class="fc" id="L219">      int conflictCnt = 0;</span>
-<span class="fc bfc" id="L220" title="All 2 branches covered.">      if (propMapping.isIdAnnotation()) {</span>
-<span class="fc" id="L221">        conflictCnt++;</span>
+<span class="fc bfc" id="L217" title="All 2 branches covered.">    for (PropertyMapping propMapping : propertyMappings) {</span>
+<span class="fc" id="L218">      int conflictCnt = 0;</span>
+<span class="fc bfc" id="L219" title="All 2 branches covered.">      if (propMapping.isIdAnnotation()) {</span>
+<span class="fc" id="L220">        conflictCnt++;</span>
       }
-<span class="fc bfc" id="L223" title="All 2 branches covered.">      if (propMapping.isVersionAnnotation()) {</span>
-<span class="fc" id="L224">        conflictCnt++;</span>
+<span class="fc bfc" id="L222" title="All 2 branches covered.">      if (propMapping.isVersionAnnotation()) {</span>
+<span class="fc" id="L223">        conflictCnt++;</span>
       }
-<span class="fc bfc" id="L226" title="All 2 branches covered.">      if (propMapping.isCreatedOnAnnotation()) {</span>
-<span class="fc" id="L227">        conflictCnt++;</span>
+<span class="fc bfc" id="L225" title="All 2 branches covered.">      if (propMapping.isCreatedOnAnnotation()) {</span>
+<span class="fc" id="L226">        conflictCnt++;</span>
       }
-<span class="fc bfc" id="L229" title="All 2 branches covered.">      if (propMapping.isCreatedByAnnotation()) {</span>
-<span class="fc" id="L230">        conflictCnt++;</span>
+<span class="fc bfc" id="L228" title="All 2 branches covered.">      if (propMapping.isCreatedByAnnotation()) {</span>
+<span class="fc" id="L229">        conflictCnt++;</span>
       }
-<span class="fc bfc" id="L232" title="All 2 branches covered.">      if (propMapping.isUpdatedOnAnnotation()) {</span>
-<span class="fc" id="L233">        conflictCnt++;</span>
+<span class="fc bfc" id="L231" title="All 2 branches covered.">      if (propMapping.isUpdatedOnAnnotation()) {</span>
+<span class="fc" id="L232">        conflictCnt++;</span>
       }
-<span class="fc bfc" id="L235" title="All 2 branches covered.">      if (propMapping.isUpdatedByAnnotation()) {</span>
-<span class="fc" id="L236">        conflictCnt++;</span>
+<span class="fc bfc" id="L234" title="All 2 branches covered.">      if (propMapping.isUpdatedByAnnotation()) {</span>
+<span class="fc" id="L235">        conflictCnt++;</span>
       }
-<span class="fc bfc" id="L238" title="All 2 branches covered.">      if (conflictCnt &gt; 1) {</span>
-<span class="fc" id="L239">        throw new AnnotationException(</span>
+<span class="fc bfc" id="L237" title="All 2 branches covered.">      if (conflictCnt &gt; 1) {</span>
+<span class="fc" id="L238">        throw new AnnotationException(</span>
             &quot;%s.%s has multiple annotations that conflict&quot;
-<span class="fc" id="L241">                .formatted(entityType.getSimpleName(), propMapping.getPropertyName()));</span>
+<span class="fc" id="L240">                .formatted(entityType.getSimpleName(), propMapping.getPropertyName()));</span>
       }
-<span class="fc" id="L243">    }</span>
-<span class="fc" id="L244">  }</span>
+<span class="fc" id="L242">    }</span>
+<span class="fc" id="L243">  }</span>
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 47229152584f4a0fb2b64c90b17efd214327430c 2026-11-25T15:28:51</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main f8d0bb3bd5c051a658614533cce427a009eb83db 2026-11-26T01:39:35</div></body></html>

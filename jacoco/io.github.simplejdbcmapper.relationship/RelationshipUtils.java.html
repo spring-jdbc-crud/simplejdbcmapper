@@ -39,7 +39,7 @@ class RelationshipUtils {
     }
 <span class="pc bpc" id="L40" title="1 of 2 branches missed.">    if (m == null) {</span>
 <span class="nc" id="L41">      throw new IllegalArgumentException(</span>
-          &quot;Invalid argument. Could not find getter for %.%s&quot;
+          &quot;Invalid argument. Could not find getter for %s.%s&quot;
 <span class="nc" id="L43">              .formatted(type.getSimpleName(), propertyName));</span>
     }
     // turn off jvm access verification for invoke()
@@ -68,11 +68,11 @@ class RelationshipUtils {
 <span class="fc" id="L68">      return field.getType();</span>
     } else {
 <span class="fc" id="L70">      throw new IllegalArgumentException(</span>
-          &quot;Invalid argument. Property name %s  does not exist for &quot;
+          &quot;Invalid argument. Property name %s does not exist for %s&quot;
 <span class="fc" id="L72">              .formatted(propertyName, type.getName()));</span>
     }
   }
 
   private RelationshipUtils() {}
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 47229152584f4a0fb2b64c90b17efd214327430c 2026-11-25T15:28:51</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main f8d0bb3bd5c051a658614533cce427a009eb83db 2026-11-26T01:39:35</div></body></html>

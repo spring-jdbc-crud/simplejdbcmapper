@@ -46,7 +46,6 @@ import org.springframework.util.Assert;
  * @author Antony Joseph
  */
 public class RelationshipMapper implements GetListSpec {
-
   private final List<ExtractorEntityResult> results = new ArrayList<>();
 
   /**

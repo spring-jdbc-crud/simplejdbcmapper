@@ -46,8 +46,7 @@ import org.springframework.util.Assert;
  * @author Antony Joseph
  */
 <span class="fc" id="L48">public class RelationshipMapper implements GetListSpec {</span>
-
-<span class="fc" id="L50">  private final List&lt;ExtractorEntityResult&gt; results = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L49">  private final List&lt;ExtractorEntityResult&gt; results = new ArrayList&lt;&gt;();</span>
 
   /**
    * Add an entity result
@@ -58,12 +57,12 @@ import org.springframework.util.Assert;
    * @param idPropertyName the id property name of the entity
    */
   public &lt;T&gt; void addEntityResult(Class&lt;T&gt; entityType, List&lt;T&gt; list, String idPropertyName) {
-<span class="fc" id="L61">    Assert.notNull(entityType, &quot;entityType must not be null&quot;);</span>
-<span class="fc" id="L62">    Assert.notNull(list, &quot;list must not be null&quot;);</span>
-<span class="fc" id="L63">    Assert.notNull(idPropertyName, &quot;idPropertyName must not be null&quot;);</span>
-<span class="fc" id="L64">    checkDuplicatesForAddEntityResult(entityType);</span>
-<span class="fc" id="L65">    results.add(new ExtractorEntityResult(entityType, list, idPropertyName));</span>
-<span class="fc" id="L66">  }</span>
+<span class="fc" id="L60">    Assert.notNull(entityType, &quot;entityType must not be null&quot;);</span>
+<span class="fc" id="L61">    Assert.notNull(list, &quot;list must not be null&quot;);</span>
+<span class="fc" id="L62">    Assert.notNull(idPropertyName, &quot;idPropertyName must not be null&quot;);</span>
+<span class="fc" id="L63">    checkDuplicatesForAddEntityResult(entityType);</span>
+<span class="fc" id="L64">    results.add(new ExtractorEntityResult(entityType, list, idPropertyName));</span>
+<span class="fc" id="L65">  }</span>
 
   /**
    * Assembles the relationships from the query results.
@@ -72,11 +71,11 @@ import org.springframework.util.Assert;
    * @return GetListSpec
    */
   public GetListSpec assemble(Relationship... relationships) {
-<span class="fc" id="L75">    validateAssemble(relationships);</span>
-<span class="fc bfc" id="L76" title="All 2 branches covered.">    for (Relationship rel : relationships) {</span>
-<span class="fc" id="L77">      process(rel);</span>
+<span class="fc" id="L74">    validateAssemble(relationships);</span>
+<span class="fc bfc" id="L75" title="All 2 branches covered.">    for (Relationship rel : relationships) {</span>
+<span class="fc" id="L76">      process(rel);</span>
     }
-<span class="fc" id="L79">    return this;</span>
+<span class="fc" id="L78">    return this;</span>
   }
 
   /**
@@ -86,8 +85,8 @@ import org.springframework.util.Assert;
    * @return String the id property name
    */
   public String getIdPropertyName(Class&lt;?&gt; type) {
-<span class="fc" id="L89">    ExtractorEntityResult result = getExtractorEntityResult(type);</span>
-<span class="fc" id="L90">    return result.idPropertyName();</span>
+<span class="fc" id="L88">    ExtractorEntityResult result = getExtractorEntityResult(type);</span>
+<span class="fc" id="L89">    return result.idPropertyName();</span>
   }
 
   /**
@@ -99,66 +98,66 @@ import org.springframework.util.Assert;
    */
   @SuppressWarnings(&quot;unchecked&quot;)
   public &lt;T&gt; List&lt;T&gt; getList(Class&lt;T&gt; type) {
-<span class="fc" id="L102">    ExtractorEntityResult result = getExtractorEntityResult(type);</span>
-<span class="fc" id="L103">    return (List&lt;T&gt;) result.list();</span>
+<span class="fc" id="L101">    ExtractorEntityResult result = getExtractorEntityResult(type);</span>
+<span class="fc" id="L102">    return (List&lt;T&gt;) result.list();</span>
   }
 
   void process(Relationship rel) {
-<span class="fc" id="L107">    List&lt;?&gt; mainList = getList(rel.getMainType());</span>
-<span class="fc" id="L108">    List&lt;?&gt; relatedList = getList(rel.getRelatedType());</span>
-<span class="fc bfc" id="L109" title="All 2 branches covered.">    if (rel.getRelationshipType().equals(RelationshipUtils.TO_ONE)) {</span>
-<span class="fc" id="L110">      rel.getToOne().process(mainList, relatedList);</span>
-<span class="fc bfc" id="L111" title="All 2 branches covered.">    } else if (rel.getRelationshipType().equals(RelationshipUtils.TO_MANY)) {</span>
-<span class="fc" id="L112">      rel.getToMany().process(mainList, relatedList);</span>
+<span class="fc" id="L106">    List&lt;?&gt; mainList = getList(rel.getMainType());</span>
+<span class="fc" id="L107">    List&lt;?&gt; relatedList = getList(rel.getRelatedType());</span>
+<span class="fc bfc" id="L108" title="All 2 branches covered.">    if (rel.getRelationshipType().equals(RelationshipUtils.TO_ONE)) {</span>
+<span class="fc" id="L109">      rel.getToOne().process(mainList, relatedList);</span>
+<span class="fc bfc" id="L110" title="All 2 branches covered.">    } else if (rel.getRelationshipType().equals(RelationshipUtils.TO_MANY)) {</span>
+<span class="fc" id="L111">      rel.getToMany().process(mainList, relatedList);</span>
     } else {
       // toManyThrough
-<span class="fc" id="L115">      List&lt;?&gt; throughList = getList(rel.getThroughType());</span>
-<span class="fc" id="L116">      rel.getToManyThrough()</span>
-<span class="fc" id="L117">          .process(</span>
+<span class="fc" id="L114">      List&lt;?&gt; throughList = getList(rel.getThroughType());</span>
+<span class="fc" id="L115">      rel.getToManyThrough()</span>
+<span class="fc" id="L116">          .process(</span>
               mainList,
               relatedList,
               throughList,
-<span class="fc" id="L121">              getIdPropertyName(rel.getMainType()),</span>
-<span class="fc" id="L122">              getIdPropertyName(rel.getRelatedType()));</span>
+<span class="fc" id="L120">              getIdPropertyName(rel.getMainType()),</span>
+<span class="fc" id="L121">              getIdPropertyName(rel.getRelatedType()));</span>
     }
-<span class="fc" id="L124">  }</span>
+<span class="fc" id="L123">  }</span>
 
   private void checkDuplicatesForAddEntityResult(Class&lt;?&gt; entityType) {
-<span class="fc bfc" id="L127" title="All 2 branches covered.">    for (ExtractorEntityResult result : results) {</span>
-<span class="fc bfc" id="L128" title="All 2 branches covered.">      if (result.entityType() == entityType) {</span>
-<span class="fc" id="L129">        throw new IllegalArgumentException(&quot;duplicate entityType &quot; + entityType);</span>
+<span class="fc bfc" id="L126" title="All 2 branches covered.">    for (ExtractorEntityResult result : results) {</span>
+<span class="fc bfc" id="L127" title="All 2 branches covered.">      if (result.entityType() == entityType) {</span>
+<span class="fc" id="L128">        throw new IllegalArgumentException(&quot;duplicate entityType &quot; + entityType);</span>
       }
-<span class="fc" id="L131">    }</span>
-<span class="fc" id="L132">  }</span>
+<span class="fc" id="L130">    }</span>
+<span class="fc" id="L131">  }</span>
 
   private void validateAssemble(Relationship... relationships) {
-<span class="fc bfc" id="L135" title="All 2 branches covered.">    if (relationships.length == 0) {</span>
-<span class="fc" id="L136">      throw new IllegalArgumentException(&quot;relationships array must not be empty.&quot;);</span>
+<span class="fc bfc" id="L134" title="All 2 branches covered.">    if (relationships.length == 0) {</span>
+<span class="fc" id="L135">      throw new IllegalArgumentException(&quot;relationships array must not be empty.&quot;);</span>
     }
-<span class="fc" id="L138">    Set&lt;String&gt; set = new HashSet&lt;&gt;();</span>
-<span class="fc bfc" id="L139" title="All 2 branches covered.">    for (Relationship rel : relationships) {</span>
-<span class="fc bfc" id="L140" title="All 2 branches covered.">      if (rel == null) {</span>
-<span class="fc" id="L141">        throw new IllegalArgumentException(</span>
+<span class="fc" id="L137">    Set&lt;String&gt; set = new HashSet&lt;&gt;();</span>
+<span class="fc bfc" id="L138" title="All 2 branches covered.">    for (Relationship rel : relationships) {</span>
+<span class="fc bfc" id="L139" title="All 2 branches covered.">      if (rel == null) {</span>
+<span class="fc" id="L140">        throw new IllegalArgumentException(</span>
             &quot;relationship must not be null in argument array. &quot; + relationships);
       }
-<span class="fc bfc" id="L144" title="All 2 branches covered.">      if (!set.add(rel.getMainType().getName() + &quot;-&quot; + rel.getRelatedType().getName())) {</span>
-<span class="fc" id="L145">        throw new IllegalArgumentException(</span>
+<span class="fc bfc" id="L143" title="All 2 branches covered.">      if (!set.add(rel.getMainType().getName() + &quot;-&quot; + rel.getRelatedType().getName())) {</span>
+<span class="fc" id="L144">        throw new IllegalArgumentException(</span>
             &quot;You cannot have multiple relationships between %s and %s&quot;
-<span class="fc" id="L147">                .formatted(</span>
-<span class="fc" id="L148">                    rel.getMainType().getSimpleName(), rel.getRelatedType().getSimpleName()));</span>
+<span class="fc" id="L146">                .formatted(</span>
+<span class="fc" id="L147">                    rel.getMainType().getSimpleName(), rel.getRelatedType().getSimpleName()));</span>
       }
     }
-<span class="fc" id="L151">  }</span>
+<span class="fc" id="L150">  }</span>
 
   private ExtractorEntityResult getExtractorEntityResult(Class&lt;?&gt; type) {
-<span class="fc bfc" id="L154" title="All 2 branches covered.">    for (ExtractorEntityResult entityResult : results) {</span>
-<span class="fc bfc" id="L155" title="All 2 branches covered.">      if (entityResult.entityType() == type) {</span>
-<span class="fc" id="L156">        return entityResult;</span>
+<span class="fc bfc" id="L153" title="All 2 branches covered.">    for (ExtractorEntityResult entityResult : results) {</span>
+<span class="fc bfc" id="L154" title="All 2 branches covered.">      if (entityResult.entityType() == type) {</span>
+<span class="fc" id="L155">        return entityResult;</span>
       }
-<span class="fc" id="L158">    }</span>
-<span class="fc" id="L159">    throw new IllegalArgumentException(type + &quot; was not part of the query results&quot;);</span>
+<span class="fc" id="L157">    }</span>
+<span class="fc" id="L158">    throw new IllegalArgumentException(type + &quot; was not part of the query results&quot;);</span>
   }
 
-<span class="fc" id="L162">  record ExtractorEntityResult(Class&lt;?&gt; entityType, List&lt;?&gt; list, String idPropertyName) {}</span>
+<span class="fc" id="L161">  record ExtractorEntityResult(Class&lt;?&gt; entityType, List&lt;?&gt; list, String idPropertyName) {}</span>
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main f4efa5fa49a6ae6c4f284b098680c84a10174cdd 2026-11-26T02:20:11</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 0fb23a1de0e0a2261a481c7ea00b132185b21dd3 2026-11-26T20:30:37</div></body></html>

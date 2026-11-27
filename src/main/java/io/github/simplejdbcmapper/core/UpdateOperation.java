@@ -162,10 +162,7 @@ class UpdateOperation {
               : null;
       throw new MapperException(
           "%s.%s is configured with annotation @Version. Property %s must not be null when updating."
-              .formatted(
-                  ew.getWrappedClass().getSimpleName(),
-                  propertyName,
-                  propertyName));
+              .formatted(ew.getWrappedClass().getSimpleName(), propertyName, propertyName));
     }
     return (Integer) versionVal + 1;
   }

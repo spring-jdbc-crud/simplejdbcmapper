@@ -409,7 +409,7 @@ An implementation of the relationship examples below and other features of the l
 There are 2 ways to construct SQL for the relationship queries.
 
 **Option 1:**
-Constructing the SQL queries as shown below will get flagged by static code analysis platforms like SonarQube (it will trigger issue s2077). Since the code dynamically constructs or concatenates SQL queries, the platform flags it as an SQL injection risk even though the SQL columns are constructed from mapping information and not user provided input. In practice if you are using SonarQube, this will create a lot of noise/work and frustration. To avoid this use option 2.
+Constructing the SQL queries as shown below will get flagged by static code analysis platforms like SonarQube (it will trigger issue s2077). Since the code dynamically constructs or concatenates SQL queries, the platform flags it as an SQL injection risk even though the SQL columns are constructed from mapping information and not user provided input. In practice if you are using SonarQube, this option will create a lot of noise/work and frustration.
 
 ```
 // The table aliases should match exactly as in your query. See the ToMany example further below for more details.
@@ -427,7 +427,7 @@ String sql = """
 
 
 **Option 2.** (Available in simplejdbcmapper version 2.6.0 onwards)  
-Constructing SQL as below will avoid SonarQube from triggering s2077 issues. Since simplejdbcmapper is responsible for the construction of the SQL, issue s2077 will not be triggered.
+Constructing SQL as below will avoid SonarQube from triggering s2077 issues since simplejdbcmapper now is responsible for the construction of the SQL.
 
 ```
   // The table aliases should match exactly as in your query. See the ToMany example further below for more details.

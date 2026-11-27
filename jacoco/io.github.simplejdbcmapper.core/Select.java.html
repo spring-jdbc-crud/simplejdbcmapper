@@ -20,18 +20,22 @@ import org.springframework.util.StringUtils;
  *
  * @author Antony Joseph
  */
-class Select implements WithClauses {
+class Select implements Clauses {
   private final String sqlColumns;
 
 <span class="fc" id="L26">  public Select(String sqlColumns) {</span>
 <span class="fc" id="L27">    this.sqlColumns = sqlColumns;</span>
 <span class="fc" id="L28">  }</span>
 
-  public String withClauses(String clauses) {
+  public String clauses(String clauses) {
 <span class="fc bfc" id="L31" title="All 2 branches covered.">    if (!StringUtils.hasText(clauses)) {</span>
 <span class="fc" id="L32">      throw new IllegalArgumentException(&quot;clauses is empty&quot;);</span>
     }
-<span class="fc" id="L34">    return &quot;SELECT %s %s&quot;.formatted(sqlColumns, clauses);</span>
+<span class="fc" id="L34">    return &quot;&quot;&quot;</span>
+    SELECT %s
+    %s
+    &quot;&quot;&quot;
+<span class="fc" id="L38">        .formatted(sqlColumns, clauses);</span>
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 93a0f323ac87ca7fc154b786ac7ac522052c0b57 2026-11-26T21:20:42</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main ac1ab73cd2b083cd80aab124b2c0edbe56c93981 2026-11-27T00:46:36</div></body></html>

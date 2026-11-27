@@ -274,7 +274,7 @@ public final class SimpleJdbcMapper {
    * &lt;p&gt;Example query:
    *
    * &lt;pre&gt;
-   * String sql = sjm.select(Product.class).withClauses(&quot;FROM product WHERE name = ?&quot;);
+   * String sql = sjm.select(Product.class).clauses(&quot;FROM product WHERE name = ?&quot;);
    * {@code List&lt;Product&gt;} products = sjm.getJdbcTemplate().query(sql, sjm.entityRowMapper(Product.class), &quot;someProductName&quot;);
    * &lt;/pre&gt;
    *
@@ -466,10 +466,10 @@ public final class SimpleJdbcMapper {
 
   /**
    * The ResultSetExtractor for multiple entities. The results are returned in {@link
-   * io.github.simplejdbcmapper.relationship.RelationshipMapper}. It expects the sql columns to
-   * &lt;b&gt;always&lt;/b&gt; be generated using {@link #getSqlColumns(MultiEntity)}. The sql columns need to
-   * be in a specific order since it uses position indexes to retrieve the data from the query
-   * ResultSet. &lt;b&gt;Do not modify the generated sql columns&lt;/b&gt;.
+   * io.github.simplejdbcmapper.relationship.RelationshipMapper}. It expects the sql to be generated
+   * using {@link #select(MultiEntity)}. The sql columns need to be in a specific order since it
+   * uses position indexes to retrieve the data from the query ResultSet. &lt;b&gt;Do not modify the
+   * generated sql columns&lt;/b&gt;.
    *
    * &lt;p&gt;From the query ResultSet a result list is created for each entity. The list for each entity
    * will be &lt;b&gt;Unique by ID&lt;/b&gt;.
@@ -493,14 +493,14 @@ public final class SimpleJdbcMapper {
    * &lt;pre&gt;
    * // Define the multiple mapped entities you want to select.
    * MultiEntity multiEntity = new MultiEntity().add(Order.class, &quot;o&quot;).add(OrderLine.class, &quot;ol&quot;);
-   * // build sql using sql columns from getSqlColumns()
-   * String sql = &quot;&quot;&quot;
-   * 		   SELECT %s
-   * 		   FROM orders o
-   * 		   LEFT JOIN order_line ol ON  o.id = ol.order_id
-   * 		   WHERE o.total_amount &gt;= ?
-   * 		   ORDER BY o.order_date DESC, ol.order_line_id
-   * 		&quot;&quot;&quot;.formatted(sjm.getSqlColumns(multiEntity));
+   * String sql = sjm.select(multiEntity)
+   *                 .clauses(
+   *                   &quot;&quot;&quot;
+   *                     FROM orders o
+   *                     LEFT JOIN order_line ol ON  o.id = ol.order_id
+   *                     WHERE o.total_amount &gt;= ?
+   *                     ORDER BY o.order_date DESC, ol.order_line_id
+   *                   &quot;&quot;&quot;);
    *
    * // Use this method with JdbcTemplate to extract the data for the multiple entities.
    * RelationshipMapper relationshipMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity),
@@ -702,12 +702,12 @@ public final class SimpleJdbcMapper {
   }
 
   /**
-   * Constructs the sql select statement when used along with &quot;withClauses&quot;.
+   * Constructs the sql select statement when used along with &quot;clauses&quot;.
    *
    * &lt;pre&gt;
    * MultiEntity multiEntity = new MultiEntity().add(Order.class, &quot;o&quot;).add(OrderLine.class, &quot;ol&quot;);
    * String sql = sjm.select(multiEntity)
-   *                 .withClauses(
+   *                 .clauses(
    *                      &quot;&quot;&quot;
    *                        FROM orders o
    *                        LEFT JOIN order_line ol ON o.id = ol.order_id
@@ -716,37 +716,37 @@ public final class SimpleJdbcMapper {
    * &lt;/pre&gt;
    *
    * @param multiEntity the multiEntity
-   * @return WithClauses
+   * @return clauses
    */
-  public WithClauses select(MultiEntity multiEntity) {
+  public Clauses select(MultiEntity multiEntity) {
 <span class="fc" id="L722">    return simpleJdbcMapperSupport.select(multiEntity);</span>
   }
 
   /**
-   * Constructs the sql select statement when used along with &quot;withClauses&quot;.
+   * Constructs the sql select statement when used along with &quot;clauses&quot;.
    *
    * &lt;pre&gt;
-   * String sql = sjm.select(Product.class).withClauses(&quot;FROM product WHERE name = ?&quot;);
+   * String sql = sjm.select(Product.class).clauses(&quot;FROM product WHERE name = ?&quot;);
    * &lt;/pre&gt;
    *
    * @param entityType the entity
-   * @return WithClauses
+   * @return clauses
    */
-  public WithClauses select(Class&lt;?&gt; entityType) {
+  public Clauses select(Class&lt;?&gt; entityType) {
 <span class="fc" id="L736">    return simpleJdbcMapperSupport.select(entityType);</span>
   }
 
   /**
-   * Constructs the sql select statement when used along with &quot;withClauses&quot;.
+   * Constructs the sql select statement when used along with &quot;clauses&quot;.
    *
    * &lt;pre&gt;
-   * String sql = sjm.select(Product.class, &quot;p&quot;).withClauses(&quot;FROM product p WHERE name = ?&quot;);
+   * String sql = sjm.select(Product.class, &quot;p&quot;).clauses(&quot;FROM product p WHERE name = ?&quot;);
    * &lt;/pre&gt;
    *
    * @param entityType the entity
-   * @return WithClauses
+   * @return clauses
    */
-  public WithClauses select(Class&lt;?&gt; entityType, String tableAlias) {
+  public Clauses select(Class&lt;?&gt; entityType, String tableAlias) {
 <span class="fc" id="L750">    return simpleJdbcMapperSupport.select(entityType, tableAlias);</span>
   }
 
@@ -765,4 +765,4 @@ public final class SimpleJdbcMapper {
 <span class="fc" id="L765">    logger.info(&quot;SimpleJdbcMapper shutdown completed. {}&quot;, this);</span>
 <span class="fc" id="L766">  }</span>
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main 93a0f323ac87ca7fc154b786ac7ac522052c0b57 2026-11-26T21:20:42</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main ac1ab73cd2b083cd80aab124b2c0edbe56c93981 2026-11-27T00:46:36</div></body></html>

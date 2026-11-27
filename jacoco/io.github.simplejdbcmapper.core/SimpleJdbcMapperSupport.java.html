@@ -143,15 +143,15 @@ class SimpleJdbcMapperSupport {
 <span class="fc" id="L143">    return sqlColumnsProvider.getSqlColumns(multiEntity);</span>
   }
 
-  public Clauses select(MultiEntity multiEntity) {
+  public QueryFluent.Query select(MultiEntity multiEntity) {
 <span class="fc" id="L147">    return new Select(getSqlColumns(multiEntity));</span>
   }
 
-  public Clauses select(Class&lt;?&gt; entityType) {
+  public QueryFluent.Query select(Class&lt;?&gt; entityType) {
 <span class="fc" id="L151">    return new Select(getSqlColumns(entityType));</span>
   }
 
-  public Clauses select(Class&lt;?&gt; entityType, String tableAlias) {
+  public QueryFluent.Query select(Class&lt;?&gt; entityType, String tableAlias) {
 <span class="fc" id="L155">    return new Select(getSqlColumns(entityType, tableAlias));</span>
   }
 
@@ -178,4 +178,4 @@ class SimpleJdbcMapperSupport {
 <span class="fc" id="L178">    return recordAuditedOnSupplier;</span>
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main ac1ab73cd2b083cd80aab124b2c0edbe56c93981 2026-11-27T00:46:36</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main dbe8fe3577adab59d874f2dafcc3a89b096f8c45 2026-11-27T09:55:29</div></body></html>

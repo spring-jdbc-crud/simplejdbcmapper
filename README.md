@@ -406,7 +406,7 @@ An implementation of the relationship examples below and other features of the l
 
 **No hidden queries are issued to assemble relationships by the library.**
 
-There are 2 ways to construct SQL for the queries.
+There are 2 ways to construct SQL for the relationship queries.
 
 **Option 1:**
 Constructing the SQL queries as shown below will get flagged by static code analysis platforms like SonarQube (it will trigger issue s2077). Since the code dynamically constructs or concatenates SQL queries, the platform flags it as an SQL injection risk even though the SQL columns are constructed from mapping information and not user provided input. In practice if you are using SonarQube, this will create a lot of noise/work and frustration. To avoid this use option 2.

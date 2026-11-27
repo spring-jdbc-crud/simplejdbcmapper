@@ -16,7 +16,7 @@ package io.github.simplejdbcmapper.query;
 import org.springframework.util.StringUtils;
 
 /**
- * Creates the full select clause
+ * Creates the SQL query
  *
  * @author Antony Joseph
  */

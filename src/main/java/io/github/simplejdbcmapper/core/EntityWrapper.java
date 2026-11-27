@@ -29,7 +29,7 @@ class EntityWrapper {
 
   public Object getPropertyValue(PropertyMapping propMapping) {
     try {
-      return propMapping.getReadMethod().invoke(entityObj);
+      return propMapping == null ? null : propMapping.getReadMethod().invoke(entityObj);
     } catch (Exception e) {
       throw new MapperException(e);
     }

@@ -154,16 +154,20 @@ class UpdateOperation {
   }
 
   private Integer getIncrementedVersionValue(EntityWrapper ew, TableMapping tableMapping) {
-    Integer versionVal = (Integer) ew.getPropertyValue(tableMapping.getVersionPropertyMapping());
+    Object versionVal = ew.getPropertyValue(tableMapping.getVersionPropertyMapping());
     if (versionVal == null) {
+      String propertyName =
+          tableMapping.getVersionPropertyMapping() != null
+              ? tableMapping.getVersionPropertyMapping().getPropertyName()
+              : null;
       throw new MapperException(
           "%s.%s is configured with annotation @Version. Property %s must not be null when updating."
               .formatted(
                   ew.getWrappedClass().getSimpleName(),
-                  tableMapping.getVersionPropertyMapping().getPropertyName(),
-                  tableMapping.getVersionPropertyMapping().getPropertyName()));
+                  propertyName,
+                  propertyName));
     }
-    return versionVal + 1;
+    return (Integer) versionVal + 1;
   }
 
   private List<String> getIgnoreProperties(TableMapping tableMapping) {

@@ -13,6 +13,8 @@
  */
 package io.github.simplejdbcmapper.core;
 
+import io.github.simplejdbcmapper.query.QueryFluent;
+import io.github.simplejdbcmapper.query.Select;
 import io.github.simplejdbcmapper.relationship.RelationshipMapper;
 import java.util.function.Supplier;
 import javax.sql.DataSource;
@@ -40,10 +42,10 @@ class SimpleJdbcMapperSupport {
   private JdbcClient jdbcClient;
   // Using Spring's DefaultConversionService as conversionService for
   // SimpleJdbcMapper
-<span class="fc" id="L43">  private ConversionService conversionService = new DefaultConversionService();</span>
+<span class="fc" id="L45">  private ConversionService conversionService = new DefaultConversionService();</span>
   private Supplier&lt;?&gt; recordAuditedOnSupplier;
   private Supplier&lt;?&gt; recordAuditedBySupplier;
-<span class="fc" id="L46">  private boolean conversionServiceManuallySet = false;</span>
+<span class="fc" id="L48">  private boolean conversionServiceManuallySet = false;</span>
 
   /**
    * Constructor.
@@ -52,54 +54,54 @@ class SimpleJdbcMapperSupport {
    * @param schemaName database schema name.
    * @param catalogName database catalog name.
    */
-<span class="fc" id="L55">  public SimpleJdbcMapperSupport(DataSource dataSource, String schemaName, String catalogName) {</span>
-<span class="fc" id="L56">    Assert.notNull(dataSource, &quot;dataSource must not be null&quot;);</span>
-<span class="fc" id="L57">    this.dataSource = dataSource;</span>
-<span class="fc" id="L58">    this.schemaName = schemaName;</span>
-<span class="fc" id="L59">    this.catalogName = catalogName;</span>
-<span class="fc" id="L60">    this.npJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);</span>
-<span class="fc" id="L61">    this.jdbcTemplate = npJdbcTemplate.getJdbcTemplate();</span>
-<span class="fc" id="L62">    this.jdbcClient = JdbcClient.create(npJdbcTemplate, conversionService);</span>
-<span class="fc" id="L63">    this.tableMappingProvider = new TableMappingProvider(schemaName, catalogName);</span>
-<span class="fc" id="L64">    this.sqlColumnsProvider = new SqlColumnsProvider(tableMappingProvider);</span>
-<span class="fc" id="L65">  }</span>
+<span class="fc" id="L57">  public SimpleJdbcMapperSupport(DataSource dataSource, String schemaName, String catalogName) {</span>
+<span class="fc" id="L58">    Assert.notNull(dataSource, &quot;dataSource must not be null&quot;);</span>
+<span class="fc" id="L59">    this.dataSource = dataSource;</span>
+<span class="fc" id="L60">    this.schemaName = schemaName;</span>
+<span class="fc" id="L61">    this.catalogName = catalogName;</span>
+<span class="fc" id="L62">    this.npJdbcTemplate = new NamedParameterJdbcTemplate(dataSource);</span>
+<span class="fc" id="L63">    this.jdbcTemplate = npJdbcTemplate.getJdbcTemplate();</span>
+<span class="fc" id="L64">    this.jdbcClient = JdbcClient.create(npJdbcTemplate, conversionService);</span>
+<span class="fc" id="L65">    this.tableMappingProvider = new TableMappingProvider(schemaName, catalogName);</span>
+<span class="fc" id="L66">    this.sqlColumnsProvider = new SqlColumnsProvider(tableMappingProvider);</span>
+<span class="fc" id="L67">  }</span>
 
   public DataSource getDataSource() {
-<span class="fc" id="L68">    return this.dataSource;</span>
+<span class="fc" id="L70">    return this.dataSource;</span>
   }
 
   public JdbcClient getJdbcClient() {
-<span class="fc" id="L72">    return this.jdbcClient;</span>
+<span class="fc" id="L74">    return this.jdbcClient;</span>
   }
 
   public JdbcTemplate getJdbcTemplate() {
-<span class="fc" id="L76">    return this.jdbcTemplate;</span>
+<span class="fc" id="L78">    return this.jdbcTemplate;</span>
   }
 
   public NamedParameterJdbcTemplate getNamedParameterJdbcTemplate() {
-<span class="fc" id="L80">    return this.npJdbcTemplate;</span>
+<span class="fc" id="L82">    return this.npJdbcTemplate;</span>
   }
 
   public &lt;T&gt; void setRecordAuditedBySupplier(Supplier&lt;T&gt; supplier) {
-<span class="fc bfc" id="L84" title="All 2 branches covered.">    if (recordAuditedBySupplier == null) {</span>
-<span class="fc" id="L85">      recordAuditedBySupplier = supplier;</span>
+<span class="fc bfc" id="L86" title="All 2 branches covered.">    if (recordAuditedBySupplier == null) {</span>
+<span class="fc" id="L87">      recordAuditedBySupplier = supplier;</span>
     } else {
-<span class="fc" id="L87">      throw new IllegalStateException(</span>
+<span class="fc" id="L89">      throw new IllegalStateException(</span>
           &quot;recordAuditedBySupplier was already set and cannot be changed.&quot;);
     }
-<span class="fc" id="L90">  }</span>
+<span class="fc" id="L92">  }</span>
 
   public &lt;T&gt; void setRecordAuditedOnSupplier(Supplier&lt;T&gt; supplier) {
-<span class="fc bfc" id="L93" title="All 2 branches covered.">    if (recordAuditedOnSupplier == null) {</span>
-<span class="fc" id="L94">      recordAuditedOnSupplier = supplier;</span>
+<span class="fc bfc" id="L95" title="All 2 branches covered.">    if (recordAuditedOnSupplier == null) {</span>
+<span class="fc" id="L96">      recordAuditedOnSupplier = supplier;</span>
     } else {
-<span class="fc" id="L96">      throw new IllegalStateException(</span>
+<span class="fc" id="L98">      throw new IllegalStateException(</span>
           &quot;recordAuditedOnSupplier was already set and cannot be changed.&quot;);
     }
-<span class="fc" id="L99">  }</span>
+<span class="fc" id="L101">  }</span>
 
   public ConversionService getConversionService() {
-<span class="fc" id="L102">    return conversionService;</span>
+<span class="fc" id="L104">    return conversionService;</span>
   }
 
   /**
@@ -108,74 +110,74 @@ class SimpleJdbcMapperSupport {
    */
   @Deprecated(since = &quot;2.5.0&quot;, forRemoval = true)
   public void setConversionService(ConversionService conversionService) {
-<span class="fc" id="L111">    Assert.notNull(conversionService, &quot;conversionService must not be null&quot;);</span>
-<span class="fc bfc" id="L112" title="All 2 branches covered.">    if (conversionServiceManuallySet) {</span>
-<span class="fc" id="L113">      throw new IllegalStateException(&quot;conversionService was already set and cannot be changed.&quot;);</span>
+<span class="fc" id="L113">    Assert.notNull(conversionService, &quot;conversionService must not be null&quot;);</span>
+<span class="fc bfc" id="L114" title="All 2 branches covered.">    if (conversionServiceManuallySet) {</span>
+<span class="fc" id="L115">      throw new IllegalStateException(&quot;conversionService was already set and cannot be changed.&quot;);</span>
     } else {
-<span class="fc" id="L115">      this.conversionService = conversionService;</span>
-<span class="fc" id="L116">      this.jdbcClient = JdbcClient.create(npJdbcTemplate, conversionService);</span>
-<span class="fc" id="L117">      conversionServiceManuallySet = true;</span>
+<span class="fc" id="L117">      this.conversionService = conversionService;</span>
+<span class="fc" id="L118">      this.jdbcClient = JdbcClient.create(npJdbcTemplate, conversionService);</span>
+<span class="fc" id="L119">      conversionServiceManuallySet = true;</span>
     }
-<span class="fc" id="L119">  }</span>
+<span class="fc" id="L121">  }</span>
 
   public String getSchemaName() {
-<span class="fc" id="L122">    return schemaName;</span>
+<span class="fc" id="L124">    return schemaName;</span>
   }
 
   public String getCatalogName() {
-<span class="fc" id="L126">    return catalogName;</span>
+<span class="fc" id="L128">    return catalogName;</span>
   }
 
   public String getFullyQualifiedTableName(Class&lt;?&gt; entityType) {
-<span class="fc" id="L130">    TableMapping tableMapping = tableMappingProvider.getTableMapping(entityType);</span>
-<span class="fc" id="L131">    return tableMapping.fullyQualifiedTableName();</span>
+<span class="fc" id="L132">    TableMapping tableMapping = tableMappingProvider.getTableMapping(entityType);</span>
+<span class="fc" id="L133">    return tableMapping.fullyQualifiedTableName();</span>
   }
 
   public String getSqlColumns(Class&lt;?&gt; entityType) {
-<span class="fc" id="L135">    return sqlColumnsProvider.getSqlColumns(entityType);</span>
+<span class="fc" id="L137">    return sqlColumnsProvider.getSqlColumns(entityType);</span>
   }
 
   public String getSqlColumns(Class&lt;?&gt; entityType, String tableAlias) {
-<span class="fc" id="L139">    return sqlColumnsProvider.getSqlColumns(entityType, tableAlias);</span>
+<span class="fc" id="L141">    return sqlColumnsProvider.getSqlColumns(entityType, tableAlias);</span>
   }
 
   public String getSqlColumns(MultiEntity multiEntity) {
-<span class="fc" id="L143">    return sqlColumnsProvider.getSqlColumns(multiEntity);</span>
+<span class="fc" id="L145">    return sqlColumnsProvider.getSqlColumns(multiEntity);</span>
   }
 
   public QueryFluent.Query select(MultiEntity multiEntity) {
-<span class="fc" id="L147">    return new Select(getSqlColumns(multiEntity));</span>
+<span class="fc" id="L149">    return new Select(getSqlColumns(multiEntity));</span>
   }
 
   public QueryFluent.Query select(Class&lt;?&gt; entityType) {
-<span class="fc" id="L151">    return new Select(getSqlColumns(entityType));</span>
+<span class="fc" id="L153">    return new Select(getSqlColumns(entityType));</span>
   }
 
   public QueryFluent.Query select(Class&lt;?&gt; entityType, String tableAlias) {
-<span class="fc" id="L155">    return new Select(getSqlColumns(entityType, tableAlias));</span>
+<span class="fc" id="L157">    return new Select(getSqlColumns(entityType, tableAlias));</span>
   }
 
   public &lt;T&gt; EntityRowMapper&lt;T&gt; entityRowMapper(Class&lt;T&gt; entityType) {
-<span class="fc" id="L159">    TableMapping tableMapping = getTableMapping(entityType);</span>
-<span class="fc" id="L160">    return new EntityRowMapper&lt;&gt;(tableMapping, conversionService, 1);</span>
+<span class="fc" id="L161">    TableMapping tableMapping = getTableMapping(entityType);</span>
+<span class="fc" id="L162">    return new EntityRowMapper&lt;&gt;(tableMapping, conversionService, 1);</span>
   }
 
   public ResultSetExtractor&lt;RelationshipMapper&gt; resultSetExtractor(MultiEntity multiEntity) {
-<span class="fc" id="L164">    return new RelationshipMapperExtractor(multiEntity, tableMappingProvider, conversionService);</span>
+<span class="fc" id="L166">    return new RelationshipMapperExtractor(multiEntity, tableMappingProvider, conversionService);</span>
   }
 
   TableMapping getTableMapping(Class&lt;?&gt; entityType) {
-<span class="fc" id="L168">    return tableMappingProvider.getTableMapping(entityType);</span>
+<span class="fc" id="L170">    return tableMappingProvider.getTableMapping(entityType);</span>
   }
 
   @SuppressWarnings(&quot;rawtypes&quot;)
   Supplier getRecordAuditedBySupplier() {
-<span class="fc" id="L173">    return recordAuditedBySupplier;</span>
+<span class="fc" id="L175">    return recordAuditedBySupplier;</span>
   }
 
   @SuppressWarnings(&quot;rawtypes&quot;)
   Supplier getRecordAuditedOnSupplier() {
-<span class="fc" id="L178">    return recordAuditedOnSupplier;</span>
+<span class="fc" id="L180">    return recordAuditedOnSupplier;</span>
   }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main aae45785d49de197d1df5f89eb30dd9ab9396ae7 2026-11-27T10:27:08</div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.14.202510111229</span>SimpleJdbcMapper main dc3772edcca2b3b96df02d366abccade95459c3c 2026-11-27T11:07:33</div></body></html>

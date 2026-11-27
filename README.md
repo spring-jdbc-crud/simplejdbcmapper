@@ -406,6 +406,47 @@ An implementation of the relationship examples below and other features of the l
 
 **No hidden queries are issued to assemble relationships by the library.**
 
+There are 2 ways to construct SQL for the queries.
+
+**Option 1:**
+Constructing the SQL queries as shown below will get flagged by static code analysis platforms like SonarQube (it will trigger issue s2077). Since the code dynamically constructs or concatenates SQL queries, the platform flags it as an SQL injection risk even though the SQL columns are constructed from mapping information and not user provided input. In practice if you are using SonarQube, this will create a lot and noise/work and frustration. To avoid this use option 2.
+
+```
+// The table aliases should match exactly as in your query. See the ToMany example further below for more details.
+MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol");
+
+// using getSqlColumns(multiEntity) to get the columns for the select
+String sql = """
+      SELECT %s
+      FROM orders o
+      LEFT JOIN order_line ol ON  o.id = ol.order_id
+      WHERE o.total_amount >= ?
+      ORDER BY o.order_date DESC, ol.id
+   """.formatted(sjm.getSqlColumns(multiEntity));
+```
+
+
+**Option 2.** (Available in simplejdbcmapper version 2.6.0 onwards)  
+Constructing SQL as below will avoid SonarQube from triggering s2077 issues. Since simplejdbcmapper is responsible for the construction of the SQL, issue s2077 will not be triggered.
+
+```
+  // The table aliases should match exactly as in your query. See the ToMany example further below for more details.
+  MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol");
+  
+  // Use select().clauses() to avoid the SonarQube s2077 issue. 
+  String sql = sjm.select(multiEntity)
+                  .clauses(
+                     """
+                       FROM orders o
+                       LEFT JOIN order_line ol ON o.id = ol.order_id
+                       WHERE o.total_amount >= ?
+                       ORDER BY o.order_date DESC, ol.id
+                     """);
+```
+
+All the examples here are using option 2. Its up to you to decide which option works the best for you. Irrespective of the option you choose to construct the SQL, the rest of the api to assemble the relationships is exactly the same.
+
+
 ### 1.ToMany relationship:
 - Order has many OrderLine
 
@@ -447,17 +488,6 @@ An implementation of the relationship examples below and other features of the l
 1. The [ResultSetExtractor](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#resultSetExtractor%28io.github.simplejdbcmapper.core.MultiEntity%29) expects columns to be in a specific order since it uses position indexes to retrieve data from the ResultSet. **Do not modify the sql columns ** returned from the select() method.
 2. [RelationshipMapper](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/io/github/simplejdbcmapper/relationship/RelationshipMapper.html) holds the query results and works with the information provided by the Relationship to assemble the relationship tree. No hidden queries are issued to assemble relationships.   
 3. A [Relationship](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/io/github/simplejdbcmapper/relationship/Relationship.html) is thread safe. This allows you to define a relationship once (for example as a 'static final' constant variable) and use it with different query results which have the same relationship.
-4. Constructing the SQL queries as shown below will get flagged by static code analysis platforms (SonarQube etc) as an issue.  Since the code dynamically constructs or concatenates SQL queries, these platforms will flag it as an SQL injection risk (even though the SQL columns are generated from mapping information and not user provided values). To avoid this you have to use select().clauses() as the example above.
-
-```
-String sql = """
-      SELECT %s
-      FROM orders o
-      LEFT JOIN order_line ol ON  o.id = ol.order_id
-      WHERE o.total_amount >= ?
-      ORDER BY o.order_date DESC, ol.id
-   """.formatted(sjm.getSqlColumns(multiEntity));
-```
 
 ### 2.Multiple relationships with one query (toOne and toMany)
 - Order has many OrderLine   

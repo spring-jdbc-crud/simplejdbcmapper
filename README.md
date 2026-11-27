@@ -406,10 +406,10 @@ An implementation of the relationship examples below and other features of the l
 
 **No hidden queries are issued to assemble relationships by the library.**
 
-There are 2 ways to construct SQL for the relationship queries.
+There are 2 ways to construct SQL for the relationship queries:
 
 **Option 1:**
-Constructing the SQL queries as shown below will get flagged by static code analysis platforms like SonarQube (it will trigger issue s2077). Since the code dynamically constructs or concatenates SQL queries, the platform flags it as an SQL injection risk even though the SQL columns are constructed from mapping information and not user provided input. In practice if you are using SonarQube, this option will create a lot of noise/work and frustration.
+Constructing the SQL queries as shown below will get flagged by static code analysis platforms like SonarQube (it will trigger issue s2077). Since the code dynamically constructs or concatenates SQL queries, the SonarQube flags it as an SQL injection risk even though the SQL columns are constructed from mapping information and not user provided input. In practice if you are using SonarQube, this option will create a lot of noise/work and frustration.
 
 ```
 // The table aliases should match exactly as in your query. See the ToMany example further below for more details.

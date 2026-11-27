@@ -250,21 +250,16 @@ public final class SimpleJdbcMapper {
   }
 
   /**
-   * Returns an EntityRowMapper
+   * Returns an EntityRowMapper.
    *
-   * <p>Use the method {@link io.github.simplejdbcmapper.core.SimpleJdbcMapper#entityRowMapper} to
-   * get an instance of EntityRowMapper.
-   *
-   * <p>EntityRowMapper <b>always</b> has to be used with sql constructed from either
+   * <p>EntityRowMapper <b>always</b> has to be used with sql constructed from the methods below
+   * since it expects the sql columns to be in a specific order. It uses position indexes to
+   * retrieve the data from the query ResultSet.
    *
    * <pre>
    *    {@link io.github.simplejdbcmapper.core.SimpleJdbcMapper#select(Class<?> entityType)} or
    *    {@link io.github.simplejdbcmapper.core.SimpleJdbcMapper#select(Class<?> entityType, String tableAlias)}
    * </pre>
-   *
-   * EntityRowMapper expects the sql columns to be in a specific order since it uses position
-   * indexes to retrieve the data from the query ResultSet. <b>Do not modify the sql from the
-   * select() method</b>.
    *
    * <p>It will handle the cases where the column to property mappings do not follow the underscore
    * to camel case naming convention.
@@ -470,10 +465,10 @@ public final class SimpleJdbcMapper {
    * io.github.simplejdbcmapper.relationship.RelationshipMapper}. It expects the sql to be generated
    * using {@link #select(MultiEntity)}. The sql columns need to be in a specific order since it
    * uses position indexes to retrieve the data from the query ResultSet. <b>Do not modify the
-   * generated sql columns</b>.
+   * generated sql columns from the select() method.</b>.
    *
-   * <p>From the query ResultSet a result list is created for each entity. The list for each entity
-   * will be <b>Unique by ID</b>.
+   * <p>From the query ResultSet a result list is created for each entity internally. The list for
+   * each entity will be <b>Unique by ID</b>.
    *
    * <pre>
    * For example:

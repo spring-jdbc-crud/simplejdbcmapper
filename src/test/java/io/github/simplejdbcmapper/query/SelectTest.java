@@ -1,8 +1,10 @@
-package io.github.simplejdbcmapper.core;
+package io.github.simplejdbcmapper.query;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import io.github.simplejdbcmapper.core.MultiEntity;
+import io.github.simplejdbcmapper.core.SimpleJdbcMapper;
 import io.github.simplejdbcmapper.model.Order;
 import io.github.simplejdbcmapper.model.OrderLine;
 import io.github.simplejdbcmapper.model.Product;
@@ -17,6 +19,21 @@ import org.springframework.boot.test.context.SpringBootTest;
 @SpringBootTest
 public class SelectTest {
   @Autowired private SimpleJdbcMapper sjm;
+
+  @Test
+  void select_constructor_failure() {
+    Assertions.assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          new Select(null);
+        });
+
+    Assertions.assertThrows(
+        IllegalArgumentException.class,
+        () -> {
+          new Select("  ");
+        });
+  }
 
   @Test
   void select_clause_failure() {

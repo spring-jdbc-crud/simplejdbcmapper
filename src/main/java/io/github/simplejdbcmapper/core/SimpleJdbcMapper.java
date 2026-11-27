@@ -13,6 +13,7 @@
  */
 package io.github.simplejdbcmapper.core;
 
+import io.github.simplejdbcmapper.query.QueryFluent;
 import io.github.simplejdbcmapper.relationship.RelationshipMapper;
 import java.util.Collection;
 import java.util.List;

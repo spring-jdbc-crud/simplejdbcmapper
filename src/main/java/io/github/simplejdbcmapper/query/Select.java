@@ -11,7 +11,7 @@
  * or implied. See the License for the specific language governing permissions and limitations under
  * the License.
  */
-package io.github.simplejdbcmapper.core;
+package io.github.simplejdbcmapper.query;
 
 import org.springframework.util.StringUtils;
 
@@ -20,11 +20,14 @@ import org.springframework.util.StringUtils;
  *
  * @author Antony Joseph
  */
-class Select implements QueryFluent.Query, QueryFluent.Clauses {
+public class Select implements QueryFluent.Query, QueryFluent.Clauses {
   private final String sqlColumns;
   private String hint = "";
 
   public Select(String sqlColumns) {
+    if (!StringUtils.hasText(sqlColumns)) {
+      throw new IllegalArgumentException("sqlColumns should not be empty");
+    }
     this.sqlColumns = sqlColumns;
   }
 

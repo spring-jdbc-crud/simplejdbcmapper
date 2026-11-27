@@ -109,17 +109,10 @@ Just by using three annotations @Table, @Id and @Column on the models used with 
  // delete by id
  sjm.deleteById(Product.class, 5);
  
- // Custom query:
- // ALWAYS use getSqlColumns() to get the columns for SELECT to work with EntityRowMapper (see its javadoc). 
- // Using java text blocks makes query more readable.
- String sql = """
-        SELECT %s
-        FROM product 
-        WHERE product_name = ?"
-      """.formatted(sjm.getSqlColumns(Product.class));
-      
- // Using Spring's JdbcTemplate and library's EntityRowMapper to get the results for the above sql
- List<Product> products = sjm.getJdbcTemplate().query(sql, sjm.entityRowMapper(Product.class), "someProductName");
+ // Custom query
+ String sql = sjm.select(Product.class).clauses("FROM product WHERE sku = ?")
+ // Use Spring's JdbcTemplate and library's EntityRowMapper to get the results for the above sql
+ List<Product> products = sjm.getJdbcTemplate().query(sql, sjm.entityRowMapper(Product.class), "someSku");
  
  // Accessing the underlying JdbcClient, JdbcTemplate and NamedParameterJdbcTemplate. 
  JdbcClient jdbcClient = sjm.getJdbcClient();
@@ -428,16 +421,16 @@ An implementation of the relationship examples below and other features of the l
   */
   MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol");
   
-  // ALWAYS use getSqlColumns() to get the columns for your 'SELECT'.
-  // Using java text blocks makes the queries more readable.
-  String sql = """
-      SELECT %s
-      FROM orders o
-      LEFT JOIN order_line ol ON  o.id = ol.order_id
-      WHERE o.total_amount >= ?
-      ORDER BY o.order_date DESC, ol.id
-   """.formatted(sjm.getSqlColumns(multiEntity));
-   
+  // Using java text blocks for clauses makes the queries more readable.
+  String sql = sjm.select(multiEntity)
+                  .clauses(
+                     """
+                       FROM orders o
+                       LEFT JOIN order_line ol ON o.id = ol.order_id
+                       WHERE o.total_amount >= ?
+                       ORDER BY o.order_date DESC, ol.id
+                     """);
+                      
    // Use JdbcTemplate with the library's ResultSetExtractor to execute the query. RelationshipMapper holds the query results.
    RelationshipMapper relationshipMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity), someAmount); 
    
@@ -451,9 +444,20 @@ An implementation of the relationship examples below and other features of the l
    List<Order> orders = relationshipMapper.assemble(orderToManyOrderLine).getList(Order.class);
   
 ```
-1. The sql columns returned by [getSqlColumns()](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#getSqlColumns(io.github.simplejdbcmapper.core.MultiEntity)) and the [ResultSetExtractor](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#resultSetExtractor%28io.github.simplejdbcmapper.core.MultiEntity%29) work together. The extractor expects columns to be in a specific order since it uses position indexes to retrieve data from the ResultSet. **Do not modify the sql columns string** from getSqlColumns().
+1. The [ResultSetExtractor](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#resultSetExtractor%28io.github.simplejdbcmapper.core.MultiEntity%29) expects columns to be in a specific order since it uses position indexes to retrieve data from the ResultSet. **Do not modify the sql columns ** returned from the select() method.
 2. [RelationshipMapper](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/io/github/simplejdbcmapper/relationship/RelationshipMapper.html) holds the query results and works with the information provided by the Relationship to assemble the relationship tree. No hidden queries are issued to assemble relationships.   
 3. A [Relationship](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/io/github/simplejdbcmapper/relationship/Relationship.html) is thread safe. This allows you to define a relationship once (for example as a 'static final' constant variable) and use it with different query results which have the same relationship.
+4. Constructing the SQL queries as shown below will get flagged by static code analysis platforms (SonarQube etc) as an issue.  Since the code dynamically constructs or concatenates SQL queries, these platforms will flag it as an SQL injection risk (even though the SQL columns are generated from mapping information and not user provided values). To avoid this you have to use select().clauses() as the example above.
+
+```
+String sql = """
+      SELECT %s
+      FROM orders o
+      LEFT JOIN order_line ol ON  o.id = ol.order_id
+      WHERE o.total_amount >= ?
+      ORDER BY o.order_date DESC, ol.id
+   """.formatted(sjm.getSqlColumns(multiEntity));
+```
 
 ### 2.Multiple relationships with one query (toOne and toMany)
 - Order has many OrderLine   
@@ -467,16 +471,16 @@ Entities: [Order](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdb
   // Define the multiple mapped entities you want to select. Make sure the table aliases match that in query.
   MultiEntity multiEntity = new MultiEntity().add(Order.class, "o").add(OrderLine.class, "ol").add(Product.class,"p");
   
-   // ALWAYS use getSqlColumns() to get the columns for your 'SELECT'.
-  String sql = """
-      SELECT %s
-      FROM orders o
-      LEFT JOIN order_line ol ON  o.id = ol.order_id
-      LEFT JOIN product p ON ol.product_id = p.id
-      WHERE o.total_amount >= ? 
-      ORDER BY o.order_date DESC, ol.id
-      """.formatted(sjm.getSqlColumns(multiEntity));
-      
+  String sql = sjm.select(multiEntity)
+                  .clauses(
+                     """
+                       FROM orders o
+                       LEFT JOIN order_line ol ON  o.id = ol.order_id
+                       LEFT JOIN product p ON ol.product_id = p.id
+                       WHERE o.total_amount >= ? 
+                       ORDER BY o.order_date DESC, ol.id
+                     """);
+
   // Use JdbcTemplate with the library's ResultSetExtractor to execute the query. RelationshipMapper holds the query results.
   RelationshipMapper relationshipMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity), someAmount);
   
@@ -500,14 +504,14 @@ Entities: [Order](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdb
   // needs to be selected also.
   MultiEntity multiEntity = new MultiEntity().add(Employee.class, "emp").add(EmployeeSkill.class, "es").add(Skill.class, "s");
   
-  // ALWAYS use getSqlColumns() to get the columns for your 'SELECT'.
-  String sql = """
-      SELECT %s
-      FROM employee emp
-      LEFT JOIN  employee_skill es ON emp.id = es.employee_id
-      LEFT JOIN skill s ON es.skill_id = s.id
-      ORDER BY emp.id, s.id
-  """.formatted(sjm.getSqlColumns(multiEntity));
+  String sql = sjm.select(multiEntity)
+                  .clauses(
+                     """
+                       FROM employee emp
+                       LEFT JOIN  employee_skill es ON emp.id = es.employee_id
+                       LEFT JOIN skill s ON es.skill_id = s.id
+                       ORDER BY emp.id, s.id
+                     """);
  
     // Use JdbcTemplate with the library's ResultSetExtractor to execute the query. RelationshipMapper holds the query results.
     RelationshipMapper relationshipMapper = sjm.getJdbcTemplate().query(sql, sjm.resultSetExtractor(multiEntity));
@@ -530,12 +534,13 @@ Entities: [Order](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdb
 
 ```
   // The paginated query. Note the PAGINATED SYNTAX is different for different databases. Use the one for your database.
- String orderSql = """
-		SELECT %s
-		FROM orders
-		ORDER BY orders.id
-		OFFSET ? ROWS FETCH NEXT ? ROWS ONLY
-	       """.formatted(sjm.getSqlColumns(Order.class));
+ String orderSql = sjm.select(Order.class)
+                      .clauses(
+                         """
+                           FROM orders
+                           ORDER BY orders.id
+                           OFFSET ? ROWS FETCH NEXT ? ROWS ONLY
+                         """);
 
   // For a single entity use EntityRowMapper with JdbcTemplate to get the results.
   List<Order> orders = sjm.getJdbcTemplate().query(orderSql, sjm.entityRowMapper(Order.class), 0, 10);
@@ -547,13 +552,14 @@ Entities: [Order](https://github.com/spring-jdbc-crud/spring-crud-with-simplejdb
   MultiEntity multiEntity = new MultiEntity().add(OrderLine.class, "ol").add(Product.class, "p");
   
   // 2nd query. Get the corresponding OrderLine/Product for the order ids. For the IN clause we have to use a named parameter.
-  String sql = """
-      SELECT %s
-      FROM order_line ol
-      LEFT JOIN product p ON ol.product_id = p.id
-      WHERE ol.order_id IN (:orderIds)
-      ORDER BY ol.id
-      """.formatted(sjm.getSqlColumns(multiEntity));
+  String sql = sjm.select(multiEntity)
+                  .clauses(
+                     """
+                       FROM order_line ol
+                       LEFT JOIN product p ON ol.product_id = p.id
+                       WHERE ol.order_id IN (:orderIds)
+                       ORDER BY ol.id
+                     """);
       
   // Create the named parameter for NamedParameterJdbcTemplate
   MapSqlParameterSource param = new MapSqlParameterSource().addValue("orderIds", orderIds);

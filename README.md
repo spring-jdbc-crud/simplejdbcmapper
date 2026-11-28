@@ -409,7 +409,7 @@ An implementation of the relationship examples below and other features of the l
 There are 2 ways to construct SQL for the relationship queries:
 
 **Option 1:**
-Constructing the SQL queries as shown below will get flagged by static code analysis platforms like SonarQube (it will trigger issue s2077). Since the code dynamically constructs or concatenates SQL queries, SonarQube flags it as an SQL injection risk even though the SQL columns are constructed from mapping information and not user provided input. In practice if you are using SonarQube, this option will create a lot of noise/work and frustration.
+This option has a cleaner syntax than option 2. Unfortunately, constructing SQL queries as shown below will get flagged by static code analysis platforms like SonarQube (it will trigger issue s2077). Since the code dynamically constructs the SQL query, SonarQube flags it as an SQL injection risk even though the SQL columns are constructed from mapping information and not user provided input. In practice if you are using SonarQube, this option will create a lot of noise/work and frustration.
 
 ```
 // The table aliases should match exactly as in your query. See the ToMany example further below for more details.
@@ -426,7 +426,7 @@ String sql = """
 ```
 
 
-**Option 2.** (Available in simplejdbcmapper version 2.6.0 onwards)  
+**Option 2.** (Available since 2.6.0)  
 Constructing SQL as below will avoid SonarQube from triggering s2077 issues since simplejdbcmapper constructs the SQL.
 
 ```
@@ -444,7 +444,7 @@ Constructing SQL as below will avoid SonarQube from triggering s2077 issues sinc
                      """);
 ```
 
-All the examples here are using option 2. Its up to you to decide which option works the best for you. Irrespective of the option you choose to construct the SQL, the rest of the api to assemble the relationships is exactly the same.
+All the examples below are using option 2. Its up to you to decide which option works the best for you. Irrespective of the option you choose to construct the SQL, the rest of the api to assemble the relationships is exactly the same.
 
 
 ### 1.ToMany relationship:
@@ -485,9 +485,9 @@ All the examples here are using option 2. Its up to you to decide which option w
    List<Order> orders = relationshipMapper.assemble(orderToManyOrderLine).getList(Order.class);
   
 ```
-1. The [ResultSetExtractor](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#resultSetExtractor%28io.github.simplejdbcmapper.core.MultiEntity%29) expects columns to be in a specific order since it uses position indexes to retrieve data from the ResultSet. **Do not modify the sql columns ** returned from the select() method.
+1. The [ResultSetExtractor](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#resultSetExtractor%28io.github.simplejdbcmapper.core.MultiEntity%29) expects columns to be in a specific order since it uses position indexes to retrieve data from the ResultSet. **Do not modify the sql columns** returned from the select() method.
 2. [RelationshipMapper](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/io/github/simplejdbcmapper/relationship/RelationshipMapper.html) holds the query results and works with the information provided by the Relationship to assemble the relationship tree. No hidden queries are issued to assemble relationships.   
-3. A [Relationship](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/io/github/simplejdbcmapper/relationship/Relationship.html) is thread safe. This allows you to define a relationship once (for example as a 'static final' constant variable) and use it with different query results which have the same relationship.
+3. A [Relationship](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/io/github/simplejdbcmapper/relationship/Relationship.html) is thread safe. This allows you to define a relationship once (for example as a 'static final' variable) and use it with different query results which have the same relationship.
 
 ### 2.Multiple relationships with one query (toOne and toMany)
 - Order has many OrderLine   

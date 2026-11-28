@@ -487,7 +487,7 @@ All the examples below are using option 2. Its up to you to decide which option 
 ```
 1. The [ResultSetExtractor](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/io/github/simplejdbcmapper/core/SimpleJdbcMapper.html#resultSetExtractor%28io.github.simplejdbcmapper.core.MultiEntity%29) expects columns to be in a specific order since it uses position indexes to retrieve data from the ResultSet. **Do not modify the sql columns** returned from the select() method.
 2. [RelationshipMapper](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/io/github/simplejdbcmapper/relationship/RelationshipMapper.html) holds the query results and works with the information provided by the Relationship to assemble the relationship tree. No hidden queries are issued to assemble relationships.   
-3. A [Relationship](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/io/github/simplejdbcmapper/relationship/Relationship.html) is thread safe. This allows you to define a relationship once (for example as a 'static final' variable) and use it with different query results which have the same relationship.
+3. A [Relationship](https://spring-jdbc-crud.github.io/simplejdbcmapper/javadoc/io/github/simplejdbcmapper/relationship/Relationship.html) is thread safe. This allows you to define a relationship once for example as a 'static final' variable and use it with different query results which have the same relationship.
 
 ### 2.Multiple relationships with one query (toOne and toMany)
 - Order has many OrderLine   
